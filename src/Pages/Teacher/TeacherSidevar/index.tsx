@@ -136,30 +136,30 @@ const TeacherSideVar = () => {
                 </li> --> */}
 
           {/* <li className="menu-label">UI Elements</li>  */}
-          <div className="sidebar-footer">
-            {' '}
-            <ul className="metismenu">
-              <li>
-                <Link
-                  to="/teacher-dashboard/feedback"
-                  onClick={removeMobileToggle}
-                >
-                  <div className="parent-icon">
-                    <InfoOutlinedIcon />
-                  </div>
-                  <div className="menu-title">Feedback</div>
-                </Link>
-              </li>
-              <li>
-                <Link to="/teacher-dashboard/faq" onClick={removeMobileToggle}>
-                  <div className="parent-icon">
-                    <LiveHelpOutlinedIcon />
-                  </div>
-                  <div className="menu-title">FAQs</div>
-                </Link>
-              </li>
-            </ul>
-          </div>
+        </div>
+        <div className="sidebar-footer">
+          {' '}
+          <ul className="metismenu">
+            <li>
+              <Link
+                to="/teacher-dashboard/feedback"
+                onClick={removeMobileToggle}
+              >
+                <div className="parent-icon">
+                  <InfoOutlinedIcon />
+                </div>
+                <div className="menu-title">Feedback</div>
+              </Link>
+            </li>
+            <li>
+              <Link to="/teacher-dashboard/faq" onClick={removeMobileToggle}>
+                <div className="parent-icon">
+                  <LiveHelpOutlinedIcon />
+                </div>
+                <div className="menu-title">FAQs</div>
+              </Link>
+            </li>
+          </ul>
         </div>
       </aside>
     </>

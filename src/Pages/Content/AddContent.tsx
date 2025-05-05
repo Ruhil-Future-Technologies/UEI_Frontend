@@ -849,14 +849,17 @@ const AddContent = () => {
       return;
     }
     if (contentData?.url) {
-      let videoId = null;
-
+      let videoId: string | null = null;
       const url = new URL(contentData.url);
       if (
         url.hostname === 'www.youtube.com' ||
         url.hostname === 'youtube.com'
       ) {
-        videoId = url.searchParams.get('v');
+        if (url.pathname === '/watch') {
+          videoId = url.searchParams.get('v');
+        } else if (url.pathname.startsWith('/live/')) {
+          videoId = url.pathname.split('/live/')[1];
+        }
       } else if (url.hostname === 'youtu.be') {
         videoId = url.pathname.substring(1);
       }

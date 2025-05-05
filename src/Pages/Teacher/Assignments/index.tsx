@@ -65,19 +65,21 @@ export const Assignments = () => {
 
   const getListOfAssignments = () => {
     try {
-      getData(`${QUERY_KEYS_ASSIGNMENT.GET_ASSIGNMENTS_LIST}`).then((response) => {
-        if (response.data) {
-          const filteredassignment = response?.data?.filter(
-            (assignmnet: any) => assignmnet.created_by == teacher_uuid,
-          );
-          setAssignmentData(filteredassignment);
-          const filteredassignmentcount = response?.data?.filter(
-            (assignmnet: any) =>
-              assignmnet.save_draft && assignmnet.created_by == teacher_uuid,
-          );
-          setDreftCount(filteredassignmentcount.length);
-        }
-      });
+      getData(`${QUERY_KEYS_ASSIGNMENT.GET_ASSIGNMENTS_LIST}`).then(
+        (response) => {
+          if (response.data) {
+            const filteredassignment = response?.data?.filter(
+              (assignmnet: any) => assignmnet.created_by == teacher_uuid,
+            );
+            setAssignmentData(filteredassignment);
+            const filteredassignmentcount = response?.data?.filter(
+              (assignmnet: any) =>
+                assignmnet.save_draft && assignmnet.created_by == teacher_uuid,
+            );
+            setDreftCount(filteredassignmentcount.length);
+          }
+        },
+      );
     } catch (error: any) {
       toast.error(error.message, {
         hideProgressBar: true,
@@ -178,9 +180,8 @@ export const Assignments = () => {
       header: 'Due Time & Date',
       Cell: ({ row }: { row: MRT_Row<Assignment> }) => {
         const gmtDateStr = row?.original?.due_date_time;
-       return convertToISTT(gmtDateStr);
-      }
-      
+        return convertToISTT(gmtDateStr);
+      },
     },
     {
       accessorKey: 'contact_email',
@@ -253,17 +254,17 @@ export const Assignments = () => {
       accessorKey: 'created_at',
       header: 'Created at',
       Cell: ({ row }: { row: MRT_Row<Assignment> }) => {
-        const gmtDate = row?.original?.created_at;
-        return  convertToISTT(gmtDate) ;
-      }
+        const gmtDate = row?.original?.created_at + 'z';
+        return convertToISTT(gmtDate);
+      },
     },
     {
       accessorKey: 'updated_at',
       header: 'updated at',
       Cell: ({ row }: { row: MRT_Row<Assignment> }) => {
-        const gmtDate = row?.original?.updated_at;
-        return  convertToISTT(gmtDate) ;
-      }
+        const gmtDate = row?.original?.updated_at + 'z';
+        return convertToISTT(gmtDate);
+      },
     },
     {
       accessorKey: 'is_active',
@@ -278,9 +279,7 @@ export const Assignments = () => {
         // }
         const [Showvalue, setShowvalue] = useState(value);
         const active = (id: number, valueset: any) => {
-          putData(
-            `${valueset ? AssignmnetDeactive : AssignmnetActive}${id}`,
-          )
+          putData(`${valueset ? AssignmnetDeactive : AssignmnetActive}${id}`)
             .then((data: any) => {
               if (data.status) {
                 setShowvalue(Showvalue ? 0 : 1);

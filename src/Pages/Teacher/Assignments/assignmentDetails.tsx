@@ -22,9 +22,12 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Assignment } from './CreateAssignments';
 import { toast } from 'react-toastify';
 import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
-import { toTitleCase } from '../../../utils/helpers';
+import { formatDateToIST, toTitleCase } from '../../../utils/helpers';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { QUERY_KEYS_ASSIGNMENT, QUERY_KEYS_ASSIGNMENT_SUBMISSION } from '../../../utils/const';
+import {
+  QUERY_KEYS_ASSIGNMENT,
+  QUERY_KEYS_ASSIGNMENT_SUBMISSION,
+} from '../../../utils/const';
 import GroupsIcon from '@mui/icons-material/Groups';
 import SaveAsIcon from '@mui/icons-material/SaveAs';
 import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutlined';
@@ -75,7 +78,10 @@ const AssignmentDetails = () => {
       //   result_marks:1
       // }]
       // formData.append("questions",payload)
-      putData(`${QUERY_KEYS_ASSIGNMENT_SUBMISSION.EDIT_ASSIGNMENT_SUBMISSION_FOR_POINTS}${Submition_id}`, formData)
+      putData(
+        `${QUERY_KEYS_ASSIGNMENT_SUBMISSION.EDIT_ASSIGNMENT_SUBMISSION_FOR_POINTS}${Submition_id}`,
+        formData,
+      )
         .then((response) => {
           if (response?.status) {
             toast.success(response.message, {
@@ -125,23 +131,35 @@ const AssignmentDetails = () => {
   };
 
   const getListOfStudnetsForAssignment = () => {
-    getData(`${QUERY_KEYS_ASSIGNMENT_SUBMISSION.GET_STUDENTS_BY_ASSIGNMENT}${id}`).then((response) => {
-      if (response?.status) {
-        setStudents(response?.data);
-        const gradedCount = response?.data?.filter((element: Students) => element.is_graded === true).length;
-        setGradedCount(gradedCount);
-        const submitedCount = response?.data?.filter((element: Students) => element.is_graded === true || element.is_submitted === true).length;
-        setSubmitedCount(submitedCount);
-        const notSubmitedCount = response?.data?.filter((element: Students) => element.is_graded !== true && element.is_submitted !== true).length;
-        setNotSubmitedCount(notSubmitedCount);
-      }
-    }).catch((error) => {
-      toast.error(error.message, {
-        hideProgressBar: true,
-        theme: 'colored',
-        position: 'top-center'
+    getData(
+      `${QUERY_KEYS_ASSIGNMENT_SUBMISSION.GET_STUDENTS_BY_ASSIGNMENT}${id}`,
+    )
+      .then((response) => {
+        if (response?.status) {
+          setStudents(response?.data);
+          const gradedCount = response?.data?.filter(
+            (element: Students) => element.is_graded === true,
+          ).length;
+          setGradedCount(gradedCount);
+          const submitedCount = response?.data?.filter(
+            (element: Students) =>
+              element.is_graded === true || element.is_submitted === true,
+          ).length;
+          setSubmitedCount(submitedCount);
+          const notSubmitedCount = response?.data?.filter(
+            (element: Students) =>
+              element.is_graded !== true && element.is_submitted !== true,
+          ).length;
+          setNotSubmitedCount(notSubmitedCount);
+        }
       })
-    });
+      .catch((error) => {
+        toast.error(error.message, {
+          hideProgressBar: true,
+          theme: 'colored',
+          position: 'top-center',
+        });
+      });
   };
 
   const gotoPreview = (id: any) => {
@@ -164,11 +182,11 @@ const AssignmentDetails = () => {
             </div>
           </div>
           <div className="breadcrumb-title pe-3 ms-2">
-            <div className="d-flex gap-1 align-items-center" role='button'>
+            <div className="d-flex gap-1 align-items-center" role="button">
               <Link to={'/teacher-dashboard/assignments'} className="text-dark">
                 Assignments List
-              </Link></div>
-
+              </Link>
+            </div>
           </div>
           <div className="ps-3">
             <nav aria-label="breadcrumb">
@@ -195,7 +213,7 @@ const AssignmentDetails = () => {
               <MenuItem value="Change Assignment">Change Assignment</MenuItem>
             </Select>
           </Box>
-          <div className='row  mb-3'>
+          <div className="row  mb-3">
             <div className="col-lg-3">
               <div className="card rounded-4 w-100 mb-0">
                 <div className="card-body">
@@ -260,51 +278,107 @@ const AssignmentDetails = () => {
           {/* Table */}
           <TableContainer component={Paper}>
             <Table sx={{ position: 'relative' }}>
-              <TableHead >
+              <TableHead>
                 <TableRow>
-                  <TableCell><strong>Student</strong></TableCell>
-                  <TableCell><strong>Submission Time & Date</strong></TableCell>
-                  <TableCell><strong>Status</strong></TableCell>
-                  <TableCell><strong>Grade</strong></TableCell>
-                  <TableCell><strong>View Submission</strong></TableCell>
+                  <TableCell>
+                    <strong>Student</strong>
+                  </TableCell>
+                  <TableCell>
+                    <strong>Submission Time & Date</strong>
+                  </TableCell>
+                  <TableCell>
+                    <strong>Status</strong>
+                  </TableCell>
+                  <TableCell>
+                    <strong>Grade</strong>
+                  </TableCell>
+                  <TableCell>
+                    <strong>View Submission</strong>
+                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {students?.map((student, index) => (
                   <TableRow key={index}>
-                    <TableCell sx={{ fontWeight: "bold" }}>{student.first_name + " " + student.last_name}</TableCell>
-                    <TableCell>{student?.submission_date}</TableCell>
+                    <TableCell sx={{ fontWeight: 'bold' }}>
+                      {student.first_name + ' ' + student.last_name}
+                    </TableCell>
+                    <TableCell>
+                      {formatDateToIST(student?.submission_date)}
+                    </TableCell>
                     <TableCell>
                       <Chip
-                        label={student.is_graded == true ? 'Graded' : student.is_submitted == true ? 'Submitted' : 'Pending'}
-                        color={student.is_graded == true ? "success" : student.is_submitted == true ? "primary" : 'error'}
+                        label={
+                          student.is_graded == true
+                            ? 'Graded'
+                            : student.is_submitted == true
+                              ? 'Submitted'
+                              : 'Pending'
+                        }
+                        color={
+                          student.is_graded == true
+                            ? 'success'
+                            : student.is_submitted == true
+                              ? 'primary'
+                              : 'error'
+                        }
                         size="small"
                       />
                     </TableCell>
                     <TableCell>
                       {editId === student.student_id ? (
-                        <div style={{ display: "flex", alignItems: "center" }}>
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
                           <TextField
                             variant="standard"
                             value={tempMarks}
                             autoComplete="off"
-                            onChange={(e) => setTempMarks((assignmentData?.points && assignmentData?.points < e.target.value) ? '' : e.target.value)}
-                            sx={{ width: "25px", textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+                            onChange={(e) =>
+                              setTempMarks(
+                                assignmentData?.points &&
+                                  assignmentData?.points < e.target.value
+                                  ? ''
+                                  : e.target.value,
+                              )
+                            }
+                            sx={{
+                              width: '25px',
+                              textAlign: 'center',
+                              fontSize: '16px',
+                              fontWeight: 'bold',
+                            }}
                           />
-                          <Typography sx={{ fontSize: "16px", fontWeight: "bold", marginLeft: "5px" }}>
+                          <Typography
+                            sx={{
+                              fontSize: '16px',
+                              fontWeight: 'bold',
+                              marginLeft: '5px',
+                            }}
+                          >
                             /{assignmentData?.points}
                           </Typography>
-                          <IconButton onClick={() => handleSave(student.assignment_submission_id)}>
-                            {student?.is_submitted == true &&
-                              <CheckOutlinedIcon color="success" />
+                          <IconButton
+                            onClick={() =>
+                              handleSave(student.assignment_submission_id)
                             }
-
+                          >
+                            {student?.is_submitted == true && (
+                              <CheckOutlinedIcon color="success" />
+                            )}
                           </IconButton>
                         </div>
                       ) : (
                         <Typography
-                          onClick={student.is_submitted == true ? () => handleEdit(student.student_id) : undefined}
-                          sx={{ cursor: student.is_submitted ? "pointer" : "default", color: student.is_submitted ? "inherit" : "gray" }}
+                          onClick={
+                            student.is_submitted == true
+                              ? () => handleEdit(student.student_id)
+                              : undefined
+                          }
+                          sx={{
+                            cursor: student.is_submitted
+                              ? 'pointer'
+                              : 'default',
+                            color: student.is_submitted ? 'inherit' : 'gray',
+                          }}
                         >
                           {student.graded_points === 'Not Graded'
                             ? `NG/ ${assignmentData?.points}`
@@ -313,14 +387,20 @@ const AssignmentDetails = () => {
                       )}
                     </TableCell>
                     <TableCell>
-                      {student.is_submitted == true || student.is_graded == true ? (
-                        <IconButton color="primary" onClick={() => gotoPreview(student?.student_uuid)}>
+                      {student.is_submitted == true ||
+                      student.is_graded == true ? (
+                        <IconButton
+                          color="primary"
+                          onClick={() => gotoPreview(student?.student_uuid)}
+                        >
                           <VisibilityIcon />
                         </IconButton>
                       ) : (
                         <VisibilityIcon color="disabled" />
                       )}
-                      {student.is_submitted == true || student.is_graded == true ? "Submitted" : " Not Submitted"}
+                      {student.is_submitted == true || student.is_graded == true
+                        ? 'Submitted'
+                        : ' Not Submitted'}
                     </TableCell>
                   </TableRow>
                 ))}
