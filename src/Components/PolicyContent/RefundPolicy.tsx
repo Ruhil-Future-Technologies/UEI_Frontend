@@ -68,19 +68,28 @@ const RefundPolicy = () => {
 
                   <h6 className="fw-bold mt-5">Refund Process</h6>
                   <p>To request a refund, users must:</p>
-                  <p>
-                    Send an email to info@ruhilholdings.com with the subject
-                    &quot;Refund Request&quot; and include order details. The
-                    request will be reviewed, and users will be notified of
-                    approval or rejection. Upon approval, refunds will be
-                    initiated after deducting 20% of the payment for processing
-                    and administrative charges.
-                  </p>
-                  <p>
-                    If the refund has not been received within the expected
-                    time, users should contact their bank or card issuer for
-                    further details.
-                  </p>
+                  <ol>
+                    <li>
+                      <b>Email Us: </b>
+                      Send an email to info@ruhilholdings.com with the subject
+                      &quot;Refund Request&quot; and include order details.
+                    </li>
+                    <li>
+                      <b>Review and Notification: </b>
+                      We&apos;ll review your request and notify you of approval or rejection.
+                    </li>
+                    <li>
+                      <b>Refund Initiation: </b>
+                      If approved, refunds will be initiated after deducting 20% of the payment for processing and administrative charges.
+                    </li>
+                    <li>
+                      <b>Follow-up: </b>
+                      If the refund has not been received within the expected
+                      time, users should contact their bank or card issuer for
+                      further details.
+                    </li>
+                  </ol>
+
 
                   <h6 className="fw-bold mb-2 mt-5">Non-Refundable Services</h6>
                   <p>The following services are not eligible for refunds:</p>

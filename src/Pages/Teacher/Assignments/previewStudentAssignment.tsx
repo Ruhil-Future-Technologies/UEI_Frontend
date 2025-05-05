@@ -20,7 +20,6 @@ import useApi from '../../../hooks/useAPI';
 import { Assignment } from '../../Teacher/Assignments/CreateAssignments';
 import { convertToISTT, getColor, toTitleCase } from '../../../utils/helpers';
 import { toast } from 'react-toastify';
-import UploadBtn from '../../../Components/UploadBTN/UploadBtn';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import ReactQuill from 'react-quill';
@@ -205,24 +204,24 @@ const PreviewStudentAssignment = () => {
       });
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-    setDocument_error(false);
+  // const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   const files = event.target.files;
+  //   setDocument_error(false);
 
-    if (files && event.target.name !== 'icon') {
-      const filesArray = Array.from(files);
+  //   if (files && event.target.name !== 'icon') {
+  //     const filesArray = Array.from(files);
 
-      setAllSelectedfiles((prevFiles) => [
-        ...prevFiles, // Keep previously selected files
-        ...filesArray, // Add newly selected files
-      ]);
+  //     setAllSelectedfiles((prevFiles) => [
+  //       ...prevFiles, // Keep previously selected files
+  //       ...filesArray, // Add newly selected files
+  //     ]);
 
-      // Reset the input field to allow selecting the same files again
-      event.target.value = '';
-    } else {
-      // setLogo(files);
-    }
-  };
+  //     // Reset the input field to allow selecting the same files again
+  //     event.target.value = '';
+  //   } else {
+  //     // setLogo(files);
+  //   }
+  // };
 
   const handleFileRemove = (index: number) => {
     setAllSelectedfiles(allselectedfiles.filter((_, i) => i !== index));
@@ -404,35 +403,35 @@ const PreviewStudentAssignment = () => {
               </ul>
 
               <hr className="my-4" />
-
-              <Box>
-                <Typography variant="h6">Resources</Typography>
-                <ul>
-                  {assignmentData?.files?.map((file, index) => (
-                    <li
-                      key={index}
-                      className="d-flex justify-content-between me-5"
-                    >
-                      {' '}
-                      {/* Ensure a unique key */}
-                      <a
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        href={file as string}
+              {contentType != 'questions' && (
+                <Box>
+                  <Typography variant="h6">Resources</Typography>
+                  <ul>
+                    {assignmentData?.files?.map((file, index) => (
+                      <li
+                        key={index}
+                        className="d-flex justify-content-between me-5"
                       >
-                        {file as string}
-                      </a>
-                      <a
-                        href={file as string}
-                        download
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <GetAppOutlinedIcon />
-                      </a>
-                    </li>
-                  ))}
-                  {/* <li>
+                        {' '}
+                        {/* Ensure a unique key */}
+                        <a
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          href={file as string}
+                        >
+                          {file as string}
+                        </a>
+                        <a
+                          href={file as string}
+                          download
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <GetAppOutlinedIcon />
+                        </a>
+                      </li>
+                    ))}
+                    {/* <li>
                     <a href="#">Project Requirements Document.pdf</a>
                   </li>
                   <li>
@@ -441,15 +440,16 @@ const PreviewStudentAssignment = () => {
                   <li>
                     <a href="#">Design Guidelines.pdf</a>
                   </li> */}
-                </ul>
-              </Box>
+                  </ul>
+                </Box>
+              )}
             </CardContent>
           </Card>
 
           <Card sx={{ mt: 3 }}>
             <CardContent>
               <Typography variant="h6" className="mb-3">
-                Submit Your Work
+              Your Submitted  Work
               </Typography>
 
               {contentType == 'questions' ? (
@@ -509,12 +509,6 @@ const PreviewStudentAssignment = () => {
                     <Typography variant="body2" color="text.secondary">
                       Drag and drop your files here or click to browse
                     </Typography>
-                    <UploadBtn
-                      label="Upload Documents"
-                      name="document"
-                      accept=".pdf, .jpg, .jpeg, .png, .gif"
-                      handleFileChange={handleFileChange}
-                    />
                   </Box>
                 </>
               )}

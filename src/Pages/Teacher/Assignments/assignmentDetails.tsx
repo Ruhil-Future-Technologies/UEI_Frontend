@@ -22,7 +22,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Assignment } from './CreateAssignments';
 import { toast } from 'react-toastify';
 import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
-import { formatDateToIST, toTitleCase } from '../../../utils/helpers';
+import { convertToISTT, toTitleCase } from '../../../utils/helpers';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import {
   QUERY_KEYS_ASSIGNMENT,
@@ -300,12 +300,8 @@ const AssignmentDetails = () => {
               <TableBody>
                 {students?.map((student, index) => (
                   <TableRow key={index}>
-                    <TableCell sx={{ fontWeight: 'bold' }}>
-                      {student.first_name + ' ' + student.last_name}
-                    </TableCell>
-                    <TableCell>
-                      {formatDateToIST(student?.submission_date)}
-                    </TableCell>
+                    <TableCell sx={{ fontWeight: "bold" }}>{student.first_name + " " + student.last_name}</TableCell>
+                    <TableCell>{student?.submission_date=='Not Submitted'?student?.submission_date:convertToISTT(student?.submission_date)}</TableCell>
                     <TableCell>
                       <Chip
                         label={
