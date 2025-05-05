@@ -64,7 +64,7 @@ const InstituteSidevar = () => {
             </Link>
           </li>
           <li>
-            <Link to={'/institution-dashboard/chat'}>
+            <Link to={'/institution-dashboard/chat'} onClick={removeMobileToggle}>
               <div className="parent-icon">
                 {' '}
                 <ChatOutlinedIcon />
@@ -73,7 +73,7 @@ const InstituteSidevar = () => {
             </Link>
           </li>
           <li>
-            <Link to="/institution-dashboard/Content">
+            <Link to="/institution-dashboard/Content" onClick={removeMobileToggle}>
               <div className="parent-icon">
                 {' '}
                 <LibraryBooksOutlinedIcon />
@@ -99,6 +99,7 @@ const InstituteSidevar = () => {
           {/* <!-- <li className="menu-label">UI Elements</li> --> */}
         </ul>
         {/* <!--end navigation--> */}
+
       </div>
       <div className="sidebar-footer">
         {' '}
@@ -120,6 +121,7 @@ const InstituteSidevar = () => {
             </Link>
           </li>
         </ul>
+
       </div>
     </aside>
   );
