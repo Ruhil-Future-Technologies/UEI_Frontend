@@ -6,19 +6,24 @@ export const formatDateToIST = (dateString: any) => {
   if (!dateString) return 'N/A';
 
   try {
-    const [datePart, timePart] = dateString.split(' ');
-    const [year, month, day] = datePart.split('-');
-    const [hour, minute, second] = timePart.split(':');
+    let date: Date;
 
-    const date = new Date(year, month - 1, day, hour, minute, second);
+    if (dateString.endsWith('GMT')) {
+      date = new Date(dateString);
+    } else {
+      const [datePart, timePart] = dateString.split(' ');
+      const [year, month, day] = datePart.split('-');
+      const [hour, minute, second] = timePart.split(':');
+
+      date = new Date(year, month - 1, day, hour, minute, second);
+      date = new Date(date.getTime() + (5 * 60 + 30) * 60 * 1000);
+    }
 
     if (isNaN(date.getTime())) {
       return 'Invalid Date';
     }
 
-    const istDate = new Date(date.getTime() + (5 * 60 + 30) * 60 * 1000);
-
-    const options: any = {
+    const options: Intl.DateTimeFormatOptions = {
       year: 'numeric',
       month: '2-digit',
       day: '2-digit',
@@ -28,7 +33,7 @@ export const formatDateToIST = (dateString: any) => {
       hour12: true,
     };
 
-    return istDate.toLocaleString('en-US', options);
+    return date.toLocaleString('en-IN', options);
   } catch (error) {
     console.error('Error formatting date to IST:', error);
     return 'Error';
