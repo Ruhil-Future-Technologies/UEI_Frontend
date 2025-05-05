@@ -317,7 +317,7 @@ const Sidebar = () => {
                                           }
                                         >
                                           <ArrowRightIcon />
-                                          Institution
+                                          Institution Management
                                         </a>
                                         <ul
                                           className={`mm-collapse ${

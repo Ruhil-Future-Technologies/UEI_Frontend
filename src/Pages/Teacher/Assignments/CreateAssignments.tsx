@@ -990,9 +990,14 @@ export const CreateAssignments = () => {
     const students = selectedStudents?.map((student) => student.id);
 
     formData.append('assign_to_students', JSON.stringify(students));
-    files.forEach((file) => {
-      formData.append('files', file);
-    });
+    if (assignmentType == "ai generated") {
+      formData.append('files', []);
+    } else {
+      files.forEach((file) => {
+        formData.append('files', file);
+      });
+    }
+
     if (selectedEntity.toLowerCase() === 'school') {
       const class_stream_subjects = boxesForSchool.reduce(
         (acc, boxesForSchool) => {
@@ -1066,22 +1071,22 @@ export const CreateAssignments = () => {
               position: 'top-center',
             });
             navigate('/teacher-dashboard/assignments');
-          setAssignmentData({
-            title: '',
-            type: 'written',
-            contact_email: '',
-            allow_late_submission: false,
-            due_date_time: '', // Or new Date().toISOString() if using Date type
-            available_from: '', // Or new Date().toISOString() if using Date type
-            assign_to_students: [],
-            instructions: '',
-            points: '',
-            save_draft: false,
-            add_to_report: false,
-            notify: false,
-            files: [], // File should be null initially
-          });
-        }
+            setAssignmentData({
+              title: '',
+              type: 'written',
+              contact_email: '',
+              allow_late_submission: false,
+              due_date_time: '', // Or new Date().toISOString() if using Date type
+              available_from: '', // Or new Date().toISOString() if using Date type
+              assign_to_students: [],
+              instructions: '',
+              points: '',
+              save_draft: false,
+              add_to_report: false,
+              notify: false,
+              files: [], // File should be null initially
+            });
+          }
         });
       } catch (error: any) {
         toast.error(error.message, {
@@ -1176,13 +1181,24 @@ export const CreateAssignments = () => {
       setContact_email_error(false);
     }
 
-    if (availableFrom == null || availableFrom.isBefore(dayjs(), 'day')) {
-      setAvailableFrom_error(true);
-      valid1 = true;
-      setError(null);
-    } else {
-      setAvailableFrom_error(false);
+    if(type=="assignment"){
+      if (availableFrom == null || availableFrom.isBefore(dayjs(), 'day')) {
+        setAvailableFrom_error(true);
+        valid1 = true;
+        setError(null);
+      } else {
+        setAvailableFrom_error(false);
+      }
+    }else{
+      if (availableFrom == null || availableFrom.isBefore(dayjs())) {
+        setAvailableFrom_error(true);
+        valid1 = true;
+        setError(null);
+      } else {
+        setAvailableFrom_error(false);
+      }
     }
+   
 
     if (dueDate == null) {
       setDue_date_error(true);
@@ -1927,7 +1943,12 @@ export const CreateAssignments = () => {
     } else {
       setConfigInstructoins_error(false)
     }
-  }, [dueDate, availableFrom, dueTime, level, topic, configInstructions]);
+    if(quiz_timer=='' && quiz_timer){
+      setQuizTimer_error(true);
+    }else{
+      setQuizTimer_error(false);
+    }
+  }, [dueDate, availableFrom, dueTime, level, topic, configInstructions,quiz_timer]);
   const handleQuestionmap = () => {
     if (questionKey && questionValue) {
       setQuestions_error(false);
@@ -1963,7 +1984,6 @@ export const CreateAssignments = () => {
       setQuestions_error(false);
     }
   };
-  console.log(assignmentData);
   const isSubmittedByAnyStudent = () => {
     getData(`${QUERY_KEYS_ASSIGNMENT_SUBMISSION.GET_STUDENTS_BY_ASSIGNMENT}${id}`).then((response) => {
       if (response?.status) {
@@ -1978,7 +1998,6 @@ export const CreateAssignments = () => {
       })
     });
   }
-  console.log(assignmentType)
   return (
    
     <div className="main-wrapper pb-5">
@@ -2346,30 +2365,30 @@ export const CreateAssignments = () => {
                           {
                             submittedCount <= 0 && (
                               <>
-                              <div className="col-lg-4">
-                            <TextField
-                              label="No. of questions"
-                              type="number"
-                              name="no_questions"
-                              value={questionKey}
-                              onChange={(e) =>
-                                setQuestionKey(e.target.value)
-                              }
-                              fullWidth
-                            />
-                          </div>
-                          <div className="col-lg-4">
-                            <TextField
-                              label="Marks per question"
-                              type="number"
-                              value={questionValue}
-                              name="marks_per_questions"
-                              onChange={(e) =>
-                                setQuestionValue(e.target.value)
-                              }
-                              fullWidth
-                            />
-                          </div>
+                                <div className="col-lg-4">
+                                  <TextField
+                                    label="No. of questions"
+                                    type="number"
+                                    name="no_questions"
+                                    value={questionKey}
+                                    onChange={(e) =>
+                                      setQuestionKey(e.target.value)
+                                    }
+                                    fullWidth
+                                  />
+                                </div>
+                                <div className="col-lg-4">
+                                  <TextField
+                                    label="Marks per question"
+                                    type="number"
+                                    value={questionValue}
+                                    name="marks_per_questions"
+                                    onChange={(e) =>
+                                      setQuestionValue(e.target.value)
+                                    }
+                                    fullWidth
+                                  />
+                                </div>
                               </>
                             )}
 
@@ -2899,47 +2918,20 @@ export const CreateAssignments = () => {
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <div className="row g-4">
                           <div className="col-lg-4">
-                            {type !== 'quiz' ? (
-                              <>
-                                <DesktopDatePicker
-                                  label="Available From"
-                                  value={availableFrom}
-                                  minDate={!edit ? dayjs() : undefined}
-                                  onChange={handleAvailableFromChange}
-                                  slotProps={{
-                                    textField: (params) => (
-                                      <TextField {...params} />
-                                    ),
-                                  }}
-                                />
-                                {availableFrom_error && error == null && (
-                                  <p
-                                    className="error-text"
-                                    style={{ color: 'red' }}
-                                  >
-                                    <small>
-                                      Please select today or a future date.
-                                    </small>{' '}
-                                  </p>
-                                )}
-                              </>
-                            ) : (
                               <>
                                 <DateTimePicker
                                   label="Available From"
                                   value={availableFrom}
-                                  minDateTime={
-                                    !edit ? dayjs().add(1, 'minute') : undefined
-                                  }
-                                  onChange={handleAvailableFromChange}
+                                  minDateTime={!edit ? dayjs().set('second', 0).set('millisecond', 0).add(1, 'minute') : undefined}
                                   closeOnSelect={false}
+                                  onChange={handleAvailableFromChange}
                                   timeSteps={{ minutes: 1 }}
                                   slotProps={{
-                                    textField: (params) => (
-                                      <TextField {...params} />
-                                    ),
+                                    textField: (params) => <TextField {...params} />,
                                   }}
+                                  ampm
                                 />
+
                                 {availableFrom_error && (
                                   <p
                                     className="error-text"
@@ -2951,7 +2943,6 @@ export const CreateAssignments = () => {
                                   </p>
                                 )}
                               </>
-                            )}
                           </div>
                           <div className="col-lg-4">
                             <DesktopDatePicker
