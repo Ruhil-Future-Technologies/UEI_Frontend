@@ -343,21 +343,7 @@ const ParentDashboard = () => {
                         </div>
                       </div>
                       <div className="card-body position-relative">
-                        <div className="d-flex align-items-center justify-content-between gap-2 mb-3">
-                          <div>
-                            <h6 className="mb-0 fw-normal fs-14">Status</h6>
-                          </div>
-
-                          <div className="form-check form-switch mb-0 ">
-                            <input
-                              className="form-check-input fs-5 m-0"
-                              type="checkbox"
-                              id="status"
-                              checked={true}
-                              readOnly
-                            />
-                          </div>
-                        </div>
+                        
 
                         <div className="d-flex align-items-center gap-3 mb-3">
                           <div className="flex-grow-1">
@@ -370,7 +356,7 @@ const ParentDashboard = () => {
 
                         <div className="d-flex align-items-center gap-3">
                           <div className="flex-grow-1">
-                            <h6 className="mb-0 fw-normal fs-14">Saved Chat</h6>
+                            <h6 className="mb-0 fw-normal fs-14">Chat Count</h6>
                           </div>
                           <div>8</div>
                         </div>
@@ -380,7 +366,7 @@ const ParentDashboard = () => {
                   <div className="col-lg-3">
                     <div className="row g-4">
                       <div className="col-12">
-                        <Link to={"/parent-dashboard/assignments"} className="card cardwithshadow">
+                        <Link to={"/parent-dashboard/assignments"} className="card cardwithshadow withlink">
                           <div className="card-body">
                             <div className="card-content">
                               <span className="with-circle blue-circle">
@@ -403,9 +389,9 @@ const ParentDashboard = () => {
                       </div>
 
                       <div className="col-12">
-                        <Link to={"/parent-dashboard/quiz"} className="card cardwithshadow">
+                        <Link to={"/parent-dashboard/quiz"} className="card cardwithshadow withlink">
                           <div className="card-body">
-                            <div className="card-content">
+                            <div className="card-content ">
                               <span className="with-circle orange-circle">
                                 <Quiz />
                               </span>
@@ -433,12 +419,11 @@ const ParentDashboard = () => {
                         <h6 className="fw-bold">Subject Teachers</h6>
 
                         <ul className='list-style-2'>
-                          <li><strong className='fs-14'>Subject</strong> <strong className='fs-14'>Teacher Name</strong></li>
+                          <li className='text-primary'><strong>Subject</strong> <strong>Teacher Name</strong></li>
                           <li><span>Math</span> <span>Ak Mehra</span> </li>
                           <li><span>English</span> <span>Ak Mehra</span> </li>
                           <li><span>Hindi</span> <span>Ak Mehra</span> </li>
-                          <li><span>General Knowledge</span> <span>Ak Mehra</span> </li>
-                          <li><span>Science</span> <span>Ak Mehra</span> </li>
+                          <li><span>General Knowledge</span> <span>Ak Mehra</span> </li>                      
                          
                          
                         </ul>
