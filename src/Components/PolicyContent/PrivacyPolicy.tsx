@@ -89,7 +89,7 @@ const PrivacyPolicy = () => {
                       training workshops.
                     </li>
                     <li>
-                      <b>Surveys and Feedback: </b>
+                      <b>Student Information: </b>
                       When schools, parents, or teachers provide necessary
                       student details to customize educational services.
                     </li>
@@ -139,7 +139,7 @@ const PrivacyPolicy = () => {
                       individual learning needs.
                     </li>
                     <li>
-                      <b>Enhanced User Experience</b>personalizing platform
+                      <b>Enhanced User Experience: </b>personalizing platform
                       recommendations.
                     </li>
                     <li>
@@ -149,7 +149,7 @@ const PrivacyPolicy = () => {
                     </li>
                     <li><b>Support and Assistance: </b>Provide customer support and technical assistance.</li>
                     <li>
-                      <b>Support and Assistance: </b>
+                      <b>Service Updates: </b>
                       Send service updates and important notifications (e.g.,
                       syllabus changes, new features).
                     </li>
