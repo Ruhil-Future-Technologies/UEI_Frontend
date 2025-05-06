@@ -156,9 +156,9 @@ export const CreateAssignments = () => {
   const [selectedStudents, setSelectedStudents] = useState<StudentRep0oDTO[]>(
     [],
   );
-  const [selectedStudentsForUpdate, setSelectedStudentsForUpdate] = useState<StudentRep0oDTO[]>(
-    [],
-  );
+  const [selectedStudentsForUpdate, setSelectedStudentsForUpdate] = useState<
+    StudentRep0oDTO[]
+  >([]);
   const [questionKey, setQuestionKey] = useState('');
   const [questionValue, setQuestionValue] = useState('');
   const [questionMap, setQuestionMap] = useState<QuestionItem[]>([]);
@@ -175,7 +175,8 @@ export const CreateAssignments = () => {
   const [file_error, setFile_error] = useState(false);
   const [point_error, setPoint_error] = useState(false);
   const [instructions_error, setInstructoins_error] = useState(false);
-  const [configInstructions_error, setConfigInstructoins_error] = useState(false);
+  const [configInstructions_error, setConfigInstructoins_error] =
+    useState(false);
   const [contact_email_email, setContact_email_error] = useState(false);
   const [availableFrom_error, setAvailableFrom_error] = useState(false);
   const [due_date_error, setDue_date_error] = useState(false);
@@ -338,9 +339,8 @@ export const CreateAssignments = () => {
       await getCourses();
       await getTeacherProfileInfo();
       if (id) {
-        isSubmittedByAnyStudent()
+        isSubmittedByAnyStudent();
       }
-      ;
     };
     fetchData();
     //getListOfStudnetsForAssignment();
@@ -414,7 +414,7 @@ export const CreateAssignments = () => {
                       semester_number: semester_number,
                       subjects:
                         response.data.course_semester_subjects[CourseKey][
-                        semester_number
+                          semester_number
                         ],
                       filteredSemesters: allsemesters?.filter(
                         (item) => item.course_id == CourseKey,
@@ -456,20 +456,20 @@ export const CreateAssignments = () => {
                       filteredSubjects:
                         stream == 'general'
                           ? allSubject?.filter(
-                            (item) => item.class_id == classKey,
-                          )
+                              (item) => item.class_id == classKey,
+                            )
                           : allSubject?.filter(
-                            (item) =>
-                              item.class_id == classKey &&
-                              item.stream == stream,
-                          ),
+                              (item) =>
+                                item.class_id == classKey &&
+                                item.stream == stream,
+                            ),
                     })),
                   );
                   const filteredStudents =
                     students?.filter((student) =>
                       output[0].class_id == student.class_id &&
-                        output[0].subjects[0] == student.subject_name &&
-                        output[0].is_Stream
+                      output[0].subjects[0] == student.subject_name &&
+                      output[0].is_Stream
                         ? output[0].stream == student.stream
                         : true,
                     ) || [];
@@ -532,7 +532,7 @@ export const CreateAssignments = () => {
                     semester_number: semester_number,
                     subjects:
                       response.data.course_semester_subjects[CourseKey][
-                      semester_number
+                        semester_number
                       ],
                     filteredSemesters: allsemesters?.filter(
                       (item) => item.course_id == CourseKey,
@@ -550,7 +550,7 @@ export const CreateAssignments = () => {
                     (student) =>
                       Number(output[0].course_id) == student.course_id &&
                       Number(output[0].semester_number) ==
-                      student.semester_number &&
+                        student.semester_number &&
                       output[0].subjects[0] == student.subject_name,
                   ) || [];
 
@@ -577,21 +577,21 @@ export const CreateAssignments = () => {
                     filteredSubjects:
                       stream == 'general'
                         ? allSubject?.filter(
-                          (item) => item.class_id == classKey,
-                        )
+                            (item) => item.class_id == classKey,
+                          )
                         : allSubject?.filter(
-                          (item) =>
-                            item.class_id == classKey &&
-                            item.stream == stream,
-                        ),
+                            (item) =>
+                              item.class_id == classKey &&
+                              item.stream == stream,
+                          ),
                   })),
                 );
 
                 const filteredStudents =
                   students?.filter((student) =>
                     Number(output[0].class_id) == student.class_id &&
-                      output[0].subjects[0] == student.subject_name &&
-                      output[0].is_Stream
+                    output[0].subjects[0] == student.subject_name &&
+                    output[0].is_Stream
                       ? output[0].stream == student.stream
                       : true,
                   ) || [];
@@ -891,7 +891,10 @@ export const CreateAssignments = () => {
         setPoint_error(false);
       }
     }
-    if (assignmentData.instructions == '<p><br></p>' || assignmentData.instructions == '<p></p>') {
+    if (
+      assignmentData.instructions == '<p><br></p>' ||
+      assignmentData.instructions == '<p></p>'
+    ) {
       setInstructoins_error(true);
       valid1 = true;
     } else {
@@ -910,7 +913,7 @@ export const CreateAssignments = () => {
     } else {
       setAvailableFrom_error(false);
     }
-    if (dueDate == null) {
+    if (dueDate == null || dueDate == dayjs() || dueDate <= dayjs()) {
       setDue_date_error(true);
       valid1 = true;
     } else {
@@ -976,8 +979,14 @@ export const CreateAssignments = () => {
     formData.append('due_date_time', String(mergeDateAndTime()));
     formData.append('available_from', String(availableFrom));
     formData.append('instructions', assignmentData.instructions);
-    formData.append('points', assignmentDataType == 'json' ? totalMarks : assignmentData.points);
-    formData.append('save_draft', saveAsDraft == true ? String(saveAsDraft) : String(saveAsDraft));
+    formData.append(
+      'points',
+      assignmentDataType == 'json' ? totalMarks : assignmentData.points,
+    );
+    formData.append(
+      'save_draft',
+      saveAsDraft == true ? String(saveAsDraft) : String(saveAsDraft),
+    );
     formData.append('add_to_report', String(addToStudentRepost));
     formData.append('notify', String(sendNotification));
     if (questions) {
@@ -990,7 +999,7 @@ export const CreateAssignments = () => {
     const students = selectedStudents?.map((student) => student.id);
 
     formData.append('assign_to_students', JSON.stringify(students));
-    if (assignmentType == "ai generated") {
+    if (assignmentType == 'ai generated') {
       formData.append('files', []);
     } else {
       files.forEach((file) => {
@@ -1166,7 +1175,10 @@ export const CreateAssignments = () => {
       setQuestions_error(false);
     }
     if (assignmentData)
-      if (assignmentData.instructions == '<p><br></p>' || assignmentData.instructions == '') {
+      if (
+        assignmentData.instructions == '<p><br></p>' ||
+        assignmentData.instructions == ''
+      ) {
         setInstructoins_error(true);
         valid1 = true;
       } else {
@@ -1181,7 +1193,7 @@ export const CreateAssignments = () => {
       setContact_email_error(false);
     }
 
-    if(type=="assignment"){
+    if (type == 'assignment') {
       if (availableFrom == null || availableFrom.isBefore(dayjs(), 'day')) {
         setAvailableFrom_error(true);
         valid1 = true;
@@ -1189,7 +1201,7 @@ export const CreateAssignments = () => {
       } else {
         setAvailableFrom_error(false);
       }
-    }else{
+    } else {
       if (availableFrom == null || availableFrom.isBefore(dayjs())) {
         setAvailableFrom_error(true);
         valid1 = true;
@@ -1198,9 +1210,8 @@ export const CreateAssignments = () => {
         setAvailableFrom_error(false);
       }
     }
-   
 
-    if (dueDate == null) {
+    if (dueDate == null || dueDate == dayjs() || dueDate <= dayjs()) {
       setDue_date_error(true);
 
       valid1 = true;
@@ -1374,7 +1385,10 @@ export const CreateAssignments = () => {
 
     let valid1 = false;
     if (assignmentData)
-      if (assignmentData.instructions == '<p><br></p>' || assignmentData.instructions == '<p></p>') {
+      if (
+        assignmentData.instructions == '<p><br></p>' ||
+        assignmentData.instructions == '<p></p>'
+      ) {
         setInstructoins_error(true);
         valid1 = true;
       } else {
@@ -1398,7 +1412,7 @@ export const CreateAssignments = () => {
       setAvailableFrom_error(false);
     }
 
-    if (dueDate == null) {
+    if (dueDate == null || dueDate == dayjs() || dueDate <= dayjs()) {
       setDue_date_error(true);
 
       valid1 = true;
@@ -1822,7 +1836,7 @@ export const CreateAssignments = () => {
             const filteredSubjects = totleSubject?.filter(
               (item) =>
                 String(item.stream).toLowerCase() ==
-                value.toString().toLowerCase() &&
+                  value.toString().toLowerCase() &&
                 item.class_id == boxesForSchool[index].class_id,
             );
             updatedBox = {
@@ -1848,7 +1862,7 @@ export const CreateAssignments = () => {
               );
               return student.subject_id == matchedSubject?.subject_id;
             });
-            console.log(filteredStudents)
+            console.log(filteredStudents);
             setListOfStudentFiltered(filteredStudents);
           }
         }
@@ -1882,11 +1896,10 @@ export const CreateAssignments = () => {
 
     if (assignmentType !== 'quiz') {
       if (assignmentType == 'ai generated') {
-        submitAssignment(true, "json");
+        submitAssignment(true, 'json');
       } else {
         submitAssignment(true);
       }
-
     } else {
       handleSubmitQuiz(true, updatedPayload);
     }
@@ -1938,17 +1951,29 @@ export const CreateAssignments = () => {
     } else {
       setTopic_error(false);
     }
-    if (configInstructions && configInstructions == '' && assignmentType == 'ai generated') {
-      setConfigInstructoins_error(true)
+    if (
+      configInstructions &&
+      configInstructions == '' &&
+      assignmentType == 'ai generated'
+    ) {
+      setConfigInstructoins_error(true);
     } else {
-      setConfigInstructoins_error(false)
+      setConfigInstructoins_error(false);
     }
-    if(quiz_timer=='' && quiz_timer){
+    if (quiz_timer == '' && quiz_timer) {
       setQuizTimer_error(true);
-    }else{
+    } else {
       setQuizTimer_error(false);
     }
-  }, [dueDate, availableFrom, dueTime, level, topic, configInstructions,quiz_timer]);
+  }, [
+    dueDate,
+    availableFrom,
+    dueTime,
+    level,
+    topic,
+    configInstructions,
+    quiz_timer,
+  ]);
   const handleQuestionmap = () => {
     if (questionKey && questionValue) {
       setQuestions_error(false);
@@ -1985,21 +2010,27 @@ export const CreateAssignments = () => {
     }
   };
   const isSubmittedByAnyStudent = () => {
-    getData(`${QUERY_KEYS_ASSIGNMENT_SUBMISSION.GET_STUDENTS_BY_ASSIGNMENT}${id}`).then((response) => {
-      if (response?.status) {
-        const submitedCount = response?.data?.filter((element: any) => element.is_graded === true || element.is_submitted === true).length;
-        setSubmitedCount(submitedCount);
-      }
-    }).catch((error) => {
-      toast.error(error.message, {
-        hideProgressBar: true,
-        theme: 'colored',
-        position: 'top-center'
+    getData(
+      `${QUERY_KEYS_ASSIGNMENT_SUBMISSION.GET_STUDENTS_BY_ASSIGNMENT}${id}`,
+    )
+      .then((response) => {
+        if (response?.status) {
+          const submitedCount = response?.data?.filter(
+            (element: any) =>
+              element.is_graded === true || element.is_submitted === true,
+          ).length;
+          setSubmitedCount(submitedCount);
+        }
       })
-    });
-  }
+      .catch((error) => {
+        toast.error(error.message, {
+          hideProgressBar: true,
+          theme: 'colored',
+          position: 'top-center',
+        });
+      });
+  };
   return (
-   
     <div className="main-wrapper pb-5">
       <div className="main-content">
         {loading && <FullScreenLoader />}
@@ -2010,18 +2041,18 @@ export const CreateAssignments = () => {
               Dashboard
             </Link>
           </div>
-          {
-            assignmentType != 'quiz' && (
-              <div className="breadcrumb-title pe-3 ms-2">
-                <div className="d-flex gap-1 align-items-center" role='button'>
-                  <Link to={'/teacher-dashboard/assignments'} className="text-dark">
-                    Assignments List
-                  </Link>
-                </div>
-
+          {assignmentType != 'quiz' && (
+            <div className="breadcrumb-title pe-3 ms-2">
+              <div className="d-flex gap-1 align-items-center" role="button">
+                <Link
+                  to={'/teacher-dashboard/assignments'}
+                  className="text-dark"
+                >
+                  Assignments List
+                </Link>
               </div>
-            )
-          }
+            </div>
+          )}
           <div className="ps-3">
             <nav aria-label="breadcrumb">
               <ol className="breadcrumb mb-0 p-0">
@@ -2045,7 +2076,6 @@ export const CreateAssignments = () => {
                   setAssignmentType(newValue);
                 }
               }
-
             }}
             className="assignbtngrp"
           >
@@ -2072,14 +2102,12 @@ export const CreateAssignments = () => {
         </div>
         <div className="card p-lg-3  mt-4 mt-lg-0">
           <div className="card-body">
-
             <div className="row justify-content-center">
               <div className="col-lg-12">
                 <div className="row g-4">
                   <div className="col-12">
                     <Typography variant="h6" className="mb-4 fw-bold">
-                      Create{' '}
-                      {assignmentType == 'quiz' ? 'Quiz' : 'Assignment'}
+                      Create {assignmentType == 'quiz' ? 'Quiz' : 'Assignment'}
                     </Typography>
                     {assignmentType !== 'quiz' && (
                       <TextField
@@ -2098,24 +2126,24 @@ export const CreateAssignments = () => {
                     )}
                   </div>
 
-                    <div className="col-lg-6">
-                      <TextField
-                        fullWidth
-                        label="Contact Email"
-                        variant="outlined"
-                        name="contact_email"
-                        disabled
-                        onChange={handleChanges}
-                        type="email"
-                        value={assignmentData.contact_email}
-                        autoComplete="off"
-                      />
-                      {contact_email_email && (
-                        <p className="error-text" style={{ color: 'red' }}>
-                          <small>Please enter a valid Email Id.</small>
-                        </p>
-                      )}
-                    </div>
+                  <div className="col-lg-6">
+                    <TextField
+                      fullWidth
+                      label="Contact Email"
+                      variant="outlined"
+                      name="contact_email"
+                      disabled
+                      onChange={handleChanges}
+                      type="email"
+                      value={assignmentData.contact_email}
+                      autoComplete="off"
+                    />
+                    {contact_email_email && (
+                      <p className="error-text" style={{ color: 'red' }}>
+                        <small>Please enter a valid Email Id.</small>
+                      </p>
+                    )}
+                  </div>
 
                   {assignmentType == 'written' && (
                     <>
@@ -2197,9 +2225,9 @@ export const CreateAssignments = () => {
                     </>
                   )}
                   {(assignmentType === 'quiz' && !edit) ||
-                    assignmentType === 'ai generated' ? (
+                  assignmentType === 'ai generated' ? (
                     <>
-                      {editType == '' &&
+                      {editType == '' && (
                         <div className="col-md-6 col-12">
                           <FormControl fullWidth className="">
                             <InputLabel id="level-select-label">
@@ -2228,17 +2256,16 @@ export const CreateAssignments = () => {
                             </p>
                           )}
                         </div>
-                      }
+                      )}
 
-                        {assignmentType === 'quiz' ? (
-                          <>
-                           <div className="col-12">
-                           <label className="col-form-label mb-2">
-                                Number of Questions for Each Mark
-                              </label>
+                      {assignmentType === 'quiz' ? (
+                        <>
+                          <div className="col-12">
+                            <label className="col-form-label mb-2">
+                              Number of Questions for Each Mark
+                            </label>
                             <div className="row g-4">
                               <div className="col-md-2 col-12">
-
                                 <TextField
                                   label="One Mark"
                                   type="number"
@@ -2353,44 +2380,39 @@ export const CreateAssignments = () => {
                                   fullWidth
                                 />
                               </div>
-
                             </div>
-
                           </div>
-
-
                         </>
                       ) : (
                         <>
-                          {
-                            submittedCount <= 0 && (
-                              <>
-                                <div className="col-lg-4">
-                                  <TextField
-                                    label="No. of questions"
-                                    type="number"
-                                    name="no_questions"
-                                    value={questionKey}
-                                    onChange={(e) =>
-                                      setQuestionKey(e.target.value)
-                                    }
-                                    fullWidth
-                                  />
-                                </div>
-                                <div className="col-lg-4">
-                                  <TextField
-                                    label="Marks per question"
-                                    type="number"
-                                    value={questionValue}
-                                    name="marks_per_questions"
-                                    onChange={(e) =>
-                                      setQuestionValue(e.target.value)
-                                    }
-                                    fullWidth
-                                  />
-                                </div>
-                              </>
-                            )}
+                          {submittedCount <= 0 && (
+                            <>
+                              <div className="col-lg-4">
+                                <TextField
+                                  label="No. of questions"
+                                  type="number"
+                                  name="no_questions"
+                                  value={questionKey}
+                                  onChange={(e) =>
+                                    setQuestionKey(e.target.value)
+                                  }
+                                  fullWidth
+                                />
+                              </div>
+                              <div className="col-lg-4">
+                                <TextField
+                                  label="Marks per question"
+                                  type="number"
+                                  value={questionValue}
+                                  name="marks_per_questions"
+                                  onChange={(e) =>
+                                    setQuestionValue(e.target.value)
+                                  }
+                                  fullWidth
+                                />
+                              </div>
+                            </>
+                          )}
 
                           <div className="col-lg-2">
                             <TextField
@@ -2402,46 +2424,38 @@ export const CreateAssignments = () => {
                               fullWidth
                             />
                           </div>
-                          {
-                            submittedCount <= 0 && (
-                              <div className="col-lg-2">
-                                <button
-                                  className="h-100 btn btn-primary w-100"
-                                  onClick={handleQuestionmap}
-                                >
-                                  Add questions
-                                </button>
-                              </div>
-                            )
-                          }
+                          {submittedCount <= 0 && (
+                            <div className="col-lg-2">
+                              <button
+                                className="h-100 btn btn-primary w-100"
+                                onClick={handleQuestionmap}
+                              >
+                                Add questions
+                              </button>
+                            </div>
+                          )}
                           <div className="col-12">
-                            <List className='py-0'>
+                            <List className="py-0">
                               {questionMap?.map((item, index) => (
                                 <ListItem
                                   key={index}
-                                  className='fileslistitem mb-3'
+                                  className="fileslistitem mb-3"
                                 >
-
                                   <ListItemText>
-                                    {item.key} question(s) of{' '}
-                                    {item.value} mark(s) each
+                                    {item.key} question(s) of {item.value}{' '}
+                                    mark(s) each
                                   </ListItemText>
                                   <IconButton edge="end" aria-label="delete">
                                     <DeleteIcon
                                       onClick={() =>
-                                        handleDelete(
-                                          item.key,
-                                          index,
-                                        )
+                                        handleDelete(item.key, index)
                                       }
                                     />
                                   </IconButton>
-
                                 </ListItem>
                               ))}
                             </List>
                           </div>
-
                         </>
                       )}
                       {questions_error && (
@@ -2452,7 +2466,6 @@ export const CreateAssignments = () => {
                           </small>
                         </p>
                       )}
-
 
                       {editType == '' && (
                         <div className="col-lg-12">
@@ -2471,9 +2484,7 @@ export const CreateAssignments = () => {
                             </p>
                           )}
                         </div>
-                      )
-                      }
-
+                      )}
                     </>
                   ) : null}
 
@@ -2481,7 +2492,7 @@ export const CreateAssignments = () => {
                     <label className="col-form-label">
                       Instructions for students<span>*</span>
                     </label>
-                    <div className='editorheight' >
+                    <div className="editorheight">
                       <ReactQuill
                         id="text"
                         readOnly={isQuizGenerated}
@@ -2499,673 +2510,681 @@ export const CreateAssignments = () => {
                         </p>
                       )}
                     </div>
-                    </div>
-                    {assignmentType == 'ai generated' && editType == '' && (
-                      <div className="col-12">
-                        {/* <label className="col-form-label">
+                  </div>
+                  {assignmentType == 'ai generated' && editType == '' && (
+                    <div className="col-12">
+                      {/* <label className="col-form-label">
                     </div>
                     {assignmentType == 'ai generated' && editType == '' && (
                       <div className="col-12 mt-3 mb-5">
                         {/* <label className="col-form-label">
                         Assignment Configuration Instructions<span>*</span>
                         </label> */}
-                        <TextField
-                          fullWidth
-                          multiline
-                          name="config_instructions"
-                          label="Assignment configuration instructions"
-                          type="text"
-                          value={configInstructions}
-                          onChange={(e) => setConfigInstructions(e.target.value)}
-                          rows={3}
-                        />
-                        {configInstructions_error && (
-                          <p className="error-text" style={{ color: 'red' }}>
-                            <small>Please enter configuration Instructions.</small>
-                          </p>
-                        )}
-                      </div>
-                    )}
+                      <TextField
+                        fullWidth
+                        multiline
+                        name="config_instructions"
+                        label="Assignment configuration instructions"
+                        type="text"
+                        value={configInstructions}
+                        onChange={(e) => setConfigInstructions(e.target.value)}
+                        rows={3}
+                      />
+                      {configInstructions_error && (
+                        <p className="error-text" style={{ color: 'red' }}>
+                          <small>
+                            Please enter configuration Instructions.
+                          </small>
+                        </p>
+                      )}
+                    </div>
+                  )}
 
-                    <div className="col-12">
-                      {selectedEntity.toLowerCase() === 'college' &&
-                        boxes.length > 0 &&
-                        boxes?.map((box, index) => (
-                          <div key={index} className="row g-4">
-                            <div className="col-md-4 col-12">
-                              {/* <label className="col-form-label">
+                  <div className="col-12">
+                    {selectedEntity.toLowerCase() === 'college' &&
+                      boxes.length > 0 &&
+                      boxes?.map((box, index) => (
+                        <div key={index} className="row g-4">
+                          <div className="col-md-4 col-12">
+                            {/* <label className="col-form-label">
                                 Course<span>*</span>
                               </label> */}
-                              <FormControl fullWidth>
-                                <InputLabel id={`course_id_${index}`}>
-                                  Course
-                                </InputLabel>
-                                <Select
-                                  labelId={`course_id_${index}`}
-                                  id={`demo3-multiple-name-${index}`}
-                                  name="course_id"
-                                  label="Course"
-                                  disabled={submittedCount > 0}
-                                  onChange={(event: any) =>
-                                    handelSubjectBoxChange(event, index)
-                                  }
-                                  value={box.course_id || ''}
-                                >
-                                  {filteredcoursesData
-                                    ?.filter((course) =>
-                                      teacherCourse?.includes(String(course.id)),
-                                    )
-                                    ?.map((course) => (
-                                      <MenuItem key={course.id} value={course.id}>
-                                        {course.course_name}
-                                      </MenuItem>
-                                    ))}
-                                </Select>
-                              </FormControl>
-                              {errorForCourse_semester_subject[index]
-                                ?.course_id_error === true && (
-                                  <p
-                                    className="error-text"
-                                    style={{ color: 'red' }}
-                                  >
-                                    <small>Please enter a valid Course.</small>
-                                  </p>
-                                )}
-                            </div>
-
-                            {/* Semester Selection */}
-                            <div className="col-md-4 col-12">
-                              {/* <label className="col-form-label">
-                            {/* Semester Selection */}
-
-                              <FormControl fullWidth>
-                                <InputLabel id={`semester_id_${index}`}>
-                                  Semester
-                                </InputLabel>
-                                <Select
-                                  labelId={`semester_id_${index}`}
-                                  id={`semester_select_${index}`}
-                                  name="semester_number"
-                                  label="Semester"
-                                  disabled={submittedCount > 0}
-                                  onChange={(event: any) =>
-                                    handelSubjectBoxChange(event, index)
-                                  }
-                                  value={box.semester_number || ''}
-                                >
-                                  {box.filteredSemesters
-                                    ?.filter((item) =>
-                                      teacherSemester?.includes(
-                                        String(item.semester_number),
-                                      ),
-                                    )
-                                    ?.map((item) => (
-                                      <MenuItem
-                                        key={item.id}
-                                        value={item.semester_number || ''}
-                                      >
-                                        {item.semester_number}
-                                      </MenuItem>
-                                    ))}
-                                </Select>
-                              </FormControl>
-                              {errorForCourse_semester_subject[index]
-                                ?.semester_number_error && (
-                                  <p
-                                    className="error-text"
-                                    style={{ color: 'red' }}
-                                  >
-                                    <small>Please select a Semester.</small>
-                                  </p>
-                                )}
-                            </div>
-
-                            {/* Subjects Selection */}
-                            <div className="col-md-4 col-12">
-                              {/* <label className="col-form-label">
-                            {/* Subjects Selection */}
-                              <FormControl fullWidth>
-                                <InputLabel id={`subject_label_${index}`}>
-                                  Subject
-                                </InputLabel>
-                                <Select
-                                  labelId={`subject_label_${index}`}
-                                  id={`subject_select_${index}`}
-                                  name="subjects"
-                                  label="subjects"
-                                  disabled={submittedCount > 0}
-                                  value={box.subjects || []}
-                                  onChange={(event: any) =>
-                                    handelSubjectBoxChange(event, index)
-                                  }
-                                >
-                                  {box.filteredSubjects
-                                    ?.filter((subject) =>
-                                      tescherSubjects?.includes(
-                                        subject.subject_name,
-                                      ),
-                                    )
-                                    ?.map((subject: any) => (
-                                      <MenuItem
-                                        key={subject.subject_id}
-                                        value={subject.subject_name}
-                                      >
-                                        {subject.subject_name}
-                                      </MenuItem>
-                                    ))}
-                                </Select>
-                              </FormControl>
-                              {errorForCourse_semester_subject[index]
-                                ?.subjects_error && (
-                                  <p
-                                    className="error-text"
-                                    style={{ color: 'red' }}
-                                  >
-                                    <small>
-                                      Please select at least one subject.
-                                    </small>
-                                  </p>
-                                )}
-                            </div>
+                            <FormControl fullWidth>
+                              <InputLabel id={`course_id_${index}`}>
+                                Course
+                              </InputLabel>
+                              <Select
+                                labelId={`course_id_${index}`}
+                                id={`demo3-multiple-name-${index}`}
+                                name="course_id"
+                                label="Course"
+                                disabled={submittedCount > 0}
+                                onChange={(event: any) =>
+                                  handelSubjectBoxChange(event, index)
+                                }
+                                value={box.course_id || ''}
+                              >
+                                {filteredcoursesData
+                                  ?.filter((course) =>
+                                    teacherCourse?.includes(String(course.id)),
+                                  )
+                                  ?.map((course) => (
+                                    <MenuItem key={course.id} value={course.id}>
+                                      {course.course_name}
+                                    </MenuItem>
+                                  ))}
+                              </Select>
+                            </FormControl>
+                            {errorForCourse_semester_subject[index]
+                              ?.course_id_error === true && (
+                              <p
+                                className="error-text"
+                                style={{ color: 'red' }}
+                              >
+                                <small>Please enter a valid Course.</small>
+                              </p>
+                            )}
                           </div>
-                        ))}
-                      {selectedEntity.toLowerCase() === 'school' &&
-                        boxesForSchool.length > 0 &&
-                        boxesForSchool?.map((box, index) => (
-                          <div key={index} className="row g-4">
-                            {/* Class Selection */}
-                            <div className={box.selected_class_name}>
-                              {/* <label className="col-form-label">
+
+                          {/* Semester Selection */}
+                          <div className="col-md-4 col-12">
+                            {/* <label className="col-form-label">
+                            {/* Semester Selection */}
+
+                            <FormControl fullWidth>
+                              <InputLabel id={`semester_id_${index}`}>
+                                Semester
+                              </InputLabel>
+                              <Select
+                                labelId={`semester_id_${index}`}
+                                id={`semester_select_${index}`}
+                                name="semester_number"
+                                label="Semester"
+                                disabled={submittedCount > 0}
+                                onChange={(event: any) =>
+                                  handelSubjectBoxChange(event, index)
+                                }
+                                value={box.semester_number || ''}
+                              >
+                                {box.filteredSemesters
+                                  ?.filter((item) =>
+                                    teacherSemester?.includes(
+                                      String(item.semester_number),
+                                    ),
+                                  )
+                                  ?.map((item) => (
+                                    <MenuItem
+                                      key={item.id}
+                                      value={item.semester_number || ''}
+                                    >
+                                      {item.semester_number}
+                                    </MenuItem>
+                                  ))}
+                              </Select>
+                            </FormControl>
+                            {errorForCourse_semester_subject[index]
+                              ?.semester_number_error && (
+                              <p
+                                className="error-text"
+                                style={{ color: 'red' }}
+                              >
+                                <small>Please select a Semester.</small>
+                              </p>
+                            )}
+                          </div>
+
+                          {/* Subjects Selection */}
+                          <div className="col-md-4 col-12">
+                            {/* <label className="col-form-label">
+                            {/* Subjects Selection */}
+                            <FormControl fullWidth>
+                              <InputLabel id={`subject_label_${index}`}>
+                                Subject
+                              </InputLabel>
+                              <Select
+                                labelId={`subject_label_${index}`}
+                                id={`subject_select_${index}`}
+                                name="subjects"
+                                label="subjects"
+                                disabled={submittedCount > 0}
+                                value={box.subjects || []}
+                                onChange={(event: any) =>
+                                  handelSubjectBoxChange(event, index)
+                                }
+                              >
+                                {box.filteredSubjects
+                                  ?.filter((subject) =>
+                                    tescherSubjects?.includes(
+                                      subject.subject_name,
+                                    ),
+                                  )
+                                  ?.map((subject: any) => (
+                                    <MenuItem
+                                      key={subject.subject_id}
+                                      value={subject.subject_name}
+                                    >
+                                      {subject.subject_name}
+                                    </MenuItem>
+                                  ))}
+                              </Select>
+                            </FormControl>
+                            {errorForCourse_semester_subject[index]
+                              ?.subjects_error && (
+                              <p
+                                className="error-text"
+                                style={{ color: 'red' }}
+                              >
+                                <small>
+                                  Please select at least one subject.
+                                </small>
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    {selectedEntity.toLowerCase() === 'school' &&
+                      boxesForSchool.length > 0 &&
+                      boxesForSchool?.map((box, index) => (
+                        <div key={index} className="row g-4">
+                          {/* Class Selection */}
+                          <div className={box.selected_class_name}>
+                            {/* <label className="col-form-label">
                                 Class<span>*</span>
                               </label> */}
+                            <FormControl fullWidth>
+                              <InputLabel id={`class_id_${index}`}>
+                                Class
+                              </InputLabel>
+                              <Select
+                                labelId={`class_id_${index}`}
+                                id={`class_select_${index}`}
+                                name="class_id"
+                                disabled={submittedCount > 0}
+                                onChange={(event: any) =>
+                                  handelSchoolBoxChange(event, index)
+                                }
+                                value={box.class_id || ''}
+                                input={<OutlinedInput label="Class" />}
+                              >
+                                {dataClass?.map((item) => (
+                                  <MenuItem key={item.id} value={item.id}>
+                                    {item.class_name}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                            </FormControl>
+                            {errorForClass_stream_subject[index]
+                              ?.class_id_error && (
+                              <p
+                                className="error-text"
+                                style={{ color: 'red' }}
+                              >
+                                <small>Please select a Class.</small>
+                              </p>
+                            )}
+                          </div>
+                          {box.is_Stream && (
+                            <div className="col-md-4 col-12 mb-3">
+                              {/* <label className="col-form-label">
+                                  Stream Name<span>*</span>
+                                </label> */}
                               <FormControl fullWidth>
-                                <InputLabel id={`class_id_${index}`}>
-                                  Class
+                                <InputLabel id={`stream_id_${index}`}>
+                                  Stream Name
                                 </InputLabel>
                                 <Select
-                                  labelId={`class_id_${index}`}
-                                  id={`class_select_${index}`}
-                                  name="class_id"
+                                  labelId={`stream_id_${index}`}
+                                  id={`stream_select_${index}`}
+                                  name="stream"
+                                  label="Stream Name"
                                   disabled={submittedCount > 0}
                                   onChange={(event: any) =>
                                     handelSchoolBoxChange(event, index)
                                   }
-                                  value={box.class_id || ''}
-                                  input={<OutlinedInput label="Class" />}
+                                  value={box.stream || ''}
+                                  sx={{
+                                    backgroundColor: inputfield(namecolor),
+                                    color: inputfieldtext(namecolor),
+                                    '& .MuiSelect-icon': {
+                                      color: fieldIcon(namecolor),
+                                    },
+                                  }}
+                                  MenuProps={{
+                                    PaperProps: {
+                                      style: {
+                                        backgroundColor: inputfield(namecolor),
+                                        color: inputfieldtext(namecolor),
+                                      },
+                                    },
+                                  }}
                                 >
-                                  {dataClass?.map((item) => (
-                                    <MenuItem key={item.id} value={item.id}>
-                                      {item.class_name}
+                                  {teacherStream?.map((item) => (
+                                    <MenuItem
+                                      key={item}
+                                      value={item}
+                                      sx={{
+                                        backgroundColor: inputfield(namecolor),
+                                        color: inputfieldtext(namecolor),
+                                        '&:hover': {
+                                          backgroundColor:
+                                            inputfieldhover(namecolor),
+                                        },
+                                      }}
+                                    >
+                                      {item}
                                     </MenuItem>
                                   ))}
                                 </Select>
                               </FormControl>
                               {errorForClass_stream_subject[index]
-                                ?.class_id_error && (
-                                  <p
-                                    className="error-text"
-                                    style={{ color: 'red' }}
-                                  >
-                                    <small>Please select a Class.</small>
-                                  </p>
-                                )}
-                            </div>
-                            {box.is_Stream && (
-                              <div className="col-md-4 col-12 mb-3">
-                                {/* <label className="col-form-label">
-                                  Stream Name<span>*</span>
-                                </label> */}
-                                <FormControl fullWidth>
-                                  <InputLabel id={`stream_id_${index}`}>
-                                    Stream Name
-                                  </InputLabel>
-                                  <Select
-                                    labelId={`stream_id_${index}`}
-                                    id={`stream_select_${index}`}
-                                    name="stream"
-                                    label="Stream Name"
-                                    disabled={submittedCount > 0}
-                                    onChange={(event: any) =>
-                                      handelSchoolBoxChange(event, index)
-                                    }
-                                    value={box.stream || ''}
-                                    sx={{
-                                      backgroundColor: inputfield(namecolor),
-                                      color: inputfieldtext(namecolor),
-                                      '& .MuiSelect-icon': {
-                                        color: fieldIcon(namecolor),
-                                      },
-                                    }}
-                                    MenuProps={{
-                                      PaperProps: {
-                                        style: {
-                                          backgroundColor: inputfield(namecolor),
-                                          color: inputfieldtext(namecolor),
-                                        },
-                                      },
-                                    }}
-                                  >
-                                    {teacherStream?.map((item) => (
-                                      <MenuItem
-                                        key={item}
-                                        value={item}
-                                        sx={{
-                                          backgroundColor: inputfield(namecolor),
-                                          color: inputfieldtext(namecolor),
-                                          '&:hover': {
-                                            backgroundColor:
-                                              inputfieldhover(namecolor),
-                                          },
-                                        }}
-                                      >
-                                        {item}
-                                      </MenuItem>
-                                    ))}
-                                  </Select>
-                                </FormControl>
-                                {errorForClass_stream_subject[index]
-                                  ?.stream_error && (
-                                    <p
-                                      className="error-text"
-                                      style={{ color: 'red' }}
-                                    >
-                                      <small>Please select a Stream.</small>
-                                    </p>
-                                  )}
-                              </div>
-                            )}
-                            <div className={box.selected_class_name}>
-                              {/* <label className="col-form-label">
-                                Subjects <span>*</span>
-                              </label> */}
-                              <FormControl fullWidth>
-                                <InputLabel id={`subject_label_${index}`}>
-                                  Subject
-                                </InputLabel>
-                                <Select
-                                  labelId={`subject_label_${index}`}
-                                  id={`subject_select_${index}`}
-                                  name="subjects"
-                                  label="subjects"
-                                  disabled={submittedCount > 0}
-                                  value={box.subjects || []}
-                                  onChange={(event: any) =>
-                                    handelSchoolBoxChange(event, index)
-                                  }
-                                >
-                                  {box.filteredSubjects
-                                    ?.filter((subject) =>
-                                      tescherSchoolSubjects?.includes(
-                                        subject.subject_name,
-                                      ),
-                                    )
-                                    ?.map((subject: any) => (
-                                      <MenuItem
-                                        key={subject.subject_id}
-                                        value={subject.subject_name}
-                                      >
-                                        {subject.subject_name}
-                                      </MenuItem>
-                                    ))}
-                                </Select>
-                              </FormControl>
-                              {errorForClass_stream_subject[index]
-                                ?.subjects_error && (
-                                  <p
-                                    className="error-text"
-                                    style={{ color: 'red' }}
-                                  >
-                                    <small>
-                                      Please select at least one subject.
-                                    </small>
-                                  </p>
-                                )}
-                            </div>
-                          </div>
-                        ))}
-                    </div>
-                    <div className="col-12">
-                      <Box>
-                        <FormControlLabel
-                          control={
-                            <Checkbox
-                              checked={selectAll}
-                              onChange={handleChange}
-                            />
-                          }
-                          label="Select All"
-                        />
-                        {'(' + selectedStudents?.length + ')'}
-                        <Autocomplete
-                          disableCloseOnSelect
-                          multiple
-                          options={listOfStudentFiltered || []}
-                          getOptionLabel={(option) => `${option.name}`}
-                          value={selectedStudents}
-                          onChange={(_, newValue) => {
-                            if (submittedCount > 0) {
-                              const removedProtectedStudents = selectedStudentsForUpdate.filter(
-                                (student) => !newValue.some((s) => s.id === student.id)
-                              );
-
-                              if (removedProtectedStudents.length > 0) {
-                                // Block removal of protected students
-                                return;
-                              }
-                            }
-                            setSelectedStudents(newValue);
-                            checkStudent(newValue);
-                            setSelectAll(
-                              newValue.length === listOfStudentFiltered?.length,
-                            );
-                          }}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              label="Select Students"
-                              placeholder="search students"
-                            />
-                          )}
-                          renderOption={(props, option, { selected }) => (
-                            <li {...props} key={option.id || option.first_name}>
-                              <Checkbox checked={selected} />
-                              {option.name}
-                            </li>
-                          )}
-                          renderTags={(value, getTagProps) => (
-                            <Box
-                              sx={{
-                                maxHeight: '75px',
-                                overflowY: 'auto',
-                                display: 'flex',
-                                flexWrap: 'wrap',
-                                gap: '4px',
-                              }}
-                            >
-                              {value?.map((option, index) => {
-                                const tagProps = getTagProps({ index });
-
-                                return (
-                                  <React.Fragment
-                                    key={option.id || `${option.name}-${index}`}
-                                  >
-                                    <Chip
-                                      {...tagProps} // Spread other props WITHOUT key
-                                      label={`${option.name}`}
-                                    />
-                                  </React.Fragment>
-                                );
-                              })}
-                            </Box>
-                          )}
-                          sx={{
-                            '& .MuiAutocomplete-inputRoot': {
-                              flexWrap: 'wrap',
-                            },
-                            '& .MuiAutocomplete-tagList': {
-                              maxHeight: '75px',
-                              overflowY: 'auto',
-                            },
-                          }}
-                        />
-                        {errorselectStudent && (
-                          <p className="error-text" style={{ color: 'red' }}>
-                            <small>Please select at least one student</small>
-                          </p>
-                        )}
-                      </Box>
-                    </div>
-                    <div className="col-lg-12">
-                      <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <div className="row g-4">
-                          <div className="col-lg-4">
-                              <>
-                                <DateTimePicker
-                                  label="Available From"
-                                  value={availableFrom}
-                                  minDateTime={!edit ? dayjs().set('second', 0).set('millisecond', 0).add(1, 'minute') : undefined}
-                                  closeOnSelect={false}
-                                  onChange={handleAvailableFromChange}
-                                  timeSteps={{ minutes: 1 }}
-                                  slotProps={{
-                                    textField: (params) => <TextField {...params} />,
-                                  }}
-                                  ampm
-                                />
-
-                                {availableFrom_error && (
-                                  <p
-                                    className="error-text"
-                                    style={{ color: 'red' }}
-                                  >
-                                    <small>
-                                      Please select today or a future date.
-                                    </small>{' '}
-                                  </p>
-                                )}
-                              </>
-                          </div>
-                          <div className="col-lg-4">
-                            <DesktopDatePicker
-                              className="col-6"
-                              label="Due Date"
-                              value={dueDate}
-                              onChange={handleDueDateChange}
-                              minDate={!edit ? dayjs() : undefined}
-                              slotProps={{
-                                textField: (params) => <TextField {...params} />,
-                              }}
-                            />
-                            {due_date_error && (
-                              <p className="error-text" style={{ color: 'red' }}>
-                                <small>Please select a due date.</small>
-                              </p>
-                            )}
-                          </div>
-                          {error != null && (
-                            <span>
-                              <small
-                                className="error-text"
-                                style={{ color: 'red' }}
-                              >
-                                {error}
-                              </small>
-                            </span>
-                          )}
-
-                          <div className="col-lg-4">
-                            <TimePicker
-                              className="col-6"
-                              label="Due Time"
-                              value={dueTime} // Ensure it's a Dayjs object
-                              onChange={(newValue) => setDueTime(newValue)} // Directly set Dayjs object
-                              closeOnSelect={false}
-                              slotProps={{
-                                textField: (params) => <TextField {...params} />,
-                              }}
-                            />
-                            {dueTime_error && (
-                              <p className="error-text" style={{ color: 'red' }}>
-                                <small>Please select a due time.</small>
-                              </p>
-                            )}
-                          </div>
-                          {type === 'quiz' && (
-                            <div className="col-lg-4">
-                              <TextField
-                                type="number"
-                                label="Quiz Duration (minutes)"
-                                value={quiz_timer}
-                                inputProps={{ min: 0 }}
-                                onChange={(e) => setQuizTimer(e.target.value)}
-                                fullWidth
-                                
-                              />
-                              {quiz_timer_error && (
+                                ?.stream_error && (
                                 <p
                                   className="error-text"
                                   style={{ color: 'red' }}
                                 >
-                                  Please enter quiz timer.
+                                  <small>Please select a Stream.</small>
                                 </p>
                               )}
                             </div>
                           )}
-                        </div>
-                      </LocalizationProvider>
-                    </div>
-                    <div className="col-lg-3">
-                      <div className="d-flex flex-column ">
-                        <FormControlLabel
-                          control={
-                            <Checkbox
-                              checked={allowLateSubmission}
-                              onChange={(e) =>
-                                setAllowLateSubmission(e.target.checked)
-                              }
-                            />
-                          }
-                          label="Allow late submissions"
-                        />
-                        {assignmentType === 'quiz' && (
-                          <FormControlLabel
-                            control={
-                              <Checkbox
-                                checked={allowMultipleAttempt}
-                                onChange={(e) =>
-                                  setAllowMultipleAttempt(e.target.checked)
+                          <div className={box.selected_class_name}>
+                            {/* <label className="col-form-label">
+                                Subjects <span>*</span>
+                              </label> */}
+                            <FormControl fullWidth>
+                              <InputLabel id={`subject_label_${index}`}>
+                                Subject
+                              </InputLabel>
+                              <Select
+                                labelId={`subject_label_${index}`}
+                                id={`subject_select_${index}`}
+                                name="subjects"
+                                label="subjects"
+                                disabled={submittedCount > 0}
+                                value={box.subjects || []}
+                                onChange={(event: any) =>
+                                  handelSchoolBoxChange(event, index)
                                 }
-                              />
+                              >
+                                {box.filteredSubjects
+                                  ?.filter((subject) =>
+                                    tescherSchoolSubjects?.includes(
+                                      subject.subject_name,
+                                    ),
+                                  )
+                                  ?.map((subject: any) => (
+                                    <MenuItem
+                                      key={subject.subject_id}
+                                      value={subject.subject_name}
+                                    >
+                                      {subject.subject_name}
+                                    </MenuItem>
+                                  ))}
+                              </Select>
+                            </FormControl>
+                            {errorForClass_stream_subject[index]
+                              ?.subjects_error && (
+                              <p
+                                className="error-text"
+                                style={{ color: 'red' }}
+                              >
+                                <small>
+                                  Please select at least one subject.
+                                </small>
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                  <div className="col-12">
+                    <Box>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={selectAll}
+                            onChange={handleChange}
+                          />
+                        }
+                        label="Select All"
+                      />
+                      {'(' + selectedStudents?.length + ')'}
+                      <Autocomplete
+                        disableCloseOnSelect
+                        multiple
+                        options={listOfStudentFiltered || []}
+                        getOptionLabel={(option) => `${option.name}`}
+                        value={selectedStudents}
+                        onChange={(_, newValue) => {
+                          if (submittedCount > 0) {
+                            const removedProtectedStudents =
+                              selectedStudentsForUpdate.filter(
+                                (student) =>
+                                  !newValue.some((s) => s.id === student.id),
+                              );
+
+                            if (removedProtectedStudents.length > 0) {
+                              // Block removal of protected students
+                              return;
                             }
-                            label="Allow multiple attempt"
+                          }
+                          setSelectedStudents(newValue);
+                          checkStudent(newValue);
+                          setSelectAll(
+                            newValue.length === listOfStudentFiltered?.length,
+                          );
+                        }}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Select Students"
+                            placeholder="search students"
                           />
                         )}
-                        <FormControlLabel
-                          control={
-                            <Checkbox
-                              checked={sendNotification}
-                              onChange={(e) =>
-                                setSendNotification(e.target.checked)
-                              }
-                            />
-                          }
-                          label="Send notification to students"
-                        />
-                        <FormControlLabel
-                          control={
-                            <Checkbox
-                              checked={addToStudentRepost}
-                              onChange={(e) =>
-                                setAddToStudentRepost(e.target.checked)
-                              }
-                            />
-                          }
-                          label="Add to Student Grade Report"
-                        />
-                      </div>
-                    </div>
-                    <div className="col-lg-12">
-                      {assignmentType == 'written' ||
-                        (assignmentType == 'quiz' && isQuizGenerated) ||
-                        (assignmentType == 'quiz' && edit) ||
-                        (assignmentType == 'ai generated' &&
-                          isAiAssignmentGenerated) ? (
-                        <div className="d-flex align-items-center gap-2 justify-content-end">
-                          {
-                            assignmentType != 'written' && (
-                              <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={() =>
-                                  assignmentType === 'quiz'
-                                    ? setIsModalOpen(true)
-                                    : setAssignmentModalOpen(true)
-                                }
-                                style={{ marginTop: 20 }}
-                              >
-                                Preview
-                              </Button>
-                            )
-                          }
-
-
-                          <Button
-                            variant="outlined"
-                            color={saveAsDrafts ? 'primary' : 'secondary'} // Change color dynamically
-                            style={{
-                              marginTop: 20,
+                        renderOption={(props, option, { selected }) => (
+                          <li {...props} key={option.id || option.first_name}>
+                            <Checkbox checked={selected} />
+                            {option.name}
+                          </li>
+                        )}
+                        renderTags={(value, getTagProps) => (
+                          <Box
+                            sx={{
+                              maxHeight: '75px',
+                              overflowY: 'auto',
+                              display: 'flex',
+                              flexWrap: 'wrap',
+                              gap: '4px',
                             }}
-                            onClick={handleSaveAsDraft}
                           >
-                            Save as Draft
-                          </Button>
+                            {value?.map((option, index) => {
+                              const tagProps = getTagProps({ index });
 
+                              return (
+                                <React.Fragment
+                                  key={option.id || `${option.name}-${index}`}
+                                >
+                                  <Chip
+                                    {...tagProps} // Spread other props WITHOUT key
+                                    label={`${option.name}`}
+                                  />
+                                </React.Fragment>
+                              );
+                            })}
+                          </Box>
+                        )}
+                        sx={{
+                          '& .MuiAutocomplete-inputRoot': {
+                            flexWrap: 'wrap',
+                          },
+                          '& .MuiAutocomplete-tagList': {
+                            maxHeight: '75px',
+                            overflowY: 'auto',
+                          },
+                        }}
+                      />
+                      {errorselectStudent && (
+                        <p className="error-text" style={{ color: 'red' }}>
+                          <small>Please select at least one student</small>
+                        </p>
+                      )}
+                    </Box>
+                  </div>
+                  <div className="col-lg-12">
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <div className="row g-4">
+                        <div className="col-lg-4">
+                          <>
+                            <DateTimePicker
+                              label="Available From"
+                              value={availableFrom}
+                              minDateTime={
+                                !edit
+                                  ? dayjs()
+                                      .set('second', 0)
+                                      .set('millisecond', 0)
+                                      .add(1, 'minute')
+                                  : undefined
+                              }
+                              closeOnSelect={false}
+                              onChange={handleAvailableFromChange}
+                              timeSteps={{ minutes: 1 }}
+                              slotProps={{
+                                textField: (params) => (
+                                  <TextField {...params} />
+                                ),
+                              }}
+                              ampm
+                            />
+
+                            {availableFrom_error && (
+                              <p
+                                className="error-text"
+                                style={{ color: 'red' }}
+                              >
+                                <small>
+                                  Please select today or a future date.
+                                </small>{' '}
+                              </p>
+                            )}
+                          </>
+                        </div>
+                        <div className="col-lg-4">
+                          <DesktopDatePicker
+                            className="col-6"
+                            label="Due Date"
+                            value={dueDate}
+                            onChange={handleDueDateChange}
+                            minDate={!edit ? dayjs() : undefined}
+                            slotProps={{
+                              textField: (params) => <TextField {...params} />,
+                            }}
+                          />
+                          {due_date_error && (
+                            <p className="error-text" style={{ color: 'red' }}>
+                              <small>Please select a valid due date.</small>
+                            </p>
+                          )}
+                        </div>
+                        {error != null && (
+                          <span>
+                            <small
+                              className="error-text"
+                              style={{ color: 'red' }}
+                            >
+                              {error}
+                            </small>
+                          </span>
+                        )}
+
+                        <div className="col-lg-4">
+                          <TimePicker
+                            className="col-6"
+                            label="Due Time"
+                            value={dueTime} // Ensure it's a Dayjs object
+                            onChange={(newValue) => setDueTime(newValue)} // Directly set Dayjs object
+                            closeOnSelect={false}
+                            slotProps={{
+                              textField: (params) => <TextField {...params} />,
+                            }}
+                          />
+                          {dueTime_error && (
+                            <p className="error-text" style={{ color: 'red' }}>
+                              <small>Please select a due time.</small>
+                            </p>
+                          )}
+                        </div>
+                        {type === 'quiz' && (
+                          <div className="col-lg-4">
+                            <TextField
+                              type="number"
+                              label="Quiz Duration (minutes)"
+                              value={quiz_timer}
+                              inputProps={{ min: 0 }}
+                              onChange={(e) => setQuizTimer(e.target.value)}
+                              fullWidth
+                            />
+                            {quiz_timer_error && (
+                              <p
+                                className="error-text"
+                                style={{ color: 'red' }}
+                              >
+                                Please enter quiz timer.
+                              </p>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </LocalizationProvider>
+                  </div>
+                  <div className="col-lg-3">
+                    <div className="d-flex flex-column ">
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={allowLateSubmission}
+                            onChange={(e) =>
+                              setAllowLateSubmission(e.target.checked)
+                            }
+                          />
+                        }
+                        label="Allow late submissions"
+                      />
+                      {assignmentType === 'quiz' && (
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={allowMultipleAttempt}
+                              onChange={(e) =>
+                                setAllowMultipleAttempt(e.target.checked)
+                              }
+                            />
+                          }
+                          label="Allow multiple attempt"
+                        />
+                      )}
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={sendNotification}
+                            onChange={(e) =>
+                              setSendNotification(e.target.checked)
+                            }
+                          />
+                        }
+                        label="Send notification to students"
+                      />
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={addToStudentRepost}
+                            onChange={(e) =>
+                              setAddToStudentRepost(e.target.checked)
+                            }
+                          />
+                        }
+                        label="Add to Student Grade Report"
+                      />
+                    </div>
+                  </div>
+                  <div className="col-lg-12">
+                    {assignmentType == 'written' ||
+                    (assignmentType == 'quiz' && isQuizGenerated) ||
+                    (assignmentType == 'quiz' && edit) ||
+                    (assignmentType == 'ai generated' &&
+                      isAiAssignmentGenerated) ? (
+                      <div className="d-flex align-items-center gap-2 justify-content-end">
+                        {assignmentType != 'written' && (
                           <Button
                             variant="contained"
-                            color="success"
+                            color="primary"
+                            onClick={() =>
+                              assignmentType === 'quiz'
+                                ? setIsModalOpen(true)
+                                : setAssignmentModalOpen(true)
+                            }
                             style={{ marginTop: 20 }}
-                            onClick={
-                              assignmentType !== 'quiz'
-                                ? assignmentType == 'ai generated'
-                                  ? () =>
+                          >
+                            Preview
+                          </Button>
+                        )}
+
+                        <Button
+                          variant="outlined"
+                          color={saveAsDrafts ? 'primary' : 'secondary'} // Change color dynamically
+                          style={{
+                            marginTop: 20,
+                          }}
+                          onClick={handleSaveAsDraft}
+                        >
+                          Save as Draft
+                        </Button>
+
+                        <Button
+                          variant="contained"
+                          color="success"
+                          style={{ marginTop: 20 }}
+                          onClick={
+                            assignmentType !== 'quiz'
+                              ? assignmentType == 'ai generated'
+                                ? () =>
                                     submitAssignment(
                                       false,
                                       'json',
                                       assignmentJsonQuestions,
                                     )
-                                  : () => submitAssignment(false)
-                                : () => handleSubmitQuiz(false)
-                            }
-                          >
-                            Publish
-                          </Button>
-                        </div>
-                      ) : (
-                        <div className="d-flex align-items-center gap-2 justify-content-end">
-                          <Button
-                            variant="contained"
-                            color="success"
-                            style={{ marginTop: 20 }}
-                            onClick={
-                              assignmentType == 'ai generated'
-                                ? () => generateQuiz('assignment')
-                                : generateQuiz
-                            }
-                          >
-                            {assignmentType == 'ai generated'
-                              ? 'Generate Assignment'
-                              : 'Generate Quiz'}
-                          </Button>
-                        </div>
-                      )}
-                    </div>
+                                : () => submitAssignment(false)
+                              : () => handleSubmitQuiz(false)
+                          }
+                        >
+                          Publish
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="d-flex align-items-center gap-2 justify-content-end">
+                        <Button
+                          variant="contained"
+                          color="success"
+                          style={{ marginTop: 20 }}
+                          onClick={
+                            assignmentType == 'ai generated'
+                              ? () => generateQuiz('assignment')
+                              : generateQuiz
+                          }
+                        >
+                          {assignmentType == 'ai generated'
+                            ? 'Generate Assignment'
+                            : 'Generate Quiz'}
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
             </div>
-
-            <AssignmentModal
-              open={isAssignmentModalOpen}
-              onClose={() => setAssignmentModalOpen(false)}
-              assignments={assignmentGenrData}
-              onProceed={(assignmentData: GenAssignment) => {
-                setAssignmentJsonQuestions(assignmentData);
-                setAssignmentModalOpen(false);
-              }}
-              title={assignmentData?.title}
-              totalQuestions={totalQuestions}
-              totalMarks={totalMarks}
-            />
-            <QuizModal
-              isEdit={isedit}
-              open={isModalOpen}
-              onClose={() => setIsModalOpen(false)}
-              quizData={quizData}
-              onSave={handleSaveQuiz}
-            />
           </div>
+
+          <AssignmentModal
+            open={isAssignmentModalOpen}
+            onClose={() => setAssignmentModalOpen(false)}
+            assignments={assignmentGenrData}
+            onProceed={(assignmentData: GenAssignment) => {
+              setAssignmentJsonQuestions(assignmentData);
+              setAssignmentModalOpen(false);
+            }}
+            title={assignmentData?.title}
+            totalQuestions={totalQuestions}
+            totalMarks={totalMarks}
+          />
+          <QuizModal
+            isEdit={isedit}
+            open={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            quizData={quizData}
+            onSave={handleSaveQuiz}
+          />
         </div>
       </div>
-   
+    </div>
   );
 };
