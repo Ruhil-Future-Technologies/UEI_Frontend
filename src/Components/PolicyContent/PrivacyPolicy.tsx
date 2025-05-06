@@ -166,13 +166,16 @@ const PrivacyPolicy = () => {
                   <p>We may use your information to:</p>
                   <ul style={{ listStyleType: 'disc', paddingLeft: '1.5rem' }}>
                     <li>
+                      <b>Educational Updates: </b>
                     Send educational updates, progress reports, or support messages to user
                     </li>
                     <li>
+                      <b>Service Announcements: </b>
                       Provide important service announcements and security
                       alerts.
                     </li>
                     <li>
+                      <b>Marketing Communications: </b>
                       Offer marketing communications (only with user consent).
                     </li>
                   </ul>
