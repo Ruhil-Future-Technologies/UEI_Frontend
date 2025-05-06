@@ -1204,7 +1204,7 @@ export const CreateAssignments = () => {
       } else {
         setAvailableFrom_error(false);
       }
-    } else {
+    }else{
       if (availableFrom == null || availableFrom.isBefore(dayjs())) {
         setAvailableFrom_error(true);
         valid1 = true;

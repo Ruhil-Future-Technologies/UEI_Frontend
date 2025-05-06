@@ -24,14 +24,14 @@ import dayjs, { Dayjs } from 'dayjs';
 import StudentProfile from '../../assets/img/avatar3.jpg';
 import {
   Assignment,
-  QuestionMark,
+  //QuestionMark,
   Quiz,
-  RemoveRedEyeOutlined,
-  VisibilitySharp,
+  //VisibilitySharp
 } from '@mui/icons-material';
-import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
+// import IconButton from '@mui/material/IconButton';
+// import Tooltip from '@mui/material/Tooltip';
 import Chart from 'react-apexcharts';
+import { Link } from 'react-router-dom';
 
 const ParentDashboard = () => {
   const [open, setOpen] = useState(false);
@@ -343,21 +343,7 @@ const ParentDashboard = () => {
                         </div>
                       </div>
                       <div className="card-body position-relative">
-                        <div className="d-flex align-items-center justify-content-between gap-2 mb-3">
-                          <div>
-                            <h6 className="mb-0 fw-normal fs-14">Status</h6>
-                          </div>
-
-                          <div className="form-check form-switch mb-0 ">
-                            <input
-                              className="form-check-input fs-5 m-0"
-                              type="checkbox"
-                              id="status"
-                              checked={true}
-                              readOnly
-                            />
-                          </div>
-                        </div>
+                        
 
                         <div className="d-flex align-items-center gap-3 mb-3">
                           <div className="flex-grow-1">
@@ -370,7 +356,7 @@ const ParentDashboard = () => {
 
                         <div className="d-flex align-items-center gap-3">
                           <div className="flex-grow-1">
-                            <h6 className="mb-0 fw-normal fs-14">Saved Chat</h6>
+                            <h6 className="mb-0 fw-normal fs-14">Chat Count</h6>
                           </div>
                           <div>8</div>
                         </div>
@@ -380,7 +366,7 @@ const ParentDashboard = () => {
                   <div className="col-lg-3">
                     <div className="row g-4">
                       <div className="col-12">
-                        <div className="card cardwithshadow">
+                        <Link to={"/parent-dashboard/assignments"} className="card cardwithshadow withlink">
                           <div className="card-body">
                             <div className="card-content">
                               <span className="with-circle blue-circle">
@@ -390,22 +376,22 @@ const ParentDashboard = () => {
                                 <h1>85 %</h1>
                                 <p>Assignments Completed</p>
                               </div>
-                              <div className="fixed-icon">
+                              {/* <div className="fixed-icon">
                                 <Tooltip title="View All">
                                   <IconButton size="small">
                                     <QuestionMark fontSize="small" />
                                   </IconButton>
                                 </Tooltip>
-                              </div>
+                              </div> */}
                             </div>
                           </div>
-                        </div>
+                        </Link>
                       </div>
 
                       <div className="col-12">
-                        <div className="card cardwithshadow">
+                        <Link to={"/parent-dashboard/quiz"} className="card cardwithshadow withlink">
                           <div className="card-body">
-                            <div className="card-content">
+                            <div className="card-content ">
                               <span className="with-circle orange-circle">
                                 <Quiz />
                               </span>
@@ -413,16 +399,16 @@ const ParentDashboard = () => {
                                 <h1>85 %</h1>
                                 <p>Quizess Completed</p>
                               </div>
-                              <div className="fixed-icon">
+                              {/* <div className="fixed-icon">
                                 <Tooltip title="View All">
                                   <IconButton size="small">
                                     <VisibilitySharp fontSize="small" />
                                   </IconButton>
                                 </Tooltip>
-                              </div>
+                              </div> */}
                             </div>
                           </div>
-                        </div>
+                        </Link>
                       </div>
                     </div>
                   </div>
@@ -430,7 +416,17 @@ const ParentDashboard = () => {
                   <div className="col-lg-3">
                     <div className="card cardwithshadow">
                       <div className="card-body">
-                        <h6 className="fw-bold">Reports</h6>
+                        <h6 className="fw-bold">Subject Teachers</h6>
+
+                        <ul className='list-style-2'>
+                          <li className='text-primary'><strong>Subject</strong> <strong>Teacher Name</strong></li>
+                          <li><span>Math</span> <span>Ak Mehra</span> </li>
+                          <li><span>English</span> <span>Ak Mehra</span> </li>
+                          <li><span>Hindi</span> <span>Ak Mehra</span> </li>
+                          <li><span>General Knowledge</span> <span>Ak Mehra</span> </li>                      
+                         
+                         
+                        </ul>
                       </div>
                     </div>
                   </div>
@@ -467,97 +463,7 @@ const ParentDashboard = () => {
                     </div>
                   </div>
 
-                  <div className="col-lg-6">
-                    <div className="card cardwithshadow">
-                      <div className="card-body">
-                        <h6 className='mb-4'>Subject Teachers</h6>
-                        <div className="table-resposnive">
-                        <table className="table table-borderless">
-                          <thead>
-                            <tr>
-                              <th>Subject</th>
-                              <th>Teacher Name</th>
-                              <th>Action</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr>
-                              <td>Math</td>
-                              <td>Surendar Sharma</td>
-                              <td>
-                                <Button
-                                  size="small"
-                                  variant="outlined"
-                                  startIcon={<RemoveRedEyeOutlined />}
-                                >
-                                  View Details
-                                </Button>
-                              </td>
-                            </tr>
-
-                            <tr>
-                              <td>Math</td>
-                              <td>Surendar Sharma</td>
-                              <td>
-                                <Button
-                                  size="small"
-                                  variant="outlined"
-                                  startIcon={<RemoveRedEyeOutlined />}
-                                >
-                                  View Details
-                                </Button>
-                              </td>
-                            </tr>
-
-                            <tr>
-                              <td>Math</td>
-                              <td>Surendar Sharma</td>
-                              <td>
-                                <Button
-                                  size="small"
-                                  variant="outlined"
-                                  startIcon={<RemoveRedEyeOutlined />}
-                                >
-                                  View Details
-                                </Button>
-                              </td>
-                            </tr>
-
-                            <tr>
-                              <td>Math</td>
-                              <td>Surendar Sharma</td>
-                              <td>
-                                <Button
-                                  size="small"
-                                  variant="outlined"
-                                  startIcon={<RemoveRedEyeOutlined />}
-                                >
-                                  View Details
-                                </Button>
-                              </td>
-                            </tr>
-
-                            <tr>
-                              <td>Math</td>
-                              <td>Surendar Sharma</td>
-                              <td>
-                                <Button
-                                  size="small"
-                                  variant="outlined"
-                                  startIcon={<RemoveRedEyeOutlined />}
-                                >
-                                  View Details
-                                </Button>
-                              </td>
-                            </tr>
-
-                          </tbody>
-                        </table>
-                        </div>
-                        
-                      </div>
-                    </div>
-                  </div>
+                  
                 </div>
               </div>
               <div className="tab-pane fade" id="pills-shruti" role="tabpanel">
