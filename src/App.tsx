@@ -426,6 +426,18 @@ function App() {
             path="/parent-dashboard/feedback"
             element={<Protected Component={ParentFeedback} />}
           />
+          <Route
+            path="/parent-dashboard/assignments"
+            element={
+              <Protected Component={StudentAssignments} menuName="content" />
+            }
+          />
+          <Route
+            path="/parent-dashboard/quiz"
+            element={
+              <Protected Component={StudentQuiz} menuName="content" />
+            }
+          />
         </Route>
 
         {/* <Route path="/admin-feedback-chat" element={<AdminFeedback />} /> */}

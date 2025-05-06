@@ -24,13 +24,14 @@ import dayjs, { Dayjs } from 'dayjs';
 import StudentProfile from '../../assets/img/avatar3.jpg';
 import {
   Assignment,
-  QuestionMark,
+  //QuestionMark,
   Quiz,
-  VisibilitySharp
+  //VisibilitySharp
 } from '@mui/icons-material';
-import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
+// import IconButton from '@mui/material/IconButton';
+// import Tooltip from '@mui/material/Tooltip';
 import Chart from 'react-apexcharts';
+import { Link } from 'react-router-dom';
 
 const ParentDashboard = () => {
   const [open, setOpen] = useState(false);
@@ -379,7 +380,7 @@ const ParentDashboard = () => {
                   <div className="col-lg-3">
                     <div className="row g-4">
                       <div className="col-12">
-                        <div className="card cardwithshadow">
+                        <Link to={"/parent-dashboard/assignments"} className="card cardwithshadow">
                           <div className="card-body">
                             <div className="card-content">
                               <span className="with-circle blue-circle">
@@ -389,20 +390,20 @@ const ParentDashboard = () => {
                                 <h1>85 %</h1>
                                 <p>Assignments Completed</p>
                               </div>
-                              <div className="fixed-icon">
+                              {/* <div className="fixed-icon">
                                 <Tooltip title="View All">
                                   <IconButton size="small">
                                     <QuestionMark fontSize="small" />
                                   </IconButton>
                                 </Tooltip>
-                              </div>
+                              </div> */}
                             </div>
                           </div>
-                        </div>
+                        </Link>
                       </div>
 
                       <div className="col-12">
-                        <div className="card cardwithshadow">
+                        <Link to={"/parent-dashboard/quiz"} className="card cardwithshadow">
                           <div className="card-body">
                             <div className="card-content">
                               <span className="with-circle orange-circle">
@@ -412,16 +413,16 @@ const ParentDashboard = () => {
                                 <h1>85 %</h1>
                                 <p>Quizess Completed</p>
                               </div>
-                              <div className="fixed-icon">
+                              {/* <div className="fixed-icon">
                                 <Tooltip title="View All">
                                   <IconButton size="small">
                                     <VisibilitySharp fontSize="small" />
                                   </IconButton>
                                 </Tooltip>
-                              </div>
+                              </div> */}
                             </div>
                           </div>
-                        </div>
+                        </Link>
                       </div>
                     </div>
                   </div>
