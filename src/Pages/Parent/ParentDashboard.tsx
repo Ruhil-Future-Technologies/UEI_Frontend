@@ -26,8 +26,7 @@ import {
   Assignment,
   QuestionMark,
   Quiz,
-  RemoveRedEyeOutlined,
-  VisibilitySharp,
+  VisibilitySharp
 } from '@mui/icons-material';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
@@ -430,7 +429,18 @@ const ParentDashboard = () => {
                   <div className="col-lg-3">
                     <div className="card cardwithshadow">
                       <div className="card-body">
-                        <h6 className="fw-bold">Reports</h6>
+                        <h6 className="fw-bold">Subject Teachers</h6>
+
+                        <ul className='list-style-2'>
+                          <li><strong className='fs-14'>Subject</strong> <strong className='fs-14'>Teacher Name</strong></li>
+                          <li><span>Math</span> <span>Ak Mehra</span> </li>
+                          <li><span>English</span> <span>Ak Mehra</span> </li>
+                          <li><span>Hindi</span> <span>Ak Mehra</span> </li>
+                          <li><span>General Knowledge</span> <span>Ak Mehra</span> </li>
+                          <li><span>Science</span> <span>Ak Mehra</span> </li>
+                         
+                         
+                        </ul>
                       </div>
                     </div>
                   </div>
@@ -467,97 +477,7 @@ const ParentDashboard = () => {
                     </div>
                   </div>
 
-                  <div className="col-lg-6">
-                    <div className="card cardwithshadow">
-                      <div className="card-body">
-                        <h6 className='mb-4'>Subject Teachers</h6>
-                        <div className="table-resposnive">
-                        <table className="table table-borderless">
-                          <thead>
-                            <tr>
-                              <th>Subject</th>
-                              <th>Teacher Name</th>
-                              <th>Action</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr>
-                              <td>Math</td>
-                              <td>Surendar Sharma</td>
-                              <td>
-                                <Button
-                                  size="small"
-                                  variant="outlined"
-                                  startIcon={<RemoveRedEyeOutlined />}
-                                >
-                                  View Details
-                                </Button>
-                              </td>
-                            </tr>
-
-                            <tr>
-                              <td>Math</td>
-                              <td>Surendar Sharma</td>
-                              <td>
-                                <Button
-                                  size="small"
-                                  variant="outlined"
-                                  startIcon={<RemoveRedEyeOutlined />}
-                                >
-                                  View Details
-                                </Button>
-                              </td>
-                            </tr>
-
-                            <tr>
-                              <td>Math</td>
-                              <td>Surendar Sharma</td>
-                              <td>
-                                <Button
-                                  size="small"
-                                  variant="outlined"
-                                  startIcon={<RemoveRedEyeOutlined />}
-                                >
-                                  View Details
-                                </Button>
-                              </td>
-                            </tr>
-
-                            <tr>
-                              <td>Math</td>
-                              <td>Surendar Sharma</td>
-                              <td>
-                                <Button
-                                  size="small"
-                                  variant="outlined"
-                                  startIcon={<RemoveRedEyeOutlined />}
-                                >
-                                  View Details
-                                </Button>
-                              </td>
-                            </tr>
-
-                            <tr>
-                              <td>Math</td>
-                              <td>Surendar Sharma</td>
-                              <td>
-                                <Button
-                                  size="small"
-                                  variant="outlined"
-                                  startIcon={<RemoveRedEyeOutlined />}
-                                >
-                                  View Details
-                                </Button>
-                              </td>
-                            </tr>
-
-                          </tbody>
-                        </table>
-                        </div>
-                        
-                      </div>
-                    </div>
-                  </div>
+                  
                 </div>
               </div>
               <div className="tab-pane fade" id="pills-shruti" role="tabpanel">
