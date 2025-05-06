@@ -93,7 +93,7 @@ const TeacherQuizPage = () => {
             const dueDate = new Date(quiz.due_date_time);
 
             if (dueDate < current_time) {
-              quiz.status = 'past';
+              quiz.status = 'closed';
             }
 
             if (quiz.course_semester_subjects) {
@@ -149,9 +149,17 @@ const TeacherQuizPage = () => {
     fetchQuizData();
   }, [dataClasses, dataCourses]);
 
-  const subjects = [
-    ...new Set(quizData.map((quiz) => quiz.class_stream_subjects)),
-  ];
+  // const subjects = [
+  //   ...new Set(
+  //     quizData.flatMap((quiz) =>
+  //       quiz.class_stream_subjects.flatMap((entry: any) =>
+  //         Object.values(entry).flatMap((streams: any) =>
+  //           Object.values(streams).flat(),
+  //         ),
+  //       ),
+  //     ),
+  //   ),
+  // ];
 
   const formatDate = (dateString: string) => {
     if (!dateString) return '';
@@ -175,12 +183,12 @@ const TeacherQuizPage = () => {
 
     let matchesStatus = true;
     if (statusFilter !== 'all') {
-      if (statusFilter === 'past') {
-        matchesStatus = quiz.status === 'past';
+      if (statusFilter === 'closed') {
+        matchesStatus = quiz.status === 'closed';
       } else if (statusFilter === 'draft') {
         matchesStatus = quiz.save_draft === true;
       } else if (statusFilter === 'active') {
-        matchesStatus = !quiz.save_draft && quiz.status !== 'past';
+        matchesStatus = !quiz.save_draft && quiz.status !== 'closed';
       }
     }
 
@@ -207,7 +215,7 @@ const TeacherQuizPage = () => {
     const now = new Date();
 
     if (due_date_time <= now) {
-      toast.error('You cannot Edit Past Quiz', {
+      toast.error('You cannot Edit Closed Quiz', {
         hideProgressBar: true,
         theme: 'colored',
       });
@@ -219,7 +227,7 @@ const TeacherQuizPage = () => {
       });
       return;
     } else {
-      navigate(`/teacher-dashboard/edit-assignment/${id}`, {
+      navigate(`/teacher-dashboard/edit-quiz/${id}`, {
         state: { type: 'quiz', edit: true },
       });
     }
@@ -247,9 +255,9 @@ const TeacherQuizPage = () => {
   };
 
   return (
-    <div className="main-wrapper">
+    <div className="main-wrapper pb-5 pb-lg-4">
       <div className="main-content">
-        <div className="page-breadcrumb d-none d-sm-flex align-items-center ">
+        <div className="page-breadcrumb d-flex align-items-center ">
           <div className="breadcrumb-title pe-3">
             <Link to={'/main/dashboard'} className="text-dark">
               Dashboard
@@ -266,8 +274,8 @@ const TeacherQuizPage = () => {
           </div>
         </div>
 
-        <div className="row gy-4 mt-4">
-          <div className="col-lg-3">
+        <div className="row gy-4 mt-1">
+          <div className="col-md-6 col-lg-3">
             <div className="card rounded-4 w-100 mb-0">
               <div className="card-body">
                 <div className="d-flex align-items-center justify-content-between mb-3">
@@ -288,7 +296,7 @@ const TeacherQuizPage = () => {
               </div>
             </div>
           </div>
-          <div className="col-lg-3">
+          <div className="col-md-6 col-lg-3">
             <div className="card rounded-4 w-100 mb-0">
               <div className="card-body">
                 <div className="d-flex align-items-center justify-content-between mb-3">
@@ -317,7 +325,7 @@ const TeacherQuizPage = () => {
             <div className="d-flex align-items-center justify-content-between">
               <h4 className="mb-0 fw-bold">Quiz List</h4>
               <Link
-                to="/teacher-dashboard/create-assignment"
+                to="/teacher-dashboard/create-quiz"
                 state={{ type: 'quiz' }}
                 className="btn btn-primary"
               >
@@ -349,11 +357,11 @@ const TeacherQuizPage = () => {
                     onChange={(e) => setSubjectFilter(e.target.value)}
                   >
                     <MenuItem value="all">All Subjects</MenuItem>
-                    {subjects.map((subject, index) => (
+                    {/* {subjects.map((subject, index) => (
                       <MenuItem key={index} value={subject}>
                         {subject}
-                      </MenuItem>
-                    ))}
+                      </MenuItem> */}
+                    {/* ))} */}
                   </TextField>
                 </div>
                 <div className="col-md-3">
@@ -373,7 +381,7 @@ const TeacherQuizPage = () => {
                     <MenuItem value="all">All Status</MenuItem>
                     <MenuItem value="active">Active</MenuItem>
                     <MenuItem value="draft">Draft</MenuItem>
-                    <MenuItem value="past">Past</MenuItem>
+                    <MenuItem value="closed">Closed</MenuItem>
                   </TextField>
                 </div>
               </div>
@@ -388,8 +396,8 @@ const TeacherQuizPage = () => {
                 <div className="row g-3">
                   {filteredQuizzes.length > 0 ? (
                     filteredQuizzes.map((quiz, index) => (
-                      <div className="col-md-4" key={index}>
-                        <div className="card mb-0">
+                      <div className="col-md-6 col-lg-3 col-xl-4" key={index}>
+                        <div className="card mb-0 h-100">
                           <div className="card-body">
                             <Box
                               display="flex"
@@ -401,14 +409,14 @@ const TeacherQuizPage = () => {
                               </Typography>
                               <Chip
                                 label={
-                                  quiz.status === 'past'
-                                    ? 'Past'
+                                  quiz.status === 'closed'
+                                    ? 'Closed'
                                     : quiz.save_draft
                                       ? 'Draft'
                                       : 'Active'
                                 }
                                 color={
-                                  quiz.status === 'past'
+                                  quiz.status === 'closed'
                                     ? 'error'
                                     : quiz.save_draft
                                       ? 'warning'

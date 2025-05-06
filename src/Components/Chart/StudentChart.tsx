@@ -98,7 +98,7 @@ const StudentDashboardCharts = () => {
   useEffect(() => {
     const months = getMonths();
     if (months.length > 0 && activeMonth === getCurrentMonth()) {
-      setActiveMonth(months[0]);
+      setActiveMonth(months[months.length - 1]);
     }
   }, [studentData]);
 
@@ -255,26 +255,41 @@ const StudentDashboardCharts = () => {
               const prepareTimeData = () => {
                 const monthData: any = study_data[activeMonth];
 
-                if (monthData.length < 0) return;
+                if (!monthData || monthData.length < 0) return;
                 const weeks = Object.keys(monthData).filter((key) =>
                   key.startsWith('week'),
                 );
 
                 if (activeTab === 'daily') {
                   const date = new Date();
+                  const currentMonth = date.getMonth();
+                  const currentYear = date.getFullYear();
+
+                  const activeMonthDate = new Date(activeMonth);
+                  const isCurrentMonth =
+                    activeMonthDate.getMonth() === currentMonth &&
+                    activeMonthDate.getFullYear() === currentYear;
+
                   const days = Array.from({ length: 31 }, (_, i) => `${i + 1}`);
 
                   const weeklyData = weeks.flatMap(
                     (week) => monthData[week]?.days || [],
                   );
 
-                  const limitedDays = days?.slice(0, weeklyData.length);
+                  let limitedDays;
+                  if (isCurrentMonth) {
+                    limitedDays = days.slice(0, date.getDate());
+                  } else {
+                    limitedDays = days.slice(0, weeklyData.length);
+                  }
 
                   const dailyHours = limitedDays.map(
                     (_, index) => weeklyData[index] || 0,
                   );
 
-                  const dailyData = dailyHours?.slice(1, date.getDate() + 1);
+                  const dailyData = isCurrentMonth
+                    ? dailyHours
+                    : dailyHours.slice(0, 31);
 
                   return {
                     labels: days,
@@ -503,14 +518,14 @@ const StudentDashboardCharts = () => {
                   const weeklyLabels = weeks.map((week) =>
                     week.replace('week', 'Week '),
                   );
-                  const maxStreaks = weeks.map(
-                    (week) => monthData[week]?.max_streak || 0,
+                  const maxStreaks = weeks.map((week) =>
+                    Math.min(monthData[week]?.max_streak || 0, 7),
                   );
-                  const activeDays = weeks.map(
-                    (week) => monthData[week]?.total_days_active || 0,
+                  const activeDays = weeks.map((week) =>
+                    Math.min(monthData[week]?.total_days_active || 0, 7),
                   );
-                  const engagement = weeks.map(
-                    (week) => (monthData[week]?.engagement || 0) * 20,
+                  const engagement = weeks.map((week) =>
+                    Math.min((monthData[week]?.engagement || 0) * 20, 100),
                   );
 
                   return {
@@ -520,40 +535,59 @@ const StudentDashboardCharts = () => {
                     engagement,
                   };
                 } else if (activeTab === 'monthly') {
-                  if (!study_data?.usage) return;
-                  const months = Object.keys(study_data?.usage).map((month) =>
+                  if (!study_data) return {};
+
+                  const months = Object.keys(study_data).map((month) =>
                     month.replace('month', 'Month '),
                   );
 
-                  const maxStreaks = Object.values(study_data?.usage).map(
-                    (month: any) =>
-                      Math.max(
-                        ...Object.values(month)
-                          .filter((week: any) => week.max_streak)
-                          .map((week: any) => week.max_streak),
-                      ),
+                  const maxStreaks = Object.values(study_data).map(
+                    (month: any) => {
+                      const weekValues = Object.values(month)
+                        .filter(
+                          (week: any) => week && week.max_streak !== undefined,
+                        )
+                        .map((week: any) => week.max_streak);
+
+                      return weekValues.length > 0
+                        ? Math.min(Math.max(...weekValues), 30)
+                        : 0;
+                    },
                   );
 
-                  const activeDays = Object.values(study_data?.usage).map(
-                    (month: any) =>
-                      Object.values(month)
-                        .filter((week: any) => week.total_days_active)
+                  const activeDays = Object.values(study_data).map(
+                    (month: any) => {
+                      const totalActive = Object.values(month)
+                        .filter(
+                          (week: any) =>
+                            week && week.total_days_active !== undefined,
+                        )
                         .reduce(
                           (sum: number, week: any) =>
                             sum + week.total_days_active,
                           0,
-                        ),
+                        );
+
+                      return Math.min(totalActive, 30);
+                    },
                   );
 
                   const engagement = Object.values(study_data).map(
-                    (month: any) =>
-                      Object.values(month)
-                        .filter((week: any) => week.engagement)
-                        .reduce(
-                          (sum: number, week: any, _, arr) =>
-                            sum + week.engagement / arr.length,
+                    (month: any) => {
+                      const engagementWeeks = Object.values(month).filter(
+                        (week: any) => week && week.engagement !== undefined,
+                      );
+
+                      if (engagementWeeks.length === 0) return 0;
+
+                      const avgEngagement =
+                        engagementWeeks.reduce(
+                          (sum: number, week: any) => sum + week.engagement,
                           0,
-                        ) * 20,
+                        ) / engagementWeeks.length;
+
+                      return Math.min(avgEngagement * 20, 100);
+                    },
                   );
 
                   return {
@@ -563,8 +597,9 @@ const StudentDashboardCharts = () => {
                     engagement,
                   };
                 }
-              };
 
+                return {};
+              };
               const streaksData = prepareStreaksData();
 
               setStudyStreaksData({

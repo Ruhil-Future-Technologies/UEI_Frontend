@@ -69,26 +69,32 @@ const PrivacyPolicy = () => {
                   </p>
                   <ul style={{ listStyleType: 'disc', paddingLeft: '1.5rem' }}>
                     <li>
+                      <b>Registration: </b>
                       When you register on the Gyansetu Platform (website,
                       mobile app, or integrated services).
                     </li>
                     <li>
+                      <b>Platform Engagement: </b>
                       When you engage with platform features, such as
                       syllabus-aligned learning, performance tracking, or
                       interactive content.
                     </li>
                     <li>
+                      <b>Support Requests: </b>
                       When you contact us via email, phone, or online support.
                     </li>
                     <li>
+                      <b>Surveys and Feedback: </b>
                       When you participate in surveys, feedback sessions, or
                       training workshops.
                     </li>
                     <li>
+                      <b>Student Information: </b>
                       When schools, parents, or teachers provide necessary
                       student details to customize educational services.
                     </li>
                     <li>
+                      <b>Third-Party Integrations: </b>
                       Through third-party integrations, such as Google Analytics,
                       for platform improvements.
                     </li>
@@ -128,23 +134,26 @@ const PrivacyPolicy = () => {
                   <p>Gyansetu collects personal data to:</p>
                   <ol>
                     <li>
+                      <b>Personalized Learning: </b>
                       Deliver and improve educational content tailored to
                       individual learning needs.
                     </li>
                     <li>
-                      Enhance user experience by personalizing platform
+                      <b>Enhanced User Experience: </b>personalizing platform
                       recommendations.
                     </li>
                     <li>
+                      <b>Progress Tracking: </b>
                       Track student progress and provide performance insights
                       for teachers and parents.
                     </li>
-                    <li>Provide customer support and technical assistance.</li>
+                    <li><b>Support and Assistance: </b>Provide customer support and technical assistance.</li>
                     <li>
+                      <b>Service Updates: </b>
                       Send service updates and important notifications (e.g.,
                       syllabus changes, new features).
                     </li>
-                    <li>Continuously improve the platform based on analytics and user feedback..</li>
+                    <li><b>Platform Improvement: </b> improve the platform based on analytics and user feedback..</li>
                   </ol>
                   <p>
                     Gyansetu does not sell, rent, or share user information with
@@ -157,14 +166,16 @@ const PrivacyPolicy = () => {
                   <p>We may use your information to:</p>
                   <ul style={{ listStyleType: 'disc', paddingLeft: '1.5rem' }}>
                     <li>
-                      Send educational updates, progress reports, or support
-                      messages.
+                      <b>Educational Updates: </b>
+                    Send educational updates, progress reports, or support messages to user
                     </li>
                     <li>
+                      <b>Service Announcements: </b>
                       Provide important service announcements and security
                       alerts.
                     </li>
                     <li>
+                      <b>Marketing Communications: </b>
                       Offer marketing communications (only with user consent).
                     </li>
                   </ul>

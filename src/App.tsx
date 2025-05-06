@@ -112,6 +112,11 @@ import TeacherQuizPage from './Pages/Teacher/Quiz';
 import { QUERY_KEYS } from './utils/const';
 import { toast } from 'react-toastify';
 import useApi from './hooks/useAPI';
+import ParentDashboard from './Pages/Parent/ParentDashboard';
+import ParentMain from './Pages/Parent';
+import ParentFeedback from './Pages/Parent/ParentFeedback';
+import ParentChat from './Pages/Parent/ParentChat';
+import ParentProfile from './Pages/Parent/ParentProfile';
 
 function App() {
   const navigate = useNavigate();
@@ -274,6 +279,10 @@ function App() {
             }
           />
           <Route
+            path="/institution-dashboard/faq"
+            element={<Protected Component={FAQ} menuName="faq" />}
+          />
+          <Route
             path="/institution-dashboard/student-list"
             element={
               <Protected
@@ -327,12 +336,20 @@ function App() {
             element={<Protected Component={TeacherChat} />}
           />
           <Route
+            path="/teacher-dashboard/chat/:Id"
+            element={<Protected Component={TeacherChat} />}
+          />
+          <Route
             path="/teacher-dashboard/profile"
             element={<Protected Component={TeacherProfile} />}
           />
           <Route
             path="/teacher-dashboard/feedback"
             element={<Protected Component={TeacherFeedback} />}
+          />
+          <Route
+            path="/teacher-dashboard/faq"
+            element={<Protected Component={FAQ} menuName="faq" />}
           />
           <Route
             path="/teacher-dashboard/student-details"
@@ -347,6 +364,10 @@ function App() {
             element={<Protected Component={CreateAssignments} />}
           />
           <Route
+            path="/teacher-dashboard/create-quiz"
+            element={<Protected Component={CreateAssignments} />}
+          />{' '}
+          <Route
             path="/teacher-dashboard/edit-assignment/:id"
             element={<Protected Component={CreateAssignments} />}
           />
@@ -358,7 +379,6 @@ function App() {
             path="/teacher-dashboard/student-assignment-details/:id"
             element={<Protected Component={PreviewStudentAssignment} />}
           />
-
           <Route
             path="/teacher-dashboard/quizzes"
             element={<Protected Component={TeacherQuizPage} />}
@@ -367,7 +387,10 @@ function App() {
             path="/teacher-dashboard/quiz-details/:id"
             element={<Protected Component={AssignmentDetails} />}
           />
-
+          <Route
+            path="/teacher-dashboard/edit-quiz/:id"
+            element={<Protected Component={CreateAssignments} />}
+          />
           <Route path="/teacher-dashboard/Content">
             <Route
               path=""
@@ -382,6 +405,39 @@ function App() {
               element={<Protected Component={AddContent} menuName="Content" />}
             />
           </Route>
+        </Route>
+
+        <Route path="/parent-dashboard" element={<ParentMain />}>
+          <Route
+            path=""
+            element={
+              <Protected Component={ParentDashboard} menuName="parentdash" />
+            }
+          />
+          <Route
+            path="/parent-dashboard/chat"
+            element={<Protected Component={ParentChat} />}
+          />
+          <Route
+            path="/parent-dashboard/profile"
+            element={<Protected Component={ParentProfile} />}
+          />
+          <Route
+            path="/parent-dashboard/feedback"
+            element={<Protected Component={ParentFeedback} />}
+          />
+          <Route
+            path="/parent-dashboard/assignments"
+            element={
+              <Protected Component={StudentAssignments} menuName="content" />
+            }
+          />
+          <Route
+            path="/parent-dashboard/quiz"
+            element={
+              <Protected Component={StudentQuiz} menuName="content" />
+            }
+          />
         </Route>
 
         {/* <Route path="/admin-feedback-chat" element={<AdminFeedback />} /> */}

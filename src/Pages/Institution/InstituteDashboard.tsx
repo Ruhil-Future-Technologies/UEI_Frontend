@@ -171,14 +171,13 @@ const InstitutionDash = () => {
     <div className="main-wrapper">
       <div className="main-content">
         <div className="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-        <HomeOutlinedIcon
-                sx={{
-                  fontSize: '26px',
-                  marginRight:'2px'
-                }}
-              />
-          <div className="breadcrumb-title pe-3">
-            Dashboard</div>
+          <HomeOutlinedIcon
+            sx={{
+              fontSize: '26px',
+              marginRight: '2px',
+            }}
+          />
+          <div className="breadcrumb-title pe-3">Dashboard</div>
           {/* <div className="ps-3">
             <nav aria-label="breadcrumb">
               <ol className="breadcrumb mb-0 p-0">
@@ -435,7 +434,7 @@ const InstitutionDash = () => {
             <div className="swiper studentslider">
               <Swiper
                 spaceBetween={10}
-                slidesPerView={3}
+                //slidesPerView={3}
                 loop={true}
                 breakpoints={{
                   768: { slidesPerView: 2 },
@@ -474,9 +473,13 @@ const InstitutionDash = () => {
               </Swiper>
             </div>
           </div>
-
+          <div className="col-lg-12">
+            <InstitutionCharts />
+          </div>
+          
           <InstituteGraphRepo />
-          <InstitutionCharts />
+         
+          
 
           <div className="col-xxl-8 d-flex align-items-stretch">
             <div className="chat-wrapper desk-chat-wrapper rounded-4 mt-lg-5">
