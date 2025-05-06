@@ -483,7 +483,7 @@ const PreviewAndSubmit = () => {
               </ul>
 
               <hr className="my-4" />
-
+              {contentType != 'questions' && (
               <Box>
                 <Typography variant="h6">Resources</Typography>
                 <ul>
@@ -522,6 +522,7 @@ const PreviewAndSubmit = () => {
                   </li> */}
                 </ul>
               </Box>
+              )}
             </CardContent>
           </Card>
 

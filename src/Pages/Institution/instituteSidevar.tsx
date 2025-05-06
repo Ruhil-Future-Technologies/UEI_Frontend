@@ -64,7 +64,10 @@ const InstituteSidevar = () => {
             </Link>
           </li>
           <li>
-            <Link to={'/institution-dashboard/chat'} onClick={removeMobileToggle}>
+            <Link
+              to={'/institution-dashboard/chat'}
+              onClick={removeMobileToggle}
+            >
               <div className="parent-icon">
                 {' '}
                 <ChatOutlinedIcon />
@@ -73,7 +76,10 @@ const InstituteSidevar = () => {
             </Link>
           </li>
           <li>
-            <Link to="/institution-dashboard/Content" onClick={removeMobileToggle}>
+            <Link
+              to="/institution-dashboard/Content"
+              onClick={removeMobileToggle}
+            >
               <div className="parent-icon">
                 {' '}
                 <LibraryBooksOutlinedIcon />
