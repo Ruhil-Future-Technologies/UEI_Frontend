@@ -2,7 +2,6 @@
 import { MRT_ColumnDef } from 'material-react-table';
 import { MaybeNull } from '../../types';
 import {
-  convertToISTT,
   getDateFormat,
   isNullOrUndefined,
 } from '../../utils/helpers';
@@ -1184,10 +1183,6 @@ export const MENU_COLUMNS: MRT_ColumnDef<MenuRep0oDTO>[] = [
     accessorKey: 'created_at',
     header: 'Created At',
     size: 150,
-    Cell: ({ cell }: any) => {
-      const value = cell.getValue();
-      return convertToISTT(value);
-    },
   },
   {
     accessorKey: 'updated_by',
@@ -1198,10 +1193,6 @@ export const MENU_COLUMNS: MRT_ColumnDef<MenuRep0oDTO>[] = [
     accessorKey: 'updated_at',
     header: 'Last Updated at',
     size: 150,
-    Cell: ({ cell }: any) => {
-      const value = cell.getValue();
-      return convertToISTT(value);
-    },
   },
 
   {
@@ -1623,10 +1614,6 @@ export const FEEDBACK_COLUMNS: MRT_ColumnDef<FeedbackRep0oDTO>[] = [
     accessorKey: 'created_at',
     header: 'Created At',
     size: 150,
-    Cell: ({ cell }: any) => {
-      const value = cell.getValue();
-      return convertToISTT(value);
-    },
   },
   {
     accessorKey: 'updated_by',
@@ -1637,10 +1624,6 @@ export const FEEDBACK_COLUMNS: MRT_ColumnDef<FeedbackRep0oDTO>[] = [
     accessorKey: 'updated_at',
     header: 'Last Updated at',
     size: 150,
-    Cell: ({ cell }: any) => {
-      const value = cell.getValue();
-      return convertToISTT(value);
-    },
   },
 ];
 export const STUDENT_FEEDBACK_COLUMNS: MRT_ColumnDef<StudentFeedbackRep0oDTO>[] =
@@ -1726,10 +1709,6 @@ export const STUDENT_FEEDBACK_COLUMNS: MRT_ColumnDef<StudentFeedbackRep0oDTO>[] 
       accessorKey: 'created_at',
       header: 'Created At',
       size: 150,
-      Cell: ({ cell }: any) => {
-        const value = cell.getValue();
-        return convertToISTT(value);
-      },
     },
   ];
 
@@ -1760,10 +1739,6 @@ export const SUBMENU_COLUMNS: MRT_ColumnDef<SubMenuRep0oDTO>[] = [
     accessorKey: 'created_at',
     header: 'Created At',
     size: 150,
-    Cell: ({ cell }: any) => {
-      const value = cell.getValue();
-      return convertToISTT(value);
-    },
   },
   {
     accessorKey: 'updated_by',
@@ -1774,10 +1749,6 @@ export const SUBMENU_COLUMNS: MRT_ColumnDef<SubMenuRep0oDTO>[] = [
     accessorKey: 'updated_at',
     header: 'Last Updated at',
     size: 150,
-    Cell: ({ cell }: any) => {
-      const value = cell.getValue();
-      return convertToISTT(value);
-    },
   },
   {
     accessorKey: 'is_active',
@@ -1848,10 +1819,6 @@ export const ROLE_COLUMNS: MRT_ColumnDef<RoleRep0oDTO>[] = [
     accessorKey: 'created_at',
     header: 'Created At',
     size: 150,
-    Cell: ({ cell }: any) => {
-      const value = cell.getValue();
-      return convertToISTT(value);
-    },
   },
   {
     accessorKey: 'updated_by',
@@ -1862,10 +1829,6 @@ export const ROLE_COLUMNS: MRT_ColumnDef<RoleRep0oDTO>[] = [
     accessorKey: 'updated_at',
     header: 'Last Updated at',
     size: 150,
-    Cell: ({ cell }: any) => {
-      const value = cell.getValue();
-      return convertToISTT(value);
-    },
   },
   {
     accessorKey: 'is_active',
@@ -1980,10 +1943,6 @@ export const FORM_COLUMNS: MRT_ColumnDef<FormRep0oDTO>[] = [
     header: 'Created At',
     size: 150,
     enableResizing: false,
-    Cell: ({ cell }: any) => {
-      const value = cell.getValue();
-      return convertToISTT(value);
-    },
   },
   {
     accessorKey: 'updated_by',
@@ -1996,10 +1955,6 @@ export const FORM_COLUMNS: MRT_ColumnDef<FormRep0oDTO>[] = [
     header: 'Last Updated at',
     size: 150,
     enableResizing: false,
-    Cell: ({ cell }: any) => {
-      const value = cell.getValue();
-      return convertToISTT(value);
-    },
   },
   {
     accessorKey: 'is_active',
@@ -2130,10 +2085,6 @@ export const ROLEVSFORM_COLUMNS: MRT_ColumnDef<RolevsFormRep0oDTO>[] = [
     accessorKey: 'created_at',
     header: 'Created At',
     size: 150,
-    Cell: ({ cell }: any) => {
-      const value = cell.getValue();
-      return convertToISTT(value);
-    },
   },
   {
     accessorKey: 'updated_by',
@@ -2144,10 +2095,6 @@ export const ROLEVSFORM_COLUMNS: MRT_ColumnDef<RolevsFormRep0oDTO>[] = [
     accessorKey: 'updated_at',
     header: 'Last Updated at',
     size: 150,
-    Cell: ({ cell }: any) => {
-      const value = cell.getValue();
-      return convertToISTT(value);
-    },
   },
   {
     accessorKey: 'is_active',
@@ -2223,10 +2170,6 @@ export const ROLEVSADMIN_COLUMNS: MRT_ColumnDef<RolevsFormRep0oDTO>[] = [
     accessorKey: 'created_at',
     header: 'Created At',
     size: 150,
-    Cell: ({ cell }: any) => {
-      const value = cell.getValue();
-      return convertToISTT(value);
-    },
   },
   {
     accessorKey: 'updated_by',
@@ -2237,10 +2180,6 @@ export const ROLEVSADMIN_COLUMNS: MRT_ColumnDef<RolevsFormRep0oDTO>[] = [
     accessorKey: 'updated_at',
     header: 'Last Updated at',
     size: 150,
-    Cell: ({ cell }: any) => {
-      const value = cell.getValue();
-      return convertToISTT(value);
-    },
   },
   {
     accessorKey: 'is_active',
