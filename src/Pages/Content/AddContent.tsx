@@ -1415,7 +1415,8 @@ const AddContent = () => {
       const filesArray = Array.from(files);
 
       const PDF_MAX_SIZE = 10 * 1024 * 1024;
-      const MP4_MAX_SIZE = 500 * 1024 * 1024;
+      // const MP4_MAX_SIZE = 500 * 1024 * 1024;
+      const MP4_MAX_SIZE = 100 * 1024 * 1024;
 
       const filteredFiles = filesArray.filter((file) => {
         const fileType = file.type;
@@ -1430,7 +1431,7 @@ const AddContent = () => {
         }
 
         if (fileType === 'video/mp4' && fileSize > MP4_MAX_SIZE) {
-          toast.error(`File ${file.name} exceeds the 500MB limit for MP4s.`, {
+          toast.error(`File ${file.name} exceeds the 100MB limit for MP4s.`, {
             hideProgressBar: true,
             theme: 'colored',
           });

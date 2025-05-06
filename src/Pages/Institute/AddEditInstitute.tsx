@@ -364,7 +364,10 @@ const AddEditInstitute = () => {
     const formData = new FormData();
 
     const filteredData: any = { ...instituteData };
-    if (filteredData.university_id === '' || filteredData.university_id === null) {
+    if (
+      filteredData.university_id === '' ||
+      filteredData.university_id === null
+    ) {
       delete filteredData.university_id;
     }
     const isDataUnchanged = Object.keys(filteredData).every(
@@ -379,9 +382,9 @@ const AddEditInstitute = () => {
       allselectedfiles.forEach((file) => {
         formData.append('documents', file);
       });
-      for (const key in filteredData) {
-        formData.set(key, filteredData[key]);
-      }
+      Object.keys(filteredData).forEach((key) => {
+        formData.append(key, filteredData[key]);
+      });
 
       putData(`${InstituteEditURL}/${id}`, formData)
         .then((data: { status: boolean; message: string }) => {
@@ -611,7 +614,7 @@ const AddEditInstitute = () => {
           }),
 
         website_url: Yup.string()
-          .nullable()
+          .required('Please enter Valid URL')
           .test(
             'is-valid-url',
             'Please enter a valid URL format (e.g., https://example.com).',

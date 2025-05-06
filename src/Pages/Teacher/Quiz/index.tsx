@@ -149,9 +149,17 @@ const TeacherQuizPage = () => {
     fetchQuizData();
   }, [dataClasses, dataCourses]);
 
-  const subjects = [
-    ...new Set(quizData.map((quiz) => quiz.class_stream_subjects)),
-  ];
+  // const subjects = [
+  //   ...new Set(
+  //     quizData.flatMap((quiz) =>
+  //       quiz.class_stream_subjects.flatMap((entry: any) =>
+  //         Object.values(entry).flatMap((streams: any) =>
+  //           Object.values(streams).flat(),
+  //         ),
+  //       ),
+  //     ),
+  //   ),
+  // ];
 
   const formatDate = (dateString: string) => {
     if (!dateString) return '';
@@ -349,11 +357,11 @@ const TeacherQuizPage = () => {
                     onChange={(e) => setSubjectFilter(e.target.value)}
                   >
                     <MenuItem value="all">All Subjects</MenuItem>
-                    {subjects.map((subject, index) => (
+                    {/* {subjects.map((subject, index) => (
                       <MenuItem key={index} value={subject}>
                         {subject}
-                      </MenuItem>
-                    ))}
+                      </MenuItem> */}
+                    {/* ))} */}
                   </TextField>
                 </div>
                 <div className="col-md-3">
