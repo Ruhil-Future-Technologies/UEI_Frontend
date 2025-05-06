@@ -906,7 +906,7 @@ export const CreateAssignments = () => {
     } else {
       setContact_email_error(false);
     }
-    if (availableFrom == null || availableFrom.isBefore(dayjs(), 'day')) {
+    if (availableFrom == null || availableFrom.isBefore(dayjs())) {
       setAvailableFrom_error(true);
       valid1 = true;
       setError(null);
@@ -999,7 +999,7 @@ export const CreateAssignments = () => {
     const students = selectedStudents?.map((student) => student.id);
 
     formData.append('assign_to_students', JSON.stringify(students));
-    if (assignmentType == 'ai generated') {
+    if (assignmentType == "ai generated") {
       formData.append('files', []);
     } else {
       files.forEach((file) => {
@@ -1193,15 +1193,15 @@ export const CreateAssignments = () => {
       setContact_email_error(false);
     }
 
-    if (type == 'assignment') {
-      if (availableFrom == null || availableFrom.isBefore(dayjs(), 'day')) {
+    if(type=="assignment"){
+      if (availableFrom == null || availableFrom.isBefore(dayjs())) {
         setAvailableFrom_error(true);
         valid1 = true;
         setError(null);
       } else {
         setAvailableFrom_error(false);
       }
-    } else {
+    }else{
       if (availableFrom == null || availableFrom.isBefore(dayjs())) {
         setAvailableFrom_error(true);
         valid1 = true;
@@ -1210,6 +1210,7 @@ export const CreateAssignments = () => {
         setAvailableFrom_error(false);
       }
     }
+   
 
     if (dueDate == null || dueDate == dayjs() || dueDate <= dayjs()) {
       setDue_date_error(true);
@@ -1656,7 +1657,7 @@ export const CreateAssignments = () => {
     const today = dayjs().startOf('day');
 
     if (newDate.isBefore(today)) {
-      setError('Please select today or a future date.');
+      setError('Please select today or a future date & time.');
     } else if (dueDate && newDate.isAfter(dueDate)) {
       setError('Available From should be less than Due Date');
     } else {
@@ -1965,15 +1966,12 @@ export const CreateAssignments = () => {
     } else {
       setQuizTimer_error(false);
     }
-  }, [
-    dueDate,
-    availableFrom,
-    dueTime,
-    level,
-    topic,
-    configInstructions,
-    quiz_timer,
-  ]);
+    if(quiz_timer=='' && quiz_timer){
+      setQuizTimer_error(true);
+    }else{
+      setQuizTimer_error(false);
+    }
+  }, [dueDate, availableFrom, dueTime, level, topic, configInstructions,quiz_timer]);
   const handleQuestionmap = () => {
     if (questionKey && questionValue) {
       setQuestions_error(false);
@@ -2010,26 +2008,19 @@ export const CreateAssignments = () => {
     }
   };
   const isSubmittedByAnyStudent = () => {
-    getData(
-      `${QUERY_KEYS_ASSIGNMENT_SUBMISSION.GET_STUDENTS_BY_ASSIGNMENT}${id}`,
-    )
-      .then((response) => {
-        if (response?.status) {
-          const submitedCount = response?.data?.filter(
-            (element: any) =>
-              element.is_graded === true || element.is_submitted === true,
-          ).length;
-          setSubmitedCount(submitedCount);
-        }
+    getData(`${QUERY_KEYS_ASSIGNMENT_SUBMISSION.GET_STUDENTS_BY_ASSIGNMENT}${id}`).then((response) => {
+      if (response?.status) {
+        const submitedCount = response?.data?.filter((element: any) => element.is_graded === true || element.is_submitted === true).length;
+        setSubmitedCount(submitedCount);
+      }
+    }).catch((error) => {
+      toast.error(error.message, {
+        hideProgressBar: true,
+        theme: 'colored',
+        position: 'top-center'
       })
-      .catch((error) => {
-        toast.error(error.message, {
-          hideProgressBar: true,
-          theme: 'colored',
-          position: 'top-center',
-        });
-      });
-  };
+    });
+  }
   return (
     <div className="main-wrapper pb-5">
       <div className="main-content">
@@ -2385,34 +2376,35 @@ export const CreateAssignments = () => {
                         </>
                       ) : (
                         <>
-                          {submittedCount <= 0 && (
-                            <>
-                              <div className="col-lg-4">
-                                <TextField
-                                  label="No. of questions"
-                                  type="number"
-                                  name="no_questions"
-                                  value={questionKey}
-                                  onChange={(e) =>
-                                    setQuestionKey(e.target.value)
-                                  }
-                                  fullWidth
-                                />
-                              </div>
-                              <div className="col-lg-4">
-                                <TextField
-                                  label="Marks per question"
-                                  type="number"
-                                  value={questionValue}
-                                  name="marks_per_questions"
-                                  onChange={(e) =>
-                                    setQuestionValue(e.target.value)
-                                  }
-                                  fullWidth
-                                />
-                              </div>
-                            </>
-                          )}
+                          {
+                            submittedCount <= 0 && (
+                              <>
+                                <div className="col-lg-4">
+                                  <TextField
+                                    label="No. of questions"
+                                    type="number"
+                                    name="no_questions"
+                                    value={questionKey}
+                                    onChange={(e) =>
+                                      setQuestionKey(e.target.value)
+                                    }
+                                    fullWidth
+                                  />
+                                </div>
+                                <div className="col-lg-4">
+                                  <TextField
+                                    label="Marks per question"
+                                    type="number"
+                                    value={questionValue}
+                                    name="marks_per_questions"
+                                    onChange={(e) =>
+                                      setQuestionValue(e.target.value)
+                                    }
+                                    fullWidth
+                                  />
+                                </div>
+                              </>
+                            )}
 
                           <div className="col-lg-2">
                             <TextField
@@ -2791,76 +2783,74 @@ export const CreateAssignments = () => {
                             {/* <label className="col-form-label">
                                 Subjects <span>*</span>
                               </label> */}
-                            <FormControl fullWidth>
-                              <InputLabel id={`subject_label_${index}`}>
-                                Subject
-                              </InputLabel>
-                              <Select
-                                labelId={`subject_label_${index}`}
-                                id={`subject_select_${index}`}
-                                name="subjects"
-                                label="subjects"
-                                disabled={submittedCount > 0}
-                                value={box.subjects || []}
-                                onChange={(event: any) =>
-                                  handelSchoolBoxChange(event, index)
-                                }
-                              >
-                                {box.filteredSubjects
-                                  ?.filter((subject) =>
-                                    tescherSchoolSubjects?.includes(
-                                      subject.subject_name,
-                                    ),
-                                  )
-                                  ?.map((subject: any) => (
-                                    <MenuItem
-                                      key={subject.subject_id}
-                                      value={subject.subject_name}
-                                    >
-                                      {subject.subject_name}
-                                    </MenuItem>
-                                  ))}
-                              </Select>
-                            </FormControl>
-                            {errorForClass_stream_subject[index]
-                              ?.subjects_error && (
-                              <p
-                                className="error-text"
-                                style={{ color: 'red' }}
-                              >
-                                <small>
-                                  Please select at least one subject.
-                                </small>
-                              </p>
-                            )}
+                              <FormControl fullWidth>
+                                <InputLabel id={`subject_label_${index}`}>
+                                  Subject
+                                </InputLabel>
+                                <Select
+                                  labelId={`subject_label_${index}`}
+                                  id={`subject_select_${index}`}
+                                  name="subjects"
+                                  label="subjects"
+                                  disabled={submittedCount > 0}
+                                  value={box.subjects || []}
+                                  onChange={(event: any) =>
+                                    handelSchoolBoxChange(event, index)
+                                  }
+                                >
+                                  {box.filteredSubjects
+                                    ?.filter((subject) =>
+                                      tescherSchoolSubjects?.includes(
+                                        subject.subject_name,
+                                      ),
+                                    )
+                                    ?.map((subject: any) => (
+                                      <MenuItem
+                                        key={subject.subject_id}
+                                        value={subject.subject_name}
+                                      >
+                                        {subject.subject_name}
+                                      </MenuItem>
+                                    ))}
+                                </Select>
+                              </FormControl>
+                              {errorForClass_stream_subject[index]
+                                ?.subjects_error && (
+                                  <p
+                                    className="error-text"
+                                    style={{ color: 'red' }}
+                                  >
+                                    <small>
+                                      Please select at least one subject.
+                                    </small>
+                                  </p>
+                                )}
+                            </div>
                           </div>
-                        </div>
-                      ))}
-                  </div>
-                  <div className="col-12">
-                    <Box>
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={selectAll}
-                            onChange={handleChange}
-                          />
-                        }
-                        label="Select All"
-                      />
-                      {'(' + selectedStudents?.length + ')'}
-                      <Autocomplete
-                        disableCloseOnSelect
-                        multiple
-                        options={listOfStudentFiltered || []}
-                        getOptionLabel={(option) => `${option.name}`}
-                        value={selectedStudents}
-                        onChange={(_, newValue) => {
-                          if (submittedCount > 0) {
-                            const removedProtectedStudents =
-                              selectedStudentsForUpdate.filter(
-                                (student) =>
-                                  !newValue.some((s) => s.id === student.id),
+                        ))}
+                    </div>
+                    <div className="col-12">
+                      <Box>
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={selectAll}
+                              onChange={handleChange}
+                            />
+                          }
+                          label="Select All"
+                        />
+                        {'(' + selectedStudents?.length + ')'}
+                        <Autocomplete
+                          disableCloseOnSelect
+                          multiple
+                          options={listOfStudentFiltered || []}
+                          getOptionLabel={(option) => `${option.name}`}
+                          value={selectedStudents}
+                          onChange={(_, newValue) => {
+                            if (submittedCount > 0) {
+                              const removedProtectedStudents = selectedStudentsForUpdate.filter(
+                                (student) => !newValue.some((s) => s.id === student.id)
                               );
 
                             if (removedProtectedStudents.length > 0) {
@@ -2900,102 +2890,93 @@ export const CreateAssignments = () => {
                             {value?.map((option, index) => {
                               const tagProps = getTagProps({ index });
 
-                              return (
-                                <React.Fragment
-                                  key={option.id || `${option.name}-${index}`}
-                                >
-                                  <Chip
-                                    {...tagProps} // Spread other props WITHOUT key
-                                    label={`${option.name}`}
-                                  />
-                                </React.Fragment>
-                              );
-                            })}
-                          </Box>
+                                return (
+                                  <React.Fragment
+                                    key={option.id || `${option.name}-${index}`}
+                                  >
+                                    <Chip
+                                      {...tagProps} // Spread other props WITHOUT key
+                                      label={`${option.name}`}
+                                    />
+                                  </React.Fragment>
+                                );
+                              })}
+                            </Box>
+                          )}
+                          sx={{
+                            '& .MuiAutocomplete-inputRoot': {
+                              flexWrap: 'wrap',
+                            },
+                            '& .MuiAutocomplete-tagList': {
+                              maxHeight: '75px',
+                              overflowY: 'auto',
+                            },
+                          }}
+                        />
+                        {errorselectStudent && (
+                          <p className="error-text" style={{ color: 'red' }}>
+                            <small>Please select at least one student</small>
+                          </p>
                         )}
-                        sx={{
-                          '& .MuiAutocomplete-inputRoot': {
-                            flexWrap: 'wrap',
-                          },
-                          '& .MuiAutocomplete-tagList': {
-                            maxHeight: '75px',
-                            overflowY: 'auto',
-                          },
-                        }}
-                      />
-                      {errorselectStudent && (
-                        <p className="error-text" style={{ color: 'red' }}>
-                          <small>Please select at least one student</small>
-                        </p>
-                      )}
-                    </Box>
-                  </div>
-                  <div className="col-lg-12">
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <div className="row g-4">
-                        <div className="col-lg-4">
-                          <>
-                            <DateTimePicker
-                              label="Available From"
-                              value={availableFrom}
-                              minDateTime={
-                                !edit
-                                  ? dayjs()
-                                      .set('second', 0)
-                                      .set('millisecond', 0)
-                                      .add(1, 'minute')
-                                  : undefined
-                              }
-                              closeOnSelect={false}
-                              onChange={handleAvailableFromChange}
-                              timeSteps={{ minutes: 1 }}
-                              slotProps={{
-                                textField: (params) => (
-                                  <TextField {...params} />
-                                ),
-                              }}
-                              ampm
-                            />
+                      </Box>
+                    </div>
+                    <div className="col-lg-12">
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <div className="row g-4">
+                          <div className="col-lg-4">
+                              <>
+                                <DateTimePicker
+                                  label="Available From"
+                                  value={availableFrom}
+                                  minDateTime={!edit ? dayjs().set('second', 0).set('millisecond', 0).add(1, 'minute') : undefined}
+                                  closeOnSelect={false}
+                                  onChange={handleAvailableFromChange}
+                                  timeSteps={{ minutes: 1 }}
+                                  slotProps={{
+                                    textField: (params) => <TextField {...params} />,
+                                  }}
+                                  ampm
+                                />
 
-                            {availableFrom_error && (
-                              <p
+                                {availableFrom_error && (
+                                  <p
+                                    className="error-text"
+                                    style={{ color: 'red' }}
+                                  >
+                                    <small>
+                                      Please select today or a future date & time.
+                                    </small>{' '}
+                                  </p>
+                                )}
+                              </>
+                          </div>
+                          <div className="col-lg-4">
+                            <DesktopDatePicker
+                              className="col-6"
+                              label="Due Date"
+                              value={dueDate}
+                              onChange={handleDueDateChange}
+                              minDate={!edit ? dayjs() : undefined}
+                              slotProps={{
+                                textField: (params) => <TextField {...params} />,
+                              }}
+                            />
+                            {due_date_error && (
+                              <p className="error-text" style={{ color: 'red' }}>
+                                <small>Please select a due date.</small>
+                              </p>
+                            )}
+                          </div>
+                          {error != null && (
+                            <span>
+                              <small
                                 className="error-text"
                                 style={{ color: 'red' }}
                               >
-                                <small>
-                                  Please select today or a future date.
-                                </small>{' '}
-                              </p>
-                            )}
-                          </>
-                        </div>
-                        <div className="col-lg-4">
-                          <DesktopDatePicker
-                            className="col-6"
-                            label="Due Date"
-                            value={dueDate}
-                            onChange={handleDueDateChange}
-                            minDate={!edit ? dayjs() : undefined}
-                            slotProps={{
-                              textField: (params) => <TextField {...params} />,
-                            }}
-                          />
-                          {due_date_error && (
-                            <p className="error-text" style={{ color: 'red' }}>
-                              <small>Please select a valid due date.</small>
-                            </p>
+                                {error}
+                              </small>
+                            </span>
                           )}
-                        </div>
-                        {error != null && (
-                          <span>
-                            <small
-                              className="error-text"
-                              style={{ color: 'red' }}
-                            >
-                              {error}
-                            </small>
-                          </span>
-                        )}
 
                         <div className="col-lg-4">
                           <TimePicker
