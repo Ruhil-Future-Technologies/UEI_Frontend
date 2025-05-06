@@ -903,7 +903,7 @@ export const CreateAssignments = () => {
     } else {
       setContact_email_error(false);
     }
-    if (availableFrom == null || availableFrom.isBefore(dayjs(), 'day')) {
+    if (availableFrom == null || availableFrom.isBefore(dayjs())) {
       setAvailableFrom_error(true);
       valid1 = true;
       setError(null);
@@ -1182,7 +1182,7 @@ export const CreateAssignments = () => {
     }
 
     if(type=="assignment"){
-      if (availableFrom == null || availableFrom.isBefore(dayjs(), 'day')) {
+      if (availableFrom == null || availableFrom.isBefore(dayjs())) {
         setAvailableFrom_error(true);
         valid1 = true;
         setError(null);
@@ -1642,7 +1642,7 @@ export const CreateAssignments = () => {
     const today = dayjs().startOf('day');
 
     if (newDate.isBefore(today)) {
-      setError('Please select today or a future date.');
+      setError('Please select today or a future date & time.');
     } else if (dueDate && newDate.isAfter(dueDate)) {
       setError('Available From should be less than Due Date');
     } else {
@@ -2939,7 +2939,7 @@ export const CreateAssignments = () => {
                                     style={{ color: 'red' }}
                                   >
                                     <small>
-                                      Please select today or a future date.
+                                      Please select today or a future date & time.
                                     </small>{' '}
                                   </p>
                                 )}
