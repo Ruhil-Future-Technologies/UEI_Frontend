@@ -133,8 +133,8 @@ const InstitutionCharts = () => {
       collectMonths(sessionData.teachers);
 
       if (allMonthNumbers.length > 0) {
-        const minMonth = Math.min(...allMonthNumbers);
-        setActiveMonth(monthMapping[minMonth]);
+        const maxMonth = Math.max(...allMonthNumbers);
+        setActiveMonth(monthMapping[maxMonth]);
       }
 
       const session = modifiedData;
@@ -313,7 +313,7 @@ const InstitutionCharts = () => {
 
       const topTeachers = teacherActivity
         .sort((a, b) => b.total - a.total)
-        .slice(0, 20);
+        .slice(0, 5);
 
       setTopUsers((prev: any) => ({
         ...prev,
@@ -371,13 +371,20 @@ const InstitutionCharts = () => {
     let name = '';
 
     if (activeTab === 'weekly') {
-      const firstUserData = (
-        Object.values(sourceData)[0] as Record<string, any>
-      )?.[activeMonth];
+      const firstUserWithWeekData = Object.values(sourceData).find(
+        (userData) => {
+          const monthData = (userData as Record<string, any>)[activeMonth];
+          if (!monthData) return false;
 
-      if (!firstUserData) return { series: [], categories: [] };
+          return Object.keys(monthData).some((key) => key.startsWith('week'));
+        },
+      ) as Record<string, any> | undefined;
 
-      const weekKeys = Object.keys(firstUserData).filter((key) =>
+      const firstUserMonthData = firstUserWithWeekData?.[activeMonth];
+
+      if (!firstUserMonthData) return { series: [], categories: [] };
+
+      const weekKeys = Object.keys(firstUserMonthData).filter((key) =>
         key.startsWith('week'),
       );
 
@@ -387,12 +394,6 @@ const InstitutionCharts = () => {
 
       series = topUsers[userType].slice(0, displayLimit).map((user: any) => {
         const userData = sourceData[user.id]?.[activeMonth];
-
-        if (!userData)
-          return {
-            name: user.id,
-            data: Array(weekKeys.length).fill(0),
-          };
 
         if (userType === 'teachers') {
           const currentTeacher: any = teacherAll.filter(
@@ -410,6 +411,12 @@ const InstitutionCharts = () => {
             current_student[0]?.first_name +
             ' ' +
             current_student[0]?.last_name;
+        }
+        if (!userData) {
+          return {
+            name: name,
+            data: Array(weekKeys.length).fill(0),
+          };
         }
 
         return {
@@ -672,7 +679,7 @@ const InstitutionCharts = () => {
         </div>
       );
     } else {
-      const { series, categories } = transformDataTop5PlusAverage(
+      const { series, categories } = transformDataTop3PlusAverage(
         sessionData.students,
         'students',
       );
@@ -767,7 +774,7 @@ const InstitutionCharts = () => {
     }
   };
 
-  const transformDataTop5PlusAverage = (students: any, userType: string) => {
+  const transformDataTop3PlusAverage = (students: any, userType: string) => {
     const categories: any = [];
     const allStudentData: any = {};
     let name = '';
@@ -819,13 +826,13 @@ const InstitutionCharts = () => {
       );
     });
 
-    const top5Students = Object.keys(studentTotals)
+    const top3Students = Object.keys(studentTotals)
       .sort((a, b) => studentTotals[b] - studentTotals[a])
       .slice(0, 3);
 
     categories.sort();
 
-    const series = top5Students.map((studentId) => {
+    const series = top3Students.map((studentId) => {
       const data = categories.map((category: any) => {
         const item = allStudentData[studentId].find(
           (d: any) => d.category === category,
@@ -865,8 +872,8 @@ const InstitutionCharts = () => {
         );
         if (item) {
           sum += item.value;
-          count++;
         }
+        count++;
       });
 
       return count > 0 ? Math.round(sum / count) : 0;
@@ -1289,7 +1296,7 @@ const InstitutionCharts = () => {
   }, [filteredSubjects]);
 
   return (
-    <div className="institution-charts">
+    <div className="institution-charts w-100">
       <div className="controls">
         <div className="control-group">
           <label>Month:</label>
@@ -1327,60 +1334,68 @@ const InstitutionCharts = () => {
           </div>
         </div>
       </div>
-      <div className="">
-        <div className="chart-box full-width">
-          {renderStudentActivityChart()}
+      <div className="row">
+        <div className="col-lg-12">
+          <div className="chart-box full-width">
+            {renderStudentActivityChart()}
+          </div>
         </div>
-        <div className="chart-box full-width mt-4">
-          {renderTeacherActivityChart()}
+        <div className="col-lg-6">
+          <div className="chart-box full-width mt-4">
+            {renderTeacherActivityChart()}
+          </div>
         </div>
-        <div className="chart-box full-width mt-4">
-          {renderUserFrequencyChart()}
+
+        <div className="col-lg-6">
+          <div className="chart-box full-width mt-4">
+            {renderUserFrequencyChart()}
+          </div>
         </div>
 
         <div className="subject-performance-container  mt-4">
           {institute?.entity_type === 'college' && (
-            <div
-              className="filters-container"
-              style={{ marginBottom: '20px', display: 'flex', gap: '16px' }}
-            >
-              <FormControl variant="outlined" style={{ minWidth: '200px' }}>
-                <InputLabel id="course-select-label">Course</InputLabel>
-                <Select
-                  labelId="course-select-label"
-                  id="course-select"
-                  value={selectedCourse}
-                  onChange={(e) => setSelectedCourse(e.target.value)}
-                  label="Course"
-                >
-                  {uniqueCourses.map((course) => (
-                    <MenuItem key={course.course_id} value={course.course_id}>
-                      {course.course_name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+            <div className="row g-4">
+              <div className="col-lg-3">
+                <FormControl variant="outlined" className="w-100">
+                  <InputLabel id="course-select-label">Course</InputLabel>
+                  <Select
+                    labelId="course-select-label"
+                    id="course-select"
+                    value={selectedCourse}
+                    onChange={(e) => setSelectedCourse(e.target.value)}
+                    label="Course"
+                  >
+                    {uniqueCourses.map((course) => (
+                      <MenuItem key={course.course_id} value={course.course_id}>
+                        {course.course_name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </div>
 
-              <FormControl variant="outlined" style={{ minWidth: '200px' }}>
-                <InputLabel id="semester-select-label">Semester</InputLabel>
-                <Select
-                  labelId="semester-select-label"
-                  id="semester-select"
-                  value={selectedSemester}
-                  onChange={(e) => setSelectedSemester(e.target.value)}
-                  label="Semester"
-                  disabled={!selectedCourse}
-                >
-                  {filteredSemesters.map((semester) => (
-                    <MenuItem
-                      key={semester.semester_id}
-                      value={semester.semester_id.toString()}
-                    >
-                      Semester {semester.semester_number}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              <div className="col-lg-3">
+                <FormControl variant="outlined" className="w-100">
+                  <InputLabel id="semester-select-label">Semester</InputLabel>
+                  <Select
+                    labelId="semester-select-label"
+                    id="semester-select"
+                    value={selectedSemester}
+                    onChange={(e) => setSelectedSemester(e.target.value)}
+                    label="Semester"
+                    disabled={!selectedCourse}
+                  >
+                    {filteredSemesters.map((semester) => (
+                      <MenuItem
+                        key={semester.semester_id}
+                        value={semester.semester_id.toString()}
+                      >
+                        Semester {semester.semester_number}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </div>
             </div>
           )}
           {institute?.entity_type === 'school' && (

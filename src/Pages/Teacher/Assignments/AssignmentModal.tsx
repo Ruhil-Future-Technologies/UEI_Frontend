@@ -53,7 +53,6 @@ const AssignmentModal: React.FC<Props> = ({
   const [assignmentSets, setAssignmentSets] = useState<AssignmentCollection | null>(null);
   //const [allQuestionsSelected, setAllQuestionsSelected] = useState('set_a');
   useEffect(() => {
-    console.log(assignments);
     if (open && assignments) {
       setExpanded(0);
       setAssignmentSets(assignments);

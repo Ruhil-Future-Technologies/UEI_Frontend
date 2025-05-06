@@ -392,7 +392,7 @@ const TeacherDashboardCharts = () => {
       );
 
     return (
-      <div className="chart-wrapper performance-chart">
+      <div className="chart-wrapper performance-chart" style={{ width: "100%", maxWidth: "100%", overflowX: "auto" }}>
         <ReactApexChart
           options={transformSubjectData.performanceChartData.options}
           series={transformSubjectData.performanceChartData.series}

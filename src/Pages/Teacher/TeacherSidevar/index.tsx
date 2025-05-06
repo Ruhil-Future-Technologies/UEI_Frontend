@@ -3,6 +3,7 @@ import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
 import LibraryBooksOutlinedIcon from '@mui/icons-material/LibraryBooksOutlined';
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
+import LiveHelpOutlinedIcon from '@mui/icons-material/LiveHelpOutlined';
 import QuestionAnswerOutlinedIcon from '@mui/icons-material/QuestionAnswerOutlined';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 // import Header from "../../Components/Header";
@@ -67,7 +68,10 @@ const TeacherSideVar = () => {
               </Link>
             </li>
             <li>
-              <Link to="/teacher-dashboard/chat" onClick={removeMobileToggle}>
+              <Link
+                to="/teacher-dashboard/chat/recentChat"
+                onClick={removeMobileToggle}
+              >
                 <div className="parent-icon">
                   <ChatOutlinedIcon />
                 </div>
@@ -75,23 +79,30 @@ const TeacherSideVar = () => {
               </Link>
             </li>
             <li>
-              <Link to="/teacher-dashboard/Content" onClick={removeMobileToggle}>
+              <Link to="/teacher-dashboard/chat" onClick={removeMobileToggle}>
+                <div className="parent-icon">
+                  <ChatOutlinedIcon />
+                </div>
+                <div className="menu-title">Chat History</div>
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/teacher-dashboard/Content"
+                onClick={removeMobileToggle}
+              >
                 <div className="parent-icon">
                   <LibraryBooksOutlinedIcon />
                 </div>
                 <div className="menu-title">Content Library</div>
               </Link>
             </li>
+
             <li>
-              <Link to="/teacher-dashboard/feedback" onClick={removeMobileToggle}>
-                <div className="parent-icon">
-                  <InfoOutlinedIcon />
-                </div>
-                <div className="menu-title">Feedback</div>
-              </Link>
-            </li>
-            <li>
-              <Link to="/teacher-dashboard/assignments" onClick={removeMobileToggle}>
+              <Link
+                to="/teacher-dashboard/assignments"
+                onClick={removeMobileToggle}
+              >
                 <div className="parent-icon">
                   <AssignmentOutlinedIcon />
                 </div>
@@ -109,7 +120,8 @@ const TeacherSideVar = () => {
                 <div className="menu-title">Quiz</div>
               </Link>
             </li>
-            {/* <!-- <li>
+          </ul>
+          {/* <!-- <li>
                     <a href="javascript:;" className="has-arrow">
                         <div className="parent-icon"><i className="material-icons-outlined">home</i>
                         </div>
@@ -123,7 +135,30 @@ const TeacherSideVar = () => {
                     </ul>
                 </li> --> */}
 
-            {/* <li className="menu-label">UI Elements</li>  */}
+          {/* <li className="menu-label">UI Elements</li>  */}
+        </div>
+        <div className="sidebar-footer">
+          {' '}
+          <ul className="metismenu">
+            <li>
+              <Link
+                to="/teacher-dashboard/feedback"
+                onClick={removeMobileToggle}
+              >
+                <div className="parent-icon">
+                  <InfoOutlinedIcon />
+                </div>
+                <div className="menu-title">Feedback</div>
+              </Link>
+            </li>
+            <li>
+              <Link to="/teacher-dashboard/faq" onClick={removeMobileToggle}>
+                <div className="parent-icon">
+                  <LiveHelpOutlinedIcon />
+                </div>
+                <div className="menu-title">FAQs</div>
+              </Link>
+            </li>
           </ul>
         </div>
       </aside>

@@ -13,6 +13,7 @@ import {
   SelectChangeEvent,
   TextField,
 } from '@mui/material';
+import FormLabel from '@mui/material/FormLabel';
 import React, { ChangeEvent, useContext, useEffect, useState } from 'react';
 import {
   Boxes,
@@ -913,27 +914,26 @@ const TeacherProfile = () => {
   return (
     <div className="main-wrapper">
       <div className="main-content">
-        <div className="container mb-5">
-          <div className="row align-items-center">
-            <div className="col-lg-6 px-0">
+        <div className="mb-5">
+          <div className="row align-items-center justify-content-center">
+            <div className="col-lg-10">
               <h4 className="fs-1 fw-bold">
                 My <span style={{ color: '#9943EC' }}> Profile </span>
               </h4>
             </div>
-            <div className="row">
-              <div className="card rounded-5 mt-3 bg-transparent-mb">
-                <div className="card-body p-0">
-                  <div className="row d-flex justify-content-center">
-                    <div className="col-md-6 col-12 mb-3">
-                      <label className="col-form-label">
-                        First Name<span>*</span>
-                      </label>
+            <div className="col-lg-10">
+              <div className="card rounded-5 mt-3 p-lg-3">
+                <div className="card-body">
+                  <div className="row d-flex justify-content-center g-4">
+                    <div className="col-md-6 col-12">
+                      
 
                       <TextField
                         autoComplete="off"
-                        name="first_name"
-                        className="form-control"
+                        name="first_name"                        
+                        className='w-100'
                         type="text"
+                        label="First Name *"
                         onChange={handleChange}
                         value={teacherData.first_name}
                       />
@@ -943,14 +943,13 @@ const TeacherProfile = () => {
                         </p>
                       )}
                     </div>
-                    <div className="col-md-6 col-12 mb-3">
-                      <label className="col-form-label">
-                        Last Name<span>*</span>
-                      </label>
+                    <div className="col-md-6 col-12">
+                     
                       <TextField
                         autoComplete="off"
                         name="last_name"
-                        className="form-control"
+                        label="Last Name *"
+                        className="w-100"
                         type="text"
                         onChange={handleChange}
                         value={teacherData.last_name}
@@ -961,14 +960,12 @@ const TeacherProfile = () => {
                         </p>
                       )}
                     </div>
-                  </div>
-                  <div className="row d-flex justify-content-center">
-                    <div className="col-md-6 col-12 mb-3">
-                      <label className="col-form-label">
-                        Gender<span>*</span>
-                      </label>
-                      <br />
+                  
+                    <div className="col-md-6 col-12">
+                      
+                      
                       <FormControl>
+                        <FormLabel id="demo-controlled-radio-buttons-group">Gender *</FormLabel>
                         <RadioGroup
                           row
                           aria-labelledby="demo-controlled-radio-buttons-group"
@@ -989,10 +986,8 @@ const TeacherProfile = () => {
                         </RadioGroup>
                       </FormControl>
                     </div>
-                    <div className="col-md-6 col-12 mb-3">
-                      <label className="col-form-label">
-                        Date Of Birth<span>*</span>
-                      </label>
+                    <div className="col-md-6 col-12">
+                     
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DemoContainer
                           components={[
@@ -1006,6 +1001,7 @@ const TeacherProfile = () => {
                             <DatePicker
                               name="dob"
                               value={dayjs(teacherData?.dob)}
+                              label="Date Of Birth *"
                               onChange={handleDate}
                               format="DD/MM/YYYY"
                               minDate={minSelectableDate}
@@ -1020,16 +1016,14 @@ const TeacherProfile = () => {
                         </p>
                       )}
                     </div>
-                  </div>
-                  <div className="row d-flex justify-content-center">
-                    <div className="col-md-6 col-12 mb-3">
-                      <label className="col-form-label">
-                        Mobile Number<span>*</span>
-                      </label>
+                  
+                    <div className="col-md-6 col-12 ">
+                      
                       <TextField
                         autoComplete="off"
                         name="phone"
                         className="form-control"
+                        label="Mobile Number *"
                         type="text"
                         onChange={handleChange}
                         value={teacherData.phone}
@@ -1040,23 +1034,21 @@ const TeacherProfile = () => {
                         </p>
                       )}
                     </div>
-                    <div className="col-md-6 col-12 mb-3">
-                      <label className="col-form-label">
-                        Email Id<span>*</span>
-                      </label>
+                    <div className="col-md-6 col-12 ">
+                     
                       <TextField
                         autoComplete="off"
                         name="email_id"
                         className="form-control"
+                        label="Email Id *"
                         type="text"
                         disabled
                         onChange={handleChange}
                         value={teacherData.email}
                       />
                     </div>
-                  </div>
-                  <div className="row d-flex justify-content-center">
-                    <div className="col-md-6 col-12 mb-3">
+                
+                    <div className="col-md-6 col-12">
                       <label className={`col-form-label`}>
                         Country<span>*</span>
                       </label>
@@ -1075,7 +1067,7 @@ const TeacherProfile = () => {
                       )}
                     </div>
 
-                    <div className="col-md-6 col-12 mb-3">
+                    <div className="col-md-6 col-12 ">
                       <label className="col-form-label">
                         State<span>*</span>
                       </label>
@@ -1096,16 +1088,14 @@ const TeacherProfile = () => {
                         </p>
                       )}
                     </div>
-                  </div>
-                  <div className="row d-flex justify-content-center">
-                    <div className="col-md-6 col-12 mb-3">
-                      <label className="col-form-label">
-                        District<span>*</span>
-                      </label>
+                
+                    <div className="col-md-6 col-12">
+                     
                       <TextField
                         autoComplete="off"
                         name="district"
-                        className="form-control"
+                        className="w-100"
+                        label="District *"
                         type="text"
                         onChange={handleChange}
                         value={teacherData.district}
@@ -1116,14 +1106,13 @@ const TeacherProfile = () => {
                         </p>
                       )}
                     </div>
-                    <div className="col-md-6 col-12 mb-3">
-                      <label className="col-form-label">
-                        City<span>*</span>
-                      </label>
+                    <div className="col-md-6 col-12 ">
+                    
                       <TextField
                         autoComplete="off"
+                         label="City *"
                         name="city"
-                        className="form-control"
+                        className="w-100"
                         type="text"
                         onChange={handleChange}
                         value={teacherData.city}
@@ -1134,15 +1123,13 @@ const TeacherProfile = () => {
                         </p>
                       )}
                     </div>
-                  </div>
-                  <div className="row d-flex justify-content-center">
-                    <div className="col-md-6 col-12 mb-3">
-                      <label className="col-form-label">
-                        Address<span>*</span>
-                      </label>
+                  
+                    <div className="col-md-6 col-12 ">
+                    
                       <TextField
                         autoComplete="off"
                         name="address"
+                        label="Address *"
                         className="form-control"
                         type="text"
                         onChange={handleChange}
@@ -1154,13 +1141,12 @@ const TeacherProfile = () => {
                         </p>
                       )}
                     </div>
-                    <div className="col-md-6 col-12 mb-3">
-                      <label className="col-form-label">
-                        Pincode<span>*</span>
-                      </label>
+                    <div className="col-md-6 col-12 ">
+                      
                       <TextField
                         autoComplete="off"
                         name="pincode"
+                        label="Pincode *"
                         className="form-control"
                         type="text"
                         onChange={handleChange}
@@ -1172,12 +1158,9 @@ const TeacherProfile = () => {
                         </p>
                       )}
                     </div>
-                  </div>
-                  <div className="row d-flex justify-content-center">
-                    <div className="col-md-6 col-12 mb-3">
-                      <label className="col-form-label">
-                        Entity<span>*</span>
-                      </label>
+                
+                    <div className="col-md-6 col-12 ">
+                     
 
                       <FormControl fullWidth>
                         <InputLabel id="demo-simple-select-label">
@@ -1226,10 +1209,8 @@ const TeacherProfile = () => {
                       </FormControl>
                     </div>
                     {selectedEntity.toLowerCase() === 'college' ? (
-                      <div className="col-md-6 col-12 mb-3">
-                        <label className="col-form-label">
-                          University Name<span>*</span>
-                        </label>
+                      <div className="col-md-6 col-12">
+                        
                         <FormControl fullWidth>
                           <InputLabel id="university_id">
                             University Name
@@ -1281,10 +1262,8 @@ const TeacherProfile = () => {
                         )}
                       </div>
                     ) : (
-                      <div className="col-md-6 col-12 mb-3">
-                        <label className="col-form-label">
-                          Institution Name<span>*</span>
-                        </label>
+                      <div className="col-md-6 col-12">
+                       
                         <FormControl fullWidth>
                           <InputLabel id="institution_id">Institute</InputLabel>
                           <Select
@@ -1334,13 +1313,11 @@ const TeacherProfile = () => {
                         )}
                       </div>
                     )}
-                  </div>
+                  
                   {selectedEntity.toLowerCase() === 'college' && (
-                    <div className="row d-flex justify-content-center">
-                      <div className="col-md-12 col-12 mb-3">
-                        <label className="col-form-label">
-                          Institution Name<span>*</span>
-                        </label>
+                    
+                      <div className="col-md-12 col-12">
+                       
                         <FormControl fullWidth>
                           <InputLabel id="institution_id">Institute</InputLabel>
                           <Select
@@ -1389,17 +1366,16 @@ const TeacherProfile = () => {
                           </p>
                         )}
                       </div>
-                    </div>
+                    
                   )}
-                  <div className="row d-flex justify-content-center">
-                    <div className="col-md-6 col-12 mb-3">
-                      <label className="col-form-label">
-                        Experience(Yr)<span>*</span>
-                      </label>
+                  
+                    <div className="col-md-6 col-12 ">
+                     
                       <TextField
                         autoComplete="off"
                         name="experience"
                         className="form-control"
+                        label="Experience (Yr) *"
                         type="number"
                         onChange={handleChange}
                         inputProps={{ min: '0' }}
@@ -1413,10 +1389,8 @@ const TeacherProfile = () => {
                         </p>
                       )}
                     </div>
-                    <div className="col-md-6 col-12 mb-3">
-                      <label className="col-form-label">
-                        Qualification<span>*</span>
-                      </label>
+                    <div className="col-md-6 col-12 ">
+                      
                       <FormControl fullWidth>
                         <InputLabel id="demo-multiple-name-label">
                           Qualification
@@ -1450,13 +1424,11 @@ const TeacherProfile = () => {
                     boxes.map((box, index) => (
                       <div
                         key={index}
-                        className="row d-flex justify-content-center"
+                        className="row d-flex align-items-center justify-content-center g-4 mt-0"
                       >
                         {/* Course Selection */}
-                        <div className="col-md-4 col-12 mb-3">
-                          <label className="col-form-label">
-                            Course<span>*</span>
-                          </label>
+                        <div className="col-md-3 col-12">
+                          
                           <FormControl fullWidth>
                             <InputLabel id={`course_id_${index}`}>
                               Course
@@ -1487,10 +1459,8 @@ const TeacherProfile = () => {
                         </div>
 
                         {/* Semester Selection */}
-                        <div className="col-md-4 col-12 mb-3">
-                          <label className="col-form-label">
-                            Semester <span>*</span>
-                          </label>
+                        <div className="col-md-3 col-12">
+                         
                           <FormControl fullWidth>
                             <InputLabel id={`semester_id_${index}`}>
                               Semester
@@ -1524,10 +1494,8 @@ const TeacherProfile = () => {
                         </div>
 
                         {/* Subjects Selection */}
-                        <div className="col-md-4 col-12 mb-3">
-                          <label className="col-form-label">
-                            Subjects Taught<span>*</span>
-                          </label>
+                        <div className="col-md-3 col-12">
+                         
                           <FormControl fullWidth>
                             <InputLabel id={`subject_label_${index}`}>
                               Subject
@@ -1578,7 +1546,7 @@ const TeacherProfile = () => {
                             </p>
                           )}
                         </div>
-                        <div>
+                        <div className='col-lg-3'>
                           {}
                           {(selectedEntity.toLowerCase() === 'college' ||
                             selectedEntity.toLowerCase() === 'school') &&
@@ -1606,13 +1574,11 @@ const TeacherProfile = () => {
                     boxesForSchool.map((box, index) => (
                       <div
                         key={index}
-                        className="row d-flex justify-content-center"
+                        className="row d-flex justify-content-center g-4 mt-0"
                       >
                         {/* Class Selection */}
                         <div className={box.selected_class_name}>
-                          <label className="col-form-label">
-                            Class<span>*</span>
-                          </label>
+                          
                           <FormControl fullWidth>
                             <InputLabel id={`class_id_${index}`}>
                               Class
@@ -1705,9 +1671,7 @@ const TeacherProfile = () => {
                           </div>
                         )}
                         <div className={box.selected_class_name}>
-                          <label className="col-form-label">
-                            Subjects Taught<span>*</span>
-                          </label>
+                          
                           <FormControl fullWidth>
                             <InputLabel id={`subject_label_${index}`}>
                               Subject
