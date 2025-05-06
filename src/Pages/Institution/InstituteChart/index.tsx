@@ -1289,7 +1289,7 @@ const InstitutionCharts = () => {
   }, [filteredSubjects]);
 
   return (
-    <div className="institution-charts">
+    <div className="institution-charts w-100">
       <div className="controls">
         <div className="control-group">
           <label>Month:</label>
@@ -1327,60 +1327,68 @@ const InstitutionCharts = () => {
           </div>
         </div>
       </div>
-      <div className="">
-        <div className="chart-box full-width">
-          {renderStudentActivityChart()}
+      <div className="row">
+        <div className="col-lg-12">
+          <div className="chart-box full-width">
+            {renderStudentActivityChart()}
+          </div>
         </div>
-        <div className="chart-box full-width mt-4">
-          {renderTeacherActivityChart()}
+        <div className="col-lg-6">
+          <div className="chart-box full-width mt-4">
+            {renderTeacherActivityChart()}
+          </div>
         </div>
-        <div className="chart-box full-width mt-4">
-          {renderUserFrequencyChart()}
+
+        <div className="col-lg-6">
+          <div className="chart-box full-width mt-4">
+            {renderUserFrequencyChart()}
+          </div>
         </div>
 
         <div className="subject-performance-container  mt-4">
           {institute?.entity_type === 'college' && (
-            <div
-              className="filters-container"
-              style={{ marginBottom: '20px', display: 'flex', gap: '16px' }}
-            >
-              <FormControl variant="outlined" style={{ minWidth: '200px' }}>
-                <InputLabel id="course-select-label">Course</InputLabel>
-                <Select
-                  labelId="course-select-label"
-                  id="course-select"
-                  value={selectedCourse}
-                  onChange={(e) => setSelectedCourse(e.target.value)}
-                  label="Course"
-                >
-                  {uniqueCourses.map((course) => (
-                    <MenuItem key={course.course_id} value={course.course_id}>
-                      {course.course_name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+            <div className="row g-4">
+              <div className="col-lg-3">
+                <FormControl variant="outlined" className='w-100'>
+                  <InputLabel id="course-select-label">Course</InputLabel>
+                  <Select
+                    labelId="course-select-label"
+                    id="course-select"
+                    value={selectedCourse}
+                    onChange={(e) => setSelectedCourse(e.target.value)}
+                    label="Course"
+                  >
+                    {uniqueCourses.map((course) => (
+                      <MenuItem key={course.course_id} value={course.course_id}>
+                        {course.course_name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </div>
 
-              <FormControl variant="outlined" style={{ minWidth: '200px' }}>
-                <InputLabel id="semester-select-label">Semester</InputLabel>
-                <Select
-                  labelId="semester-select-label"
-                  id="semester-select"
-                  value={selectedSemester}
-                  onChange={(e) => setSelectedSemester(e.target.value)}
-                  label="Semester"
-                  disabled={!selectedCourse}
-                >
-                  {filteredSemesters.map((semester) => (
-                    <MenuItem
-                      key={semester.semester_id}
-                      value={semester.semester_id.toString()}
-                    >
-                      Semester {semester.semester_number}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              <div className="col-lg-3" >
+                <FormControl variant="outlined" className='w-100'>
+                  <InputLabel id="semester-select-label">Semester</InputLabel>
+                  <Select
+                    labelId="semester-select-label"
+                    id="semester-select"
+                    value={selectedSemester}
+                    onChange={(e) => setSelectedSemester(e.target.value)}
+                    label="Semester"
+                    disabled={!selectedCourse}
+                  >
+                    {filteredSemesters.map((semester) => (
+                      <MenuItem
+                        key={semester.semester_id}
+                        value={semester.semester_id.toString()}
+                      >
+                        Semester {semester.semester_number}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </div>
             </div>
           )}
           {institute?.entity_type === 'school' && (

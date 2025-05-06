@@ -6,6 +6,29 @@
   $headerbg: #212529;
   $date_text: #d5d5d5 !important;
   $mui_date_bg: #32363b !important;
+
+
+  .parentdash .parentprofile, .parentdash .studentstabdata .studenttabs::before{
+    background-color:$headerbg;
+  }
+  .parentdash .studentstabdata .studenttabs{
+    background-color: var(--bs-body-bg-2);
+  }
+  .bg-primary-subtle{
+    background-color: $headerbg!important;
+  }
+
+  .cardwithshadow::before{
+    background-color: rgba(white, 0.08);
+  }
+
+  .cardwithshadow{
+    &.bg-warning{
+      background-color: $headerbg!important;
+    }
+  }
+
+
   .quiz-panel {
     background-color: var(--bs-body-bg-2) !important;
   }

@@ -93,7 +93,7 @@ const TeacherQuizPage = () => {
             const dueDate = new Date(quiz.due_date_time);
 
             if (dueDate < current_time) {
-              quiz.status = 'past';
+              quiz.status = 'closed';
             }
 
             if (quiz.course_semester_subjects) {
@@ -149,9 +149,17 @@ const TeacherQuizPage = () => {
     fetchQuizData();
   }, [dataClasses, dataCourses]);
 
-  const subjects = [
-    ...new Set(quizData.map((quiz) => quiz.class_stream_subjects)),
-  ];
+  // const subjects = [
+  //   ...new Set(
+  //     quizData.flatMap((quiz) =>
+  //       quiz.class_stream_subjects.flatMap((entry: any) =>
+  //         Object.values(entry).flatMap((streams: any) =>
+  //           Object.values(streams).flat(),
+  //         ),
+  //       ),
+  //     ),
+  //   ),
+  // ];
 
   const formatDate = (dateString: string) => {
     if (!dateString) return '';
@@ -175,12 +183,12 @@ const TeacherQuizPage = () => {
 
     let matchesStatus = true;
     if (statusFilter !== 'all') {
-      if (statusFilter === 'past') {
-        matchesStatus = quiz.status === 'past';
+      if (statusFilter === 'closed') {
+        matchesStatus = quiz.status === 'closed';
       } else if (statusFilter === 'draft') {
         matchesStatus = quiz.save_draft === true;
       } else if (statusFilter === 'active') {
-        matchesStatus = !quiz.save_draft && quiz.status !== 'past';
+        matchesStatus = !quiz.save_draft && quiz.status !== 'closed';
       }
     }
 
@@ -349,11 +357,11 @@ const TeacherQuizPage = () => {
                     onChange={(e) => setSubjectFilter(e.target.value)}
                   >
                     <MenuItem value="all">All Subjects</MenuItem>
-                    {subjects.map((subject, index) => (
+                    {/* {subjects.map((subject, index) => (
                       <MenuItem key={index} value={subject}>
                         {subject}
-                      </MenuItem>
-                    ))}
+                      </MenuItem> */}
+                    {/* ))} */}
                   </TextField>
                 </div>
                 <div className="col-md-3">
@@ -373,7 +381,7 @@ const TeacherQuizPage = () => {
                     <MenuItem value="all">All Status</MenuItem>
                     <MenuItem value="active">Active</MenuItem>
                     <MenuItem value="draft">Draft</MenuItem>
-                    <MenuItem value="past">Past</MenuItem>
+                    <MenuItem value="closed">Closed</MenuItem>
                   </TextField>
                 </div>
               </div>
@@ -401,14 +409,14 @@ const TeacherQuizPage = () => {
                               </Typography>
                               <Chip
                                 label={
-                                  quiz.status === 'past'
-                                    ? 'Past'
+                                  quiz.status === 'closed'
+                                    ? 'Closed'
                                     : quiz.save_draft
                                       ? 'Draft'
                                       : 'Active'
                                 }
                                 color={
-                                  quiz.status === 'past'
+                                  quiz.status === 'closed'
                                     ? 'error'
                                     : quiz.save_draft
                                       ? 'warning'
