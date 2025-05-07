@@ -466,18 +466,13 @@ export const CreateAssignments = () => {
                     })),
                   );
                   const filteredStudents =
-                  students?.filter((student) => {
-                    const matchesClass =
-                      Number(output[0].class_id) === student.class_id;
-                    const matchesSubject = output[0].subjects.includes(
-                      student.subject_name,
-                    );
-                    const matchesStream =
-                      !output[0].is_Stream ||
-                      output[0].stream === student.stream;
-
-                    return matchesClass && matchesSubject && matchesStream;
-                  }) || [];
+                    students?.filter((student) =>
+                      output[0].class_id == student.class_id &&
+                        output[0].subjects[0] == student.subject_name &&
+                        output[0].is_Stream
+                        ? output[0].stream == student.stream
+                        : true,
+                    ) || [];
                   setListOfStudentFiltered(filteredStudents);
                   setBoxesForSchool(output);
                 }
