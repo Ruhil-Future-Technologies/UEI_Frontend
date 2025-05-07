@@ -1332,19 +1332,22 @@ const speak = async (text: string, index: number) => {
     : chathistory;
 
     const extractTime = (chatDate: string) => {      
-      const date = chatDate 
-          ? new Date(Date.parse(chatDate)) 
-          : new Date();
-  
-      if (isNaN(date.getTime())) {
+      const date = chatDate ? new Date(chatDate) : new Date();  
+      // Check if the parsed date is valid
+      if (isNaN(date?.getTime())) {
           return 'Invalid Date';
-      }  
-      const hours = date.getHours().toString().padStart(2, '0');
-      const minutes = date.getMinutes().toString().padStart(2, '0');
-      const formattedDate = date.toDateString();
-      const formattedTime = `${formattedDate}:${hours}:${minutes}`;
+      }
+      // Convert to Indian 12-hour format
+      let hours = date?.getHours();
+      const minutes = date?.getMinutes().toString().padStart(2, '0');
+      // Determine AM/PM
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12; // Convert 24-hour time to 12-hour
+      hours = hours ? hours : 12; // If hour is 0 (midnight), show 12
+      const formattedDate = date?.toDateString();
+      const formattedTime = `${formattedDate}: ${hours}:${minutes} ${ampm}`;  
       return formattedTime;
-  };
+  };  
   // const extractTime = (chatDate: string) => {
   //   console.log("test chat date",chatDate)
   //   const date = chatDate ? new Date(chatDate + 'z') : new Date();
