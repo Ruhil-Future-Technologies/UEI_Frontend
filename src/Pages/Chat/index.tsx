@@ -375,11 +375,16 @@ const Chat = () => {
   }, []);
 
   function getTodaysData(arr: any) {
-    const today = new Date().toISOString().split('T')[0]; // Get today's date in 'YYYY-MM-DD' format
-
+    // const today = new Date().toISOString().split('T')[0]; // Get today's date in 'YYYY-MM-DD' format
+    const todayDate = new Date();
+    const month = (todayDate.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-indexed
+    const day = todayDate.getDate().toString().padStart(2, '0');
+    const year = todayDate.getFullYear();
+    const today = `${month}/${day}/${year}`;
     return arr?.filter((item: any) => {
       if (item?.created_at && typeof item.created_at === 'string') {
-        const itemDate = item.created_at.split(' ')[0]; // Extract 'YYYY-MM-DD' from 'created_at'
+        // const itemDate = item.created_at.split(' ')[0]; // Extract 'YYYY-MM-DD' from 'created_at'
+        const itemDate = item.created_at.split(',')[0].trim();
         return itemDate === today;
       }
       return false;
@@ -394,7 +399,6 @@ const Chat = () => {
           updated_at: new Date(chat?.updated_at),
         }),
       );
-
       // Sort the chat history by updated_at in descending order
       const sortedChatHistory = parsedChatHistory?.sort(
         (a: { updated_at: any }, b: { updated_at: any }) =>
@@ -994,7 +998,6 @@ const speak = async (text: string, index: number) => {
   const saveChatlocal = async () => {
     const chatDataString = localStorage?.getItem('chatData');
     const chatflagged = localStorage?.getItem('chatsaved');
-    // console.log("chatData testing save",chatDataString);
     const isChatFlagged = chatflagged === 'true';
     let chatData: any;
 
@@ -1334,16 +1337,33 @@ const speak = async (text: string, index: number) => {
       )
     : chathistory;
 
-  const extractTime = (chatDate: string) => {
-    const date = chatDate ? new Date(chatDate + 'z') : new Date();
+    const extractTime = (chatDate: string) => {      
+      const date = chatDate ? new Date(chatDate) : new Date();  
+      // Check if the parsed date is valid
+      if (isNaN(date?.getTime())) {
+          return 'Invalid Date';
+      }
+      // Convert to Indian 12-hour format
+      let hours = date?.getHours();
+      const minutes = date?.getMinutes().toString().padStart(2, '0');
+      // Determine AM/PM
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12; // Convert 24-hour time to 12-hour
+      hours = hours ? hours : 12; // If hour is 0 (midnight), show 12
+      const formattedDate = date?.toDateString();
+      const formattedTime = `${formattedDate}: ${hours}:${minutes} ${ampm}`;  
+      return formattedTime;
+  };  
+  // const extractTime = (chatDate: string) => {
+  //   console.log("test chat date",chatDate)
+  //   const date = chatDate ? new Date(chatDate + 'z') : new Date();
 
-    const hours = date.getHours().toString().padStart(2, '0');
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-    const formattedDate = date.toDateString();
-    const formattedTime = `${formattedDate}:${hours}:${minutes}`;
-    return formattedTime;
-  };
-
+  //   const hours = date.getHours().toString().padStart(2, '0');
+  //   const minutes = date.getMinutes().toString().padStart(2, '0');
+  //   const formattedDate = date.toDateString();
+  //   const formattedTime = `${formattedDate}:${hours}:${minutes}`;
+  //   return formattedTime;
+  // };
   const copyText = (index: number) => {
     // Get the text content of the div with the specific inline styles
     const textToCopy = (
