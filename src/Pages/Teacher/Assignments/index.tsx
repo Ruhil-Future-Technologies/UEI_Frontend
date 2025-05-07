@@ -254,7 +254,7 @@ export const Assignments = () => {
       accessorKey: 'created_at',
       header: 'Created at',
       Cell: ({ row }: { row: MRT_Row<Assignment> }) => {
-        const gmtDate = row?.original?.created_at + 'z';
+        const gmtDate = row?.original?.created_at;
         return convertToISTT(gmtDate);
       },
     },
@@ -262,7 +262,7 @@ export const Assignments = () => {
       accessorKey: 'updated_at',
       header: 'updated at',
       Cell: ({ row }: { row: MRT_Row<Assignment> }) => {
-        const gmtDate = row?.original?.updated_at + 'z';
+        const gmtDate = row?.original?.updated_at;
         return convertToISTT(gmtDate);
       },
     },

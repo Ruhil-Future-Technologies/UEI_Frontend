@@ -19,6 +19,9 @@ import {
 import { AccessTime, CheckCircle, Event, ListAlt } from '@mui/icons-material';
 import { convertToISTT, toTitleCase } from '../../../utils/helpers';
 import AssignmentIcon from '@mui/icons-material/Assignment';
+import TimerOffIcon from '@mui/icons-material/TimerOff';
+import VerifiedIcon from '@mui/icons-material/Verified';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 const StudentAssignments = () => {
   const { getData } = useApi();
   const navigate = useNavigate();
@@ -157,23 +160,30 @@ const StudentAssignments = () => {
       getData(`${QUERY_KEYS_ASSIGNMENT.GET_ASSIGNMENTS_LIST}`).then(
         (response) => {
           if (response.data) {
+            const datetime = new Date();
             const filteredAssignment = response?.data.filter(
               (assignment: any) =>
                 assignment?.assign_to_students.includes(studemtId) &&
                 !assignment?.save_draft &&
-                assignment?.is_active,
+                assignment?.is_active && new Date(assignment.due_date_time) < datetime,
             );
             setAssignmentData(filteredAssignment);
-            const datetime = new Date();
+
             setActiveAssignmentData(
-              filteredAssignment.filter(
+              response?.data.filter(
                 (assignment: any) =>
-                  new Date(assignment.due_date_time) > datetime,
+                  assignment?.assign_to_students.includes(studemtId) &&
+                  !assignment?.save_draft &&
+                  assignment?.is_active &&
+                  new Date(assignment.due_date_time) > datetime && new Date(assignment.available_from) <= datetime,
               ),
             );
             setUpcomingAssignmentData(
-              filteredAssignment.filter(
+              response?.data.filter(
                 (assignment: any) =>
+                  assignment?.assign_to_students.includes(studemtId) &&
+                  !assignment?.save_draft &&
+                  assignment?.is_active &&
                   new Date(assignment.available_from) > datetime,
               ),
             );
@@ -264,7 +274,7 @@ const StudentAssignments = () => {
     {
       icon: <AssignmentIcon color="success" />,
       title: 'Total Assignments',
-      value: assignmentData.length,
+      value: assignmentData.length + activeAssignmentData.length + upcomingAssignmentData.length,
     },
     {
       icon: <CheckCircle color="success" />,
@@ -386,7 +396,7 @@ const StudentAssignments = () => {
                           >
                             <div className="small">
                               <AccessTime fontSize="small" />
-                              {/* {quiz.time} */}
+                              {" 5 minutes"}
                             </div>
                             <div className="small">
                               <Chip
@@ -406,6 +416,34 @@ const StudentAssignments = () => {
                             Due:
                             {convertToISTT(assignment?.due_date_time as string)}
                           </Typography>
+                          <Box
+                          display="flex"
+                          justifyContent="space-between"
+                          sx={{ mt: 1 }}
+                        >
+                          <Typography
+                            variant="caption"
+                            color="text.secondary"
+                            display="block"
+                            sx={{ mt: 1 }}
+                          >
+                            <TimerOffIcon fontSize="small" /> Late Submission:
+                          </Typography>
+                          <Typography
+                            variant="caption"
+                            color="text.secondary"
+                            display="block"
+                            sx={{ mt: 1 }}
+                          >
+
+                            {assignment?.allow_late_submission ? (
+                              <VerifiedIcon style={{ color: 'green' }} />
+                            ) : (
+                              <HighlightOffIcon style={{ color: 'red' }} />
+                            )}
+                          </Typography>
+                        </Box>
+
                           <Button
                             variant="contained"
                             className="rounded-3"
@@ -414,7 +452,7 @@ const StudentAssignments = () => {
                             onClick={() => openAssignment(assignment.id)}
                           >
                             {isAssignmentSubmited(assignment.id).label ==
-                            'Pending'
+                              'Pending'
                               ? 'Attempt Assignment'
                               : 'View Assignment'}
                           </Button>
@@ -446,17 +484,34 @@ const StudentAssignments = () => {
                   <Grid item xs={12} sm={4} key={index}>
                     <div className="rounded-4 card">
                       <div className="card-body">
-                        <Box display="flex" alignItems="center" gap={1}>
+                        <Box display="flex" justifyContent="space-between" alignItems="center" gap={1}>
                           {/* <Avatar>{quiz.icon}</Avatar> */}
                           <Typography
                             variant="subtitle1"
                             className="fw-semibold"
                           >
-                            {/* {quiz.subject} */}
+                            {getSubjectName(
+                              assignment?.class_stream_subjects
+                                ? assignment?.class_stream_subjects
+                                : assignment?.course_semester_subjects,
+                            )}
+                          </Typography>
+                          <Typography
+                            variant="subtitle1"
+                            className="fw-semibold"
+                          >
+                            <Chip
+                              label={
+                                isAssignmentSubmited(assignment.id).label
+                              }
+                              color={
+                                isAssignmentSubmited(assignment.id).color
+                              }
+                            />
                           </Typography>
                         </Box>
                         <h6 className="mt-4 fw-semibold fs-5 text-dark">
-                          {assignment.title}
+                          {toTitleCase(assignment.title)}
                         </h6>
                         <Box
                           display="flex"
@@ -464,23 +519,70 @@ const StudentAssignments = () => {
                           sx={{ mt: 1 }}
                         >
                           <div className="small">
-                            {/* <AccessTime fontSize="small" /> {quiz.time} */}
+                            <AccessTime fontSize="small" />
+                            {" 5 minutes"}
                           </div>
                           <div className="small">
-                            <ListAlt fontSize="small" />
-                            {/* {quiz.questions}{' '} */}
-                            Questions
+                            <Chip
+                              label={`${assignment.points} ${assignment.points === 1 ? 'mark' : 'marks'}`}
+                              size="small"
+                              color="primary"
+                              variant="outlined"
+                            />
                           </div>
                         </Box>
-                        <Typography
-                          variant="caption"
-                          color="text.secondary"
-                          display="block"
+                        <Box
+                          display="flex"
+                          justifyContent="space-between"
                           sx={{ mt: 1 }}
                         >
-                          Available from:
-                          {/* {quiz.availableFrom.toLocaleString()} */}
-                        </Typography>
+                          <Typography
+                            variant="caption"
+                            color="text.secondary"
+                            display="block"
+                            sx={{ mt: 1 }}
+                          >
+                            From:
+                            {convertToISTT(assignment?.available_from as string)}
+                          </Typography>
+                          <Typography
+                            variant="caption"
+                            color="text.secondary"
+                            display="block"
+                            sx={{ mt: 1 }}
+                          >
+                            Due:
+                            {convertToISTT(assignment?.due_date_time as string)}
+                          </Typography>
+                        </Box>
+                        <Box
+                          display="flex"
+                          justifyContent="space-between"
+                          sx={{ mt: 1 }}
+                        >
+                          <Typography
+                            variant="caption"
+                            color="text.secondary"
+                            display="block"
+                            sx={{ mt: 1 }}
+                          >
+                            <TimerOffIcon fontSize="small" /> Late Submission:
+                          </Typography>
+                          <Typography
+                            variant="caption"
+                            color="text.secondary"
+                            display="block"
+                            sx={{ mt: 1 }}
+                          >
+
+                            {assignment?.allow_late_submission ? (
+                              <VerifiedIcon style={{ color: 'green' }} />
+                            ) : (
+                              <HighlightOffIcon style={{ color: 'red' }} />
+                            )}
+                          </Typography>
+                        </Box>
+
                         <Button
                           variant="outlined"
                           className="rounded-3"
