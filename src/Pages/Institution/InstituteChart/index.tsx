@@ -133,8 +133,8 @@ const InstitutionCharts = () => {
       collectMonths(sessionData.teachers);
 
       if (allMonthNumbers.length > 0) {
-        const minMonth = Math.min(...allMonthNumbers);
-        setActiveMonth(monthMapping[minMonth]);
+        const maxMonth = Math.max(...allMonthNumbers);
+        setActiveMonth(monthMapping[maxMonth]);
       }
 
       const session = modifiedData;
@@ -313,7 +313,7 @@ const InstitutionCharts = () => {
 
       const topTeachers = teacherActivity
         .sort((a, b) => b.total - a.total)
-        .slice(0, 20);
+        .slice(0, 5);
 
       setTopUsers((prev: any) => ({
         ...prev,
@@ -371,13 +371,20 @@ const InstitutionCharts = () => {
     let name = '';
 
     if (activeTab === 'weekly') {
-      const firstUserData = (
-        Object.values(sourceData)[0] as Record<string, any>
-      )?.[activeMonth];
+      const firstUserWithWeekData = Object.values(sourceData).find(
+        (userData) => {
+          const monthData = (userData as Record<string, any>)[activeMonth];
+          if (!monthData) return false;
 
-      if (!firstUserData) return { series: [], categories: [] };
+          return Object.keys(monthData).some((key) => key.startsWith('week'));
+        },
+      ) as Record<string, any> | undefined;
 
-      const weekKeys = Object.keys(firstUserData).filter((key) =>
+      const firstUserMonthData = firstUserWithWeekData?.[activeMonth];
+
+      if (!firstUserMonthData) return { series: [], categories: [] };
+
+      const weekKeys = Object.keys(firstUserMonthData).filter((key) =>
         key.startsWith('week'),
       );
 
@@ -387,12 +394,6 @@ const InstitutionCharts = () => {
 
       series = topUsers[userType].slice(0, displayLimit).map((user: any) => {
         const userData = sourceData[user.id]?.[activeMonth];
-
-        if (!userData)
-          return {
-            name: user.id,
-            data: Array(weekKeys.length).fill(0),
-          };
 
         if (userType === 'teachers') {
           const currentTeacher: any = teacherAll.filter(
@@ -410,6 +411,12 @@ const InstitutionCharts = () => {
             current_student[0]?.first_name +
             ' ' +
             current_student[0]?.last_name;
+        }
+        if (!userData) {
+          return {
+            name: name,
+            data: Array(weekKeys.length).fill(0),
+          };
         }
 
         return {
@@ -672,7 +679,7 @@ const InstitutionCharts = () => {
         </div>
       );
     } else {
-      const { series, categories } = transformDataTop5PlusAverage(
+      const { series, categories } = transformDataTop3PlusAverage(
         sessionData.students,
         'students',
       );
@@ -767,7 +774,7 @@ const InstitutionCharts = () => {
     }
   };
 
-  const transformDataTop5PlusAverage = (students: any, userType: string) => {
+  const transformDataTop3PlusAverage = (students: any, userType: string) => {
     const categories: any = [];
     const allStudentData: any = {};
     let name = '';
@@ -819,13 +826,13 @@ const InstitutionCharts = () => {
       );
     });
 
-    const top5Students = Object.keys(studentTotals)
+    const top3Students = Object.keys(studentTotals)
       .sort((a, b) => studentTotals[b] - studentTotals[a])
       .slice(0, 3);
 
     categories.sort();
 
-    const series = top5Students.map((studentId) => {
+    const series = top3Students.map((studentId) => {
       const data = categories.map((category: any) => {
         const item = allStudentData[studentId].find(
           (d: any) => d.category === category,
@@ -865,8 +872,8 @@ const InstitutionCharts = () => {
         );
         if (item) {
           sum += item.value;
-          count++;
         }
+        count++;
       });
 
       return count > 0 ? Math.round(sum / count) : 0;
@@ -1349,7 +1356,7 @@ const InstitutionCharts = () => {
           {institute?.entity_type === 'college' && (
             <div className="row g-4">
               <div className="col-lg-3">
-                <FormControl variant="outlined" className='w-100'>
+                <FormControl variant="outlined" className="w-100">
                   <InputLabel id="course-select-label">Course</InputLabel>
                   <Select
                     labelId="course-select-label"
@@ -1367,8 +1374,8 @@ const InstitutionCharts = () => {
                 </FormControl>
               </div>
 
-              <div className="col-lg-3" >
-                <FormControl variant="outlined" className='w-100'>
+              <div className="col-lg-3">
+                <FormControl variant="outlined" className="w-100">
                   <InputLabel id="semester-select-label">Semester</InputLabel>
                   <Select
                     labelId="semester-select-label"
