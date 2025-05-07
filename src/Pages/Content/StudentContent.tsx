@@ -106,8 +106,8 @@ const StudentContent = () => {
           getData(`${QUERY_KEYS_SEMESTER.GET_SEMESTER}`),
         ]);
 
-      const college_subs = collegeSubjectData.data.subjects_data;
-      const school_subs = schoolSubjectData.data.subjects_data;
+      const college_subs = collegeSubjectData?.data?.subjects_data;
+      const school_subs = schoolSubjectData?.data?.subjects_data;
 
       const studentProfileData = await getData(
         `${QUERY_KEYS_STUDENT.STUDENT_GET_PROFILE}/${user_uuid}`,
@@ -123,13 +123,13 @@ const StudentContent = () => {
         const contentData = await getData(`${ContentURL}`);
 
         if (studentProfileData?.data.entity_name === 'college') {
-          const semester = semesterData.data.semesters_data.find(
+          const semester = semesterData?.data?.semesters_data?.find(
             (sem: any) =>
               sem.semester_id ==
               studentProfileData?.data.subject_preference.sem_id,
           );
 
-          const filteredSub = college_subs.filter(
+          const filteredSub = college_subs?.filter(
             (sub: any) =>
               sub.course_id ==
                 studentProfileData?.data.subject_preference.course_id &&
@@ -138,7 +138,7 @@ const StudentContent = () => {
 
           setCollegeSubjects(filteredSub);
           if (contentData.status) {
-            const filteredContents = contentData?.data?.contents_data.filter(
+            const filteredContents = contentData?.data?.contents_data?.filter(
               (content: any) => {
                 const courseSubjects = content.course_semester_subjects
                   ? JSON.parse(content.course_semester_subjects)
@@ -152,22 +152,22 @@ const StudentContent = () => {
               },
             );
             setVideoLectures(
-              filteredContents.filter(
+              filteredContents?.filter(
                 (item: any) => item.content_type === 'video_lecture',
               ),
             );
             setEBooks(
-              filteredContents.filter(
+              filteredContents?.filter(
                 (item: any) => item.content_type === 'e-book',
               ),
             );
             setNotes(
-              filteredContents.filter(
+              filteredContents?.filter(
                 (item: any) => item.content_type === 'notes',
               ),
             );
             setResearchPapers(
-              filteredContents.filter(
+              filteredContents?.filter(
                 (item: any) => item.content_type === 'research_paper',
               ),
             );
@@ -177,7 +177,7 @@ const StudentContent = () => {
             studentProfileData?.data.class.name === 'class_11' ||
             studentProfileData?.data.class.name === 'class_12'
           ) {
-            const filteredSub = school_subs.filter(
+            const filteredSub = school_subs?.filter(
               (sub: any) =>
                 sub.class_id == studentProfileData?.data.class.id &&
                 studentProfileData?.data.academic_history.stream == sub.stream,
@@ -185,7 +185,7 @@ const StudentContent = () => {
 
             setSchoolSubjects(filteredSub);
             if (contentData.status) {
-              const filteredContents = contentData?.data?.contents_data.filter(
+              const filteredContents = contentData?.data?.contents_data?.filter(
                 (content: any) => {
                   const classSubjects = content.class_stream_subjects
                     ? JSON.parse(content.class_stream_subjects)
@@ -200,34 +200,34 @@ const StudentContent = () => {
               );
 
               setVideoLectures(
-                filteredContents.filter(
+                filteredContents?.filter(
                   (item: any) => item.content_type === 'video_lecture',
                 ),
               );
               setEBooks(
-                filteredContents.filter(
+                filteredContents?.filter(
                   (item: any) => item.content_type === 'e-book',
                 ),
               );
               setNotes(
-                filteredContents.filter(
+                filteredContents?.filter(
                   (item: any) => item.content_type === 'notes',
                 ),
               );
               setResearchPapers(
-                filteredContents.filter(
+                filteredContents?.filter(
                   (item: any) => item.content_type === 'research_paper',
                 ),
               );
             }
           } else {
-            const filteredSub = school_subs.filter(
+            const filteredSub = school_subs?.filter(
               (sub: any) => sub.class_id == studentProfileData?.data.class.id,
             );
 
             setSchoolSubjects(filteredSub);
             if (contentData.status) {
-              const filteredContents = contentData?.data?.contents_data.filter(
+              const filteredContents = contentData?.data?.contents_data?.filter(
                 (content: any) => {
                   const classSubjects = content.class_stream_subjects
                     ? JSON.parse(content.class_stream_subjects)
@@ -242,22 +242,22 @@ const StudentContent = () => {
               );
 
               setVideoLectures(
-                filteredContents.filter(
+                filteredContents?.filter(
                   (item: any) => item.content_type === 'video_lecture',
                 ),
               );
               setEBooks(
-                filteredContents.filter(
+                filteredContents?.filter(
                   (item: any) => item.content_type === 'e-book',
                 ),
               );
               setNotes(
-                filteredContents.filter(
+                filteredContents?.filter(
                   (item: any) => item.content_type === 'notes',
                 ),
               );
               setResearchPapers(
-                filteredContents.filter(
+                filteredContents?.filter(
                   (item: any) => item.content_type === 'research_paper',
                 ),
               );
@@ -300,7 +300,7 @@ const StudentContent = () => {
       const activeSubject = collegeSubjects[activeSubTab];
 
       const filterContentBySubject = (contentArray: any) => {
-        return contentArray.filter((item: any) => {
+        return contentArray?.filter((item: any) => {
           const courseSubjects = item.course_semester_subjects
             ? JSON.parse(item.course_semester_subjects)
             : {};
@@ -334,7 +334,7 @@ const StudentContent = () => {
       const activeSubject = schoolSubjects[activeSubTab];
 
       const filterContentBySubject = (contentArray: any) => {
-        return contentArray.filter((item: any) => {
+        return contentArray?.filter((item: any) => {
           const classSubjects = item.class_stream_subjects
             ? JSON.parse(item.class_stream_subjects)
             : {};

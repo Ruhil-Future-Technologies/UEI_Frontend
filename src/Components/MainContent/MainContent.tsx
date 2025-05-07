@@ -1020,16 +1020,19 @@ function MainContent() {
                 if (academic_history?.class_id) {
                   getData(`class/get/${academic_history?.class_id}`).then(
                     (response) => {
-                      setStudentClass(
-                        response.data.class_data.class_name
+                      if(response?.status){
 
-                          .replace('_', ' ')
-                          .charAt(0)
-                          .toUpperCase() +
+                        setStudentClass(
                           response.data.class_data.class_name
+  
                             .replace('_', ' ')
-                            .slice(1),
-                      );
+                            .charAt(0)
+                            .toUpperCase() +
+                            response.data.class_data.class_name
+                              .replace('_', ' ')
+                              .slice(1),
+                        );
+                      }
                     },
                   );
                 }

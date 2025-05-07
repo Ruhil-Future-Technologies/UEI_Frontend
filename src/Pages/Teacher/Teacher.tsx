@@ -713,7 +713,7 @@ const Teacher = () => {
                     </Button>
                   </div>
                   <Tabs value={activeTab} onChange={handleTabChange}>
-                    <Tab label="Total Teachers"></Tab>
+                    <Tab label="Approved Teachers"></Tab>
                     <Tab label="Pending Teachers" />
                     <Tab label="Disapproved Teachers" />
                   </Tabs>
