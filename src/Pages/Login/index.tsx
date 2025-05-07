@@ -451,7 +451,7 @@ const Login = () => {
                                 <MenuItem value="admin">Admin</MenuItem>
                                 <MenuItem value="institute">Institute</MenuItem>
                                 <MenuItem value="teacher">Teacher</MenuItem>
-                                <MenuItem value="parent">Parent</MenuItem>
+                                {/* <MenuItem value="parent">Parent</MenuItem> */}
                               </Select>
                             </FormControl>
                           </div>
