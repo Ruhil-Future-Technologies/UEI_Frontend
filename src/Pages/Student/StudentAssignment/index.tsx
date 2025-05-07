@@ -124,19 +124,6 @@ const StudentAssignments = () => {
       },
     },
     {
-      header: 'Late Submission',
-      accessorKey: 'allow_late_submission',
-      Cell: ({ row }: { row: MRT_Row<Assignment> }) => {
-        const val = row?.original?.allow_late_submission;
-        return (
-          <Chip
-            label={val ? 'Allowed' : 'Not Allowed'}
-            color={val ? 'success' : 'error'}
-          />
-        );
-      },
-    },
-    {
       accessorKey: 'status',
       header: 'Status',
       Cell: ({ row }: { row: MRT_Row<Assignment> }) => {
@@ -348,7 +335,7 @@ const StudentAssignments = () => {
               Active Assignment
             </Typography>
             {activeAssignmentData.length > 0 ? (
-              <Grid container spacing={2} className="active-assignment-flow">
+              <Grid container spacing={1} className="active-assignment-flow">
                 {activeAssignmentData
                   .reverse()
                   .map((assignment: any, index) => (
@@ -417,32 +404,32 @@ const StudentAssignments = () => {
                             {convertToISTT(assignment?.due_date_time as string)}
                           </Typography>
                           <Box
-                          display="flex"
-                          justifyContent="space-between"
-                          sx={{ mt: 1 }}
-                        >
-                          <Typography
-                            variant="caption"
-                            color="text.secondary"
-                            display="block"
+                            display="flex"
+                            justifyContent="space-between"
                             sx={{ mt: 1 }}
                           >
-                            <TimerOffIcon fontSize="small" /> Late Submission:
-                          </Typography>
-                          <Typography
-                            variant="caption"
-                            color="text.secondary"
-                            display="block"
-                            sx={{ mt: 1 }}
-                          >
+                            <Typography
+                              variant="caption"
+                              color="text.secondary"
+                              display="block"
+                              sx={{ mt: 1 }}
+                            >
+                              <TimerOffIcon fontSize="small" /> Late Submission:
+                            </Typography>
+                            <Typography
+                              variant="caption"
+                              color="text.secondary"
+                              display="block"
+                              sx={{ mt: 1 }}
+                            >
 
-                            {assignment?.allow_late_submission ? (
-                              <VerifiedIcon style={{ color: 'green' }} />
-                            ) : (
-                              <HighlightOffIcon style={{ color: 'red' }} />
-                            )}
-                          </Typography>
-                        </Box>
+                              {assignment?.allow_late_submission ? (
+                                <VerifiedIcon style={{ color: 'green' }} />
+                              ) : (
+                                <HighlightOffIcon style={{ color: 'red' }} />
+                              )}
+                            </Typography>
+                          </Box>
 
                           <Button
                             variant="contained"
@@ -607,20 +594,29 @@ const StudentAssignments = () => {
               </Typography>
             )}
           </Box>
-          <MaterialReactTable
-            columns={columns}
-            data={[...assignmentData].reverse()}
-            enableColumnOrdering
-            muiTableContainerProps={{
-              className: 'scrollable-table-container',
-            }}
-            enableSorting
-            enableFullScreenToggle={false}
-            enableColumnDragging={false}
-            enableColumnActions={false}
-            enableColumnFilters={false} // Hide column filters
-            enableDensityToggle={false} // Hide density toggle
-          />
+          <Box>
+            <Typography
+              variant="h6"
+              sx={{ mt: 4 }}
+              className="mb-2 fw-semibold"
+            >
+              Assignment History
+            </Typography>
+            <MaterialReactTable
+              columns={columns}
+              data={[...assignmentData].reverse()}
+              enableColumnOrdering
+              muiTableContainerProps={{
+                className: 'scrollable-table-container',
+              }}
+              enableSorting
+              enableFullScreenToggle={false}
+              enableColumnDragging={false}
+              enableColumnActions={false}
+              enableColumnFilters={false} // Hide column filters
+              enableDensityToggle={false} // Hide density toggle
+            />
+          </Box>
         </div>
       </div>
     </>
