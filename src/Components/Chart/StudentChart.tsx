@@ -12,8 +12,7 @@ import {
 } from './ChartConfig';
 import { useTheme } from '../../ThemeProvider';
 const StudentDashboardCharts = () => {
-
-  const { isDarkMode } = useTheme(); 
+  const { isDarkMode } = useTheme();
   const { getData } = useApi();
 
   const userdata = JSON.parse(localStorage.getItem('userdata') ?? '""');
@@ -71,7 +70,7 @@ const StudentDashboardCharts = () => {
         position: 'bottom',
         labels: {
           colors: ['#666666', '#666', '#666'], // Change this to a dark/light color based on theme
-        }       
+        },
       },
     },
   });
@@ -86,7 +85,7 @@ const StudentDashboardCharts = () => {
         position: 'bottom',
         labels: {
           colors: ['#666666', '#666', '#666'], // Change this to a dark/light color based on theme
-        }       
+        },
       },
     },
   });
@@ -95,8 +94,6 @@ const StudentDashboardCharts = () => {
 
   const getMonths = () => {
     if (!studentData) return [];
-
-    
 
     const monthSet = new Set<string>();
 
@@ -218,7 +215,7 @@ const StudentDashboardCharts = () => {
                     currentScores,
                     previousScores,
                     labels,
-                    isDarkMode
+                    isDarkMode,
                   ),
                 );
                 setCompletionRateData(
@@ -226,7 +223,7 @@ const StudentDashboardCharts = () => {
                     completedAssignments,
                     pendingAssignments,
                     labels,
-                    isDarkMode
+                    isDarkMode,
                   ),
                 );
               }
@@ -505,9 +502,8 @@ const StudentDashboardCharts = () => {
                   ],
                   legend: {
                     position: 'bottom',
-                    
-                    
-                    colors: ['#666666', '#666666', '#666666'], 
+
+                    colors: ['#666666', '#666666', '#666666'],
                   },
                   title: {
                     text: timeData?.dailyData?.length
@@ -727,7 +723,7 @@ const StudentDashboardCharts = () => {
                   ],
                   legend: {
                     position: 'bottom',
-                    colors: ['#666666', '#666666', '#666666'], 
+                    colors: ['#666666', '#666666', '#666666'],
                   },
                   title: {
                     text: streaksData?.engagement?.length
@@ -757,7 +753,7 @@ const StudentDashboardCharts = () => {
     if (activeMonth) {
       fetchData();
     }
-  }, [activeTab, activeMonth]);
+  }, [activeTab, activeMonth, isDarkMode]);
 
   return (
     <>
