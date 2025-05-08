@@ -361,7 +361,7 @@ const Institute = () => {
                   </div>
                   <Tabs value={activeTab} onChange={handleTabChange}  variant="scrollable">
                     <Tab
-                      label="Total Institute"
+                      label="Approved Institute"
                       className={activeTab === 0 ? '' : 'text-color'}
                     />
                     <Tab
