@@ -183,9 +183,9 @@ const AddEditInstitute = () => {
             setInstitute(data?.data);
             const current_docs = data?.data?.documents || [];
 
-            const checkAllExist = current_docs.every((file: any) =>
-              allfiles.includes(file),
-            );
+            const checkAllExist =
+              current_docs.every((file: any) => allfiles.includes(file)) &&
+              current_docs.length == allfiles.length;
             setAllExist(checkAllExist);
           }
         })
@@ -306,9 +306,9 @@ const AddEditInstitute = () => {
 
   useEffect(() => {
     if (institute && institute.documents) {
-      const checkAllExist = institute.documents.every((file: any) =>
-        allfiles.includes(file),
-      );
+      const checkAllExist =
+        institute.documents.every((file: any) => allfiles.includes(file)) &&
+        institute.documents.length == allfiles.length;
       setAllExist(checkAllExist);
     }
   }, [allfiles, institute]);
@@ -421,7 +421,11 @@ const AddEditInstitute = () => {
 
       fileData.append('delete_existing_documents', 'true');
 
-      if (allselectedfiles.length === 0 && allExist) {
+      if (
+        allselectedfiles.length === 0 &&
+        allExist &&
+        institute.documents.length === allfiles.length
+      ) {
         putData(`${InstituteEditURL}/${id}`, formData)
           .then((data: { status: boolean; message: string }) => {
             if (data.status) {
@@ -481,6 +485,11 @@ const AddEditInstitute = () => {
                   theme: 'colored',
                 });
               });
+          } else {
+            toast.error(response?.message, {
+              hideProgressBar: true,
+              theme: 'colored',
+            });
           }
         });
       }
