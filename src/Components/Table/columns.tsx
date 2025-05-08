@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { MRT_ColumnDef } from 'material-react-table';
 import { MaybeNull } from '../../types';
-import { getDateFormat, isNullOrUndefined } from '../../utils/helpers';
+import {
+  getDateFormat,
+  isNullOrUndefined,
+} from '../../utils/helpers';
 import profile from '../../assets/img/profile_img.svg';
 
 import {
@@ -38,7 +41,6 @@ import {
   QUERY_KEYS_SUBMENU,
   QUERY_KEYS_UNIVERSITY,
   QUERY_KEYS_TEACHER,
-  QUERY_KEYS_CLASS,
   QUERY_KEYS_CONTENT,
 } from '../../utils/const';
 import { toast } from 'react-toastify';
@@ -403,14 +405,19 @@ export const INSITUTION_COLUMNS: MRT_ColumnDef<InstituteRep0oDTO>[] = [
       const MenuInstituteActive = QUERY_KEYS.GET_INSTITUTEACTIVE;
       const MenuInstituteDeactive = QUERY_KEYS.GET_INSTITUTEDEACTIVE;
       const value = cell?.getValue();
+
       // if (!value) {
       //   return EMPTY_CELL_VALUE;
       // }
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const [Showvalue, setShowvalue] = useState(value);
+      const [showValue, setShowValue] = useState(value);
+      const [show, setShow] = useState(!!value);
 
-      const [Show, setShow] = useState(value ? true : false);
+      useEffect(() => {
+        setShowValue(value);
+        setShow(!!value);
+      }, [value]);
 
       const active = (id: number, valueset: any) => {
         putData(
@@ -418,10 +425,15 @@ export const INSITUTION_COLUMNS: MRT_ColumnDef<InstituteRep0oDTO>[] = [
         )
           .then((data: any) => {
             if (data.status) {
-              setShow((prevState) => !prevState);
-              setShowvalue(Showvalue ? 0 : 1);
-              toast.success(data?.message);
-              // window.location.reload();
+              const newValue = showValue ? 0 : 1;
+              setShowValue(newValue);
+              setShow(!show);
+              toast.success(data?.message, {
+                hideProgressBar: true,
+                theme: 'colored',
+              });
+              window.location.reload();
+              // refetch();
             }
           })
           .catch((e) => {
@@ -435,11 +447,11 @@ export const INSITUTION_COLUMNS: MRT_ColumnDef<InstituteRep0oDTO>[] = [
       return row?.original?.is_approve ? (
         <Box>
           <Switch
-            isChecked={Show}
-            label={Show ? 'Active' : 'Deactive'}
+            isChecked={show}
+            label={show ? 'Active' : 'Deactive'}
             // onChange={() => setShow((prevState) => !prevState)}
             onChange={() => {
-              active(row?.original?.user_uuid, Showvalue);
+              active(row?.original?.user_uuid, showValue);
             }}
             // disabled={true}
             activeColor="#4CAF50"
@@ -461,7 +473,9 @@ export const INSITUTION_COLUMNS: MRT_ColumnDef<InstituteRep0oDTO>[] = [
   //   },
 ];
 
-export const TEACHER_COLUMNS: MRT_ColumnDef<TeacherRepoDTO>[] = [
+export const TEACHER_COLUMNS = (
+  refetch: () => void,
+): MRT_ColumnDef<TeacherRepoDTO>[] => [
   {
     accessorFn: (row) => `${row.first_name} ${row.last_name}`,
     header: 'Full Name',
@@ -499,7 +513,6 @@ export const TEACHER_COLUMNS: MRT_ColumnDef<TeacherRepoDTO>[] = [
       const value = cell?.getValue();
       const [showValue, setShowValue] = useState(value);
       const [show, setShow] = useState(value ? true : false);
-      console.log('is_active called');
 
       const active = (id: string, valueSet: any) => {
         putData(`${valueSet ? TeacherDeactive : TeacherActive}/${id}`)
@@ -511,6 +524,7 @@ export const TEACHER_COLUMNS: MRT_ColumnDef<TeacherRepoDTO>[] = [
                 hideProgressBar: true,
                 theme: 'colored',
               });
+              refetch();
             }
           })
           .catch((e) => {
@@ -2321,7 +2335,6 @@ export const PDF_LIST_FOR_SCHOOL_COLUMNS: MRT_ColumnDef<IPDFList>[] = [
         {cell?.getValue() as string}
       </div>
     ),
-    
   },
   {
     accessorKey: 'board_name',
@@ -2373,9 +2386,14 @@ export const PDF_LIST_FOR_COLLAGE_COLUMNS: MRT_ColumnDef<IPDFList>[] = [
     header: 'File Path',
     enableSorting: false,
     enableColumnActions: false,
-    size: 160,
     enableResizing: true,
+    size: 160,
     minSize: 130,
+    Cell: ({ cell }: { cell: any }) => (
+      <div style={{ whiteSpace: 'normal', wordBreak: 'break-word' }}>
+        {cell?.getValue() as string}
+      </div>
+    ),
   },
   {
     accessorKey: 'university_name',
@@ -2464,219 +2482,28 @@ export const CONTENT_COLUMNS: MRT_ColumnDef<ContentRepoDTO>[] = [
   },
 
   {
-    accessorKey: 'institute_id',
+    accessorKey: 'institute_name',
     header: 'Institute Name',
     size: 200,
-    Cell: ({ cell }: any) => {
-      const { getData } = useApi();
-      const [institute_name, setInstituteName] = useState<string>('-');
-      const institute_id = cell.getValue();
-
-      useEffect(() => {
-        getData('/institute/list')
-          .then((response: any) => {
-            if (response.status) {
-              const matchingEntity = response.data.find(
-                (institute: any) => institute.id === institute_id,
-              );
-
-              if (matchingEntity) {
-                setInstituteName(matchingEntity.institute_name);
-              }
-            }
-          })
-          .catch((error) => {
-            toast.error(error?.message, {
-              hideProgressBar: true,
-              theme: 'colored',
-            });
-          });
-      }, [institute_id]);
-
-      return <span>{institute_name}</span>;
-    },
   },
   {
-    accessorKey: 'university_id',
+    accessorKey: 'university_name',
     header: 'University Name',
     size: 200,
-    Cell: ({ row }: any) => {
-      const { getData } = useApi();
-      const [university_name, setUniversityName] = useState('');
-      const institute_id = row.original.institute_id;
-
-      useEffect(() => {
-        if (institute_id) {
-          getData('/institute/list')
-            .then((response: any) => {
-              if (response.status) {
-                const matchingEntity = response.data.find(
-                  (institute: any) => institute.id === institute_id,
-                );
-                if (matchingEntity) {
-                  setUniversityName(matchingEntity.university_name);
-                }
-              }
-            })
-            .catch((error) => {
-              toast.error(error?.message, {
-                hideProgressBar: true,
-                theme: 'colored',
-              });
-            });
-        }
-      }, [institute_id]);
-
-      return <span>{university_name}</span>;
-    },
   },
   {
-    accessorKey: 'class_id',
+    accessorKey: 'class_name',
     header: 'Class',
     size: 150,
-    Cell: ({ row }: any) => {
-      const { getData } = useApi();
-      const [className, setClassName] = useState<string>('-');
-      const [, setClassList] = useState([]);
-      const entity_id = row.original.entity_id;
-      const class_id = row?.original?.class_stream_subjects
-        ? JSON.parse(row?.original?.class_stream_subjects)
-        : '';
-
-      useEffect(() => {
-        if (entity_id) {
-          getData(`${QUERY_KEYS_CLASS.GET_CLASS}`)
-            .then((data) => {
-              setClassList(data?.data?.classes_data);
-              return getData('/entity/list');
-            })
-            .then((entityResponse: any) => {
-              if (entityResponse.status) {
-                const entity = entityResponse?.data?.entityes_data.find(
-                  (e: any) => e.id === Number(entity_id),
-                );
-
-                if (entity?.entity_type === 'school' && class_id) {
-                  const class_id_arr = Object.keys(class_id);
-
-                  setClassList((prevClasses) => {
-                    const class_name_arr = prevClasses?.filter((cls: any) => {
-                      const id = cls.id.toString();
-
-                      return class_id_arr.includes(id);
-                    });
-
-                    setClassName(
-                      class_name_arr?.map((c: any) => c.class_name).join(', '),
-                    );
-
-                    return prevClasses;
-                  });
-                }
-              }
-            })
-            .catch((error) => {
-              console.error('Error fetching data:', error);
-            });
-        }
-      }, [entity_id]);
-
-      return <span>{className.replace('class_', 'Class ')}</span>;
-    },
   },
   {
-    accessorKey: 'course_id',
+    accessorKey: 'course_name',
     header: 'Course',
     size: 150,
-    Cell: ({ row }: any) => {
-      const { getData } = useApi();
-      const [courseName, setCourseName] = useState<string>('-');
-      const [, setCourseList] = useState([]);
-
-      const course_id = row?.original?.course_semester_subjects
-        ? JSON.parse(row?.original?.course_semester_subjects)
-        : '';
-
-      const entity_id = row.original.entity_id;
-
-      useEffect(() => {
-        if (entity_id) {
-          getData(`${QUERY_KEYS_COURSE.GET_COURSE}`)
-            .then((data) => {
-              setCourseList(data?.data?.course_data);
-              return getData('/entity/list');
-            })
-            .then((entityResponse: any) => {
-              if (entityResponse.status) {
-                const entity = entityResponse?.data?.entityes_data.find(
-                  (e: any) => e.id === Number(entity_id),
-                );
-
-                if (entity?.entity_type === 'college' && course_id) {
-                  const course_id_arr = Object.keys(course_id);
-
-                  setCourseList((prevCourses) => {
-                    const course_name_arr = prevCourses.filter(
-                      (course: any) => {
-                        const id = course.id.toString();
-
-                        return course_id_arr.includes(id);
-                      },
-                    );
-
-                    setCourseName(
-                      course_name_arr.map((c: any) => c.course_name).join(', '),
-                    );
-
-                    return prevCourses;
-                  });
-                }
-              }
-            })
-            .catch((error) => {
-              console.error('Error fetching data:', error);
-            });
-        }
-      }, [entity_id]);
-
-      return <span>{courseName}</span>;
-    },
   },
   {
     accessorKey: 'subjects',
     header: 'Subjects',
-    size: 250,
-    Cell: ({ row }: any) => {
-      const [subjectsName, setSubjectsName] = useState<string>('-');
-
-      useEffect(() => {
-        const class_id = row?.original?.class_stream_subjects
-          ? JSON.parse(row?.original?.class_stream_subjects)
-          : '';
-        const course_id = row?.original?.course_semester_subjects
-          ? JSON.parse(row?.original?.course_semester_subjects)
-          : '';
-
-        let subjects: any[] = [];
-
-        if (class_id) {
-          subjects = Object.values(class_id)
-            .flatMap((category: any) => Object.values(category))
-            .flat();
-        } else if (course_id) {
-          subjects = Object.values(course_id)
-            .flatMap((category: any) => Object.values(category))
-            .flat();
-        }
-
-        setSubjectsName(subjects.length > 0 ? subjects.join(', ') : '-');
-      }, [
-        row.original.class_stream_subjects,
-        row.original.course_semester_subjects,
-      ]);
-
-      return <span>{subjectsName}</span>;
-    },
   },
   {
     accessorKey: 'created_at',
@@ -2691,41 +2518,48 @@ export const CONTENT_COLUMNS: MRT_ColumnDef<ContentRepoDTO>[] = [
   {
     accessorKey: 'is_active',
     header: 'Active/DeActive',
-    Cell: ({ cell, row, table }: any) => {
+    Cell: ({ cell, row }: any) => {
       const { putData } = useApi();
       const MenuActive = QUERY_KEYS_CONTENT.GET_CONTENT_ACTIVE;
       const MenuDeactive = QUERY_KEYS_CONTENT.GET_CONTENT_DEACTIVE;
       const value = cell?.getValue();
 
-      const active = async (id: string, currentValue: any) => {
-        try {
-          const data = await putData(
-            `${currentValue ? MenuDeactive : MenuActive}/${id}`,
-          );
-          if (data.status) {
-            table.options.meta?.updateData(
-              row.index,
-              'is_active',
-              currentValue ? 0 : 1,
-            );
-            toast.success(data?.message, {
+      const [showValue, setShowValue] = useState(value);
+      const [show, setShow] = useState(!!value);
+
+      useEffect(() => {
+        setShowValue(value);
+        setShow(!!value);
+      }, [value]);
+
+      const active = (id: string, valueSet: any) => {
+        putData(`${valueSet ? MenuDeactive : MenuActive}/${id}`)
+          .then((data: any) => {
+            if (data.status) {
+              const newValue = showValue ? 0 : 1;
+              setShowValue(newValue);
+              setShow(!show);
+              toast.success(data?.message, {
+                hideProgressBar: true,
+                theme: 'colored',
+              });
+
+              window.location.reload();
+            }
+          })
+          .catch((e) => {
+            toast.error(e?.message, {
               hideProgressBar: true,
               theme: 'colored',
             });
-          }
-        } catch (e: any) {
-          toast.error(e?.message, {
-            hideProgressBar: true,
-            theme: 'colored',
           });
-        }
       };
 
       return (
         <Switch
-          isChecked={!!value}
-          onChange={() => active(row?.original?.id, value)}
-          label={value ? 'Active' : 'Deactive'}
+          isChecked={show}
+          onChange={() => active(row?.original?.id, showValue)}
+          label={show ? 'Active' : 'Deactive'}
           activeColor="#4CAF50"
           inactiveColor="#f44336"
         />

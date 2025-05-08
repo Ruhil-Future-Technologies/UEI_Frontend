@@ -211,14 +211,12 @@ const AddEditInstitute = () => {
     };
 
     const currentDropdown = dropdownRef.current;
-    console.log('currentDropdown', currentDropdown);
 
     if (currentDropdown) {
       currentDropdown.addEventListener('focus', handleFocus as EventListener);
       currentDropdown.addEventListener('blur', handleBlur as EventListener);
     }
     const currentDropdownstate = dropdownstateRef.current;
-    console.log('currentDropdownstate', currentDropdownstate);
     if (currentDropdownstate) {
       currentDropdownstate.addEventListener(
         'focus',
@@ -366,7 +364,10 @@ const AddEditInstitute = () => {
     const formData = new FormData();
 
     const filteredData: any = { ...instituteData };
-    if (filteredData.university_id === '') {
+    if (
+      filteredData.university_id === '' ||
+      filteredData.university_id === null
+    ) {
       delete filteredData.university_id;
     }
     const isDataUnchanged = Object.keys(filteredData).every(
@@ -381,11 +382,9 @@ const AddEditInstitute = () => {
       allselectedfiles.forEach((file) => {
         formData.append('documents', file);
       });
-      for (const key in filteredData) {
-        formData.set(key, filteredData[key]);
-      }
-
-      formData.forEach((k, v) => console.log({ k, v }));
+      Object.keys(filteredData).forEach((key) => {
+        formData.append(key, filteredData[key]);
+      });
 
       putData(`${InstituteEditURL}/${id}`, formData)
         .then((data: { status: boolean; message: string }) => {
@@ -427,8 +426,6 @@ const AddEditInstitute = () => {
       for (const key in newInstituteData) {
         formData.set(key, newInstituteData[key]);
       }
-
-      formData.forEach((k, v) => console.log({ k, v }));
 
       postData(`${InstituteAddURL}`, formData)
         .then((data: { status: boolean; message: string }) => {
@@ -617,7 +614,7 @@ const AddEditInstitute = () => {
           }),
 
         website_url: Yup.string()
-          .nullable()
+          .required('Please enter Valid URL')
           .test(
             'is-valid-url',
             'Please enter a valid URL format (e.g., https://example.com).',

@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
+  Box,
   Checkbox,
   FormControl,
   IconButton,
   InputLabel,
+  LinearProgress,
   MenuItem,
   Select,
   SelectChangeEvent,
@@ -37,7 +39,6 @@ import {
 import AddCircleOutlinedIcon from '@mui/icons-material/AddCircleOutlined';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import UploadBtn from '../../Components/UploadBTN/UploadBtn';
-import FullScreenLoader from '../Loader/FullScreenLoader';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 interface IContentForm {
@@ -62,7 +63,8 @@ const AddContent = () => {
   const { namecolor }: any = context;
   const { id } = useParams();
   const navigator = useNavigate();
-  const { getData, postData, putData, deleteData } = useApi();
+  const { getData, deleteData, postFileWithProgress, putFileWithProgress } =
+    useApi();
   const navigate = useNavigate();
   const GET_UNIVERSITY = QUERY_KEYS_UNIVERSITY.GET_UNIVERSITY;
   const GET_ENTITIES = QUERY_KEYS_ENTITY.GET_ENTITY;
@@ -103,6 +105,7 @@ const AddContent = () => {
   const [isInitialDataLoaded, setIsInitialDataLoaded] = useState(false);
   const [showAuthor, setShowAuthor] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [teacherClasses, setTeacherClasses] = useState<any>([]);
 
   const initialState: IContentForm = {
     subjects: [],
@@ -118,7 +121,7 @@ const AddContent = () => {
     description: '',
     author: '',
   };
-
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [content, setContent] = useState<IContentForm>(initialState);
 
   const isSchoolEntity = (entityId: string | string[]): boolean => {
@@ -137,31 +140,53 @@ const AddContent = () => {
 
   const callAPI = async () => {
     let all_courses: any = [];
-    let all_classes: any = [];
 
-    await getData(`${QUERY_KEYS_CLASS.GET_CLASS}`).then((data) => {
-      all_classes = data?.data.classes_data;
-      setDataClasses(data.data?.classes_data);
-    });
+    await getData(`${QUERY_KEYS_COURSE.GET_COURSE}`)
+      .then((data) => {
+        all_courses = data.data?.course_data;
 
-    await getData(`${QUERY_KEYS_COURSE.GET_COURSE}`).then((data) => {
-      all_courses = data.data.course_data;
-      setDataCourses(
-        data?.data?.course_data.filter((course: any) => course.is_active),
-      );
-    });
+        const courses = data.data?.course_data;
+        setDataCourses(
+          Array.isArray(courses)
+            ? courses.filter((s: any) => s?.is_active)
+            : [],
+        );
+      })
+      .catch((error) => {
+        toast.error(error.message, {
+          hideProgressBar: true,
+          theme: 'colored',
+          position: 'top-center',
+        });
+      });
 
-    await getData(`${QUERY_KEYS_SUBJECT.GET_SUBJECT}`).then((data) => {
-      setCollegeSubjects(
-        data.data.subjects_data.filter((subject: any) => subject.is_active),
-      );
-    });
+    await getData(`${QUERY_KEYS_SUBJECT.GET_SUBJECT}`)
+      .then((data) => {
+        setCollegeSubjects(
+          data.data.subjects_data?.filter((subject: any) => subject.is_active),
+        );
+      })
+      .catch((error) => {
+        toast.error(error.message, {
+          hideProgressBar: true,
+          theme: 'colored',
+          position: 'top-center',
+        });
+      });
 
-    await getData(`${QUERY_KEYS_SUBJECT_SCHOOL.GET_SUBJECT}`).then((data) => {
-      setSchoolSubjects(
-        data.data.subjects_data.filter((subject: any) => subject.is_active),
-      );
-    });
+    await getData(`${QUERY_KEYS_SUBJECT_SCHOOL.GET_SUBJECT}`)
+      .then((data) => {
+        setSchoolSubjects(
+          data.data.subjects_data.filter((subject: any) => subject.is_active),
+        );
+      })
+      .catch((error) => {
+        toast.error(error.message, {
+          hideProgressBar: true,
+          theme: 'colored',
+          position: 'top-center',
+        });
+      });
 
     if (id) {
       const contentData = await getData(`${QUERY_KEYS_CONTENT.GET_CONTENT}`);
@@ -268,7 +293,7 @@ const AddContent = () => {
         };
         const class_stream_subjects_arr: any = filterContentClasses(
           contentDetail?.data?.content_data,
-          all_classes,
+          dataClasses,
         );
 
         const urls = contentDetail?.data?.content_data?.url || [];
@@ -341,6 +366,17 @@ const AddContent = () => {
         (data) => {
           const filteredCourses = data?.data?.course_semester_subjects;
 
+          if (data?.data?.entity_type === 'school') {
+            const validClassIds = new Set(
+              Object.keys(data?.data?.class_stream_subjects).map((id) =>
+                Number(id),
+              ),
+            );
+
+            setTeacherClasses(
+              dataClasses.filter((cls) => validClassIds.has(cls.id)),
+            );
+          }
           setTeacherCourses((prevCourses) => ({
             ...prevCourses,
             ...filteredCourses,
@@ -368,6 +404,17 @@ const AddContent = () => {
         data.data?.entityes_data.filter((entity: any) => entity.is_active),
       );
     });
+    getData(`${QUERY_KEYS_CLASS.GET_CLASS}`)
+      .then((data) => {
+        setDataClasses(data.data?.classes_data);
+      })
+      .catch((error) => {
+        toast.error(error.message, {
+          hideProgressBar: true,
+          theme: 'colored',
+          position: 'top-center',
+        });
+      });
     getData(`${QUERY_KEYS.GET_INSTITUTES}`).then((data) => {
       const allInstitutes = data.data;
       const schoolInstitutes = allInstitutes?.filter(
@@ -387,22 +434,24 @@ const AddContent = () => {
       setCollegeInstitutes(collegeInstitutes);
     });
 
-    getData(`${QUERY_KEYS_CLASS.GET_CLASS}`).then((data) => {
-      setDataClasses(data.data.classes_data);
-    });
     getData(`${QUERY_KEYS_COURSE.GET_COURSE}`).then((data) => {
       setDataCourses(data.data.course_data);
     });
     getData(`${QUERY_KEYS_SUBJECT.GET_SUBJECT}`).then((data) => {
+      const subjects = data.data?.subjects_data;
       setCollegeSubjects(
-        data.data?.subjects_data.filter((subject: any) => subject.is_active) ||
-          [],
+        Array.isArray(subjects)
+          ? subjects.filter((s: any) => s?.is_active)
+          : [],
       );
     });
+
     getData(`${QUERY_KEYS_SUBJECT_SCHOOL.GET_SUBJECT}`).then((data) => {
+      const subjects = data.data?.subjects_data;
       setSchoolSubjects(
-        data.data?.subjects_data.filter((subject: any) => subject.is_active) ||
-          [],
+        Array.isArray(subjects)
+          ? subjects.filter((s: any) => s?.is_active)
+          : [],
       );
     });
     setIsInitialDataLoaded(true);
@@ -412,7 +461,7 @@ const AddContent = () => {
     if (isInitialDataLoaded) {
       callAPI();
     }
-  }, [isInitialDataLoaded]);
+  }, [isInitialDataLoaded, dataClasses]);
 
   useEffect(() => {
     if (formRef.current?.values?.entity_id) {
@@ -787,6 +836,8 @@ const AddContent = () => {
     { resetForm }: FormikHelpers<IContentForm>,
   ) => {
     setLoading(true);
+    setUploadProgress(0);
+
     const formData = new FormData();
 
     if (!contentData.url && allselectedfiles.length <= 0 && !id) {
@@ -798,14 +849,17 @@ const AddContent = () => {
       return;
     }
     if (contentData?.url) {
-      let videoId = null;
-
+      let videoId: string | null = null;
       const url = new URL(contentData.url);
       if (
         url.hostname === 'www.youtube.com' ||
         url.hostname === 'youtube.com'
       ) {
-        videoId = url.searchParams.get('v');
+        if (url.pathname === '/watch') {
+          videoId = url.searchParams.get('v');
+        } else if (url.pathname.startsWith('/live/')) {
+          videoId = url.pathname.split('/live/')[1];
+        }
       } else if (url.hostname === 'youtu.be') {
         videoId = url.pathname.substring(1);
       }
@@ -929,32 +983,60 @@ const AddContent = () => {
 
       formData.set('url', urlStr);
 
-      putData(`${QUERY_KEYS_CONTENT.CONTENT_EDIT}/${id}`, formData)
-        .then((data: any) => {
-          if (data.status) {
-            toast.success('Content updated successfully', {
+      putFileWithProgress(
+        `${QUERY_KEYS_CONTENT.CONTENT_EDIT}/${id}`,
+        formData,
+        {
+          onProgress: (progress: any) => {
+            setUploadProgress(progress);
+          },
+          onSuccess: (data: any) => {
+            if (data.status) {
+              toast.success('Content Updated successfully', {
+                hideProgressBar: true,
+                theme: 'colored',
+              });
+              resetForm({ values: initialState });
+              setContent((prev) => ({
+                ...prev,
+                subjects: [],
+                stream: '',
+                courses: [{ course_id: '', semester: '', subjects: [] }],
+                classes: [{ class_id: '', stream: '', subjects: [] }],
+                url: '',
+                content_type: '',
+                description: '',
+                author: '',
+              }));
+              setAllSelectedfiles([]);
+              setLoading(false);
+              if (user_type === 'admin') {
+                navigator('/main/Content');
+              } else if (user_type === 'teacher') {
+                navigator('/teacher-dashboard/Content');
+              } else if (user_type === 'institute') {
+                navigator('/institution-dashboard/Content');
+              }
+            } else {
+              toast.error('Content Upload Failed', {
+                hideProgressBar: true,
+                theme: 'colored',
+              });
+              resetForm({ values: initialState });
+              setContent(initialState);
+              setAllSelectedfiles([]);
+              setLoading(false);
+            }
+          },
+          onError: (error: any) => {
+            setLoading(false);
+            toast.error(error?.response?.data.message || 'An error occurred', {
               hideProgressBar: true,
               theme: 'colored',
             });
-            setLoading(false);
-            if (user_type === 'admin') {
-              navigator('/main/Content');
-            } else if (user_type === 'teacher') {
-              navigator('/teacher-dashboard/Content');
-            } else if (user_type === 'institute') {
-              navigator('/institution-dashboard/Content');
-            }
-          }
-        })
-        .catch((e: any) => {
-          if (e?.response?.code === 401) {
-            navigator('/');
-          }
-          toast.error(e?.message, {
-            hideProgressBar: true,
-            theme: 'colored',
-          });
-        });
+          },
+        },
+      );
     } else {
       Object.keys(formattedData).forEach((key) => {
         formData.append(key, formattedData[key]);
@@ -963,15 +1045,28 @@ const AddContent = () => {
         formData.append('documents[]', file);
       });
 
-      postData(`${QUERY_KEYS_CONTENT.CONTENT_ADD}`, formData)
-        .then((data: any) => {
+      postFileWithProgress(`${QUERY_KEYS_CONTENT.CONTENT_ADD}`, formData, {
+        onProgress: (progress: any) => {
+          setUploadProgress(progress);
+        },
+        onSuccess: (data: any) => {
           if (data.status) {
             toast.success('Content saved successfully', {
               hideProgressBar: true,
               theme: 'colored',
             });
             resetForm({ values: initialState });
-            setContent(initialState);
+            setContent((prev) => ({
+              ...prev,
+              subjects: [],
+              stream: '',
+              courses: [{ course_id: '', semester: '', subjects: [] }],
+              classes: [{ class_id: '', stream: '', subjects: [] }],
+              url: '',
+              content_type: '',
+              description: '',
+              author: '',
+            }));
             setAllSelectedfiles([]);
             setLoading(false);
           } else {
@@ -984,13 +1079,15 @@ const AddContent = () => {
             setAllSelectedfiles([]);
             setLoading(false);
           }
-        })
-        .catch((e: any) => {
-          toast.error(e?.response?.data.message, {
+        },
+        onError: (error: any) => {
+          setLoading(false);
+          toast.error(error?.response?.data.message || 'An error occurred', {
             hideProgressBar: true,
             theme: 'colored',
           });
-        });
+        },
+      });
     }
   };
 
@@ -1338,7 +1435,8 @@ const AddContent = () => {
       const filesArray = Array.from(files);
 
       const PDF_MAX_SIZE = 10 * 1024 * 1024;
-      const MP4_MAX_SIZE = 500 * 1024 * 1024;
+      // const MP4_MAX_SIZE = 500 * 1024 * 1024;
+      const MP4_MAX_SIZE = 100 * 1024 * 1024;
 
       const filteredFiles = filesArray.filter((file) => {
         const fileType = file.type;
@@ -1353,7 +1451,7 @@ const AddContent = () => {
         }
 
         if (fileType === 'video/mp4' && fileSize > MP4_MAX_SIZE) {
-          toast.error(`File ${file.name} exceeds the 500MB limit for MP4s.`, {
+          toast.error(`File ${file.name} exceeds the 100MB limit for MP4s.`, {
             hideProgressBar: true,
             theme: 'colored',
           });
@@ -1401,8 +1499,35 @@ const AddContent = () => {
 
   return (
     <>
-      {' '}
-      {loading && <FullScreenLoader />}
+      {loading && (
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            backgroundColor: 'rgba(255, 255, 255, 0.7)',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: 9,
+          }}
+        >
+          <Box sx={{ width: '80vw', mt: 2, mb: 2 }}>
+            <Typography variant="body2" color="text.secondary" align="center">
+              {uploadProgress < 100
+                ? `Uploading: ${uploadProgress}%`
+                : 'Processing...'}
+            </Typography>
+            <LinearProgress
+              variant={uploadProgress === 100 ? 'indeterminate' : 'determinate'}
+              value={uploadProgress}
+              sx={{ mt: 1, height: 10, borderRadius: 5 }}
+            />
+          </Box>
+        </div>
+      )}
       <div className="main-wrapper">
         <div className="main-content">
           <div className="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
@@ -1454,13 +1579,6 @@ const AddContent = () => {
                                 user_type === 'institute' ||
                                 user_type === 'teacher'
                               }
-                              sx={{
-                                backgroundColor: inputfield(namecolor),
-                                color: inputfieldtext(namecolor),
-                                '& .MuiSelect-icon': {
-                                  color: fieldIcon(namecolor),
-                                },
-                              }}
                               style={{
                                 backgroundColor:
                                   user_type === 'institute' ||
@@ -1478,31 +1596,12 @@ const AddContent = () => {
                                     ? '1px solid #d0d0d0'
                                     : undefined,
                               }}
-                              MenuProps={{
-                                PaperProps: {
-                                  style: {
-                                    backgroundColor: inputfield(namecolor),
-                                    color: inputfieldtext(namecolor),
-                                  },
-                                },
-                              }}
                               onChange={(e: SelectChangeEvent<string>) =>
                                 handleChange(e, 'entity_id')
                               }
                             >
                               {dataEntity?.map((entity) => (
-                                <MenuItem
-                                  key={entity.id}
-                                  value={entity.id}
-                                  sx={{
-                                    backgroundColor: inputfield(namecolor),
-                                    color: inputfieldtext(namecolor),
-                                    '&:hover': {
-                                      backgroundColor:
-                                        inputfieldhover(namecolor),
-                                    },
-                                  }}
-                                >
+                                <MenuItem key={entity.id} value={entity.id}>
                                   {entity.entity_type}
                                 </MenuItem>
                               ))}
@@ -1551,34 +1650,11 @@ const AddContent = () => {
                                 user_type === 'institute' ||
                                 user_type === 'teacher'
                               }
-                              sx={{
-                                backgroundColor: inputfield(namecolor),
-                                color: inputfieldtext(namecolor),
-                                '& .MuiSelect-icon': {
-                                  color: fieldIcon(namecolor),
-                                },
-                              }}
-                              MenuProps={{
-                                PaperProps: {
-                                  style: {
-                                    backgroundColor: inputfield(namecolor),
-                                    color: inputfieldtext(namecolor),
-                                  },
-                                },
-                              }}
                             >
                               {dataUniversity?.map((university: any) => (
                                 <MenuItem
                                   key={university.id}
                                   value={university.id}
-                                  sx={{
-                                    backgroundColor: inputfield(namecolor),
-                                    color: inputfieldtext(namecolor),
-                                    '&:hover': {
-                                      backgroundColor:
-                                        inputfieldhover(namecolor),
-                                    },
-                                  }}
                                 >
                                   {university.university_name}
                                 </MenuItem>
@@ -1664,37 +1740,11 @@ const AddContent = () => {
                                           )
                                         }
                                         disabled={!values?.institute_id}
-                                        sx={{
-                                          backgroundColor:
-                                            inputfield(namecolor),
-                                          color: inputfieldtext(namecolor),
-                                          '& .MuiSelect-icon': {
-                                            color: fieldIcon(namecolor),
-                                          },
-                                        }}
-                                        MenuProps={{
-                                          PaperProps: {
-                                            style: {
-                                              backgroundColor:
-                                                inputfield(namecolor),
-                                              color: inputfieldtext(namecolor),
-                                            },
-                                          },
-                                        }}
                                       >
                                         {filteredCourses?.map((course: any) => (
                                           <MenuItem
                                             key={course.id}
                                             value={course.id}
-                                            sx={{
-                                              backgroundColor:
-                                                inputfield(namecolor),
-                                              color: inputfieldtext(namecolor),
-                                              '&:hover': {
-                                                backgroundColor:
-                                                  inputfieldhover(namecolor),
-                                              },
-                                            }}
                                           >
                                             {course.course_name}
                                           </MenuItem>
@@ -1721,39 +1771,12 @@ const AddContent = () => {
                                           )
                                         }
                                         disabled={!course.course_id}
-                                        sx={{
-                                          backgroundColor:
-                                            inputfield(namecolor),
-                                          color: inputfieldtext(namecolor),
-                                          '& .MuiSelect-icon': {
-                                            color: fieldIcon(namecolor),
-                                          },
-                                        }}
-                                        MenuProps={{
-                                          PaperProps: {
-                                            style: {
-                                              backgroundColor:
-                                                inputfield(namecolor),
-                                              color: inputfieldtext(namecolor),
-                                            },
-                                          },
-                                        }}
                                       >
                                         {courseSemesters[index]?.map(
                                           (semesterOption: string) => (
                                             <MenuItem
                                               key={semesterOption}
                                               value={semesterOption}
-                                              sx={{
-                                                backgroundColor:
-                                                  inputfield(namecolor),
-                                                color:
-                                                  inputfieldtext(namecolor),
-                                                '&:hover': {
-                                                  backgroundColor:
-                                                    inputfieldhover(namecolor),
-                                                },
-                                              }}
                                             >
                                               {semesterOption}
                                             </MenuItem>
@@ -1785,39 +1808,12 @@ const AddContent = () => {
                                         renderValue={(selected) =>
                                           selected.join(', ')
                                         }
-                                        sx={{
-                                          backgroundColor:
-                                            inputfield(namecolor),
-                                          color: inputfieldtext(namecolor),
-                                          '& .MuiSelect-icon': {
-                                            color: fieldIcon(namecolor),
-                                          },
-                                        }}
-                                        MenuProps={{
-                                          PaperProps: {
-                                            style: {
-                                              backgroundColor:
-                                                inputfield(namecolor),
-                                              color: inputfieldtext(namecolor),
-                                            },
-                                          },
-                                        }}
                                       >
                                         {courseSubjects[index]?.map(
                                           (subject: any) => (
                                             <MenuItem
                                               key={subject.subject_id}
                                               value={subject.subject_name}
-                                              sx={{
-                                                backgroundColor:
-                                                  inputfield(namecolor),
-                                                color:
-                                                  inputfieldtext(namecolor),
-                                                '&:hover': {
-                                                  backgroundColor:
-                                                    inputfieldhover(namecolor),
-                                                },
-                                              }}
                                             >
                                               <Checkbox
                                                 checked={course.subjects.includes(
@@ -1921,14 +1917,6 @@ const AddContent = () => {
                                           )
                                         }
                                         disabled={!values?.institute_id}
-                                        sx={{
-                                          backgroundColor:
-                                            inputfield(namecolor),
-                                          color: inputfieldtext(namecolor),
-                                          '& .MuiSelect-icon': {
-                                            color: fieldIcon(namecolor),
-                                          },
-                                        }}
                                         MenuProps={{
                                           PaperProps: {
                                             style: {
@@ -1939,26 +1927,60 @@ const AddContent = () => {
                                           },
                                         }}
                                       >
-                                        {dataClasses?.map((cls: any) => (
-                                          <MenuItem
-                                            key={cls.id}
-                                            value={cls.id}
-                                            sx={{
-                                              backgroundColor:
-                                                inputfield(namecolor),
-                                              color: inputfieldtext(namecolor),
-                                              '&:hover': {
-                                                backgroundColor:
-                                                  inputfieldhover(namecolor),
-                                              },
-                                            }}
-                                          >
-                                            {cls.class_name.replace(
-                                              'class_',
-                                              'Class ',
-                                            )}
-                                          </MenuItem>
-                                        ))}
+                                        {user_type === 'admin' ||
+                                        user_type == 'institute'
+                                          ? dataClasses?.map((cls: any) => (
+                                              <MenuItem
+                                                key={cls.id}
+                                                value={cls.id}
+                                                sx={{
+                                                  backgroundColor:
+                                                    inputfield(namecolor),
+                                                  color:
+                                                    inputfieldtext(namecolor),
+                                                  '&:hover': {
+                                                    backgroundColor:
+                                                      inputfieldhover(
+                                                        namecolor,
+                                                      ),
+                                                  },
+                                                }}
+                                              >
+                                                {cls.class_name.replace(
+                                                  'class_',
+                                                  'Class ',
+                                                )}
+                                              </MenuItem>
+                                            ))
+                                          : user_type === 'teacher'
+                                            ? teacherClasses?.map(
+                                                (cls: any) => (
+                                                  <MenuItem
+                                                    key={cls.id}
+                                                    value={cls.id}
+                                                    sx={{
+                                                      backgroundColor:
+                                                        inputfield(namecolor),
+                                                      color:
+                                                        inputfieldtext(
+                                                          namecolor,
+                                                        ),
+                                                      '&:hover': {
+                                                        backgroundColor:
+                                                          inputfieldhover(
+                                                            namecolor,
+                                                          ),
+                                                      },
+                                                    }}
+                                                  >
+                                                    {cls.class_name.replace(
+                                                      'class_',
+                                                      'Class ',
+                                                    )}
+                                                  </MenuItem>
+                                                ),
+                                              )
+                                            : ''}
                                       </Select>
                                     </FormControl>
                                   </div>
@@ -2059,14 +2081,6 @@ const AddContent = () => {
                                         renderValue={(selected) =>
                                           selected.join(', ')
                                         }
-                                        sx={{
-                                          backgroundColor:
-                                            inputfield(namecolor),
-                                          color: inputfieldtext(namecolor),
-                                          '& .MuiSelect-icon': {
-                                            color: fieldIcon(namecolor),
-                                          },
-                                        }}
                                         MenuProps={{
                                           PaperProps: {
                                             style: {
@@ -2082,16 +2096,6 @@ const AddContent = () => {
                                             <MenuItem
                                               key={subject.subject_id}
                                               value={subject.subject_name}
-                                              sx={{
-                                                backgroundColor:
-                                                  inputfield(namecolor),
-                                                color:
-                                                  inputfieldtext(namecolor),
-                                                '&:hover': {
-                                                  backgroundColor:
-                                                    inputfieldhover(namecolor),
-                                                },
-                                              }}
                                             >
                                               <Checkbox
                                                 checked={cls.subjects.includes(

@@ -70,8 +70,18 @@ const QuizPage = () => {
               navigate('/main/student/quiz');
               return;
             } else {
-              setQuizData(response.data);
-              setTimeLeft(response.data.timer * 60);
+              setQuizData(response?.data);
+              setTimeLeft(response?.data.timer * 60);
+              if (!response?.data?.is_multiple_attempt) {
+                toast.success(
+                  'You won’t be able to reattempt once submitted. As reattempt not allowed for this quiz.',
+                  {
+                    hideProgressBar: true,
+                    theme: 'colored',
+                    position: 'top-center',
+                  },
+                );
+              }
             }
           }
         });
@@ -577,11 +587,13 @@ const QuizPage = () => {
                       backgroundColor:
                         currentQuestionIndex === index
                           ? '#9943EC'
-                          : lockedAnswers[index]
+                          : lockedAnswers[index] && isSubmit
                             ? isCorrectAnswer(index)
                               ? '#4CAF50'
                               : '#F44336'
-                            : '#9E9E9E',
+                            : lockedAnswers[index]
+                              ? '#4CAF50'
+                              : '#9E9E9E',
                       color: 'white',
                     }}
                     onClick={() => setCurrentQuestionIndex(index)}

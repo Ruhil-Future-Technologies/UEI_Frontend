@@ -32,15 +32,12 @@ import FlagIcon from '@mui/icons-material/Flag';
 import searchWhite from '../../assets/icons/search-white.svg';
 import primaryLogo from '../../assets/icons/logo-primary.png';
 import chatLogo from '../../assets/img/chat-logo.svg';
-//import PerfectScrollbar from 'react-perfect-scrollbar';
 import '../../assets/css/newstyle.scss';
 import '../../assets/css/main.scss';
-//import 'react-perfect-scrollbar/dist/css/styles.css';
 import { useTheme } from '@mui/material/styles';
 import { ImageModal } from '../../Components/ImageModal';
 import { ChatTable } from './Tablechat';
 import useTextToSpeech from './speech';
-// import { stopSpeech, textToSpeech } from './speech';
 
 
 const Chat = () => {
@@ -75,7 +72,7 @@ const Chat = () => {
   const [dataDelete, setDataDelete] = useState(false);
   const [dataflagged, setDataflagged] = useState(false);
   const [dataDeleteId, setDataDeleteId] = useState<number>();
-  const ChatURL = QUERY_KEYS.CHATADD;
+  // const ChatURL = QUERY_KEYS.CHATADD;
   const ChatRAGURL = QUERY_KEYS.CHATRAGMODEL;
   const ChatOLLAMAURL = QUERY_KEYS.CHATOLLAMA;
   const ChatURLAI = QUERY_KEYS.CHATADDAI;
@@ -110,7 +107,7 @@ const Chat = () => {
   //   getVoices();
   // };
   if (profileCompletion !== '100') {
-    navigate('/*');
+    navigate('/main/DashBoard');
   }
   const chatRef = useRef<HTMLInputElement>(null);
   const handlecancel = () => {
@@ -352,7 +349,6 @@ const Chat = () => {
     getData(`${chatlisturl}/${studentid}`)
       .then((data: any) => {
         setchatlistData(data?.data);
-        // setstatredchat(data?.data?.filter((chat: any) => chat?.flagged));
         setchathistory(data?.data);
         setchathistoryrecent(data?.data);
       })
@@ -374,21 +370,21 @@ const Chat = () => {
       });
   };
 
-  // const getVoices = () => {
-  //   setVoices(synth.getVoices());
-  // };
-
   useEffect(() => {
     callAPI();
-    // getVoices();
   }, []);
 
   function getTodaysData(arr: any) {
-    const today = new Date().toISOString().split('T')[0]; // Get today's date in 'YYYY-MM-DD' format
-
+    // const today = new Date().toISOString().split('T')[0]; // Get today's date in 'YYYY-MM-DD' format
+    const todayDate = new Date();
+    const month = (todayDate.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-indexed
+    const day = todayDate.getDate().toString().padStart(2, '0');
+    const year = todayDate.getFullYear();
+    const today = `${month}/${day}/${year}`;
     return arr?.filter((item: any) => {
       if (item?.created_at && typeof item.created_at === 'string') {
-        const itemDate = item.created_at.split(' ')[0]; // Extract 'YYYY-MM-DD' from 'created_at'
+        // const itemDate = item.created_at.split(' ')[0]; // Extract 'YYYY-MM-DD' from 'created_at'
+        const itemDate = item.created_at.split(',')[0].trim();
         return itemDate === today;
       }
       return false;
@@ -403,7 +399,6 @@ const Chat = () => {
           updated_at: new Date(chat?.updated_at),
         }),
       );
-
       // Sort the chat history by updated_at in descending order
       const sortedChatHistory = parsedChatHistory?.sort(
         (a: { updated_at: any }, b: { updated_at: any }) =>
@@ -452,72 +447,44 @@ const Chat = () => {
     }
   }, [Id, chatlist]);
 
-  // const speak = (text: string, index: number) => {
-  //   stopSpeech(index);
-  //   const textArray = Array.isArray(text) ? text : [text];
-  //   textToSpeech(textArray.join(" "), index);
-  //   // Join the array into a single string
-  //   let cleanedText = textArray.join(' ');
 
-  //   cleanedText = cleanedText.replace(/\$([^$]*)\$/g, '$1');
-  //   cleanedText = cleanedText.replace(/\\boxed{([^}]+)}/g, '$1');
+//   const speak = (text: string, index: number) => {
+//     stopSpeech(index);
+//     const textArray = Array.isArray(text) ? text : [text]; 
+//     // Update `speak` state for all chats
+//     const updatedChats = selectedchat.map((chat: any, i: number) => ({
+//         ...chat,
+//         speak: i === index, // Only the current index is true
+//     }));
 
-  //   cleanedText = cleanedText.replace(/#{1,6}\s?/g, '');
-  //   cleanedText = cleanedText.replace(/\*{1,3}/g, '');
-  //   cleanedText = cleanedText.replace(/~~/g, '');
-  //   cleanedText = cleanedText.replace(/`{1,3}/g, '');
-  //   cleanedText = cleanedText.replace(/>\s?/g, '');
+//     setSelectedChat(updatedChats);
+//     textToSpeech(textArray.join(" "), index);
+// };
+const speak = async (text: string, index: number) => {
+  stopSpeech(index);
+  const textArray = Array.isArray(text) ? text : [text];
 
-  //   cleanedText = cleanedText.replace(
-  //     /[^a-zA-Z0-9.,!? :;()'+\-*×x÷/=≠<>≤≥±]/g,
-  //     '',
-  //   );
-  //   cleanedText = cleanedText.replace(/([+\-*×x÷/=≠<>≤≥±])/g, ' $1 ');
+  // Set the `speak` state to true for the current chat
+  const updatedChats = selectedchat.map((chat: any, i: number) => ({
+      ...chat,
+      speak: i === index, // Only the current index is true
+  }));
 
-  //   cleanedText = cleanedText.replace(/\s+/g, ' ');
+  setSelectedChat(updatedChats);
 
-  //   // Trim any leading or trailing spaces
-  //   cleanedText = cleanedText.trim();
+  // Call textToSpeech and wait for it to finish
+  const speechComplete = await textToSpeech(textArray.join(" "), index);
 
-  //   // Convert the first letter of the cleaned text to uppercase
-  //   cleanedText = cleanedText.charAt(0).toUpperCase() + cleanedText.slice(1);
+  // Once the speech completes, set `speak` to false
+  if (speechComplete) {
+      const updatedChatsAfterSpeech = selectedchat.map((chat: any, i: number) => ({
+          ...chat,
+          speak: i === index ? false : chat.speak, // Set the current index's speak to false
+      }));
 
-  //   const utterance = new SpeechSynthesisUtterance(cleanedText);
-  //   utterance.onerror = () => {};
-  //   // Event listener for when the speech ends
-  //   utterance.onend = () => {
-  //     const updatedChat = [...selectedchat];
-  //     updatedChat[index] = { ...updatedChat[index], speak: false };
-  //     setSelectedChat(updatedChat);
-  //   };
-
-  //   // console.log("ssssss",cleanedText,voices);
-  //   const voice = voices.find(
-  //     (voice) => voice.name === 'Microsoft Mark - English (United States)',
-  //   ) as SpeechSynthesisVoice;
-  //   utterance.rate = 0.9;
-  //   utterance.voice = voice;
-  //   // synth.speak(utterance);
-  //   // setSelectedChat({ ...selectedchat, speak: true });
-  //   const updatedChat = [...selectedchat];
-  //   updatedChat[index] = { ...updatedChat[index], speak: true };
-  //   setSelectedChat(updatedChat);
-  // };
-
-
-  const speak = (text: string, index: number) => {
-    stopSpeech(index);
-    const textArray = Array.isArray(text) ? text : [text]; 
-    // Update `speak` state for all chats
-    const updatedChats = selectedchat.map((chat: any, i: number) => ({
-        ...chat,
-        speak: i === index, // Only the current index is true
-    }));
-
-    setSelectedChat(updatedChats);
-    textToSpeech(textArray.join(" "), index);
+      setSelectedChat(updatedChatsAfterSpeech);
+  }
 };
-
 
   const stop = async (index: number) => {
     await new Promise((resolve) => setTimeout(resolve, 2000));
@@ -532,22 +499,10 @@ const Chat = () => {
     setSelectedChat(updatedChats);
 };
 
-
-  // const stop = (index: number) => {
-  //   // setSelectedChat({ ...selectedchat, speak: false });
-  //   stopSpeech(index);
-  //   const updatedChat = [...selectedchat];
-  //   updatedChat[index] = { ...updatedChat[index], speak: false };
-  //   setSelectedChat(updatedChat);
-  //   // synth.cancel();
-  // };
-
   const handleResponse = (data: { data: any }) => {
     const newData = data?.data ? data?.data : data;
     newData.speak = false;
     newData.like_dislike = null;
-    // setFilteredProducts(newData);
-    // setSelectedChat((prevState: any) => [...prevState, newData]);
     setSelectedChat((prevState: any) => {
       const newState = [...prevState, newData];
       const newIndex = newState.length - 1;
@@ -571,7 +526,6 @@ const Chat = () => {
       .then((data: any) => {
         setchathistory(data?.data);
         setchatlistData(data?.data);
-        // setstatredchat(data?.data?.filter((chat: any) => chat?.flagged));
         setchathistoryrecent(data?.data);
       })
       .catch((e) => {
@@ -615,14 +569,11 @@ const Chat = () => {
 
     const prompt = studentDetail?.prompt?.replace('**question**', 'answer');
     let payload = {};
-    // let rag_payload = {};
     if (selectedchat?.question !== '') {
       payload = {
         student_id: userid,
         question: search,
         prompt: prompt,
-        // course: studentDetail?.course === null ? "" : studentDetail?.course,
-        // course: "class_10",
         course:
           studentDetail?.academic_history?.institution_type === 'school'
             ? studentDetail?.class?.name
@@ -636,10 +587,6 @@ const Chat = () => {
           },
         ],
       };
-      // rag_payload = {
-      //   user_query: search,
-      //   student_id: userid,
-      // };
     } else {
       payload = {
         student_id: userid,
@@ -651,16 +598,10 @@ const Chat = () => {
             : studentCourse,
         stream: studentDetail?.subject,
       };
-      // rag_payload = {
-      //   user_query: search,
-      //   student_id: userid,
-      // };
     }
 
     const handleResponsereg = (data: { data: any }) => {
       const newData = data;
-      // newData.speak = false;
-      // setFilteredProducts(newData);
       setSelectedChat((prevState: any) => [...prevState, newData]);
       setChatSaved(false);
       setchatData((prevState: any) => [...prevState, newData]);
@@ -669,7 +610,6 @@ const Chat = () => {
       getData(`${chatlisturl}/${studentid}`)
         .then((data: any) => {
           setchatlistData(data?.data);
-          // setstatredchat(data?.data?.filter((chat: any) => chat?.flagged));
           setchathistory(data?.data);
           setchathistoryrecent(data?.data);
         })
@@ -681,15 +621,13 @@ const Chat = () => {
         });
     };
 
-    postDataJson(`${ChatURL}`, payload)
+    // postDataJson(`${ChatURL}`, payload)
+    //   .then((data) => {
+    //     if (data.status || data.code === 404) {
+      Promise.resolve({ status: true }) // Skipping ChatURL and faking a success
       .then((data) => {
-        // if (data.status === 200) {
-        //   handleResponse(data);
-        // } else if (data.status === 404) {
-        if (data.status || data.code === 404) {
-          // setLoaderMsg("Searching result from knowledge base");
+        if (data.status) {
           setLoaderMsg('Searching result from Rag model');
-
           if (studentDetail?.academic_history?.institution_type === 'school') {
             postDataJson(`${ChatRAGURL}`, {
               user_query: search,
@@ -819,10 +757,6 @@ const Chat = () => {
             } = studentDetail?.academic_history || {};
             const { subject_name, course_name } =
               studentDetail?.subject_preference || {};
-
-            // return getData(
-            //   `https://dbllm.gyansetu.ai/rag-model?user_query=${search}&student_id=${userid}`
-            // )
             const university: any =
               university_list_data.filter(
                 (university: any) => university.university_id == university_id,
@@ -841,9 +775,6 @@ const Chat = () => {
               year: year || null,
               subject: subject_name || null,
             };
-            // return getData(
-            //   `https://dbllm.gyansetu.ai/rag-model?${queryParams.toString()}`
-            // )
             return postDataJson(`${ChatRAGURL}`, queryParams)
               .then((response) => {
                 if (response?.status || response?.code === 402) {
@@ -945,7 +876,7 @@ const Chat = () => {
               });
           }
         } else {
-          handleError(data);
+          handleError(data as any);
         }
       })
       .then((data: any) => {
@@ -1061,7 +992,6 @@ const Chat = () => {
   const saveChatlocal = async () => {
     const chatDataString = localStorage?.getItem('chatData');
     const chatflagged = localStorage?.getItem('chatsaved');
-    // console.log("chatData testing save",chatDataString);
     const isChatFlagged = chatflagged === 'true';
     let chatData: any;
 
@@ -1401,16 +1331,33 @@ const Chat = () => {
       )
     : chathistory;
 
-  const extractTime = (chatDate: string) => {
-    const date = chatDate ? new Date(chatDate + 'z') : new Date();
+    const extractTime = (chatDate: string) => {      
+      const date = chatDate ? new Date(chatDate) : new Date();  
+      // Check if the parsed date is valid
+      if (isNaN(date?.getTime())) {
+          return 'Invalid Date';
+      }
+      // Convert to Indian 12-hour format
+      let hours = date?.getHours();
+      const minutes = date?.getMinutes().toString().padStart(2, '0');
+      // Determine AM/PM
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12; // Convert 24-hour time to 12-hour
+      hours = hours ? hours : 12; // If hour is 0 (midnight), show 12
+      const formattedDate = date?.toDateString();
+      const formattedTime = `${formattedDate}: ${hours}:${minutes} ${ampm}`;  
+      return formattedTime;
+  };  
+  // const extractTime = (chatDate: string) => {
+  //   console.log("test chat date",chatDate)
+  //   const date = chatDate ? new Date(chatDate + 'z') : new Date();
 
-    const hours = date.getHours().toString().padStart(2, '0');
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-    const formattedDate = date.toDateString();
-    const formattedTime = `${formattedDate}:${hours}:${minutes}`;
-    return formattedTime;
-  };
-
+  //   const hours = date.getHours().toString().padStart(2, '0');
+  //   const minutes = date.getMinutes().toString().padStart(2, '0');
+  //   const formattedDate = date.toDateString();
+  //   const formattedTime = `${formattedDate}:${hours}:${minutes}`;
+  //   return formattedTime;
+  // };
   const copyText = (index: number) => {
     // Get the text content of the div with the specific inline styles
     const textToCopy = (
@@ -1712,7 +1659,7 @@ const Chat = () => {
                                         className="diagram-container"
                                         style={{
                                           width: '100%',
-                                          height: '400px',
+                                          height: '100%',
                                           overflow: 'hidden',
                                           display: 'flex',
                                           justifyContent: 'center',
@@ -1721,6 +1668,7 @@ const Chat = () => {
                                         key={index}
                                         dangerouslySetInnerHTML={{
                                           __html: chat?.diagram_code,
+                                          // __html: chat?.diagram_code.replace(/height="\d+"/, 'height="700"')
                                         }}
                                       />
                                       <ImageModal

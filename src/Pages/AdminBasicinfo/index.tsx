@@ -157,9 +157,12 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
     try {
       const response = await getData(`${'admin/edit/' + adminId}`);
       if (response?.status) {
-        if(response?.data?.admin_data.id){
-          sessionStorage.setItem('userdata', JSON.stringify(response?.data?.admin_data));
-          localStorage.setItem('_id' ,response?.data?.admin_data.id);
+        if (response?.data?.admin_data.id) {
+          sessionStorage.setItem(
+            'userdata',
+            JSON.stringify(response?.data?.admin_data),
+          );
+          localStorage.setItem('_id', response?.data?.admin_data.id);
         }
         setadmin((prevState) => ({
           ...prevState,
@@ -185,7 +188,9 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
           pic_path: response?.data?.admin_data.pic_path,
         });
         if (response?.data?.admin_data.pic_path !== null) {
-          getData(`${'upload_file/get_image/' + response?.data?.admin_data.pic_path}`)
+          getData(
+            `${'upload_file/get_image/' + response?.data?.admin_data.pic_path}`,
+          )
             .then((imgdata: any) => {
               setFilePreview(imgdata?.data?.file_url);
             })
@@ -208,8 +213,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
           theme: 'colored',
           position: 'top-center',
         });
-      } 
-      else {
+      } else {
         toast.error('Request failed', {
           hideProgressBar: true,
           theme: 'colored',
@@ -224,7 +228,9 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
 
       if (response?.status) {
         setAllDepartment(
-          response?.data?.departments_data.filter((item: any) => item.is_active === true),
+          response?.data?.departments_data.filter(
+            (item: any) => item.is_active === true,
+          ),
         );
       }
     } catch (error: any) {
@@ -263,7 +269,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
     const value = event.target.value as string;
     setAdminDepartment(value);
   };
-  const picSubmitHandel = async (fileName:any) => {
+  const picSubmitHandel = async (fileName: any) => {
     if (!admin?.first_name) setFname_col1(true);
     if (!admin?.last_name) setLname_col1(true);
     if (!admin?.father_name) setFathername_col1(true);
@@ -279,7 +285,11 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
       mother_name: admin?.mother_name,
       guardian_name: admin?.guardian_name || '',
       is_kyc_verified: true,
-      pic_path:fileName ? fileName : selectedFile ? selectedFile : adminFilePath,
+      pic_path: fileName
+        ? fileName
+        : selectedFile
+          ? selectedFile
+          : adminFilePath,
     };
     const formData = new FormData();
     Object.entries(payload).forEach(([key, value]) => {
@@ -288,10 +298,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
       }
     });
     try {
-      const response = await putData(
-        'admin/edit/' + adminId,
-        formData,
-      );
+      const response = await putData('admin/edit/' + adminId, formData);
       if (response?.status) {
         setNamepro({
           first_name: payload?.first_name,
@@ -300,7 +307,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
         });
         getData(
           `${'upload_file/get_image/'}${
-            fileName? fileName: selectedFile ? selectedFile : adminFilePath
+            fileName ? fileName : selectedFile ? selectedFile : adminFilePath
           }`,
         )
           .then((data: any) => {
@@ -325,17 +332,22 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
         position: 'top-center',
       });
     }
-
-  }
+  };
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { files } = event.target;
     const formData = new FormData();
 
     if (files && files[0]) {
       const file: any = files[0];
-      // Check file size (3MB = 3 * 1024 * 1024 bytes)
-      if (file.size > 3 * 1024 * 1024) {
-        //setError1("File size must be less than 3MB");
+      // Check file size (1MB =  1024 * 1024 bytes)
+      if (file.size > 1024 * 1024) {
+        //setError1("File size must be less than 1MB");
+        toast.error('File size must be less than 1MB', {
+          hideProgressBar: true,
+          theme: 'colored',
+          position: 'top-center',
+        });
+
         return;
       }
 
@@ -371,7 +383,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
             });
             if (!editFalg) {
               picSubmitHandel(fileName);
-              }
+            }
           } else if (data?.code === 404) {
             toast.error(data?.message, {
               hideProgressBar: true,
@@ -490,7 +502,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
           const response = await postData('admin/add', formData);
           if (response?.status) {
             sessionStorage.setItem('userdata', JSON.stringify(response?.data));
-            localStorage.setItem('_id' ,response?.data.id);
+            localStorage.setItem('_id', response?.data.id);
             toast.success('Admin basic information saved successfully', {
               hideProgressBar: true,
               theme: 'colored',
@@ -555,10 +567,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
     if (!editable) {
       const editData = async () => {
         try {
-          const response = await putData(
-            'admin/edit/' + adminId,
-            formData,
-          );
+          const response = await putData('admin/edit/' + adminId, formData);
           if (response?.status) {
             toast.success('Admin basic information updated successfully', {
               hideProgressBar: true,

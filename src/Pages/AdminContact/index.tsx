@@ -56,12 +56,14 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
     switch (name) {
       case 'phoneNum':
         setPhoneNum(value);
-        setErrors({
-          ...errors,
-          phoneNum: !/^(?!0{10})[0-9]{10}$/.test(value)
-            ? 'Mobile number should be 10 digits'
-            : '',
-        });
+        // setErrors({
+        //   ...errors,
+        //   phoneNum: value === ''
+        //   ? ''
+        //   : !/^(?!0{10})[0-9]{10}$/.test(value)
+        //     ? 'Mobile number should be 10 digits'
+        //     : '',
+        // });
         break;
       case 'whatsappNum':
         setWhatsappNum(value);
@@ -102,13 +104,13 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
         setContcodeWtsap(response?.data.admin_contactes_data[0].mobile_isd_watsapp);
         setWhatsappNum(response?.data.admin_contactes_data[0].mobile_no_watsapp);
         setContcodePhone(response?.data.admin_contactes_data[0].mobile_isd_call);
-        setPhoneNum(response?.data.admin_contactes_data[0].mobile_no_call);
+        setPhoneNum(response?.data.admin_contactes_data[0].mobile_no_call?response?.data.admin_contactes_data[0].mobile_no_call:localStorage.getItem('phone'));
         setEmail(response?.data.email_id?response?.data.email:localStorage.getItem('email'));
         setInitialState({
           mobile_isd_watsapp: response?.data.admin_contactes_data[0].mobile_isd_watsapp,
           mobile_no_watsapp: response?.data.admin_contactes_data[0].mobile_no_watsapp,
           mobile_isd_call: response?.data.admin_contactes_data[0].mobile_isd_call,
-          mobile_no_call: response?.data.admin_contactes_data[0].mobile_no_call,
+          mobile_no_call: response?.data.admin_contactes_data[0].mobile_no_call ?response?.data.admin_contactes_data[0].mobile_no_call :localStorage.getItem('phone'),
           email_id:response?.data.email_id?response?.data.email:localStorage.getItem('email'),
           admin_id: adminId,
         });
@@ -151,12 +153,12 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
       toast.error('Please fix the errors before submitting');
       return;
     }
-    if (phoneNum === '') {
-      setErrors({
-        ...errors,
-        phoneNum: 'Mobile number should be 10 digits',
-      });
-    }
+    // if (phoneNum === '') {
+    //   setErrors({
+    //     ...errors,
+    //     phoneNum: 'Mobile number should be 10 digits',
+    //   });
+    // }
     const paylod = {
       admin_address_admin_id: adminId,
       mobile_isd_call: contcodePhone,
@@ -264,7 +266,7 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
             });
             // setActiveForm((prev) => prev + 1);
             getContact();
-            navigate('/');
+            navigate('/main/DashBoard');
           } else {
             toast.error('Something went wrong ', {
               hideProgressBar: true,
@@ -385,8 +387,9 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
                 backgroundColor: '#f5f5f5',
               }}
               required
-              error={!!errors.phoneNum}
-              helperText={errors.phoneNum}
+              disabled
+              // error={!!errors.phoneNum}
+              // helperText={errors.phoneNum}
             />
           </div>
         </div>

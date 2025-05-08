@@ -67,28 +67,34 @@ const PrivacyPolicy = () => {
                     Gyansetu may collect personal information in the following
                     ways:
                   </p>
-                  <ul>
+                  <ul style={{ listStyleType: 'disc', paddingLeft: '1.5rem' }}>
                     <li>
+                      <b>Registration: </b>
                       When you register on the Gyansetu Platform (website,
                       mobile app, or integrated services).
                     </li>
                     <li>
+                      <b>Platform Engagement: </b>
                       When you engage with platform features, such as
                       syllabus-aligned learning, performance tracking, or
                       interactive content.
                     </li>
                     <li>
+                      <b>Support Requests: </b>
                       When you contact us via email, phone, or online support.
                     </li>
                     <li>
+                      <b>Surveys and Feedback: </b>
                       When you participate in surveys, feedback sessions, or
                       training workshops.
                     </li>
                     <li>
+                      <b>Student Information: </b>
                       When schools, parents, or teachers provide necessary
                       student details to customize educational services.
                     </li>
                     <li>
+                      <b>Third-Party Integrations: </b>
                       Through third-party integrations, such as Google Analytics,
                       for platform improvements.
                     </li>
@@ -102,7 +108,7 @@ const PrivacyPolicy = () => {
                   <p>
                     Gyansetu may collect the following types of information:
                   </p>
-                  <ul>
+                  <ul style={{ listStyleType: 'disc', paddingLeft: '1.5rem' }}>
                     <li>
                       <strong> Personal Details</strong>: Name, Address,
                       Email, Phone Number, Age, School Details.
@@ -128,23 +134,26 @@ const PrivacyPolicy = () => {
                   <p>Gyansetu collects personal data to:</p>
                   <ol>
                     <li>
+                      <b>Personalized Learning: </b>
                       Deliver and improve educational content tailored to
                       individual learning needs.
                     </li>
                     <li>
-                      Enhance user experience by personalizing platform
+                      <b>Enhanced User Experience: </b>personalizing platform
                       recommendations.
                     </li>
                     <li>
+                      <b>Progress Tracking: </b>
                       Track student progress and provide performance insights
                       for teachers and parents.
                     </li>
-                    <li>Provide customer support and technical assistance.</li>
+                    <li><b>Support and Assistance: </b>Provide customer support and technical assistance.</li>
                     <li>
+                      <b>Service Updates: </b>
                       Send service updates and important notifications (e.g.,
                       syllabus changes, new features).
                     </li>
-                    <li>Continuously improve the platform based on analytics and user feedback..</li>
+                    <li><b>Platform Improvement: </b> improve the platform based on analytics and user feedback..</li>
                   </ol>
                   <p>
                     Gyansetu does not sell, rent, or share user information with
@@ -155,16 +164,18 @@ const PrivacyPolicy = () => {
                 <div id="list-item-3">
                   <h6 className="fw-bold mt-5">Communications</h6>
                   <p>We may use your information to:</p>
-                  <ul>
+                  <ul style={{ listStyleType: 'disc', paddingLeft: '1.5rem' }}>
                     <li>
-                      Send educational updates, progress reports, or support
-                      messages.
+                      <b>Educational Updates: </b>
+                    Send educational updates, progress reports, or support messages to user
                     </li>
                     <li>
+                      <b>Service Announcements: </b>
                       Provide important service announcements and security
                       alerts.
                     </li>
                     <li>
+                      <b>Marketing Communications: </b>
                       Offer marketing communications (only with user consent).
                     </li>
                   </ul>
@@ -173,7 +184,7 @@ const PrivacyPolicy = () => {
 
                 <div id="list-item-4">
                   <h6 className="fw-bold mt-5">Log Data &amp; Cookies</h6>
-                  <ul>
+                  <ul style={{ listStyleType: 'disc', paddingLeft: '1.5rem' }}>
                     <li>
                       Like many digital platforms, Gyansetu collects Log Data
                       and Cookies for performance monitoring and usability
@@ -198,7 +209,7 @@ const PrivacyPolicy = () => {
                     Storage &amp; Security of Your Personal Information
                   </h6>
                   <p>Gyansetu prioritizes data security and implements:</p>
-                  <ul>
+                  <ul style={{ listStyleType: 'disc', paddingLeft: '1.5rem' }}>
                     <li>
                       Encryption and Secure Storage: User data is encrypted and
                       stored securely.

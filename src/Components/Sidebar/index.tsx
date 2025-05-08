@@ -131,8 +131,8 @@ const Sidebar = () => {
     document.body.classList.remove('sidebar-hovered');
   };
   function removeMobileToggle() {
-    if (window.innerWidth <= 1024) {
-      document.querySelector('body')?.classList.remove('toggled');
+    if (window.innerWidth > 1024) {
+      document.querySelector('body')?.classList.add('toggled');
     } else {
       document.querySelector('body')?.classList.remove('toggled');
     }
@@ -141,7 +141,16 @@ const Sidebar = () => {
   const toggleMenu = (id: number) => {
     setOpenMenu((prevOpenMenu) => (prevOpenMenu === id ? null : id));
   };
-
+  function handleClick() {
+    const main_content = document.querySelector('body');
+    if (main_content) {
+      if (main_content.classList.contains('toggled')) {
+        main_content.classList.remove('toggled');
+      } else {
+        main_content.classList.add('toggled');
+      }
+    }
+  }
   return (
     <>
       <aside
@@ -158,7 +167,7 @@ const Sidebar = () => {
             <h5 className="mb-0">Gyansetu</h5>
           </div>
           <div className="sidebar-close">
-            <CloseOutlinedIcon onClick={removeMobileToggle} />
+            <CloseOutlinedIcon onClick={handleClick} />
           </div>
         </div>
         <div className="sidebar-nav">
@@ -308,7 +317,7 @@ const Sidebar = () => {
                                           }
                                         >
                                           <ArrowRightIcon />
-                                          Institution
+                                          Institution Management
                                         </a>
                                         <ul
                                           className={`mm-collapse ${

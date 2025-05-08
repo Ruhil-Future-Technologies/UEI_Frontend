@@ -72,6 +72,8 @@ export const ThemeProviderWrapper: React.FC<{ children: React.ReactNode }> = ({ 
           },
         },
       },
+
+  
       
       MuiButton: {
         styleOverrides: {
@@ -101,6 +103,60 @@ export const ThemeProviderWrapper: React.FC<{ children: React.ReactNode }> = ({ 
                 backgroundColor: isDarkMode ? "#444" : "#f0f0f0",
               },
             },
+          },
+        },
+      },
+
+      MuiTable: {
+        styleOverrides: {
+          root: {
+            backgroundColor: isDarkMode ? "#212529" : "#ffffff",
+          },
+        },
+      },
+
+      MuiTableCell: {
+        styleOverrides: {
+          root: {
+            color: isDarkMode ? "#ffffff" : "#212529",
+            backgroundColor: isDarkMode ? "#212529" : "#ffffff",
+            borderBottom: isDarkMode ? "1px solid #333" : "1px solid #e0e0e0",
+          },
+          head: {
+            color: isDarkMode ? "#dddddd" : "#212529",
+            backgroundColor: isDarkMode ? "#2a2a2a" : "#f5f5f5",
+          },
+        },
+      },
+
+      MuiTableRow: {
+        styleOverrides: {
+          root: {
+            "&:nth-of-type(odd)": {
+              backgroundColor: isDarkMode ? "#212121" : "#fafafa",
+            },
+            "&:hover": {
+              backgroundColor: isDarkMode ? "#333333" : "#f0f0f0",
+            },
+          },
+        },
+      },
+
+      MuiPaper: {
+        styleOverrides: {
+          root: {
+            backgroundColor: isDarkMode ? "#212529" : "#ffffff",
+          },
+        },
+      },
+      MuiTableContainer: {
+        styleOverrides: {
+          root: {
+            backgroundColor: isDarkMode ? "#212529" : "#ffffff",
+            borderRadius: "8px",
+            boxShadow: isDarkMode
+              ? "0 0 0 1px rgba(255,255,255,0.05)"
+              : "0 0 4px rgba(0,0,0,0.1)",
           },
         },
       },

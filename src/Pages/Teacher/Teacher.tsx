@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import './Teacher.scss';
 import useApi from '../../hooks/useAPI';
 import {
@@ -39,14 +39,12 @@ const Teacher = () => {
 
   const TeacherURL = QUERY_KEYS_TEACHER.GET_TEACHER;
   const DeleteTeacherURL = QUERY_KEYS_TEACHER.TEACHER_DELETE;
-  const columns11 = TEACHER_COLUMNS;
   const navigate = useNavigate();
   const { getData, putData, loading } = useApi();
   const [entity, setEntity] = useState<any[]>([]);
   const [dataTeacher, setDataTeacher] = useState<any[]>([]);
   const [dataDelete, setDataDelete] = useState(false);
   const [dataDeleteId, setDataDeleteId] = useState<number>();
-  const [columns, setColumns] = useState<MRT_ColumnDef<any>[]>(columns11);
   const [activeTab, setActiveTab] = useState(0);
   const [filteredTeachers, setFilteredTeachers] = useState<any[]>([]);
   const [activeSubTab, setActiveSubTab] = useState(0);
@@ -58,6 +56,61 @@ const Teacher = () => {
   const [collegeInstitutes, setCollegeInstitutes] = useState<any[]>([]);
   const [columnVisibility, setColumnVisibility] = useState({});
 
+  const callAPI = async () => {
+    getData('/entity/list').then((data) => {
+      if (data.status) {
+        setEntity(data.data?.entityes_data);
+      }
+    });
+    getData(`${QUERY_KEYS.GET_INSTITUTES}`).then((data) => {
+      const allInstitutes = data.data;
+      const schoolInstitutes = allInstitutes?.filter(
+        (institute: any) => institute.entity_type?.toLowerCase() === 'school',
+      );
+      const collegeInstitutes = allInstitutes?.filter(
+        (institute: any) => institute.entity_type?.toLowerCase() === 'college',
+      );
+      setSchoolInstitutes(schoolInstitutes);
+      setCollegeInstitutes(collegeInstitutes);
+    });
+
+    getData(`${QUERY_KEYS_CLASS.GET_CLASS}`).then((data) => {
+      setDataClasses(data.data);
+    });
+    getData(`${QUERY_KEYS_COURSE.GET_COURSE}`).then((data) => {
+      setDataCourses(data.data);
+    });
+    getData(`${TeacherURL}`)
+      .then((data: { data: any[] }) => {
+        if (data.data) {
+          const teacherData = data.data.map((teacher: any) => {
+            const createdDateTime = teacher?.created_at;
+            const updatedDateTime = teacher?.updated_at;
+            const created_time = new Date(createdDateTime);
+            const updated_time = new Date(updatedDateTime);
+
+            teacher.created_at = created_time.toLocaleString();
+            teacher.updated_at = updated_time.toLocaleString();
+            return teacher;
+          });
+          setDataTeacher(teacherData);
+        } else {
+          setDataTeacher([]);
+        }
+      })
+      .catch((e) => {
+        if (e?.response?.code === 401) {
+          navigate('/');
+        }
+        toast.error(e?.message, {
+          hideProgressBar: true,
+          theme: 'colored',
+        });
+      });
+  };
+
+  const columns11 = useMemo(() => TEACHER_COLUMNS(callAPI), []);
+  const [columns, setColumns] = useState<MRT_ColumnDef<any>[]>(columns11);
   const isSchoolEntity = (entityId: string | string[]): boolean => {
     const selectedEntity = entity?.find((entity) => entity.id === entityId);
     return selectedEntity?.entity_type?.toLowerCase() === 'school';
@@ -119,59 +172,6 @@ const Teacher = () => {
     setColumns(updatedColumns);
   }, [dataTeacher, columns11]);
 
-  const callAPI = async () => {
-    getData('/entity/list').then((data) => {
-      if (data.status) {
-        setEntity(data.data?.entityes_data);
-      }
-    });
-    getData(`${QUERY_KEYS.GET_INSTITUTES}`).then((data) => {
-      const allInstitutes = data.data;
-      const schoolInstitutes = allInstitutes?.filter(
-        (institute: any) => institute.entity_type?.toLowerCase() === 'school',
-      );
-      const collegeInstitutes = allInstitutes?.filter(
-        (institute: any) => institute.entity_type?.toLowerCase() === 'college',
-      );
-      setSchoolInstitutes(schoolInstitutes);
-      setCollegeInstitutes(collegeInstitutes);
-    });
-
-    getData(`${QUERY_KEYS_CLASS.GET_CLASS}`).then((data) => {
-      setDataClasses(data.data);
-    });
-    getData(`${QUERY_KEYS_COURSE.GET_COURSE}`).then((data) => {
-      setDataCourses(data.data);
-    });
-    getData(`${TeacherURL}`)
-      .then((data: { data: any[] }) => {
-        if (data.data) {
-          const teacherData = data.data.map((teacher: any) => {
-            const createdDateTime = teacher?.created_at;
-            const updatedDateTime = teacher?.updated_at;
-            const created_time = new Date(createdDateTime);
-            const updated_time = new Date(updatedDateTime);
-
-            teacher.created_at = created_time.toLocaleString();
-            teacher.updated_at = updated_time.toLocaleString();
-            return teacher;
-          });
-          setDataTeacher(teacherData);
-        } else {
-          setDataTeacher([]);
-        }
-      })
-      .catch((e) => {
-        if (e?.response?.code === 401) {
-          navigate('/');
-        }
-        toast.error(e?.message, {
-          hideProgressBar: true,
-          theme: 'colored',
-        });
-      });
-  };
-
   useEffect(() => {
     callAPI();
   }, []);
@@ -190,7 +190,8 @@ const Teacher = () => {
   useEffect(() => {
     if (activeTab === 0) {
       const approvedTeachers = dataTeacher.filter(
-        (teacher) => teacher.is_approve === true,
+        (teacher) =>
+          teacher.is_approve === true && teacher.is_disapprove === false,
       );
 
       const college: any = entity.filter(
@@ -295,7 +296,8 @@ const Teacher = () => {
       }, 0);
     } else if (activeTab === 1) {
       const pendingTeachers = dataTeacher.filter(
-        (teacher) => teacher.is_approve === false,
+        (teacher) =>
+          teacher.is_approve === false && teacher.is_disapprove === false,
       );
 
       const college: any = entity.filter((ent) => ent.entity_type == 'college');
@@ -393,7 +395,111 @@ const Teacher = () => {
         }
       }, 0);
     } else {
-      setFilteredTeachers(dataTeacher.filter((teacher) => !teacher.is_approve));
+      const disapprovedTeachers = dataTeacher.filter(
+        (teacher) =>
+          teacher.is_approve === false && teacher.is_disapprove === true,
+      );
+
+      const college: any = entity.filter(
+        (ent) => ent.entity_type.toLowerCase() == 'college',
+      );
+      const school: any = entity.filter(
+        (ent) => ent.entity_type.toLowerCase() == 'school',
+      );
+
+      setFilteredTeachers([]);
+
+      setTimeout(() => {
+        if (activeSubTab === 0) {
+          setColumnVisibility({
+            university_name: true,
+
+            course_name: true,
+
+            class_name: false,
+            class_stream_subjects: false,
+          });
+          const updatedColumns = columns11.map((column) => {
+            if (column.accessorKey === 'institute_name') {
+              return {
+                ...column,
+                header: 'College Name',
+              };
+            }
+            return column;
+          });
+          setColumns(updatedColumns);
+
+          const collegeTeachers = disapprovedTeachers
+            .filter((teacher) => teacher.entity_id == college[0]?.id)
+            .map((teacher) => {
+              const keys = teacher?.course_semester_subjects
+                ? Object.keys(teacher?.course_semester_subjects)
+                : '';
+
+              const firstKey = keys[0];
+
+              return {
+                ...teacher,
+                institute_name: getInstituteName(
+                  teacher.institute_id,
+                  'college',
+                ),
+                university_name: getUniversityName(teacher.university_id),
+                course_name: getCourseOrClassName(firstKey, 'college'),
+                class_id: null,
+                className: '-',
+                class_name: '-',
+              };
+            });
+
+          setFilteredTeachers(collegeTeachers);
+        } else {
+          setColumnVisibility({
+            university_name: false,
+            course_name: false,
+            class_stream_subjects: true,
+            course_semester_subjects: false,
+          });
+          const updatedColumns = columns11.map((column) => {
+            if (column.accessorKey === 'institute_name') {
+              return {
+                ...column,
+                header: 'School Name',
+              };
+            }
+            return column;
+          });
+          setColumns(updatedColumns);
+
+          const schoolTeachers = disapprovedTeachers
+            .filter((teacher) => teacher.entity_id == school[0]?.id)
+            .map((teacher) => {
+              let classStreamSubjects = teacher.class_stream_subjects;
+
+              if (typeof classStreamSubjects === 'string') {
+                classStreamSubjects = JSON.parse(classStreamSubjects);
+              }
+
+              const keys = Object.keys(classStreamSubjects);
+
+              const firstKey = keys[0];
+
+              return {
+                ...teacher,
+                course_semester_subjects: null,
+                institute_name: getInstituteName(
+                  teacher.institute_id,
+                  'school',
+                ),
+                class_name: getCourseOrClassName(firstKey, 'school'),
+                course_name: '-',
+                university_name: '-',
+              };
+            });
+          setFilteredTeachers(schoolTeachers);
+        }
+      }, 0);
     }
   }, [
     activeTab,
@@ -429,7 +535,7 @@ const Teacher = () => {
   const handleRejectTeacher = (id: number) => {
     putData(`${QUERY_KEYS_TEACHER.TEACHER_DISAPPROVE}/${id}`)
       .then(() => {
-        toast.success('Teacher rejected and removed', {
+        toast.success('Teacher disappvoed successfully', {
           hideProgressBar: true,
           theme: 'colored',
         });
@@ -514,6 +620,9 @@ const Teacher = () => {
     }
     delete teacherDetail?.teacher_login_id;
     delete teacherDetail?.teacher_id;
+
+    teacherDetail.created_by = teacherDetail.created_by_details.user_name;
+    delete teacherDetail?.created_by_details;
 
     setSelectedTeacher(teacherDetail);
     setOpen(true);
@@ -604,38 +713,27 @@ const Teacher = () => {
                     </Button>
                   </div>
                   <Tabs value={activeTab} onChange={handleTabChange}>
-                    <Tab
-                      label="Total Teachers"
-                      sx={{ color: namecolor === 'dark' ? 'white' : 'black' }}
-                    ></Tab>
-                    <Tab
-                      label="Pending Teachers"
-                      sx={{ color: namecolor === 'dark' ? 'white' : 'black' }}
-                    />
+                    <Tab label="Approved Teachers"></Tab>
+                    <Tab label="Pending Teachers" />
+                    <Tab label="Disapproved Teachers" />
                   </Tabs>
 
                   {activeTab === 0 && (
                     <Tabs value={activeSubTab} onChange={handleSubTabChange}>
-                      <Tab
-                        label="College"
-                        sx={{ color: namecolor === 'dark' ? 'white' : 'black' }}
-                      />
-                      <Tab
-                        label="School"
-                        sx={{ color: namecolor === 'dark' ? 'white' : 'black' }}
-                      />
+                      <Tab label="College" />
+                      <Tab label="School" />
                     </Tabs>
                   )}
                   {activeTab === 1 && (
                     <Tabs value={activeSubTab} onChange={handleSubTabChange}>
-                      <Tab
-                        label="College"
-                        sx={{ color: namecolor === 'dark' ? 'white' : 'black' }}
-                      />
-                      <Tab
-                        label="School"
-                        sx={{ color: namecolor === 'dark' ? 'white' : 'black' }}
-                      />
+                      <Tab label="College" />
+                      <Tab label="School" />
+                    </Tabs>
+                  )}
+                  {activeTab === 2 && (
+                    <Tabs value={activeSubTab} onChange={handleSubTabChange}>
+                      <Tab label="College" />
+                      <Tab label="School" />
                     </Tabs>
                   )}
                   <Box marginTop="10px">
@@ -684,6 +782,55 @@ const Teacher = () => {
                                   }
                                 >
                                   <EditIcon style={{ fill: '#547476' }} />
+                                </IconButton>
+                              </Tooltip>
+                              <Tooltip arrow placement="right" title="Delete">
+                                <IconButton
+                                  sx={{
+                                    width: '35px',
+                                    height: '35px',
+                                    color: tabletools(namecolor),
+                                  }}
+                                  onClick={() =>
+                                    handleDeleteFiles(
+                                      row?.row?.original?.user_uuid,
+                                    )
+                                  }
+                                >
+                                  <TrashIcon style={{ fill: '#547476' }} />
+                                </IconButton>
+                              </Tooltip>
+                              <Tooltip arrow placement="right" title="Details">
+                                <IconButton
+                                  sx={{
+                                    width: '35px',
+                                    height: '35px',
+                                    color: tabletools(namecolor),
+                                  }}
+                                  onClick={() =>
+                                    handleTeacherDetails(row?.row?.original?.id)
+                                  }
+                                >
+                                  <Visibility style={{ fill: '#547476' }} />
+                                </IconButton>
+                              </Tooltip>
+                            </>
+                          ) : row.row.original.is_disapprove ? (
+                            <>
+                              <Tooltip arrow placement="right" title="Approve">
+                                <IconButton
+                                  sx={{
+                                    width: '35px',
+                                    height: '35px',
+                                    color: tabletools(namecolor),
+                                  }}
+                                  onClick={() =>
+                                    handleApproveTeacher(
+                                      row?.row?.original?.user_uuid,
+                                    )
+                                  }
+                                >
+                                  <CheckIcon style={{ fill: '#547476' }} />
                                 </IconButton>
                               </Tooltip>
                               <Tooltip arrow placement="right" title="Delete">
