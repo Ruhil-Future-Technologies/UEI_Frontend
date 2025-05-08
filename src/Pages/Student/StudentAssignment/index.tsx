@@ -22,11 +22,13 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import TimerOffIcon from '@mui/icons-material/TimerOff';
 import VerifiedIcon from '@mui/icons-material/Verified';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import FullScreenLoader from '../../Loader/FullScreenLoader';
 const StudentAssignments = () => {
   const { getData } = useApi();
   const navigate = useNavigate();
   const studemtId = localStorage.getItem('student_id');
   const student_uuid = localStorage.getItem('user_uuid');
+  const [loading, setLoading] = useState(false);
   const [assignmentData, setAssignmentData] = useState<Assignment[]>([]);
 
   const [activeAssignmentData, setActiveAssignmentData] = useState<
@@ -144,9 +146,11 @@ const StudentAssignments = () => {
 
   const getListOfAssignments = () => {
     try {
+      setLoading(true);
       getData(`${QUERY_KEYS_ASSIGNMENT.GET_ASSIGNMENTS_LIST}`).then(
         (response) => {
           if (response.data) {
+            setLoading(false);
             const datetime = new Date();
             const filteredAssignment = response?.data.filter(
               (assignment: any) =>
@@ -283,6 +287,7 @@ const StudentAssignments = () => {
     <>
       <div className="main-wrapper">
         <div className="main-content">
+        {loading && <FullScreenLoader />}
           <div className="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
             <div className="breadcrumb-title pe-3">
               {' '}
@@ -594,14 +599,7 @@ const StudentAssignments = () => {
               </Typography>
             )}
           </Box>
-          <Box>
-            <Typography
-              variant="h6"
-              sx={{ mt: 4 }}
-              className="mb-2 fw-semibold"
-            >
-              Assignment History
-            </Typography>
+          <Box className="rounded-4 overflow-hidden">
             <MaterialReactTable
               columns={columns}
               data={[...assignmentData].reverse()}
@@ -615,6 +613,11 @@ const StudentAssignments = () => {
               enableColumnActions={false}
               enableColumnFilters={false} // Hide column filters
               enableDensityToggle={false} // Hide density toggle
+              renderTopToolbarCustomActions={() => (
+                <Typography variant="h6" sx={{ fontWeight: 'bold', ml: 1 }}>
+                  Assignment History
+                </Typography>
+              )}
             />
           </Box>
         </div>
