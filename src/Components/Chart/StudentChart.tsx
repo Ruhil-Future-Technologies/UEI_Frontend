@@ -121,8 +121,8 @@ const StudentDashboardCharts = () => {
               if (userdata?.entity_name === 'college') {
                 const subjectMap: any = {};
 
-                collegeData.data.subjects_data.forEach((subject: any) => {
-                  subjectMap[subject.subject_name] = subject.subject_name;
+                collegeData?.data?.subjects_data?.forEach((subject: any) => {
+                  subjectMap[subject?.subject_name] = subject?.subject_name;
                 });
 
                 const labels: any = [];
