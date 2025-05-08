@@ -1075,6 +1075,7 @@ export const CreateAssignments = () => {
 
     if (!id) {
       try {
+        setLoading(true)
         postData(ASSIGNMENT.ADD_ASSIGNMENT, formData).then((response) => {
           if (response.status) {
             toast.success(response.message, {
@@ -1082,6 +1083,7 @@ export const CreateAssignments = () => {
               theme: 'colored',
               position: 'top-center',
             });
+            setLoading(false)
             navigate('/teacher-dashboard/assignments');
             setAssignmentData({
               title: '',

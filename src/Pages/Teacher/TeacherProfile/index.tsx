@@ -1609,9 +1609,9 @@ const TeacherProfile = () => {
                         </div>
                         {box.is_Stream && (
                           <div className="col-md-4 col-12 mb-3">
-                            <label className="col-form-label">
+                            {/* <label className="col-form-label">
                               Stream Name<span>*</span>
-                            </label>
+                            </label> */}
                             <FormControl fullWidth>
                               <InputLabel id={`stream_id_${index}`}>
                                 Stream Name

@@ -186,6 +186,7 @@ const AddEditInstitute = () => {
             const checkAllExist =
               current_docs.every((file: any) => allfiles.includes(file)) &&
               current_docs.length == allfiles.length;
+
             setAllExist(checkAllExist);
           }
         })
@@ -309,6 +310,7 @@ const AddEditInstitute = () => {
       const checkAllExist =
         institute.documents.every((file: any) => allfiles.includes(file)) &&
         institute.documents.length == allfiles.length;
+
       setAllExist(checkAllExist);
     }
   }, [allfiles, institute]);
@@ -426,6 +428,7 @@ const AddEditInstitute = () => {
         allExist &&
         institute.documents.length === allfiles.length
       ) {
+
         putData(`${InstituteEditURL}/${id}`, formData)
           .then((data: { status: boolean; message: string }) => {
             if (data.status) {
@@ -490,6 +493,7 @@ const AddEditInstitute = () => {
               hideProgressBar: true,
               theme: 'colored',
             });
+
           }
         });
       }
