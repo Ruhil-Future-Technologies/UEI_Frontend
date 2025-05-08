@@ -10,8 +10,10 @@ import {
   createAcademicPerformanceConfig,
   createCompletionRateConfig,
 } from './ChartConfig';
-
+import { useTheme } from '../../ThemeProvider';
 const StudentDashboardCharts = () => {
+
+  const { isDarkMode } = useTheme(); 
   const { getData } = useApi();
 
   const userdata = JSON.parse(localStorage.getItem('userdata') ?? '""');
@@ -65,6 +67,12 @@ const StudentDashboardCharts = () => {
       chart: { height: 400, type: 'line' },
       xaxis: { categories: [] },
       title: { text: 'No Learning Time Data Available', align: 'center' },
+      legend: {
+        position: 'bottom',
+        labels: {
+          colors: ['#666666', '#666', '#666'], // Change this to a dark/light color based on theme
+        }       
+      },
     },
   });
 
@@ -74,6 +82,12 @@ const StudentDashboardCharts = () => {
       chart: { height: 400, type: 'line' },
       xaxis: { categories: [] },
       title: { text: 'No Study Streaks Data Available', align: 'center' },
+      legend: {
+        position: 'bottom',
+        labels: {
+          colors: ['#666666', '#666', '#666'], // Change this to a dark/light color based on theme
+        }       
+      },
     },
   });
   const [studentData, setStudentData] = useState<any>('');
@@ -81,6 +95,8 @@ const StudentDashboardCharts = () => {
 
   const getMonths = () => {
     if (!studentData) return [];
+
+    
 
     const monthSet = new Set<string>();
 
@@ -154,6 +170,7 @@ const StudentDashboardCharts = () => {
                     currentScores,
                     previousScores,
                     labels,
+                    isDarkMode,
                   ),
                 );
 
@@ -162,6 +179,7 @@ const StudentDashboardCharts = () => {
                     completedAssignments,
                     pendingAssignments,
                     labels,
+                    isDarkMode,
                   ),
                 );
               } else {
@@ -200,6 +218,7 @@ const StudentDashboardCharts = () => {
                     currentScores,
                     previousScores,
                     labels,
+                    isDarkMode
                   ),
                 );
                 setCompletionRateData(
@@ -207,6 +226,7 @@ const StudentDashboardCharts = () => {
                     completedAssignments,
                     pendingAssignments,
                     labels,
+                    isDarkMode
                   ),
                 );
               }
@@ -381,6 +401,9 @@ const StudentDashboardCharts = () => {
                     zoom: {
                       enabled: false,
                     },
+                    theme: {
+                      mode: isDarkMode ? 'dark' : 'light',
+                    },
                     toolbar: { show: false },
                     dropShadow: {
                       enabled: true,
@@ -482,9 +505,9 @@ const StudentDashboardCharts = () => {
                   ],
                   legend: {
                     position: 'bottom',
-                    horizontalAlign: 'right',
-                    floating: false,
-                    offsetY: 10,
+                    
+                    
+                    colors: ['#666666', '#666666', '#666666'], 
                   },
                   title: {
                     text: timeData?.dailyData?.length
@@ -494,11 +517,11 @@ const StudentDashboardCharts = () => {
                     style: {
                       fontSize: '18px',
                       fontWeight: 'bold',
-                      color: '#333',
+                      color: '#666',
                     },
                   },
                   tooltip: {
-                    theme: 'light',
+                    theme: isDarkMode ? 'dark' : 'light',
                     shared: true,
                     intersect: false,
                     y: {
@@ -704,9 +727,7 @@ const StudentDashboardCharts = () => {
                   ],
                   legend: {
                     position: 'bottom',
-                    horizontalAlign: 'right',
-                    floating: false,
-                    offsetY: 10,
+                    colors: ['#666666', '#666666', '#666666'], 
                   },
                   title: {
                     text: streaksData?.engagement?.length
@@ -716,11 +737,11 @@ const StudentDashboardCharts = () => {
                     style: {
                       fontSize: '18px',
                       fontWeight: 'bold',
-                      color: '#333',
+                      color: '#666',
                     },
                   },
                   tooltip: {
-                    theme: 'light',
+                    theme: isDarkMode ? 'dark' : 'light',
                     shared: true,
                     intersect: false,
                   },
