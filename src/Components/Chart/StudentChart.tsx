@@ -167,8 +167,8 @@ const StudentDashboardCharts = () => {
               } else {
                 const subjectMap: any = {};
 
-                schoolData.data.subjects_data.forEach((subject: any) => {
-                  subjectMap[subject.subject_name] = subject.subject_name;
+                schoolData?.data?.subjects_data.forEach((subject: any) => {
+                  subjectMap[subject?.subject_name] = subject.subject_name;
                 });
 
                 const labels: any = [];
