@@ -944,7 +944,12 @@ const AddEditTeacher = () => {
 
       const allExist = current_docs.every((file) => allfiles.includes(file));
 
-      if (allselectedfiles.length === 0 && allExist) {
+      if (
+        allselectedfiles.length === 0 &&
+        current_docs.length === allfiles.length &&
+        allExist
+      ) {
+
         putData(`${QUERY_KEYS_TEACHER.TEACHER_EDIT}/${id}`, formData)
           .then((data: any) => {
             if (data.status) {
@@ -967,6 +972,7 @@ const AddEditTeacher = () => {
               navigator('/');
             }
             toast.error(e?.message, {
+
               hideProgressBar: true,
               theme: 'colored',
             });
