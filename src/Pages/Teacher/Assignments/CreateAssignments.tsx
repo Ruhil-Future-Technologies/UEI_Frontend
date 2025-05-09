@@ -122,7 +122,8 @@ export const CreateAssignments = () => {
 
   const { id } = useParams();
 
-  const { getData, postData, postDataJson, putDataJson, putData } = useApi();
+  const { getData, postData, postDataJson, putDataJson, putData, loading } =
+    useApi();
   const [darkMode, setDarkMode] = useState(false);
 
   //const stream = ['Science', 'Commerce', 'Arts'];
@@ -131,12 +132,14 @@ export const CreateAssignments = () => {
   const getsubjectSchool = QUERY_KEYS_SUBJECT_SCHOOL.GET_SUBJECT;
   const getSubjectCollege = QUERY_KEYS_SUBJECT.GET_SUBJECT;
   const CourseURL = QUERY_KEYS_COURSE.GET_COURSE;
+  const ASSIGNMETN_DOC_EDIT = QUERY_KEYS_ASSIGNMENT.ASSIGNMENT_DOC_EDIT;
   const teacher_id = localStorage.getItem('teacher_id');
   const teacherId = localStorage.getItem('user_uuid');
   const [assignmentType, setAssignmentType] = useState(
     type !== 'quiz' ? 'written' : 'quiz',
   );
   const [files, setFiles] = useState<File[]>([]);
+  const [allfiles, setAllfiles] = useState<any>([]);
   const navigate = useNavigate();
   const quillRef = useRef<ReactQuill | null>(null);
   const [availableFrom, setAvailableFrom] = useState<Dayjs | null>(null);
@@ -190,7 +193,6 @@ export const CreateAssignments = () => {
   const [quiz_timer_error, setQuizTimer_error] = useState(false);
   const GENERATE_QUIZ = QUERY_KEYS_QUIZ.GENERATE_QUIZ;
   const ASSIGNMENT = QUERY_KEYS_ASSIGNMENT;
-  const [loading, setLoading] = useState(false);
   const [isAssignmentModalOpen, setAssignmentModalOpen] = useState(false);
   const [assignmentJsonQuestions, setAssignmentJsonQuestions] = useState<any>();
   const [editable, setEditable] = useState(true);
@@ -369,7 +371,8 @@ export const CreateAssignments = () => {
               if (response.data) {
                 setAssignmentData(response.data);
                 if (response?.data?.files) {
-                  setFiles(response?.data?.files);
+                  const urls = response?.data?.files || [];
+                  setAllfiles(urls);
                 }
                 if (response?.data?.questions.length > 0) {
                   setTotalQuestion(response?.data?.questions.length);
@@ -797,7 +800,7 @@ export const CreateAssignments = () => {
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEditable(false)
+    setEditable(false);
     if (event.target.checked) {
       setSelectedStudents(listOfStudentFiltered || []);
       setSelectAll(true);
@@ -809,7 +812,7 @@ export const CreateAssignments = () => {
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEditable(false)
+    setEditable(false);
     if (event.target.files) {
       setFiles([...files, ...Array.from(event.target.files)]);
       setFile_error(false);
@@ -817,7 +820,7 @@ export const CreateAssignments = () => {
   };
 
   const handleChanges = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEditable(false)
+    setEditable(false);
     const { name, value } = event.target;
     setAssignmentData((prev) => ({
       ...prev,
@@ -826,7 +829,7 @@ export const CreateAssignments = () => {
     validation(name, value);
   };
   const handleQuillChange = (value: string) => {
-    setEditable(false)
+    setEditable(false);
     setAssignmentData((prev) => ({
       ...prev,
       instructions: value, // Update the 'instructions' field in state
@@ -844,7 +847,10 @@ export const CreateAssignments = () => {
       setTitle_error(false);
     }
 
-    if (name == 'points' && ((parseInt(value) > 100) || (parseInt(value) < 0) || value == '')) {
+    if (
+      name == 'points' &&
+      (parseInt(value) > 100 || parseInt(value) < 0 || value == '')
+    ) {
       setPoint_error(true);
     } else {
       setPoint_error(false);
@@ -903,16 +909,21 @@ export const CreateAssignments = () => {
       setTitle_error(true);
       valid1 = true;
     }
-    if (assignmentDataType != 'json' && !(files.length > 0)) {
+    if (
+      assignmentDataType != 'json' &&
+      !(files.length > 0) &&
+      !(allfiles.length > 0)
+    ) {
       setFile_error(true);
       valid1 = true;
     } else {
       setFile_error(false);
     }
     if (assignmentDataType != 'json') {
-
-      if (!/^\d+$/.test(assignmentData.points) || Number(assignmentData.points) > 100) {
-        console.log(assignmentData.points)
+      if (
+        !/^\d+$/.test(assignmentData.points) ||
+        Number(assignmentData.points) > 100
+      ) {
         setPoint_error(true);
         valid1 = true;
       } else {
@@ -942,14 +953,14 @@ export const CreateAssignments = () => {
     } else {
       setContact_email_error(false);
     }
-    if (availableFrom == null || availableFrom.isBefore(dayjs())) {
+    if (availableFrom == null || (!id && availableFrom.isBefore(dayjs()))) {
       setAvailableFrom_error(true);
       valid1 = true;
       setError(null);
     } else {
       setAvailableFrom_error(false);
     }
-    if (dueDate == null || dueDate == dayjs() || dueDate <= dayjs()) {
+    if (dueDate == null || (!id && dueDate <= dayjs())) {
       setDue_date_error(true);
       valid1 = true;
     } else {
@@ -1037,10 +1048,6 @@ export const CreateAssignments = () => {
     formData.append('assign_to_students', JSON.stringify(students));
     if (assignmentType == 'ai generated') {
       formData.append('files', []);
-    } else {
-      files.forEach((file) => {
-        formData.append('files', file);
-      });
     }
 
     if (selectedEntity.toLowerCase() === 'school') {
@@ -1107,8 +1114,11 @@ export const CreateAssignments = () => {
     }
 
     if (!id) {
+      files.forEach((file) => {
+        formData.append('files', file);
+      });
+
       try {
-        setLoading(true)
         postData(ASSIGNMENT.ADD_ASSIGNMENT, formData).then((response) => {
           if (response.status) {
             toast.success(response.message, {
@@ -1116,7 +1126,6 @@ export const CreateAssignments = () => {
               theme: 'colored',
               position: 'top-center',
             });
-            setLoading(false)
             navigate('/teacher-dashboard/assignments');
             setAssignmentData({
               title: '',
@@ -1133,6 +1142,12 @@ export const CreateAssignments = () => {
               notify: false,
               files: [], // File should be null initially
             });
+          } else {
+            toast.error(response.message, {
+              hideProgressBar: true,
+              theme: 'colored',
+              position: 'top-center',
+            });
           }
         });
       } catch (error: any) {
@@ -1143,46 +1158,127 @@ export const CreateAssignments = () => {
         });
       }
     } else {
-      try {
-        putData(`${ASSIGNMENT.EDIT_ASSIGNMENT}${id}`, formData)
-          .then((response) => {
-            if (response.status) {
-              toast.success(response.message, {
+      const fileData = new FormData();
+      fileData.append('existing_docs', JSON.stringify(allfiles));
+
+      files.forEach((file) => {
+        fileData.append('documents', file);
+      });
+
+      const current_docs = assignmentData.files || [];
+
+      const allExist = current_docs.every((file: any) =>
+        allfiles.includes(file),
+      );
+      if (
+        files.length === 0 &&
+        current_docs.length === allfiles.length &&
+        allExist
+      ) {
+        try {
+          putData(`${ASSIGNMENT.EDIT_ASSIGNMENT}${id}`, formData)
+            .then((response) => {
+              if (response.status) {
+                toast.success(response.message, {
+                  hideProgressBar: true,
+                  theme: 'colored',
+                  position: 'top-center',
+                });
+                navigate('/teacher-dashboard/assignments');
+                setAssignmentData({
+                  title: '',
+                  type: 'written',
+                  contact_email: '',
+                  allow_late_submission: false,
+                  due_date_time: '',
+                  available_from: '',
+                  assign_to_students: [],
+                  instructions: '',
+                  points: '',
+                  save_draft: false,
+                  add_to_report: false,
+                  notify: false,
+                  files: [],
+                });
+                setFiles([]);
+                setAllfiles([]);
+              } else {
+                toast.error(response?.message, {
+                  hideProgressBar: true,
+                  theme: 'colored',
+                });
+                setFiles([]);
+                setAllfiles([]);
+              }
+            })
+            .catch((response) => {
+              toast.error(response.message, {
                 hideProgressBar: true,
                 theme: 'colored',
                 position: 'top-center',
               });
-              navigate('/teacher-dashboard/assignments');
-              setAssignmentData({
-                title: '',
-                type: 'written',
-                contact_email: '',
-                allow_late_submission: false,
-                due_date_time: '',
-                available_from: '',
-                assign_to_students: [],
-                instructions: '',
-                points: '',
-                save_draft: false,
-                add_to_report: false,
-                notify: false,
-                files: [],
-              });
-            }
-          })
-          .catch((response) => {
-            toast.error(response.message, {
-              hideProgressBar: true,
-              theme: 'colored',
-              position: 'top-center',
             });
+        } catch (error: any) {
+          toast.error(error.message, {
+            hideProgressBar: true,
+            theme: 'colored',
+            position: 'top-center',
           });
-      } catch (error: any) {
-        toast.error(error.message, {
-          hideProgressBar: true,
-          theme: 'colored',
-          position: 'top-center',
-        });
+        }
+      } else {
+        try {
+          putData(`${ASSIGNMETN_DOC_EDIT}${id}`, fileData).then((response) => {
+            if (response?.code === 201) {
+              putData(`${ASSIGNMENT.EDIT_ASSIGNMENT}${id}`, formData)
+                .then((response) => {
+                  if (response.status) {
+                    toast.success(response.message, {
+                      hideProgressBar: true,
+                      theme: 'colored',
+                      position: 'top-center',
+                    });
+                    navigate('/teacher-dashboard/assignments');
+                    setAssignmentData({
+                      title: '',
+                      type: 'written',
+                      contact_email: '',
+                      allow_late_submission: false,
+                      due_date_time: '',
+                      available_from: '',
+                      assign_to_students: [],
+                      instructions: '',
+                      points: '',
+                      save_draft: false,
+                      add_to_report: false,
+                      notify: false,
+                      files: [],
+                    });
+                    setFiles([]);
+                    setAllfiles([]);
+                  } else {
+                    toast.error(response?.message, {
+                      hideProgressBar: true,
+                      theme: 'colored',
+                    });
+                    setFiles([]);
+                  }
+                })
+                .catch((response) => {
+                  toast.error(response.message, {
+                    hideProgressBar: true,
+                    theme: 'colored',
+                    position: 'top-center',
+                  });
+                });
+            }
+          });
+        } catch (error: any) {
+          toast.error(error.message, {
+            hideProgressBar: true,
+            theme: 'colored',
+            position: 'top-center',
+          });
+        }
       }
     }
   };
@@ -1384,25 +1480,20 @@ export const CreateAssignments = () => {
 
     try {
       if (type == 'assignment') {
-        setLoading(true);
         postDataJson(ASSIGNMENT.GENERATE_AI_ASSIGNMENT, payload).then(
           (response) => {
             setAssignmentGenrData(response);
             setAssignmentModalOpen(true);
-            setLoading(false);
             setAiAssignmentGenerated(true);
           },
         );
       } else {
-        setLoading(true);
         postDataJson(GENERATE_QUIZ, payload).then((response) => {
           setQuizData(response);
           setIsModalOpen(true);
-          setLoading(false);
         });
       }
     } catch (error) {
-      setLoading(false);
       console.error('Error generating quiz:', error);
 
       toast.error('Quiz generation failed', {
@@ -1773,7 +1864,7 @@ export const CreateAssignments = () => {
 
         if (name === 'course_id') {
           if (boxes[index].course_id != value) {
-            setEditable(false)
+            setEditable(false);
             const filteredSemesters = semesterData?.filter(
               (item) => item.course_id === value,
             );
@@ -1791,7 +1882,7 @@ export const CreateAssignments = () => {
         }
         if (name === 'semester_number') {
           if (boxes[index].semester_number != value) {
-            setEditable(false)
+            setEditable(false);
             const filteredSubjects = totleSubject?.filter(
               (item) =>
                 item.semester_number === value &&
@@ -1805,7 +1896,7 @@ export const CreateAssignments = () => {
         }
         if (name == 'subjects') {
           if (boxes[index].subjects[0] != value) {
-            setEditable(false)
+            setEditable(false);
             setSelectedStudents([]);
             const filteredStudents = listOfStudent?.filter((student) => {
               const matchedSubject = totleSubject?.find(
@@ -1840,7 +1931,7 @@ export const CreateAssignments = () => {
 
         if (name === 'class_id') {
           if (boxesForSchool[index].class_id != value) {
-            setEditable(false)
+            setEditable(false);
             const selectedClass = dataClass.find(
               (item) => String(item.id) == value,
             )?.class_name;
@@ -1881,7 +1972,7 @@ export const CreateAssignments = () => {
         }
         if (name == 'stream') {
           if (boxesForSchool[index].stream != value) {
-            setEditable(false)
+            setEditable(false);
             const filteredSubjects = totleSubject?.filter(
               (item) =>
                 String(item.stream).toLowerCase() ==
@@ -1901,7 +1992,7 @@ export const CreateAssignments = () => {
         }
         if (name == 'subjects') {
           if (boxesForSchool[index].subjects[0] != value) {
-            setEditable(false)
+            setEditable(false);
             setSelectedStudents([]);
             const filteredStudents = listOfStudent?.filter((student) => {
               const matchedSubject = totleSubject?.find(
@@ -1922,13 +2013,22 @@ export const CreateAssignments = () => {
   };
 
   const handleFileRemove = (index: number) => {
+    setEditable(false);
     setFiles(files.filter((_, i) => i !== index));
-    if (files.length == 1) {
+    if (files.length == 1 || allfiles.length == 1) {
       setFile_error(true);
     } else {
       setFile_error(false);
     }
   };
+
+  const handleDeleteFile = (index: any) => {
+    setEditable(false);
+    setAllfiles((previous: any) =>
+      previous.filter((_: any, ind: any) => ind !== index),
+    );
+  };
+
   const handleSaveAsDraft = () => {
     const updatedPayload = {
       ...quizPayload,
@@ -2213,22 +2313,25 @@ export const CreateAssignments = () => {
                           disabled={submittedCount > 0}
                           type="number"
                           inputProps={{ min: 0, max: 100 }}
-
                         />
                         {point_error && (
                           <>
                             {parseInt(assignmentData.points) > 100 ? (
-                              <p className="error-text" style={{ color: 'red' }}>
-                                <small>Points can`t be more than 100.</small>
+                              <p
+                                className="error-text"
+                                style={{ color: 'red' }}
+                              >
+                                <small>Points can`t be more then 100.</small>
                               </p>
                             ) : (
-                              <p className="error-text" style={{ color: 'red' }}>
+                              <p
+                                className="error-text"
+                                style={{ color: 'red' }}
+                              >
                                 <small>Please enter a valid points.</small>
                               </p>
-                            )
-                            }
+                            )}
                           </>
-
                         )}
                       </div>
                       <div className="col-12">
@@ -2280,6 +2383,33 @@ export const CreateAssignments = () => {
                               />
                             </ListItem>
                           ))}
+                          {allfiles?.map((file: any, index: number) => (
+                            <ListItem
+                              className="fileslistitem"
+                              key={index}
+                              sx={{
+                                borderRadius: 1,
+                                mb: 1,
+                              }}
+                              secondaryAction={
+                                submittedCount <= 0 ? (
+                                  <IconButton
+                                    edge="end"
+                                    onClick={() => handleDeleteFile(index)}
+                                  >
+                                    <DeleteIcon />
+                                  </IconButton>
+                                ) : null
+                              }
+                            >
+                              <div className="pinwi-20">
+                                <AttachFileIcon />
+                              </div>
+                              <ListItemText
+                                primary={(file.name as any) || (file as any)}
+                              />
+                            </ListItem>
+                          ))}
                         </List>
                         {file_error && (
                           <p className="error-text " style={{ color: 'red' }}>
@@ -2307,7 +2437,7 @@ export const CreateAssignments = () => {
                               disabled={isQuizGenerated}
                               onChange={(e) => {
                                 setLevel(e.target.value);
-                                setEditable(false)
+                                setEditable(false);
                               }}
                             >
                               <MenuItem value="easy">Easy</MenuItem>
@@ -2542,7 +2672,10 @@ export const CreateAssignments = () => {
                             type="text"
                             disabled={isQuizGenerated || submittedCount > 0}
                             value={topic}
-                            onChange={(e) => { setTopic(e.target.value); setEditable(false) }}
+                            onChange={(e) => {
+                              setTopic(e.target.value);
+                              setEditable(false);
+                            }}
                             fullWidth
                           />
 
@@ -2931,10 +3064,12 @@ export const CreateAssignments = () => {
                         value={selectedStudents}
                         onChange={(_, newValue) => {
                           if (submittedCount > 0) {
-                            setEditable(false)
-                            const removedProtectedStudents = selectedStudentsForUpdate.filter(
-                              (student) => !newValue.some((s) => s.id === student.id)
-                            );
+                            setEditable(false);
+                            const removedProtectedStudents =
+                              selectedStudentsForUpdate.filter(
+                                (student) =>
+                                  !newValue.some((s) => s.id === student.id),
+                              );
 
                             if (removedProtectedStudents.length > 0) {
                               // Block removal of protected students
@@ -3077,7 +3212,7 @@ export const CreateAssignments = () => {
                             value={dueTime} // Ensure it's a Dayjs object
                             onChange={(newValue) => {
                               setDueTime(newValue);
-                              setEditable(false)
+                              setEditable(false);
                             }} // Directly set Dayjs object
                             closeOnSelect={false}
                             slotProps={{
@@ -3099,7 +3234,7 @@ export const CreateAssignments = () => {
                               inputProps={{ min: 0 }}
                               onChange={(e) => {
                                 setQuizTimer(e.target.value);
-                                setEditable(false)
+                                setEditable(false);
                               }}
                               fullWidth
                             />
