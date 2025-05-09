@@ -797,7 +797,7 @@ export const CreateAssignments = () => {
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEditable(false);
+    setEditable(false)
     if (event.target.checked) {
       setSelectedStudents(listOfStudentFiltered || []);
       setSelectAll(true);
@@ -809,7 +809,7 @@ export const CreateAssignments = () => {
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEditable(false);
+    setEditable(false)
     if (event.target.files) {
       setFiles([...files, ...Array.from(event.target.files)]);
       setFile_error(false);
@@ -817,7 +817,7 @@ export const CreateAssignments = () => {
   };
 
   const handleChanges = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEditable(false);
+    setEditable(false)
     const { name, value } = event.target;
     setAssignmentData((prev) => ({
       ...prev,
@@ -826,7 +826,7 @@ export const CreateAssignments = () => {
     validation(name, value);
   };
   const handleQuillChange = (value: string) => {
-    setEditable(false);
+    setEditable(false)
     setAssignmentData((prev) => ({
       ...prev,
       instructions: value, // Update the 'instructions' field in state
@@ -844,10 +844,7 @@ export const CreateAssignments = () => {
       setTitle_error(false);
     }
 
-    if (
-      name == 'points' &&
-      (parseInt(value) > 100 || parseInt(value) < 0 || value == '')
-    ) {
+    if (name == 'points' && ((parseInt(value) > 100) || (parseInt(value) < 0) || value == '')) {
       setPoint_error(true);
     } else {
       setPoint_error(false);
@@ -913,10 +910,9 @@ export const CreateAssignments = () => {
       setFile_error(false);
     }
     if (assignmentDataType != 'json') {
-      if (
-        !/^\d+$/.test(assignmentData.points) ||
-        Number(assignmentData.points) > 100
-      ) {
+
+      if (!/^\d+$/.test(assignmentData.points) || Number(assignmentData.points) > 100) {
+        console.log(assignmentData.points)
         setPoint_error(true);
         valid1 = true;
       } else {
@@ -1112,7 +1108,7 @@ export const CreateAssignments = () => {
 
     if (!id) {
       try {
-        setLoading(true);
+        setLoading(true)
         postData(ASSIGNMENT.ADD_ASSIGNMENT, formData).then((response) => {
           if (response.status) {
             toast.success(response.message, {
@@ -1120,7 +1116,7 @@ export const CreateAssignments = () => {
               theme: 'colored',
               position: 'top-center',
             });
-            setLoading(false);
+            setLoading(false)
             navigate('/teacher-dashboard/assignments');
             setAssignmentData({
               title: '',
@@ -1777,7 +1773,7 @@ export const CreateAssignments = () => {
 
         if (name === 'course_id') {
           if (boxes[index].course_id != value) {
-            setEditable(false);
+            setEditable(false)
             const filteredSemesters = semesterData?.filter(
               (item) => item.course_id === value,
             );
@@ -1795,7 +1791,7 @@ export const CreateAssignments = () => {
         }
         if (name === 'semester_number') {
           if (boxes[index].semester_number != value) {
-            setEditable(false);
+            setEditable(false)
             const filteredSubjects = totleSubject?.filter(
               (item) =>
                 item.semester_number === value &&
@@ -1809,7 +1805,7 @@ export const CreateAssignments = () => {
         }
         if (name == 'subjects') {
           if (boxes[index].subjects[0] != value) {
-            setEditable(false);
+            setEditable(false)
             setSelectedStudents([]);
             const filteredStudents = listOfStudent?.filter((student) => {
               const matchedSubject = totleSubject?.find(
@@ -1844,7 +1840,7 @@ export const CreateAssignments = () => {
 
         if (name === 'class_id') {
           if (boxesForSchool[index].class_id != value) {
-            setEditable(false);
+            setEditable(false)
             const selectedClass = dataClass.find(
               (item) => String(item.id) == value,
             )?.class_name;
@@ -1885,7 +1881,7 @@ export const CreateAssignments = () => {
         }
         if (name == 'stream') {
           if (boxesForSchool[index].stream != value) {
-            setEditable(false);
+            setEditable(false)
             const filteredSubjects = totleSubject?.filter(
               (item) =>
                 String(item.stream).toLowerCase() ==
@@ -1905,7 +1901,7 @@ export const CreateAssignments = () => {
         }
         if (name == 'subjects') {
           if (boxesForSchool[index].subjects[0] != value) {
-            setEditable(false);
+            setEditable(false)
             setSelectedStudents([]);
             const filteredStudents = listOfStudent?.filter((student) => {
               const matchedSubject = totleSubject?.find(
@@ -2217,25 +2213,22 @@ export const CreateAssignments = () => {
                           disabled={submittedCount > 0}
                           type="number"
                           inputProps={{ min: 0, max: 100 }}
+
                         />
                         {point_error && (
                           <>
                             {parseInt(assignmentData.points) > 100 ? (
-                              <p
-                                className="error-text"
-                                style={{ color: 'red' }}
-                              >
-                                <small>Points can`t be more then 100.</small>
+                              <p className="error-text" style={{ color: 'red' }}>
+                                <small>Points can`t be more than 100.</small>
                               </p>
                             ) : (
-                              <p
-                                className="error-text"
-                                style={{ color: 'red' }}
-                              >
+                              <p className="error-text" style={{ color: 'red' }}>
                                 <small>Please enter a valid points.</small>
                               </p>
-                            )}
+                            )
+                            }
                           </>
+
                         )}
                       </div>
                       <div className="col-12">
@@ -2314,7 +2307,7 @@ export const CreateAssignments = () => {
                               disabled={isQuizGenerated}
                               onChange={(e) => {
                                 setLevel(e.target.value);
-                                setEditable(false);
+                                setEditable(false)
                               }}
                             >
                               <MenuItem value="easy">Easy</MenuItem>
@@ -2549,10 +2542,7 @@ export const CreateAssignments = () => {
                             type="text"
                             disabled={isQuizGenerated || submittedCount > 0}
                             value={topic}
-                            onChange={(e) => {
-                              setTopic(e.target.value);
-                              setEditable(false);
-                            }}
+                            onChange={(e) => { setTopic(e.target.value); setEditable(false) }}
                             fullWidth
                           />
 
@@ -2941,12 +2931,10 @@ export const CreateAssignments = () => {
                         value={selectedStudents}
                         onChange={(_, newValue) => {
                           if (submittedCount > 0) {
-                            setEditable(false);
-                            const removedProtectedStudents =
-                              selectedStudentsForUpdate.filter(
-                                (student) =>
-                                  !newValue.some((s) => s.id === student.id),
-                              );
+                            setEditable(false)
+                            const removedProtectedStudents = selectedStudentsForUpdate.filter(
+                              (student) => !newValue.some((s) => s.id === student.id)
+                            );
 
                             if (removedProtectedStudents.length > 0) {
                               // Block removal of protected students
@@ -3089,7 +3077,7 @@ export const CreateAssignments = () => {
                             value={dueTime} // Ensure it's a Dayjs object
                             onChange={(newValue) => {
                               setDueTime(newValue);
-                              setEditable(false);
+                              setEditable(false)
                             }} // Directly set Dayjs object
                             closeOnSelect={false}
                             slotProps={{
@@ -3111,7 +3099,7 @@ export const CreateAssignments = () => {
                               inputProps={{ min: 0 }}
                               onChange={(e) => {
                                 setQuizTimer(e.target.value);
-                                setEditable(false);
+                                setEditable(false)
                               }}
                               fullWidth
                             />
