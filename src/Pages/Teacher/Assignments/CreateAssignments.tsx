@@ -2219,7 +2219,7 @@ export const CreateAssignments = () => {
                           <>
                             {parseInt(assignmentData.points) > 100 ? (
                               <p className="error-text" style={{ color: 'red' }}>
-                                <small>Points can`t be more then 100.</small>
+                                <small>Points can`t be more than 100.</small>
                               </p>
                             ) : (
                               <p className="error-text" style={{ color: 'red' }}>
