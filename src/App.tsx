@@ -123,7 +123,10 @@ function App() {
   const context = useContext(NameContext);
   const { setProPercentage }: any = context;
   const synth: SpeechSynthesis = window?.speechSynthesis;
-  const StuId = localStorage.getItem('_id');
+  const user_type = localStorage.getItem('user_type');
+  // const StuId = localStorage.getItem('_id');
+  const StuId = user_type === 'teacher' ? localStorage.getItem('teacher_id'):localStorage.getItem('student_id');
+  
   const chataddconversationurl = QUERY_KEYS.CHAT_HISTORYCON;
   const { postDataJson } = useApi();
 
@@ -144,7 +147,7 @@ function App() {
 
     if (Array.isArray(chatData)) {
       chat_payload = {
-        student_id: StuId,
+        [user_type === 'teacher' ? 'teacher_id' : 'student_id']: StuId,
         chat_title: chatData?.[0]?.question,
         chat_conversation: JSON.stringify(chatData),
         flagged: isChatFlagged,

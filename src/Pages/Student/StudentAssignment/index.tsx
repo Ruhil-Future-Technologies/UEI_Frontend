@@ -19,11 +19,16 @@ import {
 import { AccessTime, CheckCircle, Event, ListAlt } from '@mui/icons-material';
 import { convertToISTT, toTitleCase } from '../../../utils/helpers';
 import AssignmentIcon from '@mui/icons-material/Assignment';
+import TimerOffIcon from '@mui/icons-material/TimerOff';
+import VerifiedIcon from '@mui/icons-material/Verified';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import FullScreenLoader from '../../Loader/FullScreenLoader';
 const StudentAssignments = () => {
   const { getData } = useApi();
   const navigate = useNavigate();
   const studemtId = localStorage.getItem('student_id');
   const student_uuid = localStorage.getItem('user_uuid');
+  const [loading, setLoading] = useState(false);
   const [assignmentData, setAssignmentData] = useState<Assignment[]>([]);
 
   const [activeAssignmentData, setActiveAssignmentData] = useState<
@@ -121,19 +126,6 @@ const StudentAssignments = () => {
       },
     },
     {
-      header: 'Late Submission',
-      accessorKey: 'allow_late_submission',
-      Cell: ({ row }: { row: MRT_Row<Assignment> }) => {
-        const val = row?.original?.allow_late_submission;
-        return (
-          <Chip
-            label={val ? 'Allowed' : 'Not Allowed'}
-            color={val ? 'success' : 'error'}
-          />
-        );
-      },
-    },
-    {
       accessorKey: 'status',
       header: 'Status',
       Cell: ({ row }: { row: MRT_Row<Assignment> }) => {
@@ -154,26 +146,35 @@ const StudentAssignments = () => {
 
   const getListOfAssignments = () => {
     try {
+      setLoading(true);
       getData(`${QUERY_KEYS_ASSIGNMENT.GET_ASSIGNMENTS_LIST}`).then(
         (response) => {
           if (response.data) {
+            setLoading(false);
+            const datetime = new Date();
             const filteredAssignment = response?.data.filter(
               (assignment: any) =>
                 assignment?.assign_to_students.includes(studemtId) &&
                 !assignment?.save_draft &&
-                assignment?.is_active,
+                assignment?.is_active && new Date(assignment.due_date_time) < datetime,
             );
             setAssignmentData(filteredAssignment);
-            const datetime = new Date();
+
             setActiveAssignmentData(
-              filteredAssignment.filter(
+              response?.data.filter(
                 (assignment: any) =>
-                  new Date(assignment.due_date_time) > datetime,
+                  assignment?.assign_to_students.includes(studemtId) &&
+                  !assignment?.save_draft &&
+                  assignment?.is_active &&
+                  new Date(assignment.due_date_time) > datetime && new Date(assignment.available_from) <= datetime,
               ),
             );
             setUpcomingAssignmentData(
-              filteredAssignment.filter(
+              response?.data.filter(
                 (assignment: any) =>
+                  assignment?.assign_to_students.includes(studemtId) &&
+                  !assignment?.save_draft &&
+                  assignment?.is_active &&
                   new Date(assignment.available_from) > datetime,
               ),
             );
@@ -264,7 +265,7 @@ const StudentAssignments = () => {
     {
       icon: <AssignmentIcon color="success" />,
       title: 'Total Assignments',
-      value: assignmentData.length,
+      value: assignmentData.length + activeAssignmentData.length + upcomingAssignmentData.length,
     },
     {
       icon: <CheckCircle color="success" />,
@@ -286,6 +287,7 @@ const StudentAssignments = () => {
     <>
       <div className="main-wrapper">
         <div className="main-content">
+        {loading && <FullScreenLoader />}
           <div className="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
             <div className="breadcrumb-title pe-3">
               {' '}
@@ -338,7 +340,7 @@ const StudentAssignments = () => {
               Active Assignment
             </Typography>
             {activeAssignmentData.length > 0 ? (
-              <Grid container spacing={2} className="active-assignment-flow">
+              <Grid container spacing={1} className="active-assignment-flow">
                 {activeAssignmentData
                   .reverse()
                   .map((assignment: any, index) => (
@@ -386,7 +388,7 @@ const StudentAssignments = () => {
                           >
                             <div className="small">
                               <AccessTime fontSize="small" />
-                              {/* {quiz.time} */}
+                              {" 5 minutes"}
                             </div>
                             <div className="small">
                               <Chip
@@ -406,6 +408,34 @@ const StudentAssignments = () => {
                             Due:
                             {convertToISTT(assignment?.due_date_time as string)}
                           </Typography>
+                          <Box
+                            display="flex"
+                            justifyContent="space-between"
+                            sx={{ mt: 1 }}
+                          >
+                            <Typography
+                              variant="caption"
+                              color="text.secondary"
+                              display="block"
+                              sx={{ mt: 1 }}
+                            >
+                              <TimerOffIcon fontSize="small" /> Late Submission:
+                            </Typography>
+                            <Typography
+                              variant="caption"
+                              color="text.secondary"
+                              display="block"
+                              sx={{ mt: 1 }}
+                            >
+
+                              {assignment?.allow_late_submission ? (
+                                <VerifiedIcon style={{ color: 'green' }} />
+                              ) : (
+                                <HighlightOffIcon style={{ color: 'red' }} />
+                              )}
+                            </Typography>
+                          </Box>
+
                           <Button
                             variant="contained"
                             className="rounded-3"
@@ -414,7 +444,7 @@ const StudentAssignments = () => {
                             onClick={() => openAssignment(assignment.id)}
                           >
                             {isAssignmentSubmited(assignment.id).label ==
-                            'Pending'
+                              'Pending'
                               ? 'Attempt Assignment'
                               : 'View Assignment'}
                           </Button>
@@ -446,17 +476,34 @@ const StudentAssignments = () => {
                   <Grid item xs={12} sm={4} key={index}>
                     <div className="rounded-4 card">
                       <div className="card-body">
-                        <Box display="flex" alignItems="center" gap={1}>
+                        <Box display="flex" justifyContent="space-between" alignItems="center" gap={1}>
                           {/* <Avatar>{quiz.icon}</Avatar> */}
                           <Typography
                             variant="subtitle1"
                             className="fw-semibold"
                           >
-                            {/* {quiz.subject} */}
+                            {getSubjectName(
+                              assignment?.class_stream_subjects
+                                ? assignment?.class_stream_subjects
+                                : assignment?.course_semester_subjects,
+                            )}
+                          </Typography>
+                          <Typography
+                            variant="subtitle1"
+                            className="fw-semibold"
+                          >
+                            <Chip
+                              label={
+                                isAssignmentSubmited(assignment.id).label
+                              }
+                              color={
+                                isAssignmentSubmited(assignment.id).color
+                              }
+                            />
                           </Typography>
                         </Box>
                         <h6 className="mt-4 fw-semibold fs-5 text-dark">
-                          {assignment.title}
+                          {toTitleCase(assignment.title)}
                         </h6>
                         <Box
                           display="flex"
@@ -464,23 +511,70 @@ const StudentAssignments = () => {
                           sx={{ mt: 1 }}
                         >
                           <div className="small">
-                            {/* <AccessTime fontSize="small" /> {quiz.time} */}
+                            <AccessTime fontSize="small" />
+                            {" 5 minutes"}
                           </div>
                           <div className="small">
-                            <ListAlt fontSize="small" />
-                            {/* {quiz.questions}{' '} */}
-                            Questions
+                            <Chip
+                              label={`${assignment.points} ${assignment.points === 1 ? 'mark' : 'marks'}`}
+                              size="small"
+                              color="primary"
+                              variant="outlined"
+                            />
                           </div>
                         </Box>
-                        <Typography
-                          variant="caption"
-                          color="text.secondary"
-                          display="block"
+                        <Box
+                          display="flex"
+                          justifyContent="space-between"
                           sx={{ mt: 1 }}
                         >
-                          Available from:
-                          {/* {quiz.availableFrom.toLocaleString()} */}
-                        </Typography>
+                          <Typography
+                            variant="caption"
+                            color="text.secondary"
+                            display="block"
+                            sx={{ mt: 1 }}
+                          >
+                            From:
+                            {convertToISTT(assignment?.available_from as string)}
+                          </Typography>
+                          <Typography
+                            variant="caption"
+                            color="text.secondary"
+                            display="block"
+                            sx={{ mt: 1 }}
+                          >
+                            Due:
+                            {convertToISTT(assignment?.due_date_time as string)}
+                          </Typography>
+                        </Box>
+                        <Box
+                          display="flex"
+                          justifyContent="space-between"
+                          sx={{ mt: 1 }}
+                        >
+                          <Typography
+                            variant="caption"
+                            color="text.secondary"
+                            display="block"
+                            sx={{ mt: 1 }}
+                          >
+                            <TimerOffIcon fontSize="small" /> Late Submission:
+                          </Typography>
+                          <Typography
+                            variant="caption"
+                            color="text.secondary"
+                            display="block"
+                            sx={{ mt: 1 }}
+                          >
+
+                            {assignment?.allow_late_submission ? (
+                              <VerifiedIcon style={{ color: 'green' }} />
+                            ) : (
+                              <HighlightOffIcon style={{ color: 'red' }} />
+                            )}
+                          </Typography>
+                        </Box>
+
                         <Button
                           variant="outlined"
                           className="rounded-3"
@@ -505,20 +599,27 @@ const StudentAssignments = () => {
               </Typography>
             )}
           </Box>
-          <MaterialReactTable
-            columns={columns}
-            data={[...assignmentData].reverse()}
-            enableColumnOrdering
-            muiTableContainerProps={{
-              className: 'scrollable-table-container',
-            }}
-            enableSorting
-            enableFullScreenToggle={false}
-            enableColumnDragging={false}
-            enableColumnActions={false}
-            enableColumnFilters={false} // Hide column filters
-            enableDensityToggle={false} // Hide density toggle
-          />
+          <Box className="rounded-4 overflow-hidden">
+            <MaterialReactTable
+              columns={columns}
+              data={[...assignmentData].reverse()}
+              enableColumnOrdering
+              muiTableContainerProps={{
+                className: 'scrollable-table-container',
+              }}
+              enableSorting
+              enableFullScreenToggle={false}
+              enableColumnDragging={false}
+              enableColumnActions={false}
+              enableColumnFilters={false} // Hide column filters
+              enableDensityToggle={false} // Hide density toggle
+              renderTopToolbarCustomActions={() => (
+                <Typography variant="h6" sx={{ fontWeight: 'bold', ml: 1 }}>
+                  Assignment History
+                </Typography>
+              )}
+            />
+          </Box>
         </div>
       </div>
     </>
