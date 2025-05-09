@@ -1165,11 +1165,9 @@ export const CreateAssignments = () => {
         fileData.append('documents', file);
       });
 
-      const current_docs = assignmentData.files || [];
+      const current_docs = (assignmentData.files ?? []) as File[];
+      const allExist = current_docs.every((file) => allfiles.includes(file));
 
-      const allExist = current_docs.every((file: any) =>
-        allfiles.includes(file),
-      );
       if (
         files.length === 0 &&
         current_docs.length === allfiles.length &&
