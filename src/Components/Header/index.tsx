@@ -49,11 +49,12 @@ const Header = () => {
     setActiveForm,
   }: any = context;
   const StudentId = localStorage.getItem('user_uuid');
-  const StuId = localStorage.getItem('_id');
+  const user_type = localStorage.getItem('user_type');
+  // const StuId = localStorage.getItem('_id');
+  const StuId = user_type === 'teacher' ? localStorage.getItem('teacher_id'):localStorage.getItem('student_id');
   const navigator = useNavigate();
   const profileURL = QUERY_KEYS_STUDENT.STUDENT_GET_PROFILE;
   const adminProfileURL = QUERY_KEYS_ADMIN_BASIC_INFO.ADMIN_GET_PROFILE;
-  const user_type = localStorage.getItem('user_type');
   const [language, setLanguage] = useState<any>('EN');
   const [gender, setGender] = useState<any>('');
   const synth: SpeechSynthesis = window?.speechSynthesis;
@@ -80,7 +81,7 @@ const Header = () => {
 
     if (Array.isArray(chatData)) {
       chat_payload = {
-        student_id: StuId,
+        [user_type === 'teacher' ? 'teacher_id' : 'student_id']: StuId,
         chat_title: chatData?.[0]?.question,
         chat_conversation: JSON.stringify(chatData),
         flagged: isChatFlagged,

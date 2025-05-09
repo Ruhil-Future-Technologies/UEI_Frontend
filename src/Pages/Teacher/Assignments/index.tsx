@@ -32,9 +32,11 @@ import GroupsIcon from '@mui/icons-material/Groups';
 import SaveAsIcon from '@mui/icons-material/SaveAs';
 import { QUERY_KEYS_ASSIGNMENT } from '../../../utils/const';
 import { convertToISTT } from '../../../utils/helpers';
+import FullScreenLoader from '../../Loader/FullScreenLoader';
 
 export const Assignments = () => {
   const { getData, putData } = useApi();
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [openCard, setOpenCard] = useState(false);
 
@@ -65,9 +67,11 @@ export const Assignments = () => {
 
   const getListOfAssignments = () => {
     try {
+      setLoading(true);
       getData(`${QUERY_KEYS_ASSIGNMENT.GET_ASSIGNMENTS_LIST}`).then(
         (response) => {
           if (response.data) {
+            
             const filteredassignment = response?.data?.filter(
               (assignmnet: any) => assignmnet.created_by == teacher_uuid,
             );
@@ -77,6 +81,7 @@ export const Assignments = () => {
                 assignmnet.save_draft && assignmnet.created_by == teacher_uuid,
             );
             setDreftCount(filteredassignmentcount.length);
+            setLoading(false);
           }
         },
       );
@@ -254,7 +259,7 @@ export const Assignments = () => {
       accessorKey: 'created_at',
       header: 'Created at',
       Cell: ({ row }: { row: MRT_Row<Assignment> }) => {
-        const gmtDate = row?.original?.created_at + 'z';
+        const gmtDate = row?.original?.created_at;
         return convertToISTT(gmtDate);
       },
     },
@@ -262,7 +267,7 @@ export const Assignments = () => {
       accessorKey: 'updated_at',
       header: 'updated at',
       Cell: ({ row }: { row: MRT_Row<Assignment> }) => {
-        const gmtDate = row?.original?.updated_at + 'z';
+        const gmtDate = row?.original?.updated_at;
         return convertToISTT(gmtDate);
       },
     },
@@ -318,6 +323,7 @@ export const Assignments = () => {
   return (
     <div className="main-wrapper">
       <div className="main-content">
+        {loading && <FullScreenLoader />}
         <div className="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
           <div className="breadcrumb-title pe-3">
             {' '}

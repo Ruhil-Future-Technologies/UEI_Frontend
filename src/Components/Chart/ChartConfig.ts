@@ -11,7 +11,13 @@ export const sharedChartOptions = {
     width: 2,
     colors: ['transparent'],
   },
-  legend: { position: 'bottom' },
+  legend: { 
+     position: 'bottom',
+     labels: {
+    // single string or array of strings
+    // Apex will cycle through if you give fewer colors than series
+    colors: ['#666666', '#666666', '#666666'], 
+  },},
   plotOptions: {
     bar: {
       horizontal: false,
@@ -22,10 +28,12 @@ export const sharedChartOptions = {
   },
 };
 
+// 🔧 ADDED isDarkMode PARAMETER
 export const createAcademicPerformanceConfig = (
   currentScores: any,
   previousScores: any,
   subjectLabels: any,
+  isDarkMode: boolean // ← Added dark mode toggle
 ) => {
   return {
     series: [
@@ -41,35 +49,65 @@ export const createAcademicPerformanceConfig = (
       },
       xaxis: {
         categories: subjectLabels,
-        title: { text: 'Subjects' },
+        title: { text: 'Subjects', style: { fontWeight: 600, color: '#666' }, },
+        labels: {
+          // 🎨 ADDED dynamic label color
+          style: {
+            colors: isDarkMode ? '#666666' : '#666666',
+          },
+        },
       },
       yaxis: {
         title: { text: 'Assignment Scores (%)' },
         min: 0,
         max: 100,
+        labels: {
+          // 🎨 ADDED dynamic label color
+          style: {
+            colors: isDarkMode ? '#666666' : '#666666',
+          },
+        },
       },
+      legend: { 
+        position: 'bottom',
+        labels: {
+       // single string or array of strings
+       // Apex will cycle through if you give fewer colors than series
+       colors: ['#666666', '#666666', '#666666'], 
+     },},
       fill: { opacity: 1 },
       colors: ['#4e73df', '#36b9cc'],
       title: {
         text: 'Overall Academic Performance',
         align: 'center',
-        style: { fontSize: '16px', fontWeight: 'bold' },
+        style: {
+          fontSize: '18px',
+          fontWeight: 'bold',
+          // 🎨 ADDED dynamic title color
+          color: isDarkMode ? '#666666' : '#666666',
+        },
       },
       tooltip: {
+        // 🌙 ADDED dynamic tooltip theme
+        theme: isDarkMode ? 'dark' : 'light',
         y: {
-          formatter: function (val: any) {
-            return val + '%';
-          },
+          formatter: (val: any) => `${val}%`,
         },
+      },
+      // 🎨 ADDED grid border color based on mode
+      grid: {
+        borderColor: isDarkMode ? '#444' : '#e0e0e0',
       },
     },
   };
 };
 
+// 🔧 ADDED isDarkMode PARAMETER
 export const createCompletionRateConfig = (
   completedAssignments: any,
   pendingAssignments: any,
   subjectLabels: any,
+  isDarkMode: boolean // ← Added dark mode toggle
 ) => {
   return {
     series: [
@@ -85,17 +123,49 @@ export const createCompletionRateConfig = (
       },
       xaxis: {
         categories: subjectLabels,
-        title: { text: 'Subjects' },
+        title: { text: 'Subjects', style: { fontWeight: 600, color: '#666' }, },
+        labels: {
+          // 🎨 ADDED dynamic label color
+          style: {
+            colors: isDarkMode ? '#666666' : '#666666',
+          },
+        },
       },
       yaxis: {
         title: { text: 'Number of Assignments' },
+        labels: {
+          // 🎨 ADDED dynamic label color
+          style: {
+            colors: isDarkMode ? '#666666' : '#666666',
+          },
+        },
       },
+      legend: { 
+        position: 'bottom',
+        labels: {
+       // single string or array of strings
+       // Apex will cycle through if you give fewer colors than series
+       colors: ['#666666', '#666666', '#666666'], 
+     },},
       fill: { opacity: 1 },
       colors: ['#1cc88a', '#D76C82'],
       title: {
         text: 'Assignment Completion Status',
         align: 'center',
-        style: { fontSize: '16px', fontWeight: 'bold' },
+        style: {
+          fontSize: '16px',
+          fontWeight: 'bold',
+          // 🎨 ADDED dynamic title color
+          color: isDarkMode ? '#666666' : '#666666',
+        },
+      },
+      tooltip: {
+        // 🌙 ADDED dynamic tooltip theme
+        theme: isDarkMode ? 'dark' : 'light',
+      },
+      // 🎨 ADDED grid border color based on mode
+      grid: {
+        borderColor: isDarkMode ? '#444' : '#e0e0e0',
       },
     },
   };
