@@ -7,6 +7,7 @@ export const QUERY_KEYS = {
   INSTITUTE_ADD: '/institute/add',
   INSTITUTE_EDIT: '/institute/edit',
   INSTITUTE_DELETE: '/institutedelete',
+  INSTITUTE_DOC_EDIT: '/institute/edit-institute-docs/',
   FORGOT_PASSWORD: '/auth/forgotpassword',
   CHANGE_PASSWORD: '/auth/changepassword',
   RESET_PASSWORD: '/auth/resetpassword',
@@ -48,6 +49,7 @@ export const QUERY_KEYS_TEACHER = {
   TEACHER_DELETE: '/teacher/delete',
   TEACHER_ACTIVATE: 'teacher/activate',
   TEACHER_DEACTIVATE: 'teacher/deactivate',
+  TEACHER_DOC_EDIT: '/teacher/edit-teacher-docs/',
 };
 export const QUERY_KEYS_COURSE = {
   GET_COURSE: '/course/list',
@@ -271,6 +273,7 @@ export const QUERY_KEYS_ASSIGNMENT = {
   EDIT_ASSIGNMENT: '/assignment/edit/',
   ADD_ASSIGNMENT: 'assignment/add',
   GENERATE_AI_ASSIGNMENT: '/AIchatbot/generate-questions',
+  ASSIGNMENT_DOC_EDIT: '/assignment/edit-assignment-docs/',
 };
 
 export const QUERY_KEYS_ASSIGNMENT_SUBMISSION = {

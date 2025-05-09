@@ -35,6 +35,7 @@ import {
   QUERY_KEYS_ASSIGNMENT,
   QUERY_KEYS_ASSIGNMENT_SUBMISSION,
 } from '../../../utils/const';
+import FullScreenLoader from '../../Loader/FullScreenLoader';
 
 export interface Question_andwer {
   question: string;
@@ -51,6 +52,7 @@ const PreviewAndSubmit = () => {
   //const [todayDate, setTodayDate] = useState<Date>();
   const [remainingDays, setRemaingDays] = useState(0);
   const [document_error, setDocument_error] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [allselectedfiles, setAllSelectedfiles] = useState<File[]>([]);
   const [allselectedfilesToShow, setAllSelectedfilesToShow] = useState<
     string[]
@@ -284,12 +286,14 @@ const PreviewAndSubmit = () => {
     //   description: 'test',
     //   questions: question_answer
     // }
+    setLoading(true);
     postData(
       `${QUERY_KEYS_ASSIGNMENT_SUBMISSION.ADD_ASSIGNMENT_SUBMISSION}`,
       formData,
     )
       .then((response) => {
         if (response?.status) {
+          setLoading(false);
           toast.success(response.message, {
             hideProgressBar: true,
             theme: 'colored',
@@ -370,6 +374,7 @@ const PreviewAndSubmit = () => {
     <>
       <div className="main-wrapper">
         <div className="main-content">
+        {loading && <FullScreenLoader />}
           <div className="page-breadcrumb d-flex align-items-center mb-3">
             <div className="breadcrumb-title pe-3">
               <div className="d-flex gap-1 align-items-center" role="button">

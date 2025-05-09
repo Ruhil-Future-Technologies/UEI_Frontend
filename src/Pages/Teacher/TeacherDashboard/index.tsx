@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 import profile from '../../../assets/img/profile.png';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import toperstudent from '../../../assets/img/topper-image.png';
 import consultantimg from '../../../assets/img/consultant.png';
 import goaling from '../../../assets/img/goal.png';
@@ -527,12 +527,13 @@ const TeacherDash = () => {
                   <img src={robotimg} className="chatroboimg" alt="" />
                 </div>
                 <div className="chat-top-header-menu ms-auto">
-                  <Link
+                <OpenInFullOutlinedIcon sx={{ fontSize: '24px' }} />
+                  {/* <Link
                     to={'/main/Chat/recentChat'}
                     className="btn-outline-primary btn btn-circle rounded-circle d-flex gap-2 wh-32"
                   >
                     <OpenInFullOutlinedIcon sx={{ fontSize: '24px' }} />
-                  </Link>
+                  </Link> */}
                 </div>
               </div>
               <div className="chat-content ms-0 rounded-top-4">
@@ -633,12 +634,13 @@ const TeacherDash = () => {
                   </div>
                 </div>
                 <div className="chat-footer-menu">
-                  <Link
+                <ArrowUpwardOutlinedIcon />
+                  {/* <Link
                     to="/"
                     className="btn btn-outline-light btn-circle rounded-circle d-flex gap-2 wh-48"
                   >
                     <ArrowUpwardOutlinedIcon />
-                  </Link>
+                  </Link> */}
                 </div>
               </div>
 
