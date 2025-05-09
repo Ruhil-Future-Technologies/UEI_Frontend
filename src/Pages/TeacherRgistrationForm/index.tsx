@@ -682,20 +682,21 @@ const TeacherRegistrationPage = () => {
   };
   const handelChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-  
     let newValue = value;
   
     if (name === 'experience') {
-      // Remove non-digit characters
-      newValue = newValue.replace(/[^0-9]/g, '');
-  
-      // Limit to 2 digits
-      if (newValue.length > 2) {
-        newValue = newValue.substring(0, 2);
+      // Only allow digits
+      if (!/^\d*$/.test(value)) {
+        setTeaching_experience_error(true);
+        return;
       }
-      // Optional: Clamp between 0 and 40
+      // Limit to 2 digits
+      if (value.length > 2) {
+        newValue = value.substring(0, 2);
+      }
+      // Validate experience value
       const numericValue = Number(newValue);
-      if (newValue !== '' && (numericValue < 0 || numericValue > 40)) {
+      if (newValue === '' || numericValue < 0 || numericValue > 40) {
         setTeaching_experience_error(true);
       } else {
         setTeaching_experience_error(false);
@@ -1880,11 +1881,45 @@ const TeacherRegistrationPage = () => {
                           autoComplete="off"
                           name="experience"
                           className="form-control"
-                          type="number"
+                          type="text"
                           value={teacher.experience}
                           label="Teaching Experience*"
-                          onChange={handelChange}
-                          inputProps={{ min: '0', max: '40' }}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            // Only allow digits
+                            if (!/^\d*$/.test(value)) {
+                              return;
+                            }
+                            // Limit to 2 digits
+                            if (value.length > 2) {
+                              return;
+                            }
+                            // Update state
+                            setTeacher({ ...teacher, experience: value });
+                            // Validate
+                            const numValue = Number(value);
+                            if (value === '' || numValue < 0 || numValue > 40) {
+                              setTeaching_experience_error(true);
+                            } else {
+                              setTeaching_experience_error(false);
+                            }
+                          }}
+                          onKeyDown={(e) => {
+                            if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+                              e.preventDefault();
+                              const currentValue = parseInt(teacher?.experience) || 0;
+                              const newValue = e.key === 'ArrowUp' 
+                                ? Math.min(currentValue + 1, 40)
+                                : Math.max(currentValue - 1, 0);
+                              setTeacher({ ...teacher, experience: newValue.toString() });
+                              setTeaching_experience_error(false);
+                            }
+                          }}
+                          inputProps={{ 
+                            inputMode: 'numeric',
+                            pattern: '[0-9]*',
+                            maxLength: 2
+                          }}
                           error={teaching_experience_error}
                         />
                         {teaching_experience_error === true && (

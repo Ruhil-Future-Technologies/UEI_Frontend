@@ -28,6 +28,7 @@ import {
 } from '../../utils/helpers';
 import { CountryDropdown, RegionDropdown } from 'react-country-region-selector';
 import NameContext from '../Context/NameContext';
+import FullScreenLoader from '../Loader/FullScreenLoader';
 
 interface IInstituteForm {
   institute_name: string;
@@ -50,9 +51,10 @@ const AddEditInstitute = () => {
   const InstituteEntityURL = QUERY_KEYS.ENTITY_LIST;
   const InstituteAddURL = QUERY_KEYS.INSTITUTE_ADD;
   const InstituteEditURL = QUERY_KEYS.INSTITUTE_EDIT;
+  const INSTITUTEEDITDOC = QUERY_KEYS.INSTITUTE_DOC_EDIT;
   const InstituteURL = QUERY_KEYS.GET_INSTITUTES;
   const UniversityURL = QUERY_KEYS_UNIVERSITY.GET_UNIVERSITY;
-  const { getData, postData, putData } = useApi();
+  const { getData, postData, putData, loading } = useApi();
   const navigator = useNavigate();
   const { id } = useParams();
   const charPattern = /^[a-zA-Z0-9\s()-]*$/;
@@ -76,8 +78,9 @@ const AddEditInstitute = () => {
     phone: '',
     website_url: '',
     university_id: '',
+    documents: '',
   };
-  const [institute, setInstitute] = useState(initialState);
+  const [institute, setInstitute] = useState<any>(initialState);
   const [dataEntity, setDataEntity] = useState<any[]>([]);
   const [dataUniversity, setDataUniversity] = useState<IUniversity[]>([]);
   const formRef = useRef<FormikProps<IInstituteForm>>(null);
@@ -96,6 +99,8 @@ const AddEditInstitute = () => {
   const [isCountryOpen, setIsCountryOpen] = useState(false);
   const [isStateOpen, setIsStateOpen] = useState(false);
   const [allselectedfiles, setAllSelectedfiles] = useState<File[]>([]);
+  const [allfiles, setAllfiles] = useState<any[]>([]);
+  const [allExist, setAllExist] = useState(false);
 
   const isSchoolEntity = (entityId: string | string[]): boolean => {
     const selectedEntity = dataEntity?.find((entity) => entity.id === entityId);
@@ -172,7 +177,17 @@ const AddEditInstitute = () => {
       getData(`${InstituteEditURL}${id ? `/${id}` : ''}`)
         .then((data: { status: boolean; data: any }) => {
           if (data.status) {
+            const urls = data?.data?.documents || [];
+
+            setAllfiles(urls);
             setInstitute(data?.data);
+            const current_docs = data?.data?.documents || [];
+
+            const checkAllExist =
+              current_docs.every((file: any) => allfiles.includes(file)) &&
+              current_docs.length == allfiles.length;
+
+            setAllExist(checkAllExist);
           }
         })
         .catch((e) => {
@@ -190,6 +205,7 @@ const AddEditInstitute = () => {
   useEffect(() => {
     callAPI();
   }, []);
+
   useEffect(() => {
     const handleFocus = () => setIsFocused(true);
     const handleFocusstate = () => setIsFocusedstate(true);
@@ -283,6 +299,22 @@ const AddEditInstitute = () => {
     );
   };
 
+  const handleDeleteFile = (index: any) => {
+    setAllfiles((previous: any) =>
+      previous.filter((_: any, ind: any) => ind !== index),
+    );
+  };
+
+  useEffect(() => {
+    if (institute && institute.documents) {
+      const checkAllExist =
+        institute.documents.every((file: any) => allfiles.includes(file)) &&
+        institute.documents.length == allfiles.length;
+
+      setAllExist(checkAllExist);
+    }
+  }, [allfiles, institute]);
+
   const handleChange = async (
     e: React.ChangeEvent<HTMLInputElement> | SelectChangeEvent<string>,
     fieldName: string,
@@ -294,7 +326,7 @@ const AddEditInstitute = () => {
       const isSchoolEntity = selectedEntity?.entity_type === 'school';
 
       if (isSchoolEntity) {
-        setInstitute((prev) => ({
+        setInstitute((prev: any) => ({
           ...prev,
 
           university_id: '',
@@ -303,7 +335,7 @@ const AddEditInstitute = () => {
         formRef?.current?.setFieldValue('university_id', '');
       }
     }
-    setInstitute((prevInstitute) => {
+    setInstitute((prevInstitute: any) => {
       return {
         ...prevInstitute,
         [e.target.name]: e.target.value,
@@ -330,13 +362,13 @@ const AddEditInstitute = () => {
   ) => {
     if (addressType === 'current_address') {
       if (name === 'country') {
-        setInstitute((prevInstitute) => {
+        setInstitute((prevInstitute: any) => {
           return {
             ...prevInstitute,
             ['country']: value,
           };
         });
-        setInstitute((prevInstitute) => {
+        setInstitute((prevInstitute: any) => {
           return {
             ...prevInstitute,
             ['state']: '',
@@ -344,7 +376,7 @@ const AddEditInstitute = () => {
         });
         setstate_col(true);
       } else if (name === 'state') {
-        setInstitute((prevInstitute) => {
+        setInstitute((prevInstitute: any) => {
           return {
             ...prevInstitute,
             ['state']: value,
@@ -376,44 +408,95 @@ const AddEditInstitute = () => {
         institute[key as keyof IInstituteForm],
     );
     if (id) {
-      if (isDataUnchanged) {
+      if (isDataUnchanged && allExist && allselectedfiles.length === 0) {
         return;
       }
+      const fileData = new FormData();
+      fileData.append('existing_docs', JSON.stringify(allfiles));
+
       allselectedfiles.forEach((file) => {
-        formData.append('documents', file);
+        fileData.append('documents', file);
       });
       Object.keys(filteredData).forEach((key) => {
         formData.append(key, filteredData[key]);
       });
 
-      putData(`${InstituteEditURL}/${id}`, formData)
-        .then((data: { status: boolean; message: string }) => {
-          if (data.status) {
-            navigator('/main/Institute');
-            toast.success('Institute updated successfully', {
-              hideProgressBar: true,
-              theme: 'colored',
-            });
-          } else {
-            toast.error(data.message, {
-              hideProgressBar: true,
-              theme: 'colored',
-            });
-          }
-        })
-        .catch((e) => {
-          if (e?.response?.code === 401) {
+      fileData.append('delete_existing_documents', 'true');
+
+      if (
+        allselectedfiles.length === 0 &&
+        allExist &&
+        institute.documents.length === allfiles.length
+      ) {
+
+        putData(`${InstituteEditURL}/${id}`, formData)
+          .then((data: { status: boolean; message: string }) => {
+            if (data.status) {
+              navigator('/main/Institute');
+              toast.success('Institute updated successfully', {
+                hideProgressBar: true,
+                theme: 'colored',
+              });
+            } else {
+              toast.error(data.message, {
+                hideProgressBar: true,
+                theme: 'colored',
+              });
+            }
+          })
+          .catch((e) => {
+            if (e?.response?.code === 401) {
+              toast.error(e?.response.data.message, {
+                hideProgressBar: true,
+                theme: 'colored',
+              });
+              navigator('/');
+            }
             toast.error(e?.response.data.message, {
               hideProgressBar: true,
               theme: 'colored',
             });
-            navigator('/');
-          }
-          toast.error(e?.response.data.message, {
-            hideProgressBar: true,
-            theme: 'colored',
           });
+      } else {
+        putData(`${INSTITUTEEDITDOC}${id}`, fileData).then((response) => {
+          if (response?.code === 201) {
+            putData(`${InstituteEditURL}/${id}`, formData)
+              .then((data: { status: boolean; message: string }) => {
+                if (data.status) {
+                  navigator('/main/Institute');
+                  toast.success('Institute updated successfully', {
+                    hideProgressBar: true,
+                    theme: 'colored',
+                  });
+                } else {
+                  toast.error(data.message, {
+                    hideProgressBar: true,
+                    theme: 'colored',
+                  });
+                }
+              })
+              .catch((e) => {
+                if (e?.response?.code === 401) {
+                  toast.error(e?.response.data.message, {
+                    hideProgressBar: true,
+                    theme: 'colored',
+                  });
+                  navigator('/');
+                }
+                toast.error(e?.response.data.message, {
+                  hideProgressBar: true,
+                  theme: 'colored',
+                });
+              });
+          } else {
+            toast.error(response?.message, {
+              hideProgressBar: true,
+              theme: 'colored',
+            });
+
+          }
         });
+      }
     } else {
       const newInstituteData: any = {
         ...filteredData,
@@ -437,7 +520,7 @@ const AddEditInstitute = () => {
             });
             setAllSelectedfiles([]);
             resetForm({ values: initialState });
-            setInstitute((prevInstitute) => {
+            setInstitute((prevInstitute: any) => {
               return {
                 ...prevInstitute,
                 ['state']: '',
@@ -453,7 +536,7 @@ const AddEditInstitute = () => {
             });
             setAllSelectedfiles([]);
             resetForm({ values: initialState });
-            setInstitute((prevInstitute) => {
+            setInstitute((prevInstitute: any) => {
               return {
                 ...prevInstitute,
                 ['state']: '',
@@ -614,7 +697,7 @@ const AddEditInstitute = () => {
           }),
 
         website_url: Yup.string()
-          .required('Please enter Valid URL')
+          .nullable()
           .test(
             'is-valid-url',
             'Please enter a valid URL format (e.g., https://example.com).',
@@ -755,471 +838,500 @@ const AddEditInstitute = () => {
   };
 
   return (
-    <div className="main-wrapper">
-      <div className="main-content">
-        <div className="card p-lg-3">
-          <div className="card-body">
-            <Typography variant="h6">
-              <div className="main_title">{id ? 'Edit' : 'Add'} Institute</div>
-            </Typography>
-            <Formik
-              // onSubmit={(formData) => handleSubmit(formData)}
-              onSubmit={(formData, formikHelpers) =>
-                handleSubmit(formData, formikHelpers)
-              }
-              initialValues={{
-                institute_name: institute?.institute_name,
-                email: institute?.email,
-                address: institute?.address,
-                city: institute?.city,
-                country: institute?.country,
-                state: institute?.state,
-                district: institute?.district,
-                pincode: institute?.pincode,
-                entity_id: institute?.entity_id,
-                phone: institute?.phone,
-                website_url: institute?.website_url,
-                university_id: institute?.university_id,
-              }}
-              enableReinitialize
-              validationSchema={instituteSchema}
-              innerRef={formRef}
-            >
-              {({
-                errors,
-                values,
-                touched,
-                setFieldValue,
-                setFieldTouched,
+    <>
+      {loading && <FullScreenLoader />}
+      <div className="main-wrapper">
+        <div className="main-content">
+          <div className="card p-lg-3">
+            <div className="card-body">
+              <Typography variant="h6">
+                <div className="main_title">
+                  {id ? 'Edit' : 'Add'} Institute
+                </div>
+              </Typography>
+              <Formik
+                // onSubmit={(formData) => handleSubmit(formData)}
+                onSubmit={(formData, formikHelpers) =>
+                  handleSubmit(formData, formikHelpers)
+                }
+                initialValues={{
+                  institute_name: institute?.institute_name,
+                  email: institute?.email,
+                  address: institute?.address,
+                  city: institute?.city,
+                  country: institute?.country,
+                  state: institute?.state,
+                  district: institute?.district,
+                  pincode: institute?.pincode,
+                  entity_id: institute?.entity_id,
+                  phone: institute?.phone,
+                  website_url: institute?.website_url,
+                  university_id: institute?.university_id,
+                }}
+                enableReinitialize
+                validationSchema={instituteSchema}
+                innerRef={formRef}
+              >
+                {({
+                  errors,
+                  values,
+                  touched,
+                  setFieldValue,
+                  setFieldTouched,
 
-                isValid,
-                dirty,
-              }) => (
-                <Form>
-                  <div className="row gy-4 mt-0">
-                    <div className="col-md-4">
-                      <div className="form_field_wrapper">
-                        <FormControl fullWidth>
-                          <InputLabel id="demo-simple-select-label">
-                            Entity *
-                          </InputLabel>
-                          <Select
-                            onChange={(e: SelectChangeEvent<string>) =>
-                              handleChange(e, 'entity_id')
-                            }
-                            label="Entity"
-                            name="entity_id"
-                            value={values?.entity_id}
-                            variant="outlined"
-                            sx={{
-                              backgroundColor: inputfield(namecolor),
-                              color: inputfieldtext(namecolor),
-                              '& .MuiSelect-icon': {
-                                color: fieldIcon(namecolor),
-                              },
-                            }}
-                            MenuProps={{
-                              PaperProps: {
-                                style: {
-                                  backgroundColor: inputfield(namecolor),
-                                  color: inputfieldtext(namecolor),
+                  isValid,
+                  dirty,
+                }) => (
+                  <Form>
+                    <div className="row gy-4 mt-0">
+                      <div className="col-md-4">
+                        <div className="form_field_wrapper">
+                          <FormControl fullWidth>
+                            <InputLabel id="demo-simple-select-label">
+                              Entity *
+                            </InputLabel>
+                            <Select
+                              onChange={(e: SelectChangeEvent<string>) =>
+                                handleChange(e, 'entity_id')
+                              }
+                              label="Entity"
+                              name="entity_id"
+                              value={values?.entity_id}
+                              variant="outlined"
+                              sx={{
+                                backgroundColor: inputfield(namecolor),
+                                color: inputfieldtext(namecolor),
+                                '& .MuiSelect-icon': {
+                                  color: fieldIcon(namecolor),
                                 },
-                              },
-                            }}
-                          >
-                            {dataEntity.map((item, idx) => (
-                              <MenuItem
-                                value={item.id}
-                                key={`${item.entity_type}-${idx + 1}`}
-                                sx={{
-                                  backgroundColor: inputfield(namecolor),
-                                  color: inputfieldtext(namecolor),
-                                  '&:hover': {
-                                    backgroundColor: inputfieldhover(namecolor),
+                              }}
+                              MenuProps={{
+                                PaperProps: {
+                                  style: {
+                                    backgroundColor: inputfield(namecolor),
+                                    color: inputfieldtext(namecolor),
                                   },
-                                }}
-                              >
-                                {item.entity_type}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
-                        {touched?.entity_id && errors?.entity_id ? (
-                          <p style={{ color: 'red' }}>{errors?.entity_id}</p>
-                        ) : (
-                          <></>
-                        )}
-                      </div>
-                    </div>
-                    <div className="col-md-4">
-                      <div className="form_field_wrapper">
-                        <FormControl fullWidth>
-                          <InputLabel id="demo-simple-select-label">
-                            University *
-                          </InputLabel>
-                          <Select
-                            onChange={(e: SelectChangeEvent<string>) =>
-                              handleChange(e, 'entity_id')
-                            }
-                            label="University"
-                            name="university_id"
-                            value={values?.university_id}
-                            variant="outlined"
-                            disabled={isSchoolEntity(values?.entity_id)}
-                            style={{
-                              backgroundColor: isSchoolEntity(values?.entity_id)
-                                ? '#f0f0f0'
-                                : inputfield(namecolor),
-                              color: isSchoolEntity(values?.entity_id)
-                                ? '#999999'
-                                : inputfieldtext(namecolor),
-                              border: isSchoolEntity(values?.entity_id)
-                                ? '1px solid #d0d0d0'
-                                : undefined,
-                            }}
-                            sx={{
-                              backgroundColor: inputfield(namecolor),
-                              color: inputfieldtext(namecolor),
-                              '& .MuiSelect-icon': {
-                                color: fieldIcon(namecolor),
-                              },
-                            }}
-                            MenuProps={{
-                              PaperProps: {
-                                style: {
-                                  backgroundColor: inputfield(namecolor),
-                                  color: inputfieldtext(namecolor),
                                 },
-                              },
-                            }}
-                          >
-                            {dataUniversity?.map((item, idx) => (
-                              <MenuItem
-                                value={item.id}
-                                key={`${item.university_name}-${idx + 1}`}
-                                sx={{
-                                  backgroundColor: inputfield(namecolor),
-                                  color: inputfieldtext(namecolor),
-                                  '&:hover': {
-                                    backgroundColor: inputfieldhover(namecolor),
+                              }}
+                            >
+                              {dataEntity.map((item, idx) => (
+                                <MenuItem
+                                  value={item.id}
+                                  key={`${item.entity_type}-${idx + 1}`}
+                                  sx={{
+                                    backgroundColor: inputfield(namecolor),
+                                    color: inputfieldtext(namecolor),
+                                    '&:hover': {
+                                      backgroundColor:
+                                        inputfieldhover(namecolor),
+                                    },
+                                  }}
+                                >
+                                  {item.entity_type}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          </FormControl>
+                          {touched?.entity_id && errors?.entity_id ? (
+                            <p style={{ color: 'red' }}>{errors?.entity_id}</p>
+                          ) : (
+                            <></>
+                          )}
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="form_field_wrapper">
+                          <FormControl fullWidth>
+                            <InputLabel id="demo-simple-select-label">
+                              University *
+                            </InputLabel>
+                            <Select
+                              onChange={(e: SelectChangeEvent<string>) =>
+                                handleChange(e, 'entity_id')
+                              }
+                              label="University"
+                              name="university_id"
+                              value={values?.university_id}
+                              variant="outlined"
+                              disabled={isSchoolEntity(values?.entity_id)}
+                              style={{
+                                backgroundColor: isSchoolEntity(
+                                  values?.entity_id,
+                                )
+                                  ? '#f0f0f0'
+                                  : inputfield(namecolor),
+                                color: isSchoolEntity(values?.entity_id)
+                                  ? '#999999'
+                                  : inputfieldtext(namecolor),
+                                border: isSchoolEntity(values?.entity_id)
+                                  ? '1px solid #d0d0d0'
+                                  : undefined,
+                              }}
+                              sx={{
+                                backgroundColor: inputfield(namecolor),
+                                color: inputfieldtext(namecolor),
+                                '& .MuiSelect-icon': {
+                                  color: fieldIcon(namecolor),
+                                },
+                              }}
+                              MenuProps={{
+                                PaperProps: {
+                                  style: {
+                                    backgroundColor: inputfield(namecolor),
+                                    color: inputfieldtext(namecolor),
                                   },
-                                }}
-                              >
-                                {item.university_name}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
-                        {touched?.university_id && errors?.university_id ? (
-                          <p style={{ color: 'red' }}>
-                            {errors?.university_id}
-                          </p>
-                        ) : (
-                          <></>
-                        )}
-                      </div>
-                    </div>
-
-                    <div
-                      className="floating-label-container col-md-4"
-                      ref={dropdownRef}
-                    >
-                      <label
-                        className={`floating-label ${isFocused || values?.country || isCountryOpen ? 'focused' : 'focusedempty'}`}
-                      >
-                        <InputLabel>
-                          Country <span>*</span>
-                        </InputLabel>
-                      </label>
-                      <div
-                        className="form_field_wrapper"
-                        // onClick={() => setIsCountryOpen((prev) => !prev)}
-                        onClick={handleCountryClick}
-                        onBlur={handleCountryBlur} // Detect blur event (when the dropdown loses focus)
-                        tabIndex={-1}
-                      >
-                        <CountryDropdown
-                          classes="form-control p-3 pt-1 pb-1 custom-dropdown"
-                          defaultOptionLabel={values?.country || ''}
-                          value={values?.country || ''}
-                          onChange={(e) =>
-                            handleInputChangecountry(
-                              e,
-                              'current_address',
-                              'country',
-                            )
-                          }
-                        />
-                        {/* {contry_col && <p style={{ color: "red" }}>Please enter Country Name.</p>} */}
-                        {touched?.country && errors?.country ? (
-                          <p style={{ color: 'red' }}>
-                            Please enter Country name.
-                          </p>
-                        ) : (
-                          <></>
-                        )}
-                      </div>
-                    </div>
-
-                    <div
-                      className="floating-label-container col-md-4 mt-4"
-                      ref={dropdownstateRef}
-                    >
-                      <label
-                        className={`floating-label ${isFocusedstate || values?.state || isStateOpen ? 'focused' : 'focusedempty'}`}
-                      >
-                        <InputLabel>
-                          State <span>*</span>
-                        </InputLabel>
-                      </label>
-                      <div
-                        className="form_field_wrapper"
-                        //  onClick={() => setIsStateOpen((prev) => !prev)}
-                        onClick={handleStateClick}
-                        onBlur={handleStateBlur} // Detect blur event (when the dropdown loses focus)
-                        tabIndex={-1}
-                      >
-                        <RegionDropdown
-                          classes="form-control p-3 pt-1 pb-1 custom-dropdown"
-                          defaultOptionLabel={values?.state || ''}
-                          country={values?.country || ''}
-                          value={values?.state || ''}
-                          // onChange={(val) => setRegion(val)}
-                          onChange={(e: string) =>
-                            handleInputChangecountry(
-                              e,
-                              'current_address',
-                              'state',
-                            )
-                          }
-                        />
-                        <div>
-                          {' '}
-                          {state_col && (
+                                },
+                              }}
+                            >
+                              {dataUniversity?.map((item, idx) => (
+                                <MenuItem
+                                  value={item.id}
+                                  key={`${item.university_name}-${idx + 1}`}
+                                  sx={{
+                                    backgroundColor: inputfield(namecolor),
+                                    color: inputfieldtext(namecolor),
+                                    '&:hover': {
+                                      backgroundColor:
+                                        inputfieldhover(namecolor),
+                                    },
+                                  }}
+                                >
+                                  {item.university_name}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          </FormControl>
+                          {touched?.university_id && errors?.university_id ? (
                             <p style={{ color: 'red' }}>
-                              Please enter a valid state Name.
+                              {errors?.university_id}
+                            </p>
+                          ) : (
+                            <></>
+                          )}
+                        </div>
+                      </div>
+
+                      <div
+                        className="floating-label-container col-md-4"
+                        ref={dropdownRef}
+                      >
+                        <label
+                          className={`floating-label ${isFocused || values?.country || isCountryOpen ? 'focused' : 'focusedempty'}`}
+                        >
+                          <InputLabel>
+                            Country <span>*</span>
+                          </InputLabel>
+                        </label>
+                        <div
+                          className="form_field_wrapper"
+                          // onClick={() => setIsCountryOpen((prev) => !prev)}
+                          onClick={handleCountryClick}
+                          onBlur={handleCountryBlur} // Detect blur event (when the dropdown loses focus)
+                          tabIndex={-1}
+                        >
+                          <CountryDropdown
+                            classes="form-control p-3 pt-1 pb-1 custom-dropdown"
+                            defaultOptionLabel={values?.country || ''}
+                            value={values?.country || ''}
+                            onChange={(e) =>
+                              handleInputChangecountry(
+                                e,
+                                'current_address',
+                                'country',
+                              )
+                            }
+                          />
+                          {/* {contry_col && <p style={{ color: "red" }}>Please enter Country Name.</p>} */}
+                          {touched?.country && errors?.country ? (
+                            <p style={{ color: 'red' }}>
+                              Please enter Country name.
+                            </p>
+                          ) : (
+                            <></>
+                          )}
+                        </div>
+                      </div>
+
+                      <div
+                        className="floating-label-container col-md-4 mt-4"
+                        ref={dropdownstateRef}
+                      >
+                        <label
+                          className={`floating-label ${isFocusedstate || values?.state || isStateOpen ? 'focused' : 'focusedempty'}`}
+                        >
+                          <InputLabel>
+                            State <span>*</span>
+                          </InputLabel>
+                        </label>
+                        <div
+                          className="form_field_wrapper"
+                          //  onClick={() => setIsStateOpen((prev) => !prev)}
+                          onClick={handleStateClick}
+                          onBlur={handleStateBlur} // Detect blur event (when the dropdown loses focus)
+                          tabIndex={-1}
+                        >
+                          <RegionDropdown
+                            classes="form-control p-3 pt-1 pb-1 custom-dropdown"
+                            defaultOptionLabel={values?.state || ''}
+                            country={values?.country || ''}
+                            value={values?.state || ''}
+                            // onChange={(val) => setRegion(val)}
+                            onChange={(e: string) =>
+                              handleInputChangecountry(
+                                e,
+                                'current_address',
+                                'state',
+                              )
+                            }
+                          />
+                          <div>
+                            {' '}
+                            {state_col && (
+                              <p style={{ color: 'red' }}>
+                                Please enter a valid state Name.
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="form_field_wrapper">
+                          <Field
+                            inputProps={{ className: 'institute-name' }}
+                            fullWidth
+                            component={TextField}
+                            type="text"
+                            name="institute_name"
+                            label={
+                              isSchoolEntity(values?.entity_id)
+                                ? 'School Name *'
+                                : 'Institute name *'
+                            }
+                            value={values?.institute_name}
+                            onChange={(
+                              e: React.ChangeEvent<HTMLInputElement>,
+                            ) => handleChange(e, 'institute_name')}
+                          />
+                          {touched?.institute_name && errors?.institute_name ? (
+                            <p style={{ color: 'red' }}>
+                              {errors?.institute_name}
+                            </p>
+                          ) : (
+                            <></>
+                          )}
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="form_field_wrapper">
+                          <Field
+                            inputProps={{ className: 'address' }}
+                            fullWidth
+                            component={TextField}
+                            label="Address *"
+                            name="address"
+                            value={values?.address}
+                            onChange={(
+                              e: React.ChangeEvent<HTMLInputElement>,
+                            ) => handleChange(e, 'address')}
+                          />
+                          {touched?.address && errors?.address ? (
+                            <p style={{ color: 'red' }}>{errors?.address}</p>
+                          ) : (
+                            <></>
+                          )}
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="form_field_wrapper">
+                          <Field
+                            inputProps={{ className: 'email' }}
+                            fullWidth
+                            component={TextField}
+                            type="email"
+                            label="Email Id*"
+                            name="email"
+                            value={values?.email}
+                            onChange={(
+                              e: React.ChangeEvent<HTMLInputElement>,
+                            ) => handleChange(e, 'email')}
+                          />
+                          {touched?.email && errors?.email ? (
+                            <p style={{ color: 'red' }}>{errors?.email}</p>
+                          ) : (
+                            <></>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="col-md-4">
+                        <div className="form_field_wrapper">
+                          <Field
+                            inputProps={{ className: 'mobile' }}
+                            component={TextField}
+                            type="text"
+                            name="phone"
+                            label="Mobile Number *"
+                            value={values?.phone}
+                            onChange={(
+                              e: React.ChangeEvent<HTMLInputElement>,
+                            ) => handleChange(e, 'phone')}
+                          />
+                          {touched?.phone && errors?.phone ? (
+                            <p style={{ color: 'red' }}>{errors?.phone}</p>
+                          ) : (
+                            <></>
+                          )}
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="form_field_wrapper">
+                          <Field
+                            inputProps={{ className: 'city' }}
+                            component={TextField}
+                            label="City *"
+                            name="city"
+                            value={values?.city}
+                            onChange={(
+                              e: React.ChangeEvent<HTMLInputElement>,
+                            ) => handleChange(e, 'city')}
+                          />
+                          {touched?.city && errors?.city ? (
+                            <p style={{ color: 'red' }}>{errors?.city}</p>
+                          ) : (
+                            <></>
+                          )}
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="form_field_wrapper">
+                          <Field
+                            inputProps={{ className: 'district' }}
+                            component={TextField}
+                            label="District *"
+                            name="district"
+                            value={values?.district}
+                            onChange={(
+                              e: React.ChangeEvent<HTMLInputElement>,
+                            ) => handleChange(e, 'district')}
+                          />
+                          {touched?.district && errors?.district ? (
+                            <p style={{ color: 'red' }}>{errors?.district}</p>
+                          ) : (
+                            <></>
+                          )}
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="form_field_wrapper">
+                          <Field
+                            inputProps={{ className: 'pincode' }}
+                            component={TextField}
+                            label="Pincode *"
+                            name="pincode"
+                            value={values?.pincode}
+                            onChange={(
+                              e: React.ChangeEvent<HTMLInputElement>,
+                            ) => handleChange(e, 'pincode')}
+                          />
+                          {touched?.pincode && errors?.pincode ? (
+                            <p style={{ color: 'red' }}>{errors?.pincode}</p>
+                          ) : (
+                            <></>
+                          )}
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="form_field_wrapper">
+                          <Field
+                            inputProps={{ className: 'website' }}
+                            component={TextField}
+                            label="Website"
+                            name="website_url"
+                            value={values?.website_url}
+                            // onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            //   handleChange(e, 'website_url')
+                            // }
+                            onChange={(e: any) => {
+                              handleChange(e, 'website_url');
+                              setFieldValue('website_url', e?.target?.value);
+                              setFieldTouched('website_url', true, false); // Manually trigger validation
+                            }}
+                          />
+                          {errors?.website_url && (
+                            <p style={{ color: 'red' }}>
+                              {errors?.website_url}
                             </p>
                           )}
                         </div>
                       </div>
-                    </div>
-                    <div className="col-md-4">
-                      <div className="form_field_wrapper">
-                        <Field
-                          inputProps={{ className: 'institute-name' }}
-                          fullWidth
-                          component={TextField}
-                          type="text"
-                          name="institute_name"
-                          label={
-                            isSchoolEntity(values?.entity_id)
-                              ? 'School Name *'
-                              : 'Institute name *'
-                          }
-                          value={values?.institute_name}
-                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                            handleChange(e, 'institute_name')
-                          }
-                        />
-                        {touched?.institute_name && errors?.institute_name ? (
-                          <p style={{ color: 'red' }}>
-                            {errors?.institute_name}
-                          </p>
-                        ) : (
-                          <></>
-                        )}
-                      </div>
-                    </div>
-                    <div className="col-md-4">
-                      <div className="form_field_wrapper">
-                        <Field
-                          inputProps={{ className: 'address' }}
-                          fullWidth
-                          component={TextField}
-                          label="Address *"
-                          name="address"
-                          value={values?.address}
-                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                            handleChange(e, 'address')
-                          }
-                        />
-                        {touched?.address && errors?.address ? (
-                          <p style={{ color: 'red' }}>{errors?.address}</p>
-                        ) : (
-                          <></>
-                        )}
-                      </div>
-                    </div>
-                    <div className="col-md-4">
-                      <div className="form_field_wrapper">
-                        <Field
-                          inputProps={{ className: 'email' }}
-                          fullWidth
-                          component={TextField}
-                          type="email"
-                          label="Email Id*"
-                          name="email"
-                          value={values?.email}
-                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                            handleChange(e, 'email')
-                          }
-                        />
-                        {touched?.email && errors?.email ? (
-                          <p style={{ color: 'red' }}>{errors?.email}</p>
-                        ) : (
-                          <></>
-                        )}
-                      </div>
-                    </div>
 
-                    <div className="col-md-4">
-                      <div className="form_field_wrapper">
-                        <Field
-                          inputProps={{ className: 'mobile' }}
-                          component={TextField}
-                          type="text"
-                          name="phone"
-                          label="Mobile Number *"
-                          value={values?.phone}
-                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                            handleChange(e, 'phone')
-                          }
-                        />
-                        {touched?.phone && errors?.phone ? (
-                          <p style={{ color: 'red' }}>{errors?.phone}</p>
-                        ) : (
-                          <></>
-                        )}
-                      </div>
-                    </div>
-                    <div className="col-md-4">
-                      <div className="form_field_wrapper">
-                        <Field
-                          inputProps={{ className: 'city' }}
-                          component={TextField}
-                          label="City *"
-                          name="city"
-                          value={values?.city}
-                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                            handleChange(e, 'city')
-                          }
-                        />
-                        {touched?.city && errors?.city ? (
-                          <p style={{ color: 'red' }}>{errors?.city}</p>
-                        ) : (
-                          <></>
-                        )}
-                      </div>
-                    </div>
-                    <div className="col-md-4">
-                      <div className="form_field_wrapper">
-                        <Field
-                          inputProps={{ className: 'district' }}
-                          component={TextField}
-                          label="District *"
-                          name="district"
-                          value={values?.district}
-                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                            handleChange(e, 'district')
-                          }
-                        />
-                        {touched?.district && errors?.district ? (
-                          <p style={{ color: 'red' }}>{errors?.district}</p>
-                        ) : (
-                          <></>
-                        )}
-                      </div>
-                    </div>
-                    <div className="col-md-4">
-                      <div className="form_field_wrapper">
-                        <Field
-                          inputProps={{ className: 'pincode' }}
-                          component={TextField}
-                          label="Pincode *"
-                          name="pincode"
-                          value={values?.pincode}
-                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                            handleChange(e, 'pincode')
-                          }
-                        />
-                        {touched?.pincode && errors?.pincode ? (
-                          <p style={{ color: 'red' }}>{errors?.pincode}</p>
-                        ) : (
-                          <></>
-                        )}
-                      </div>
-                    </div>
-                    <div className="col-md-4">
-                      <div className="form_field_wrapper">
-                        <Field
-                          inputProps={{ className: 'website' }}
-                          component={TextField}
-                          label="Website"
-                          name="website_url"
-                          value={values?.website_url}
-                          // onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                          //   handleChange(e, 'website_url')
-                          // }
-                          onChange={(e: any) => {
-                            handleChange(e, 'website_url');
-                            setFieldValue('website_url', e?.target?.value);
-                            setFieldTouched('website_url', true, false); // Manually trigger validation
-                          }}
-                        />
-                        {errors?.website_url && (
-                          <p style={{ color: 'red' }}>{errors?.website_url}</p>
-                        )}
-                      </div>
-                    </div>
+                      <div className="row d-flex justify-content-between mt-0 g-4">
+                        <div className="col-12 ">
+                          <UploadBtn
+                            label="Upload Documents"
+                            name="document"
+                            accept=".pdf, .jpg, .jpeg, .png, .gif, .mp4"
+                            handleFileChange={handleFileChange}
+                          />
+                          <div className="col-8">
+                            {allselectedfiles?.length > 0 && (
+                              <ul className="doclist">
+                                {allselectedfiles?.map((file, index) => (
+                                  <li
+                                    key={index}
+                                    className="flex mt-2 items-center justify-between "
+                                  >
+                                    {'name' in file
+                                      ? file.name
+                                      : (file as any)?.url}
 
-                    <div className="row d-flex justify-content-between mt-0 g-4">
-                      <div className="col-12 ">
-                        <UploadBtn
-                          label="Upload Documents"
-                          name="document"
-                          accept=".pdf, .jpg, .jpeg, .png, .gif, .mp4"
-                          handleFileChange={handleFileChange}
-                        />
-                        <div className="col-8">
-                          {allselectedfiles?.length > 0 && (
-                            <ul className="doclist">
-                              {allselectedfiles?.map((file, index) => (
-                                <li
-                                  key={index}
-                                  className="flex mt-2 items-center justify-between "
-                                >
-                                  {'name' in file
-                                    ? file.name
-                                    : (file as any)?.url}
-
-                                  <DeleteOutlinedIcon
-                                    className="m-2 cursor-pointer"
-                                    onClick={() => handleRemoveFile(index)}
-                                  />
-                                </li>
-                              ))}
-                            </ul>
-                          )}
+                                    <DeleteOutlinedIcon
+                                      className="m-2 cursor-pointer"
+                                      onClick={() => handleRemoveFile(index)}
+                                    />
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
+                            {allfiles?.length > 0 && (
+                              <ul className="doclist">
+                                {allfiles?.map((file: any, index) => (
+                                  <li
+                                    key={index}
+                                    className="flex mt-2 items-center justify-between "
+                                  >
+                                    {file}
+                                    <DeleteOutlinedIcon
+                                      className="m-2 cursor-pointer"
+                                      onClick={() => handleDeleteFile(index)}
+                                    />
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                  <button
-                    type="submit"
-                    disabled={
-                      (!dirty || !isValid) && allselectedfiles.length < 1
-                    }
-                    className="btn btn-primary mainbutton mt-4"
-                  >
-                    {id ? 'Update' : 'Save'}
-                  </button>
-                </Form>
-              )}
-            </Formik>
+                    <button
+                      type="submit"
+                      disabled={
+                        (!dirty || !isValid) &&
+                        allselectedfiles.length < 1 &&
+                        allExist
+                      }
+                      className="btn btn-primary mainbutton mt-4"
+                    >
+                      {id ? 'Update' : 'Save'}
+                    </button>
+                  </Form>
+                )}
+              </Formik>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
