@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import SaveAsIcon from '@mui/icons-material/SaveAs';
@@ -13,6 +13,11 @@ import {
   Chip,
   Stack,
   CircularProgress,
+  Select,
+  InputLabel,
+  FormControl,
+  OutlinedInput,
+  SelectChangeEvent,
 } from '@mui/material';
 import {
   AccessTime,
@@ -27,18 +32,26 @@ import {
   QUERY_KEYS_CLASS,
   QUERY_KEYS_COURSE,
   QUERY_KEYS_QUIZ,
+  QUERY_KEYS_SUBJECT,
+  QUERY_KEYS_SUBJECT_SCHOOL,
 } from '../../../utils/const';
 import { toast } from 'react-toastify';
 import QuizDetailsModal from './QuizDetails';
 import { DeleteDialog } from '../../../Components/Dailog/DeleteDialog';
+import { CourseRep0oDTO, IClass, SemesterRep0oDTO, SubjectRep0oDTO, } from '../../../Components/Table/columns';
+import { fieldIcon, inputfield, inputfieldhover, inputfieldtext } from '../../../utils/helpers';
+import NameContext from '../../Context/NameContext';
+import { Boxes, BoxesForSchool } from '../../TeacherRgistrationForm';
 
 const TeacherQuizPage = () => {
   const [quizData, setQuizData] = useState<any[]>([]);
+  const [filteredQuizzes, setFilteredQuizzes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [dataClasses, setDataClasses] = useState<any>([]);
   const [dataCourses, setDataCourses] = useState<any>([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [subjectFilter, setSubjectFilter] = useState('all');
+  // const [subjectFilter, setSubjectFilter] = useState('all');
+  const CourseURL = QUERY_KEYS_COURSE.GET_COURSE;
   const { getData, deleteData } = useApi();
   const user_uuid = localStorage.getItem('user_uuid') || '';
   const navigate = useNavigate();
@@ -47,10 +60,45 @@ const TeacherQuizPage = () => {
     id: '',
     title: '',
   });
+  const context = useContext(NameContext);
+  const { namecolor }: any = context;
+  const ClassURL = QUERY_KEYS_CLASS.GET_CLASS;
+  const getsubjectSchool = QUERY_KEYS_SUBJECT_SCHOOL.GET_SUBJECT;
+  const getSubjectCollege = QUERY_KEYS_SUBJECT.GET_SUBJECT;
+  const [teacherCourse, setTeacherCourse] = useState<string[]>();
+  const [statusFilter, setStatusFilter] = useState("");
+  const [teacherSemester, setTeacherSemester] = useState<string[]>();
+  const [tescherSubjects, setTeacherSubjects] = useState<string[]>();
+  const [teacherStream, setTeacherStream] = useState<string[]>();
+  const [dataClass, setDataClass] = useState<IClass[]>([]);
+  const [filteredcoursesData, setFilteredCoursesData] = useState<
+    CourseRep0oDTO[]
+  >([]);
+  const [semesterData, setSemesterData] = useState<SemesterRep0oDTO[]>([]);
+  const [selectedEntity, setSelectedEntity] = useState('');
+  const [totleSubject, setTotleSubject] = useState<SubjectRep0oDTO[]>([]);
+  const [tescherSchoolSubjects, setTeacherSchoolSubjects] =
+    useState<string[]>();
+  const [boxes, setBoxes] = useState<Boxes[]>([
+    {
+      semester_number: '',
+      subjects: [],
+      course_id: '',
+    },
+  ]);
+  const [boxesForSchool, setBoxesForSchool] = useState<BoxesForSchool[]>([
+    {
+      stream: '',
+      subjects: [],
+      class_id: '',
+      is_Stream: false,
+      selected_class_name: 'col-3',
+    },
+  ]);
+
   const [dataDelete, setDataDelete] = useState(false);
   const [dataDeleteId, setDataDeleteId] = useState<any>();
   const current_time = new Date();
-  const [statusFilter, setStatusFilter] = useState('all');
 
   const getCourseOrClassName = (id: string, type: string) => {
     if (type === 'school') {
@@ -66,6 +114,15 @@ const TeacherQuizPage = () => {
       return course?.course_name;
     }
   };
+  const optionOfStatus = [
+    { label: "All", value: "all" }, {
+      label: "Closed", value: "closed"
+    },
+    {
+      label: "Draft", value: "draft"
+    },
+    { label: "Active", value: "active" }
+  ]
 
   useEffect(() => {
     getData(`${QUERY_KEYS_CLASS.GET_CLASS}`).then((data) => {
@@ -74,8 +131,90 @@ const TeacherQuizPage = () => {
     getData(`${QUERY_KEYS_COURSE.GET_COURSE}`).then((data) => {
       setDataCourses(data.data);
     });
+    getTeacherProfileInfo();
+    getSemester();
+    getCourses();
   }, []);
+  const getTeacherProfileInfo = async () => {
+    try {
+      getData(`/teacher/edit/${user_uuid}`).then(async (data) => {
+        if (data?.status) {
+          if (data.data.course_semester_subjects != null) {
+            setSelectedEntity('College');
+            getSubjects('college');
+            const courseKeys = Object.keys(data.data.course_semester_subjects);
+            // Extract all semester IDs for each course
+            const semesterKeys = Object.values(
+              data.data.course_semester_subjects as Record<
+                string,
+                Record<string, any>
+              >,
+            ).flatMap((semesters) => Object.keys(semesters));
+            setTeacherSemester(semesterKeys);
 
+            const semesterSubjects = Object.entries(
+              data.data.course_semester_subjects as Record<
+                string,
+                Record<string, string[]>
+              >,
+            ).flatMap(([semester, subjects]) =>
+              Object.values(subjects).flatMap((subjectList) =>
+                Array.isArray(subjectList)
+                  ? subjectList?.map((subject) => ({ semester, subject }))
+                  : [],
+              ),
+            );
+            setTeacherSubjects(semesterSubjects?.map(({ subject }) => subject));
+
+            setTeacherCourse((prev) => [...(prev || []), ...courseKeys]);
+          } else {
+            setSelectedEntity('School');
+            getSubjects("school")
+            const streeamKeys = Object.values(
+              data.data.class_stream_subjects as Record<
+                string,
+                Record<string, any>
+              >,
+            ).flatMap((streamkeys) => Object.keys(streamkeys));
+
+            const uniqueStreamKeys = [...new Set(streeamKeys)];
+
+            setTeacherStream(uniqueStreamKeys);
+
+            const classIds = Object.keys(data.data.class_stream_subjects)?.map(
+              (classKey) => parseInt(classKey, 10),
+            );
+            //setBoxesForSchool(output);
+            getClasslist(classIds);
+
+            const Subjects = Object.entries(
+              data.data.class_stream_subjects as Record<
+                string,
+                Record<string, string[]>
+              >,
+            ).flatMap(
+              (
+                [, subjects], // Ignore the first key (e.g., "8")
+              ) =>
+                Object.entries(subjects).flatMap(([streamName, subjectArray]) =>
+                  subjectArray?.map((subject) => ({
+                    stream: streamName,
+                    subject,
+                  })),
+                ),
+            );
+
+            setTeacherSchoolSubjects(Subjects?.map(({ subject }) => subject));
+          }
+        }
+      })
+    } catch (error: any) {
+      toast.error(error?.message, {
+        hideProgressBar: true,
+        theme: 'colored',
+      });
+    }
+  }
   const openQuizDetails = (quizId: any, quizTitle: any) => {
     setSelectedQuiz({
       id: quizId,
@@ -83,7 +222,23 @@ const TeacherQuizPage = () => {
     });
     setModalOpen(true);
   };
-
+  const getClasslist = (classIds: any) => {
+    getData(`${ClassURL}`)
+      .then((data) => {
+        if (data.status) {
+          const filteredClasses = data?.data?.classes_data.filter(
+            (classn: any) => classIds.includes(classn.id),
+          );
+          setDataClass(filteredClasses);
+        }
+      })
+      .catch((e) => {
+        toast.error(e?.message, {
+          hideProgressBar: true,
+          theme: 'colored',
+        });
+      });
+  };
   const fetchQuizData = async () => {
     try {
       setLoading(true);
@@ -131,6 +286,7 @@ const TeacherQuizPage = () => {
             return quiz;
           });
           setQuizData(filtered);
+          setFilteredQuizzes(filtered);
           setLoading(false);
         },
       );
@@ -173,27 +329,24 @@ const TeacherQuizPage = () => {
 
     return `${hours}.${minutes} ${month} ${day}`;
   };
-
-  const filteredQuizzes = quizData?.filter((quiz) => {
-    const matchesSearch = quiz?.title
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
-    const matchesSubject =
-      subjectFilter === 'all' || quiz.class_stream_subjects === subjectFilter;
-
-    let matchesStatus = true;
-    if (statusFilter !== 'all') {
-      if (statusFilter === 'closed') {
-        matchesStatus = quiz.status === 'closed';
-      } else if (statusFilter === 'draft') {
-        matchesStatus = quiz.save_draft === true;
-      } else if (statusFilter === 'active') {
-        matchesStatus = !quiz.save_draft && quiz.status !== 'closed';
+  const handleStatus = (status: string) => {
+    setStatusFilter(status);
+    let matchesStatus = [];
+    if (status !== 'all') {
+      if (status === 'closed') {
+        matchesStatus = quizData.filter((quiz) => quiz.status == "closed");
+      } else if (status === 'draft') {
+        matchesStatus = quizData.filter((quiz) => quiz.save_draft === true);
+      } else if (status === 'active') {
+        matchesStatus = quizData.filter((quiz) => !quiz.save_draft && quiz.status !== 'closed');
       }
+    } else {
+      matchesStatus = quizData;
     }
 
-    return matchesSearch && matchesSubject && matchesStatus;
-  });
+    setFilteredQuizzes(matchesStatus)
+  }
+
 
   const draftQuizzes = quizData.filter((quiz) => quiz.save_draft).length;
   const totalQuizzes = quizData.length;
@@ -253,7 +406,248 @@ const TeacherQuizPage = () => {
       });
     }
   };
+  const handleSearchResults = (searchText: string) => {
+    setSearchTerm(searchText)
+    if(selectedEntity=="College"){
+      const filterquiz = quizData.filter((quiz) => {
+        const courseId = Object.keys(quiz?.course_semester_subjects)[0];
+        const semester = Object.keys(quiz?.course_semester_subjects?.[courseId])[0];
+        const subjects = quiz?.course_semester_subjects?.[courseId]?.[semester] || [];
+        const selectedCourse = filteredcoursesData.find(
+          (item) => String(item.id) == courseId,
+        )?.course_name;
+        return ((quiz.title).toLowerCase().includes(searchText.toLowerCase()) ||
+          (selectedCourse && (selectedCourse).includes(searchText)) ||
+          (subjects[0]).toLowerCase().includes(searchText.toLowerCase()) || (semester).includes(searchText))
+      })
+      setFilteredQuizzes(filterquiz);
+    }else{
+      
+    
+    const filterquiz = quizData.filter((quiz) => {
+      const classId = Object.keys(quiz?.class_stream_subjects)[0];
+      const stream = Object.keys(quiz?.class_stream_subjects?.[classId])[0];
+      const subjects = quiz?.class_stream_subjects?.[classId]?.[stream] || [];
+      const selectedClass = dataClass.find(
+        (item) => String(item.id) == classId,
+      )?.class_name;
+      return ((quiz.title).toLowerCase().includes(searchText.toLowerCase()) ||
+        (selectedClass && (selectedClass.toLowerCase()).includes(searchText.toLowerCase())) ||
+        (subjects[0]).toLowerCase().includes(searchText.toLowerCase()) || (stream.toLowerCase()).includes(searchText.toLowerCase()))
+    })
+    setFilteredQuizzes(filterquiz);
+  }
+  }
 
+  const handelSubjectBoxChange = (
+    event: SelectChangeEvent<string[]>,
+    index: number,
+  ) => {
+    const { value, name } = event.target;
+    setBoxes((prevBoxes) =>
+      prevBoxes?.map((box, i) => {
+        if (i !== index) return box;
+
+        let updatedBox = { ...box, [name]: value };
+
+        if (name === 'course_id') {
+          if (boxes[index].course_id != value) {
+            const filteredSemesters = semesterData?.filter(
+              (item) => item.course_id === value,
+            );
+            updatedBox = {
+              ...updatedBox,
+              filteredSemesters,
+              semester_number: '',
+              subjects: [],
+              filteredSubjects: [],
+            };
+          }
+        }
+        if (name === 'semester_number') {
+          if (boxes[index].semester_number != value) {
+
+            const filteredSubjects = totleSubject?.filter(
+              (item) =>
+                item.semester_number === value &&
+                item.course_id === boxes[index].course_id,
+            );
+            console.log(totleSubject);
+            updatedBox = { ...updatedBox, filteredSubjects, subjects: [] };
+
+          }
+        }
+        if (name == 'subjects') {
+          if (boxes[index].subjects[0] != value) {
+
+            const filteredQuiz = quizData.filter((quiz) => {
+              const courseId = Object.keys(quiz?.course_semester_subjects)[0];
+              const semester = Object.keys(quiz?.course_semester_subjects?.[courseId])[0];
+              const subjects = quiz?.course_semester_subjects?.[courseId]?.[semester] || [];
+                return (
+                  courseId == boxes[index].course_id && semester == boxes[index].semester_number && subjects.includes(value)
+                )
+              
+
+            })
+            setFilteredQuizzes(filteredQuiz);
+
+          }
+        }
+        return updatedBox;
+      }),
+    );
+  };
+
+  const handelSchoolBoxChange = (
+    event: SelectChangeEvent<string[]>,
+    index: number,
+  ) => {
+    //setSelectedStudents([]);
+    const { value, name } = event.target;
+
+    setBoxesForSchool((prevBoxes) =>
+      prevBoxes?.map((box, i) => {
+        if (i !== index) return box;
+
+        let updatedBox = { ...box, [name]: value }; // Always update the changed value
+
+        if (name === 'class_id') {
+          if (boxesForSchool[index].class_id != value) {
+            const selectedClass = dataClass.find(
+              (item) => String(item.id) == value,
+            )?.class_name;
+            // setSelectedClassName(
+            //   selectedClass === 'class_11' || selectedClass === 'class_12'
+            //     ? 'col-4'
+            //     : 'col-6',
+            // );
+
+            if (selectedClass === 'class_11' || selectedClass === 'class_12') {
+              updatedBox = {
+                ...updatedBox,
+                stream: '',
+                is_Stream: true,
+                selected_class_name: 'col-2',
+                subjects: [],
+                filteredSubjects: [],
+              }; // Reset stream & subjects
+            } else {
+              // Filter subjects immediately based on the selected class
+              const filteredSubjects = totleSubject?.filter(
+                (item) => item.class_id === value,
+              );
+
+              updatedBox = {
+                ...updatedBox,
+                is_Stream: false,
+                stream: '',
+                selected_class_name: 'col-3',
+                filteredSubjects,
+                subjects: [],
+              };
+            }
+          }
+        }
+        if (name == 'stream') {
+          if (boxesForSchool[index].stream != value) {
+
+            const filteredSubjects = totleSubject?.filter(
+              (item) =>
+                String(item.stream).toLowerCase() ==
+                value.toString().toLowerCase() &&
+                item.class_id == boxesForSchool[index].class_id,
+            );
+            updatedBox = {
+              ...updatedBox,
+              stream: value.toString(),
+              filteredSubjects,
+              subjects: [],
+            };
+          }
+        }
+        if (name == 'subjects') {
+          if (boxesForSchool[index].subjects[0] != value) {
+            const filteredQuiz = quizData.filter((quiz) => {
+              const classId = Object.keys(quiz?.class_stream_subjects)[0];
+              const stream = Object.keys(quiz?.class_stream_subjects?.[classId])[0];
+              const subjects = quiz?.class_stream_subjects?.[classId]?.[stream] || [];
+              const selectedClass = dataClass.find(
+                (item) => String(item.id) == value,
+              )?.class_name;
+              if (selectedClass === 'class_11' || selectedClass === 'class_12') {
+                return (
+                  classId == boxesForSchool[index].class_id && stream == boxesForSchool[index].stream && subjects.includes(value)
+                )
+              } else {
+                return (
+                  classId == boxesForSchool[index].class_id && subjects.includes(value)
+                )
+              }
+
+            })
+            setFilteredQuizzes(filteredQuiz);
+          }
+        }
+        return updatedBox;
+      }),
+    );
+  };
+  const getSubjects = async (type: string): Promise<any> => {
+    try {
+      const url = type === 'college' ? getSubjectCollege : getsubjectSchool;
+      const data = await getData(url);
+
+      if (data?.data) {
+        setTotleSubject(data.data?.subjects_data);
+        return data.data?.subjects_data; // Return subjects
+      }
+
+      return []; // Return empty array if no data
+    } catch (e: any) {
+      toast.error(e?.message, {
+        hideProgressBar: true,
+        theme: 'colored',
+      });
+
+      return Promise.reject(e); // Reject the promise in case of an error
+    }
+  };
+
+  const getSemester = async (): Promise<any[]> => {
+    try {
+      const data = await getData(`/semester/list`);
+
+      if (data?.status && data?.data) {
+        setSemesterData(data.data.semesters_data);
+        return data.data.semesters_data; // Return the fetched semesters
+      }
+
+      return []; // Return an empty array if no data
+    } catch (error) {
+      return Promise.reject(error); // Reject the promise if an error occurs
+    }
+  };
+
+
+  const getCourses = () => {
+    getData(`${CourseURL}`)
+      .then((data) => {
+        if (data.data) {
+          //  setCoursesData(data?.data);
+          const filteredCourses = data?.data?.course_data?.filter(
+            (course: any) => course.is_active,
+          );
+          setFilteredCoursesData(filteredCourses);
+        }
+      })
+      .catch((e) => {
+        toast.error(e?.message, {
+          hideProgressBar: true,
+          theme: 'colored',
+        });
+      });
+  };
   return (
     <div className="main-wrapper pb-5 pb-lg-4">
       <div className="main-content">
@@ -344,45 +738,283 @@ const TeacherQuizPage = () => {
                     placeholder="Search quizzes..."
                     size="small"
                     value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onChange={(e) => handleSearchResults(e.target.value)}
                   />
                 </div>
+
+                {selectedEntity.toLowerCase() === 'college' &&
+                  boxes.length > 0 &&
+                  boxes?.map((box, index) => (
+                    <>
+                      <div className="col-md-2 col-12">
+                        {/* <label className="col-form-label">
+                                               Course<span>*</span>
+                                             </label> */}
+                        <FormControl fullWidth>
+                          <InputLabel id={`course_id_${index}`}>
+                            Course
+                          </InputLabel>
+                          <Select
+                            labelId={`course_id_${index}`}
+                            id={`demo3-multiple-name-${index}`}
+                            name="course_id"
+                            label="Course"
+                            size='small'
+                            onChange={(event: any) =>
+                              handelSubjectBoxChange(event, index)
+                            }
+                            value={box.course_id || ''}
+                          >
+                            {filteredcoursesData
+                              ?.filter((course) =>
+                                teacherCourse?.includes(String(course.id)),
+                              )
+                              ?.map((course) => (
+                                <MenuItem key={course.id} value={course.id}>
+                                  {course.course_name}
+                                </MenuItem>
+                              ))}
+                          </Select>
+                        </FormControl>
+                      </div>
+
+                      {/* Semester Selection */}
+                      <div className="col-md-2 col-12">
+                        {/* <label className="col-form-label">
+                                           {/* Semester Selection */}
+
+                        <FormControl fullWidth>
+                          <InputLabel id={`semester_id_${index}`}>
+                            Semester
+                          </InputLabel>
+                          <Select
+                            labelId={`semester_id_${index}`}
+                            id={`semester_select_${index}`}
+                            name="semester_number"
+                            size='small'
+                            label="Semester"
+                            onChange={(event: any) =>
+                              handelSubjectBoxChange(event, index)
+                            }
+                            value={box.semester_number || ''}
+                          >
+                            {box.filteredSemesters
+                              ?.filter((item) =>
+                                teacherSemester?.includes(
+                                  String(item.semester_number),
+                                ),
+                              )
+                              ?.map((item) => (
+                                <MenuItem
+                                  key={item.id}
+                                  value={item.semester_number || ''}
+                                >
+                                  {item.semester_number}
+                                </MenuItem>
+                              ))}
+                          </Select>
+                        </FormControl>
+
+                      </div>
+
+                      {/* Subjects Selection */}
+                      <div className="col-md-2 col-12">
+                        {/* <label className="col-form-label">
+                                           {/* Subjects Selection */}
+                        <FormControl fullWidth>
+                          <InputLabel id={`subject_label_${index}`}>
+                            Subject
+                          </InputLabel>
+                          <Select
+                            labelId={`subject_label_${index}`}
+                            id={`subject_select_${index}`}
+                            name="subjects"
+                            label="subjects"
+                            size='small'
+                            value={box.subjects || []}
+                            onChange={(event: any) =>
+                              handelSubjectBoxChange(event, index)
+                            }
+                          >
+                            {box.filteredSubjects
+                              ?.filter((subject) =>
+                                tescherSubjects?.includes(
+                                  subject.subject_name,
+                                ),
+                              )
+                              ?.map((subject: any) => (
+                                <MenuItem
+                                  key={subject.subject_id}
+                                  value={subject.subject_name}
+                                >
+                                  {subject.subject_name}
+                                </MenuItem>
+                              ))}
+                          </Select>
+                        </FormControl>
+                      </div>
+                    </>
+                  ))}
+                {selectedEntity.toLowerCase() === 'school' &&
+                  boxesForSchool.length > 0 &&
+                  boxesForSchool?.map((box, index) => (
+                    <>
+                      {/* Class Selection */}
+                      <div className={box.selected_class_name}>
+                        {/* <label className="col-form-label">
+                                               Class<span>*</span>
+                                             </label> */}
+                        <FormControl fullWidth>
+                          <InputLabel id={`class_id_${index}`}>
+                            Class
+                          </InputLabel>
+                          <Select
+                            labelId={`class_id_${index}`}
+                            id={`class_select_${index}`}
+                            name="class_id"
+                            size='small'
+                            onChange={(event: any) =>
+                              handelSchoolBoxChange(event, index)
+                            }
+                            value={box.class_id || ''}
+                            input={<OutlinedInput label="Class" />}
+                          >
+                            {dataClass?.map((item) => (
+                              <MenuItem key={item.id} value={item.id}>
+                                {item.class_name}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </div>
+                      {box.is_Stream && (
+                        <div className="col-md-2 col-12 mb-3">
+                          {/* <label className="col-form-label">
+                                                 Stream Name<span>*</span>
+                                               </label> */}
+                          <FormControl fullWidth>
+                            <InputLabel id={`stream_id_${index}`}>
+                              Stream Name
+                            </InputLabel>
+                            <Select
+                              labelId={`stream_id_${index}`}
+                              id={`stream_select_${index}`}
+                              name="stream"
+                              label="Stream Name"
+                              size='small'
+                              onChange={(event: any) =>
+                                handelSchoolBoxChange(event, index)
+                              }
+                              value={box.stream || ''}
+                              sx={{
+                                backgroundColor: inputfield(namecolor),
+                                color: inputfieldtext(namecolor),
+                                '& .MuiSelect-icon': {
+                                  color: fieldIcon(namecolor),
+                                },
+                              }}
+                              MenuProps={{
+                                PaperProps: {
+                                  style: {
+                                    backgroundColor: inputfield(namecolor),
+                                    color: inputfieldtext(namecolor),
+                                  },
+                                },
+                              }}
+                            >
+                              {teacherStream?.map((item) => (
+                                <MenuItem
+                                  key={item}
+                                  value={item}
+                                  sx={{
+                                    backgroundColor: inputfield(namecolor),
+                                    color: inputfieldtext(namecolor),
+                                    '&:hover': {
+                                      backgroundColor:
+                                        inputfieldhover(namecolor),
+                                    },
+                                  }}
+                                >
+                                  {item}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          </FormControl>
+                        </div>
+                      )}
+                      <div className={box.selected_class_name}>
+                        {/* <label className="col-form-label">
+                                               Subjects <span>*</span>
+                                             </label> */}
+                        <FormControl fullWidth>
+                          <InputLabel id={`subject_label_${index}`}>
+                            Subject
+                          </InputLabel>
+                          <Select
+                            labelId={`subject_label_${index}`}
+                            id={`subject_select_${index}`}
+                            name="subjects"
+                            label="subjects"
+                            size='small'
+                            value={box.subjects || []}
+                            onChange={(event: any) =>
+                              handelSchoolBoxChange(event, index)
+                            }
+                          >
+                            {box.filteredSubjects
+                              ?.filter((subject) =>
+                                tescherSchoolSubjects?.includes(
+                                  subject.subject_name,
+                                ),
+                              )
+                              ?.map((subject: any) => (
+                                <MenuItem
+                                  key={subject.subject_id}
+                                  value={subject.subject_name}
+                                >
+                                  {subject.subject_name}
+                                </MenuItem>
+                              ))}
+                          </Select>
+                        </FormControl>
+                      </div>
+                    </>
+                  ))}
+
+
                 <div className="col-md-3">
-                  <TextField
-                    fullWidth
-                    select
-                    label="All Subjects"
-                    size="small"
-                    value={subjectFilter}
-                    onChange={(e) => setSubjectFilter(e.target.value)}
-                  >
-                    <MenuItem value="all">All Subjects</MenuItem>
-                    {/* {subjects.map((subject, index) => (
-                      <MenuItem key={index} value={subject}>
-                        {subject}
-                      </MenuItem> */}
-                    {/* ))} */}
-                  </TextField>
-                </div>
-                <div className="col-md-3">
-                  <TextField fullWidth select label="All Grades" size="small">
-                    <MenuItem value="all">All Grades</MenuItem>
-                  </TextField>
-                </div>
-                <div className="col-md-3">
-                  <TextField
-                    fullWidth
-                    select
-                    label="All Status"
-                    size="small"
-                    value={statusFilter}
-                    onChange={(e) => setStatusFilter(e.target.value)}
-                  >
-                    <MenuItem value="all">All Status</MenuItem>
-                    <MenuItem value="active">Active</MenuItem>
-                    <MenuItem value="draft">Draft</MenuItem>
-                    <MenuItem value="closed">Closed</MenuItem>
-                  </TextField>
+                  <FormControl fullWidth>
+                    <InputLabel id={`subject_label`}>
+                      Status
+                    </InputLabel>
+                    <Select
+                      fullWidth
+                      id='subject_label'
+                      label="Status"
+                      size="small"
+                      value={statusFilter}
+                      onChange={(e) => handleStatus(e.target.value)}
+                      sx={{
+                        backgroundColor: inputfield(namecolor),
+                        color: inputfieldtext(namecolor),
+                        '& .MuiSelect-icon': {
+                          color: fieldIcon(namecolor),
+                        },
+                      }}
+                      MenuProps={{
+                        PaperProps: {
+                          style: {
+                            backgroundColor: inputfield(namecolor),
+                            color: inputfieldtext(namecolor),
+                          },
+                        },
+                      }}
+                    >
+                      {optionOfStatus.map((item) => (
+                        <MenuItem key={item.value} value={item.value}>{item.label}</MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
                 </div>
               </div>
 
