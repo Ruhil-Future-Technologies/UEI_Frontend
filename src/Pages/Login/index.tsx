@@ -184,9 +184,7 @@ const Login = () => {
     };
     postDataJson(`/auth/verify-otp`, payload).then((data) => {
       if (data.status) {
-        console.log(data);
         if (data?.data?.is_verified && data?.data?.is_approve) {
-          console.log('in side varified ', value);
           handleSuccessfulLogin(data);
           toast.success(data.message, {
             hideProgressBar: true,

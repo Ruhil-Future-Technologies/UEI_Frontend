@@ -273,6 +273,7 @@ export const QUERY_KEYS_ASSIGNMENT = {
   EDIT_ASSIGNMENT: '/assignment/edit/',
   ADD_ASSIGNMENT: 'assignment/add',
   GENERATE_AI_ASSIGNMENT: '/AIchatbot/generate-questions',
+  ASSIGNMENT_DOC_EDIT: '/assignment/edit-assignment-docs/',
 };
 
 export const QUERY_KEYS_ASSIGNMENT_SUBMISSION = {
