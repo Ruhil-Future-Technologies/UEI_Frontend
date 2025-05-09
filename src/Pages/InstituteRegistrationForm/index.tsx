@@ -603,7 +603,7 @@ const InstituteRegistrationForm = () => {
 
   const steps = [
     {
-      label: 'Personal Details',
+      label: 'Institution Information',
       subline: 'Enter your entity details here',
       icon: <SchoolOutlinedIcon />,
     },
