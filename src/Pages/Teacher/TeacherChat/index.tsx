@@ -1126,7 +1126,7 @@ const speak = async (text: string, index: number) => {
         initialLikedStates[index] = 'disliked';
       }
     });
-
+    setIsTextCopied({})
     setSelectedChat(chatdataset);
     setLikedStates(initialLikedStates);
   };
