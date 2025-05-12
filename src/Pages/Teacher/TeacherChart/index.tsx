@@ -127,7 +127,7 @@ const TeacherDashboardCharts = () => {
   useEffect(() => {
     if (teacher_id) {
       getData(`/assignment/stats-for-teacher/${teacher_id}`).then((data) => {
-        setData(data?.data);
+        setData(data?.data?.assignment);
         setDataStatus(true);
       });
     }
@@ -392,7 +392,10 @@ const TeacherDashboardCharts = () => {
       );
 
     return (
-      <div className="chart-wrapper performance-chart" style={{ width: "100%", maxWidth: "100%", overflowX: "auto" }}>
+      <div
+        className="chart-wrapper performance-chart"
+        style={{ width: '100%', maxWidth: '100%', overflowX: 'auto' }}
+      >
         <ReactApexChart
           options={transformSubjectData.performanceChartData.options}
           series={transformSubjectData.performanceChartData.series}
