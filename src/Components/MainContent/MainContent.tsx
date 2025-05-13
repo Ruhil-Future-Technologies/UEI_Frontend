@@ -88,7 +88,8 @@ function MainContent() {
   const ChatStore = QUERY_KEYS.CHAT_STORE;
   const ChatRAGURL = QUERY_KEYS.CHATRAGMODEL;
   const ChatOLLAMAURL = QUERY_KEYS.CHATOLLAMA;
-  const chatlisturl = user_type === 'teacher' ? QUERY_KEYS.CHAT_LIST_T : QUERY_KEYS.CHAT_LIST;
+  const chatlisturl =
+    user_type === 'teacher' ? QUERY_KEYS.CHAT_LIST_T : QUERY_KEYS.CHAT_LIST;
   const ChatURLAI = QUERY_KEYS.CHATADDAI;
   const chataddconversationurl = QUERY_KEYS.CHAT_HISTORYCON;
   const university_list = QUERY_KEYS_UNIVERSITY.GET_UNIVERSITY;
@@ -232,6 +233,18 @@ function MainContent() {
     },
     xaxis: {
       categories: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+      labels: {
+        style: {
+          colors: '#666', // color of x-axis labels
+        },
+      },
+    },
+    yaxis: {     
+      labels: {
+        style: {
+          colors: '#666', // color of x-axis labels
+        },
+      },
     },
     grid: {
       show: false,
@@ -1774,7 +1787,9 @@ function MainContent() {
                       if (response?.status === 200) {
                         handleResponse(response);
                         const ChatStorepayload = {
-                          [user_type === 'teacher' ? 'teacher_id' : 'student_id']: Id,
+                          [user_type === 'teacher'
+                            ? 'teacher_id'
+                            : 'student_id']: Id,
                           chat_question: search,
                           response: response?.answer,
                         };
@@ -1806,7 +1821,8 @@ function MainContent() {
                     if (response?.status === 200) {
                       handleResponse(response);
                       const ChatStorepayload = {
-                        [user_type === 'teacher' ? 'teacher_id' : 'student_id']: Id,
+                        [user_type === 'teacher' ? 'teacher_id' : 'student_id']:
+                          Id,
                         chat_question: search,
                         response: response?.answer,
                       };
@@ -1915,7 +1931,9 @@ function MainContent() {
                       if (response?.status === 200) {
                         handleResponse(response);
                         const ChatStorepayload = {
-                          [user_type === 'teacher' ? 'teacher_id' : 'student_id']: Id,
+                          [user_type === 'teacher'
+                            ? 'teacher_id'
+                            : 'student_id']: Id,
                           chat_question: search,
                           response: response?.answer,
                         };
@@ -1948,7 +1966,8 @@ function MainContent() {
                     if (response?.status === 200) {
                       handleResponse(response);
                       const ChatStorepayload = {
-                        [user_type === 'teacher' ? 'teacher_id' : 'student_id']: Id,
+                        [user_type === 'teacher' ? 'teacher_id' : 'student_id']:
+                          Id,
                         chat_question: search,
                         response: response?.answer,
                       };

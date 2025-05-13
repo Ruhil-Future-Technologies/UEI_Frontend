@@ -1,10 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { MRT_ColumnDef } from 'material-react-table';
 import { MaybeNull } from '../../types';
-import {
-  getDateFormat,
-  isNullOrUndefined,
-} from '../../utils/helpers';
+import { getDateFormat, isNullOrUndefined } from '../../utils/helpers';
 import profile from '../../assets/img/profile_img.svg';
 
 import {
@@ -2205,7 +2202,10 @@ export const ROLEVSADMIN_COLUMNS: MRT_ColumnDef<RolevsFormRep0oDTO>[] = [
               setShow((prevState) => !prevState);
               setShowvalue(Showvalue ? 0 : 1);
 
-              toast.success(data?.message);
+              toast.success(data?.message, {
+                hideProgressBar: true,
+                theme: 'colored',
+              });
               // window.location.reload();
             }
           })
@@ -2614,7 +2614,10 @@ export const ADMIN_LIST_COLUMNS: MRT_ColumnDef<Admin>[] = [
           .then((data: any) => {
             if (data.status) {
               setShowvalue(Showvalue ? 0 : 1);
-              toast.success(data?.message);
+              toast.success(data?.message, {
+                hideProgressBar: true,
+                theme: 'colored',
+              });
               window.location.reload();
             }
           })

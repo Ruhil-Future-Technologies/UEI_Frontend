@@ -51,7 +51,7 @@ export const routes: RouteObject[] = [
   { path: '/main/Language', element: <Language /> },
   { path: '/main/Hobby', element: <Hobby /> },
   { path: '/main/ChatList', element: <ChatList /> },
-  { path: '/main/SuperAdmin', element: <SuperAdmin /> },
+  { path: '/main/Admin', element: <SuperAdmin /> },
   { path: '/main/Class', element: <Class /> },
   { path: '/main/UploadPdf', element: <Uploadpdf /> },
   { path: '/main/PdfList', element: <PDFList /> },
@@ -60,5 +60,5 @@ export const routes: RouteObject[] = [
   { path: '/main/StudentFeedback', element: <StudentFeedback /> },
   { path: '/main/faq', element: <FAQ /> },
   { path: '/main/Content', element: <Content /> },
-  { path: "/main/Teacher", element: <Teacher /> },
+  { path: '/main/Teacher', element: <Teacher /> },
 ];

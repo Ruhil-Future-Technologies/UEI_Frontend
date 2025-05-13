@@ -18,6 +18,8 @@ const Protected = (props: { Component: any; menuName?: string }) => {
   // const usertype: any = 'teacher';
 
   const isDashboard = () => {
+    if (usertype === 'super_admin') return true;
+
     const currentURL = window.location.href;
     const parts = currentURL.split('/');
     const mName = parts[parts.length - 1];
@@ -73,16 +75,6 @@ const Protected = (props: { Component: any; menuName?: string }) => {
       (usertype === 'admin' ? uName.toLowerCase() === 'edit-semester' : '') ||
       (usertype === 'admin'
         ? feedbackRoute.toLowerCase() === `edit-feedback/${id}`
-        : '') ||
-      (usertype === 'admin' ? mName.toLowerCase() === 'teacher' : '') ||
-      (usertype === 'admin' ? mName.toLowerCase() === 'add-teacher' : '') ||
-      (usertype === 'admin' && uName.toLowerCase() === 'edit-teacher'
-        ? true
-        : '') ||
-      (usertype === 'admin' ? mName.toLowerCase() === 'content' : '') ||
-      (usertype === 'admin' ? mName.toLowerCase() === 'add-content' : '') ||
-      (usertype === 'admin' && uName.toLowerCase() === 'edit-content'
-        ? true
         : '') ||
       (usertype === 'admin' ? mName.toLowerCase() === '/admin-list' : '') ||
       (usertype === 'teacher'
@@ -198,6 +190,8 @@ const Protected = (props: { Component: any; menuName?: string }) => {
   };
 
   const isAllowed = () => {
+    if (usertype === 'super_admin') return true;
+
     const menuList = localStorage.getItem('menulist1')
       ? JSON.parse(localStorage.getItem('menulist1') as string)
       : [];

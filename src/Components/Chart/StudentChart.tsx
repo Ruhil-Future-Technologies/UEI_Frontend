@@ -129,7 +129,7 @@ const StudentDashboardCharts = () => {
         if (student_id) {
           getData(`/assignment/stats-for-student/${student_id}`).then(
             (response) => {
-              performanceData = response?.data?.subject_stats.assignments;
+              performanceData = response?.data?.subject_stats?.assignments;
 
               if (userdata?.entity_name === 'college') {
                 const subjectMap: any = {};
@@ -468,6 +468,11 @@ const StudentDashboardCharts = () => {
                       text: 'Time Period',
                       style: { fontWeight: 600, color: '#666' },
                     },
+                    labels: {
+                      style: {
+                        colors: '#666', // color of x-axis labels
+                      },
+                    },
                   },
                   yaxis: [
                     {
@@ -476,8 +481,14 @@ const StudentDashboardCharts = () => {
                         text: 'Daily Time (Hours)',
                         style: { fontWeight: 600, color: '#666' },
                       },
+
                       min: 0,
-                      labels: { formatter: (val: any) => val.toFixed(1) },
+                      labels: {
+                        formatter: (val: any) => val.toFixed(1),
+                        style: {
+                          colors: '#666', // color of x-axis labels
+                        },
+                      },
                     },
                     ...(activeTab !== 'daily'
                       ? [
@@ -682,6 +693,11 @@ const StudentDashboardCharts = () => {
                         color: '#666',
                       },
                     },
+                    labels: {
+                      style: {
+                        colors: '#666', // color of x-axis labels
+                      },
+                    },
                   },
                   yaxis: [
                     {
@@ -691,6 +707,11 @@ const StudentDashboardCharts = () => {
                         style: {
                           fontWeight: 600,
                           color: '#666',
+                        },
+                      },
+                      labels: {
+                        style: {
+                          colors: '#666', // color of x-axis labels
                         },
                       },
                       min: 0,

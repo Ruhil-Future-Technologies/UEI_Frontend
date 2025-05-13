@@ -26,6 +26,7 @@ const Sidebar = () => {
   const [menuList1, setMenuList1] = useState<any>([]);
   const [openMenu, setOpenMenu] = useState<number | null>(null);
   const [openSubMenu, setOpenSubMenu] = useState<boolean>(false);
+  const admin_type = localStorage.getItem('admin_type') || '';
 
   // const [masterCollapsible, setMasterCollapsible] = useState(false);
   const user_type = localStorage.getItem('user_type');
@@ -366,13 +367,15 @@ const Sidebar = () => {
                                               Subject
                                             </Link>
                                           </li>
-                                          <li>
-                                            <Link to="/main/admin-list">
-                                              {' '}
-                                              <ArrowRightIcon />
-                                              Admin List
-                                            </Link>
-                                          </li>
+                                          {admin_type === 'super_admin' && (
+                                            <li>
+                                              <Link to="/main/admin-list">
+                                                {' '}
+                                                <ArrowRightIcon />
+                                                Admin List
+                                              </Link>
+                                            </li>
+                                          )}
                                         </ul>
                                       </li>
                                     );
