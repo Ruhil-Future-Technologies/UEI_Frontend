@@ -80,7 +80,10 @@ function MainContent() {
   const userid = localStorage.getItem('user_uuid');
   const menuList = localStorage.getItem('menulist1');
   const user_type = localStorage.getItem('user_type');
-  const Id = user_type === 'teacher' ? localStorage.getItem('teacher_id'):localStorage.getItem('student_id');
+  const Id =
+    user_type === 'teacher'
+      ? localStorage.getItem('teacher_id')
+      : localStorage.getItem('student_id');
 
   const profileURL = QUERY_KEYS_STUDENT.STUDENT_GET_PROFILE;
   const profileURLadmin = QUERY_KEYS_ADMIN_BASIC_INFO.ADMIN_GET_PROFILE;
@@ -88,7 +91,8 @@ function MainContent() {
   const ChatStore = QUERY_KEYS.CHAT_STORE;
   const ChatRAGURL = QUERY_KEYS.CHATRAGMODEL;
   const ChatOLLAMAURL = QUERY_KEYS.CHATOLLAMA;
-  const chatlisturl = user_type === 'teacher' ? QUERY_KEYS.CHAT_LIST_T : QUERY_KEYS.CHAT_LIST;
+  const chatlisturl =
+    user_type === 'teacher' ? QUERY_KEYS.CHAT_LIST_T : QUERY_KEYS.CHAT_LIST;
   const ChatURLAI = QUERY_KEYS.CHATADDAI;
   const chataddconversationurl = QUERY_KEYS.CHAT_HISTORYCON;
   const university_list = QUERY_KEYS_UNIVERSITY.GET_UNIVERSITY;
@@ -232,6 +236,18 @@ function MainContent() {
     },
     xaxis: {
       categories: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+      labels: {
+        style: {
+          colors: '#666', // color of x-axis labels
+        },
+      },
+    },
+    yaxis: {     
+      labels: {
+        style: {
+          colors: '#666', // color of x-axis labels
+        },
+      },
     },
     grid: {
       show: false,
@@ -1020,11 +1036,10 @@ function MainContent() {
                 if (academic_history?.class_id) {
                   getData(`class/get/${academic_history?.class_id}`).then(
                     (response) => {
-                      if(response?.status){
-
+                      if (response?.status) {
                         setStudentClass(
                           response.data.class_data.class_name
-  
+
                             .replace('_', ' ')
                             .charAt(0)
                             .toUpperCase() +
@@ -1776,7 +1791,9 @@ function MainContent() {
                       if (response?.status === 200) {
                         handleResponse(response);
                         const ChatStorepayload = {
-                          [user_type === 'teacher' ? 'teacher_id' : 'student_id']: Id,
+                          [user_type === 'teacher'
+                            ? 'teacher_id'
+                            : 'student_id']: Id,
                           chat_question: search,
                           response: response?.answer,
                         };
@@ -1808,7 +1825,8 @@ function MainContent() {
                     if (response?.status === 200) {
                       handleResponse(response);
                       const ChatStorepayload = {
-                        [user_type === 'teacher' ? 'teacher_id' : 'student_id']: Id,
+                        [user_type === 'teacher' ? 'teacher_id' : 'student_id']:
+                          Id,
                         chat_question: search,
                         response: response?.answer,
                       };
@@ -1917,7 +1935,9 @@ function MainContent() {
                       if (response?.status === 200) {
                         handleResponse(response);
                         const ChatStorepayload = {
-                          [user_type === 'teacher' ? 'teacher_id' : 'student_id']: Id,
+                          [user_type === 'teacher'
+                            ? 'teacher_id'
+                            : 'student_id']: Id,
                           chat_question: search,
                           response: response?.answer,
                         };
@@ -1950,7 +1970,8 @@ function MainContent() {
                     if (response?.status === 200) {
                       handleResponse(response);
                       const ChatStorepayload = {
-                        [user_type === 'teacher' ? 'teacher_id' : 'student_id']: Id,
+                        [user_type === 'teacher' ? 'teacher_id' : 'student_id']:
+                          Id,
                         chat_question: search,
                         response: response?.answer,
                       };
