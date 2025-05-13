@@ -143,7 +143,7 @@ const InstitutionCharts = () => {
 
     getData(`/assignment/stats-for-institute/${institute_id}`).then(
       (response) => {
-        const assignment = response.data;
+        const assignment = response.data?.assignment;
 
         setAssignmentData(assignment);
       },

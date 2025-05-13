@@ -122,7 +122,8 @@ export const CreateAssignments = () => {
 
   const { id } = useParams();
 
-  const { getData, postData, postDataJson, putDataJson, putData } = useApi();
+  const { getData, postData, postDataJson, putDataJson, putData, loading } =
+    useApi();
   const [darkMode, setDarkMode] = useState(false);
 
   //const stream = ['Science', 'Commerce', 'Arts'];
@@ -131,12 +132,14 @@ export const CreateAssignments = () => {
   const getsubjectSchool = QUERY_KEYS_SUBJECT_SCHOOL.GET_SUBJECT;
   const getSubjectCollege = QUERY_KEYS_SUBJECT.GET_SUBJECT;
   const CourseURL = QUERY_KEYS_COURSE.GET_COURSE;
+  const ASSIGNMETN_DOC_EDIT = QUERY_KEYS_ASSIGNMENT.ASSIGNMENT_DOC_EDIT;
   const teacher_id = localStorage.getItem('teacher_id');
   const teacherId = localStorage.getItem('user_uuid');
   const [assignmentType, setAssignmentType] = useState(
     type !== 'quiz' ? 'written' : 'quiz',
   );
   const [files, setFiles] = useState<File[]>([]);
+  const [allfiles, setAllfiles] = useState<any>([]);
   const navigate = useNavigate();
   const quillRef = useRef<ReactQuill | null>(null);
   const [availableFrom, setAvailableFrom] = useState<Dayjs | null>(null);
@@ -190,7 +193,6 @@ export const CreateAssignments = () => {
   const [quiz_timer_error, setQuizTimer_error] = useState(false);
   const GENERATE_QUIZ = QUERY_KEYS_QUIZ.GENERATE_QUIZ;
   const ASSIGNMENT = QUERY_KEYS_ASSIGNMENT;
-  const [loading, setLoading] = useState(false);
   const [isAssignmentModalOpen, setAssignmentModalOpen] = useState(false);
   const [assignmentJsonQuestions, setAssignmentJsonQuestions] = useState<any>();
   const [editable, setEditable] = useState(true);
@@ -369,7 +371,8 @@ export const CreateAssignments = () => {
               if (response.data) {
                 setAssignmentData(response.data);
                 if (response?.data?.files) {
-                  setFiles(response?.data?.files);
+                  const urls = response?.data?.files || [];
+                  setAllfiles(urls);
                 }
                 if (response?.data?.questions.length > 0) {
                   setTotalQuestion(response?.data?.questions.length);
@@ -903,7 +906,11 @@ export const CreateAssignments = () => {
       setTitle_error(true);
       valid1 = true;
     }
-    if (assignmentDataType != 'json' && !(files.length > 0)) {
+    if (
+      assignmentDataType != 'json' &&
+      !(files.length > 0) &&
+      !(allfiles.length > 0)
+    ) {
       setFile_error(true);
       valid1 = true;
     } else {
@@ -942,14 +949,14 @@ export const CreateAssignments = () => {
     } else {
       setContact_email_error(false);
     }
-    if (availableFrom == null || availableFrom.isBefore(dayjs())) {
+    if (availableFrom == null || (!id && availableFrom.isBefore(dayjs()))) {
       setAvailableFrom_error(true);
       valid1 = true;
       setError(null);
     } else {
       setAvailableFrom_error(false);
     }
-    if (dueDate == null || dueDate == dayjs() || dueDate <= dayjs()) {
+    if (dueDate == null || (!id && dueDate <= dayjs())) {
       setDue_date_error(true);
       valid1 = true;
     } else {
@@ -1037,10 +1044,6 @@ export const CreateAssignments = () => {
     formData.append('assign_to_students', JSON.stringify(students));
     if (assignmentType == 'ai generated') {
       formData.append('files', []);
-    } else {
-      files.forEach((file) => {
-        formData.append('files', file);
-      });
     }
 
     if (selectedEntity.toLowerCase() === 'school') {
@@ -1107,6 +1110,10 @@ export const CreateAssignments = () => {
     }
 
     if (!id) {
+      files.forEach((file) => {
+        formData.append('files', file);
+      });
+
       try {
         setLoading(true)
         postData(ASSIGNMENT.ADD_ASSIGNMENT, formData).then((response) => {
@@ -1133,6 +1140,12 @@ export const CreateAssignments = () => {
               notify: false,
               files: [], // File should be null initially
             });
+          } else {
+            toast.error(response.message, {
+              hideProgressBar: true,
+              theme: 'colored',
+              position: 'top-center',
+            });
           }
         });
       } catch (error: any) {
@@ -1143,46 +1156,125 @@ export const CreateAssignments = () => {
         });
       }
     } else {
-      try {
-        putData(`${ASSIGNMENT.EDIT_ASSIGNMENT}${id}`, formData)
-          .then((response) => {
-            if (response.status) {
-              toast.success(response.message, {
+      const fileData = new FormData();
+      fileData.append('existing_docs', JSON.stringify(allfiles));
+
+      files.forEach((file) => {
+        fileData.append('documents', file);
+      });
+
+      const current_docs = (assignmentData.files ?? []) as File[];
+      const allExist = current_docs.every((file) => allfiles.includes(file));
+
+      if (
+        files.length === 0 &&
+        current_docs.length === allfiles.length &&
+        allExist
+      ) {
+        try {
+          putData(`${ASSIGNMENT.EDIT_ASSIGNMENT}${id}`, formData)
+            .then((response) => {
+              if (response.status) {
+                toast.success(response.message, {
+                  hideProgressBar: true,
+                  theme: 'colored',
+                  position: 'top-center',
+                });
+                navigate('/teacher-dashboard/assignments');
+                setAssignmentData({
+                  title: '',
+                  type: 'written',
+                  contact_email: '',
+                  allow_late_submission: false,
+                  due_date_time: '',
+                  available_from: '',
+                  assign_to_students: [],
+                  instructions: '',
+                  points: '',
+                  save_draft: false,
+                  add_to_report: false,
+                  notify: false,
+                  files: [],
+                });
+                setFiles([]);
+                setAllfiles([]);
+              } else {
+                toast.error(response?.message, {
+                  hideProgressBar: true,
+                  theme: 'colored',
+                });
+                setFiles([]);
+                setAllfiles([]);
+              }
+            })
+            .catch((response) => {
+              toast.error(response.message, {
                 hideProgressBar: true,
                 theme: 'colored',
                 position: 'top-center',
               });
-              navigate('/teacher-dashboard/assignments');
-              setAssignmentData({
-                title: '',
-                type: 'written',
-                contact_email: '',
-                allow_late_submission: false,
-                due_date_time: '',
-                available_from: '',
-                assign_to_students: [],
-                instructions: '',
-                points: '',
-                save_draft: false,
-                add_to_report: false,
-                notify: false,
-                files: [],
-              });
-            }
-          })
-          .catch((response) => {
-            toast.error(response.message, {
-              hideProgressBar: true,
-              theme: 'colored',
-              position: 'top-center',
             });
+        } catch (error: any) {
+          toast.error(error.message, {
+            hideProgressBar: true,
+            theme: 'colored',
+            position: 'top-center',
           });
-      } catch (error: any) {
-        toast.error(error.message, {
-          hideProgressBar: true,
-          theme: 'colored',
-          position: 'top-center',
-        });
+        }
+      } else {
+        try {
+          putData(`${ASSIGNMETN_DOC_EDIT}${id}`, fileData).then((response) => {
+            if (response?.code === 201) {
+              putData(`${ASSIGNMENT.EDIT_ASSIGNMENT}${id}`, formData)
+                .then((response) => {
+                  if (response.status) {
+                    toast.success(response.message, {
+                      hideProgressBar: true,
+                      theme: 'colored',
+                      position: 'top-center',
+                    });
+                    navigate('/teacher-dashboard/assignments');
+                    setAssignmentData({
+                      title: '',
+                      type: 'written',
+                      contact_email: '',
+                      allow_late_submission: false,
+                      due_date_time: '',
+                      available_from: '',
+                      assign_to_students: [],
+                      instructions: '',
+                      points: '',
+                      save_draft: false,
+                      add_to_report: false,
+                      notify: false,
+                      files: [],
+                    });
+                    setFiles([]);
+                    setAllfiles([]);
+                  } else {
+                    toast.error(response?.message, {
+                      hideProgressBar: true,
+                      theme: 'colored',
+                    });
+                    setFiles([]);
+                  }
+                })
+                .catch((response) => {
+                  toast.error(response.message, {
+                    hideProgressBar: true,
+                    theme: 'colored',
+                    position: 'top-center',
+                  });
+                });
+            }
+          });
+        } catch (error: any) {
+          toast.error(error.message, {
+            hideProgressBar: true,
+            theme: 'colored',
+            position: 'top-center',
+          });
+        }
       }
     }
   };
@@ -1384,25 +1476,20 @@ export const CreateAssignments = () => {
 
     try {
       if (type == 'assignment') {
-        setLoading(true);
         postDataJson(ASSIGNMENT.GENERATE_AI_ASSIGNMENT, payload).then(
           (response) => {
             setAssignmentGenrData(response);
             setAssignmentModalOpen(true);
-            setLoading(false);
             setAiAssignmentGenerated(true);
           },
         );
       } else {
-        setLoading(true);
         postDataJson(GENERATE_QUIZ, payload).then((response) => {
           setQuizData(response);
           setIsModalOpen(true);
-          setLoading(false);
         });
       }
     } catch (error) {
-      setLoading(false);
       console.error('Error generating quiz:', error);
 
       toast.error('Quiz generation failed', {
@@ -1922,13 +2009,22 @@ export const CreateAssignments = () => {
   };
 
   const handleFileRemove = (index: number) => {
+    setEditable(false);
     setFiles(files.filter((_, i) => i !== index));
-    if (files.length == 1) {
+    if (files.length == 1 || allfiles.length == 1) {
       setFile_error(true);
     } else {
       setFile_error(false);
     }
   };
+
+  const handleDeleteFile = (index: any) => {
+    setEditable(false);
+    setAllfiles((previous: any) =>
+      previous.filter((_: any, ind: any) => ind !== index),
+    );
+  };
+
   const handleSaveAsDraft = () => {
     const updatedPayload = {
       ...quizPayload,
@@ -2266,6 +2362,33 @@ export const CreateAssignments = () => {
                                   <IconButton
                                     edge="end"
                                     onClick={() => handleFileRemove(index)}
+                                  >
+                                    <DeleteIcon />
+                                  </IconButton>
+                                ) : null
+                              }
+                            >
+                              <div className="pinwi-20">
+                                <AttachFileIcon />
+                              </div>
+                              <ListItemText
+                                primary={(file.name as any) || (file as any)}
+                              />
+                            </ListItem>
+                          ))}
+                          {allfiles?.map((file: any, index: number) => (
+                            <ListItem
+                              className="fileslistitem"
+                              key={index}
+                              sx={{
+                                borderRadius: 1,
+                                mb: 1,
+                              }}
+                              secondaryAction={
+                                submittedCount <= 0 ? (
+                                  <IconButton
+                                    edge="end"
+                                    onClick={() => handleDeleteFile(index)}
                                   >
                                     <DeleteIcon />
                                   </IconButton>

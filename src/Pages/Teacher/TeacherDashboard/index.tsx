@@ -5,98 +5,162 @@ import { useNavigate } from 'react-router-dom';
 import toperstudent from '../../../assets/img/topper-image.png';
 import consultantimg from '../../../assets/img/consultant.png';
 import goaling from '../../../assets/img/goal.png';
-//import classimg from '../../../assets/img/class.png';
-
-//import ArrowForwardOutlinedIcon from '@mui/icons-material/ArrowForwardOutlined';
-//import ArrowBackOutlinedIcon from '@mui/icons-material/ArrowBackOutlined';
-import OpenInFullOutlinedIcon from '@mui/icons-material/OpenInFullOutlined';
-import MicIcon from '@mui/icons-material/Mic';
-import ArrowUpwardOutlinedIcon from '@mui/icons-material/ArrowUpwardOutlined';
 import robotimg from '../../../assets/img/robot.png';
 import glogowhite from '../../../assets/img/g-logo-white.svg';
-import ThumbDownAltOutlinedIcon from '@mui/icons-material/ThumbDownAltOutlined';
-import ThumbUpAltOutlinedIcon from '@mui/icons-material/ThumbUpAltOutlined';
-import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
-import VolumeUpOutlinedIcon from '@mui/icons-material/VolumeUpOutlined';
-import AutorenewOutlinedIcon from '@mui/icons-material/AutorenewOutlined';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
-import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
-import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import PercentIcon from '@mui/icons-material/Percent';
 import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle';
 import StreamIcon from '@mui/icons-material/Stream';
 import AttractionsIcon from '@mui/icons-material/Attractions';
-//import SubjectIcon from '@mui/icons-material/Subject';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 
 import useApi from '../../../hooks/useAPI';
-import { QUERY_KEYS_CLASS, QUERY_KEYS_COURSE } from '../../../utils/const';
+import { QUERY_KEYS, QUERY_KEYS_CLASS, QUERY_KEYS_COURSE, QUERY_KEYS_TEACHER } from '../../../utils/const';
 import { CourseRep0oDTO, IClass } from '../../../Components/Table/columns';
-import { toast } from 'react-toastify';
+import { toast, ToastContentProps } from 'react-toastify';
 import TeacherDashboardCharts from '../TeacherChart';
 import SessionTracker from '../../../Components/Tracker';
 import TeacherGraph from '../TeacherGraphs';
+import ChatComponent from '../../../Components/Chat/ChatComponent';
+import useTextToSpeech from '../../Chat/speech';
 
-// import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
-// import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
-interface Teacher {
-  teacher_id: number;
-  first_name: string;
-  last_name: string;
-  department: string;
-  university_id: string;
-  qualifications: string;
-  image: string;
-  bio: string;
-  total_students: number;
-  subjects: string[];
-}
 
 const TeacherDash = () => {
   const teacherId = localStorage.getItem('user_uuid');
   const userId = localStorage.getItem('teacher_id');
+  const { textToSpeech, stopSpeech } = useTextToSpeech();
   const ClassURL = QUERY_KEYS_CLASS.GET_CLASS;
   const CourseURL = QUERY_KEYS_COURSE.GET_COURSE;
-  const { getData } = useApi();
-  const [teacherData, setTeacherData] = useState<Teacher>();
+  const chatlisturl = QUERY_KEYS.CHAT_LIST_T;
+  const ChatRAGURL = QUERY_KEYS.CHATRAGMODEL;
+  const ChatOLLAMAURL = QUERY_KEYS.CHATOLLAMA;
+  const ChatURLAI = QUERY_KEYS.CHATADDAI;
+  const ChatStore = QUERY_KEYS.CHAT_STORE;
+  const chataddconversationurl = QUERY_KEYS.CHAT_HISTORYCON;
+  const editTeacher = QUERY_KEYS_TEACHER.TEACHER_EDIT;
+  const { getData, postDataJson } = useApi();
+
+  const [teacherData, setTeacherData] = useState<any>();
   const [selectedEntity, setSelectedEntity] = useState('');
   const [dataClass, setDataClass] = useState<IClass[]>([]);
   const [coursesData, setCoursesData] = useState<CourseRep0oDTO[]>([]);
-
-  // const [boxes, setBoxes] = useState<Boxes[]>([
-  //   {
-  //     semester_number: '',
-  //     subjects: [],
-  //     course_id: '',
-  //   },
-  // ]);
+  const [search, setSearch] = useState('');
+  const [searcherr, setSearchErr] = useState(false);
+  const [chatLoader, setChatLoader] = useState(false);
+  const [loaderMsg, setLoaderMsg] = useState('');
+  const [studentDetail] = useState<any>();
+  const [chat, setchatData] = useState<any>([]);
+  const [chatlist, setchatlistData] = useState<any>();
+  const [selectedchat, setSelectedChat] = useState<any>([]);
+  const [flagged, setFlagged] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [likedStates, setLikedStates] = useState<{ [key: string]: string }>({});
+  const [isTextCopied, setIsTextCopied] = useState<any>({});
   const navigate = useNavigate();
+  const callAPI = async () => {
+    getData(`${chatlisturl}/${userId}`)
+      .then((data: any) => {
+        setchatlistData(data?.data);
+      })
+      .catch((e) => {
+        toast.error(e?.message, {
+          hideProgressBar: true,
+          theme: 'colored',
+        });
+      });
+  };
 
+  useEffect(() => {
+    callAPI();
+  }, []);
+
+  const saveChat = async () => {
+    const chatDataString = localStorage?.getItem('chatData');
+    let chatData: any;
+
+    if (chatDataString) {
+      chatData = JSON.parse(chatDataString);
+    } else {
+      chatData = null;
+    }
+    const isChatFlagged =
+      chatData?.[0]?.flagged ?? localStorage?.getItem('chatsaved') === 'true';
+
+    let datatest;
+    if (chatlist !== undefined) {
+      datatest = chatlist?.filter(
+        (chatitem: { chat_title: any }) =>
+          chatitem?.chat_title === chatData?.[0]?.question,
+      );
+    }
+    let chat_payload;
+    if (
+      datatest?.length !== 0 &&
+      Array.isArray(chatData) &&
+      chatData.length >= 2
+    ) {
+      chat_payload = {
+        teacher_id: userId,
+        chat_title: chatData?.[0]?.question,
+        chat_conversation: JSON.stringify(chatData),
+        flagged: isChatFlagged,
+      };
+    } else {
+      chat_payload = {
+        teacher_id: userId,
+        chat_title: chatData?.[0]?.question,
+        chat_conversation: JSON.stringify(chatData),
+        flagged: isChatFlagged,
+      };
+    }
+    await postDataJson(`${chataddconversationurl}`, chat_payload)
+      .then(() => {
+        localStorage.removeItem('chatData');
+        localStorage.removeItem('chatsaved');
+      })
+      .catch((e) => {
+        toast.error(e?.message, {
+          hideProgressBar: true,
+          theme: 'colored',
+        });
+      });
+  };
+  useEffect(() => {
+    if (!isExpanded && chat?.length > 0) {
+      localStorage.setItem(
+        'chatData',
+        JSON.stringify(chat?.length ? chat : []),
+      );
+    }
+  }, [chat, isExpanded]);
+
+  useEffect(() => {
+    if (!isExpanded) {
+      const chatDataString = localStorage?.getItem('chatData');
+      if (chatDataString) {
+        const chatData = JSON.parse(chatDataString);
+
+        if (chatData?.length > 0) {
+          saveChat();
+        }
+      }
+    }
+
+    return () => {
+      setIsExpanded(false);
+    };
+  }, [isExpanded]);
   const getTeacherInfo = () => {
     try {
-      getData(`/teacher/edit/${teacherId}`).then((data) => {
+      getData(`${editTeacher}/${teacherId}`).then((data) => {
         if (data?.status) {
           localStorage.setItem('teacher_id', data?.data.id);
           setTeacherData(data.data);
           if (data?.data?.course_semester_subjects != null) {
             setSelectedEntity('college');
-            // const output: Boxes[] = Object.keys(
-            //   data.data.course_semester_subjects,
-            // ).flatMap((CourseKey) =>
-            //   Object.keys(data.data.course_semester_subjects[CourseKey]).map(
-            //     (semester_number) => ({
-            //       course_id: CourseKey,
-            //       semester_number: semester_number,
-            //       subjects:
-            //         data.data.course_semester_subjects[CourseKey][
-            //         semester_number
-            //         ],
-            //     }),
-            //   ),
-            // );
             const courseIds = Object.keys(
               data.data.course_semester_subjects,
             ).map((CourseKey) => CourseKey);
@@ -153,6 +217,636 @@ const TeacherDash = () => {
         });
       });
   };
+  const handleError = (e: {
+    message:
+    | string
+    | number
+    | boolean
+    | React.ReactElement<any, string | React.JSXElementConstructor<any>>
+    | Iterable<React.ReactNode>
+    | React.ReactPortal
+    | ((props: ToastContentProps<unknown>) => React.ReactNode)
+    | null
+    | undefined;
+  }) => {
+    setChatLoader(false);
+    toast.error(e?.message, {
+      hideProgressBar: true,
+      theme: 'colored',
+    });
+  };
+  const handleResponse = (data: { data: any }) => {
+    const newData = data?.data ? data?.data : data;
+    newData.speak = false;
+    newData.like_dislike = null;
+    setSelectedChat((prevState: any) => {
+      const newState = [...prevState, newData];
+      const newIndex = newState.length - 1;
+      setLikedStates((prevStates) => ({
+        ...prevStates,
+        [newIndex]:
+          newData.like_dislike === true
+            ? 'liked'
+            : newData.like_dislike === false
+              ? 'disliked'
+              : '',
+      }));
+      return newState;
+    });
+    setchatData((prevState: any) => [...prevState, newData]);
+    setChatLoader(false);
+    setSearch('');
+    // setShowInitialPage(false);
+    getData(`${chatlisturl}/${userId}`)
+      .then((data: any) => {
+        setchatlistData(data?.data);
+      })
+      .catch((e) => {
+        toast.error(e?.message, {
+          hideProgressBar: true,
+          theme: 'colored',
+        });
+      });
+  };
+  const searchData = () => {
+    setSearch('');
+
+    if (search === '') {
+      setSearchErr(true);
+      return;
+    }
+    setChatLoader(true);
+    setLoaderMsg('Searching result from knowledge base');
+    setSearchErr(false);
+    const prompt = studentDetail?.prompt?.replace('**question**', 'answer');
+    let payload = {};
+    // let rag_payload = {};
+    if (selectedchat?.question !== '') {
+      payload = {
+        teacher_id: userId,
+        question: search,
+        prompt: prompt,
+        course: teacherData?.course_name || null,
+        stream: teacherData?.subject || null,
+        chat_hostory: [
+          { role: 'user', content: selectedchat?.question },
+          {
+            role: 'assistant',
+            content: selectedchat?.answer,
+          },
+        ],
+      };
+    } else {
+      payload = {
+        teacher_id: userId,
+        question: search,
+        prompt: prompt,
+        course: teacherData?.course_name || null,
+        stream: teacherData?.subject || null,
+      };
+    }
+
+    const handleResponsereg = (data: { data: any }) => {
+      const newData = data;
+      setSelectedChat((prevState: any) => [...prevState, newData]);
+      setchatData((prevState: any) => [...prevState, newData]);
+      setChatLoader(false);
+      setSearch('');
+      getData(`${chatlisturl}/${userId}`)
+        .then((data: any) => {
+          setchatlistData(data?.data);
+        })
+        .catch((e) => {
+          toast.error(e?.message, {
+            hideProgressBar: true,
+            theme: 'colored',
+          });
+        });
+    };
+    Promise.resolve({ status: true }) // Skipping ChatURL and faking a success
+      .then((data) => {
+        if (data.status) {
+          if (teacherData.entity_type === 'school') {
+            postDataJson(`${ChatRAGURL}`, {
+              user_query: search,
+              student_id: userId,
+              school_college_selection:
+                teacherData.entity_type,
+              board_selection:
+                null,
+              state_board_selection:
+                null,
+              stream_selection: null,
+              class_selection: teacherData.class_name || null,
+              university_selection: teacherData?.university_name || null,
+              college_selection: null,
+              course_selection: teacherData?.course || null,
+              year: null,
+              subject: teacherData.subject || null,
+            })
+              .then((response: any) => {
+                if (response?.status || response?.code === 402) {
+                  function formatAnswer(answer: any) {
+                    if (Array.isArray(answer)) {
+                      return answer;
+                    }
+                    if (typeof answer === 'object' && answer !== null) {
+                      const entries = Object.entries(answer);
+                      return [
+                        entries
+                          .map(([key, value]) => {
+                            if (
+                              typeof value === 'string' &&
+                              value.includes('\\frac') &&
+                              !value.includes('$')
+                            ) {
+                              const latexValue = `$${value}$`;
+                              return `${key}) ${latexValue}\n`;
+                            }
+                            return `${key}) ${value}\n`;
+                          })
+                          .join(''),
+                      ];
+                    }
+                    return [answer.toString()];
+                  }
+                  const formattedResponse = {
+                    data: {
+                      question: response.question,
+                      answer: formatAnswer(response.answer),
+                      diagram_code: response.diagram_code,
+                      table_code: response.table_code,
+                    },
+                  };
+                  const ChatStorepayload = {
+                    teacher_id: userId,
+                    chat_question: response.question,
+                    response: formatAnswer(response.answer),
+                  };
+                  if (response?.code !== 402) {
+                    postDataJson(`${ChatStore}`, ChatStorepayload).catch(
+                      handleError,
+                    );
+                  }
+                  handleResponse(formattedResponse);
+                } else {
+                  setLoaderMsg('Fetching Data from Ollama model.');
+
+                  postDataJson(`${ChatOLLAMAURL}`, {
+                    user_query: search,
+                    student_id: userId,
+                    class_or_course_selection: studentDetail.class.name,
+                  })
+                    .then((response) => {
+                      if (response?.status) {
+                        handleResponse(response);
+                        const ChatStorepayload = {
+                          teacher_id: userId,
+                          chat_question: search,
+                          response: response?.answer,
+                        };
+                        postDataJson(`${ChatStore}`, ChatStorepayload).catch(
+                          handleError,
+                        );
+                      }
+                    })
+                    .catch(() => {
+                      postDataJson(`${ChatURLAI}`, payload)
+                        .then((response) => handleResponse(response))
+                        .catch((error) => handleError(error));
+                    });
+                }
+              })
+              .catch(() =>
+                postDataJson(`${ChatOLLAMAURL}`, {
+                  user_query: search,
+                  student_id: userId,
+                  class_or_course_selection: studentDetail?.class.name,
+                })
+                  .then((response) => {
+                    if (response?.status) {
+                      handleResponse(response);
+                      const ChatStorepayload = {
+                        teacher_id: userId,
+                        chat_question: search,
+                        response: response?.answer,
+                      };
+                      postDataJson(`${ChatStore}`, ChatStorepayload).catch(
+                        handleError,
+                      );
+                    }
+                  })
+                  .catch(() => {
+                    postDataJson(`${ChatURLAI}`, payload)
+                      .then((response) => handleResponse(response))
+                      .catch((error) => handleError(error));
+                  }),
+              );
+          } else {
+            const queryParams = {
+              user_query: search,
+              student_id: userId,
+              school_college_selection: teacherData.entity_type || null,
+              board_selection: null,
+              state_board_selection: null,
+              stream_selection: null,
+              class_selection: teacherData?.class_id || null,
+              university_selection: teacherData?.university_name || null,
+              college_selection: teacherData?.institution_name || null,
+              course_selection: teacherData?.course || null,
+              year: null,
+              subject: teacherData?.subject_name || null,
+            };
+            return postDataJson(`${ChatRAGURL}`, queryParams)
+              .then((response) => {
+                if (response?.status || response?.code === 402) {
+                  function formatAnswer(answer: any) {
+                    if (Array.isArray(answer)) {
+                      return answer;
+                    }
+                    if (typeof answer === 'object' && answer !== null) {
+                      const entries = Object.entries(answer);
+                      return [
+                        entries
+                          .map(([key, value]) => {
+                            if (
+                              typeof value === 'string' &&
+                              value.includes('\\frac') &&
+                              !value.includes('$')
+                            ) {
+                              const latexValue = `$${value}$`;
+                              return `${key}) ${latexValue}\n`;
+                            }
+                            return `${key}) ${value}\n`;
+                          })
+                          .join(''),
+                      ];
+                    }
+                    return [answer.toString()];
+                  }
+                  const formattedResponse = {
+                    data: {
+                      question: response.question,
+                      answer: formatAnswer(response.answer),
+                      diagram_code: response.diagram_code,
+                      table_code: response.table_code,
+                    },
+                  };
+                  const ChatStorepayload = {
+                    teacher_id: userId,
+                    chat_question: response.question,
+                    response: formatAnswer(response.answer),
+                  };
+                  if (response?.code !== 402) {
+                    postDataJson(`${ChatStore}`, ChatStorepayload).catch(
+                      handleError,
+                    );
+                  }
+                  handleResponse(formattedResponse);
+                } else {
+                  setLoaderMsg('Fetching Data from Ollama model.');
+                  postDataJson(`${ChatOLLAMAURL}`, {
+                    user_query: search,
+                    student_id: userId,
+                    class_or_course_selection: teacherData?.course_name || null,
+                  })
+                    .then((response) => {
+                      if (response?.status) {
+                        handleResponse(response);
+                        const ChatStorepayload = {
+                          teacher_id: userId,
+                          chat_question: search,
+                          response: response?.answer,
+                        };
+                        postDataJson(`${ChatStore}`, ChatStorepayload).catch(
+                          handleError,
+                        );
+                      }
+                    })
+                    .catch(() => {
+                      postDataJson(`${ChatURLAI}`, payload)
+                        .then((response) => handleResponse(response))
+                        .catch((error) => handleError(error));
+                    });
+                }
+              })
+              .catch(() => {
+                setLoaderMsg('Fetching Data from Ollama model.');
+                postDataJson(`${ChatOLLAMAURL}`, {
+                  user_query: search,
+                  student_id: userId,
+                  class_or_course_selection: teacherData?.course_name || null,
+                })
+                  .then((response) => {
+                    if (response?.status) {
+                      handleResponse(response);
+                      const ChatStorepayload = {
+                        teacher_id: userId,
+                        chat_question: search,
+                        response: response?.answer,
+                      };
+                      postDataJson(`${ChatStore}`, ChatStorepayload).catch(
+                        handleError,
+                      );
+                    }
+                  })
+                  .catch(() => {
+                    postDataJson(`${ChatURLAI}`, payload)
+                      .then((response) => handleResponse(response))
+                      .catch((error) => handleError(error));
+                  });
+              });
+          }
+        } else {
+          handleError({ message: 'An error occurred', ...data });
+        }
+      })
+      .then((data: any) => {
+        if (data?.status) {
+          const ChatStorepayload = {
+            teacher_id: userId,
+            chat_question: search,
+            response: data?.answer,
+          };
+          postDataJson(`${ChatStore}`, ChatStorepayload)
+            .then((data) => {
+              if (data?.status) {
+                // handleResponse(data);
+              } else if (data) {
+                // handleError(data);
+              }
+            })
+            .catch(handleError);
+          handleResponsereg(data);
+        } else if (data?.code === 404) {
+          setLoaderMsg('Fetching Data from Ollama model.');
+          return postDataJson(`${ChatOLLAMAURL}`, {
+            user_query: search,
+            student_id: userId,
+            class_or_course_selection:
+              teacherData.entity_type === 'school'
+                ? teacherData?.class.name || null
+                : teacherData?.course_name || null,
+          });
+        } else if (data) {
+          handleError(data);
+        }
+      })
+      .then((data) => {
+        if (data?.status) {
+          const ChatStorepayload = {
+            teacher_id: userId,
+            chat_question: search,
+            response: data?.answer,
+          };
+          postDataJson(`${ChatStore}`, ChatStorepayload)
+            .then((data) => {
+              if (data?.status) {
+                // handleResponse(data);
+              } else if (data) {
+                // handleError(data);
+              }
+            })
+            .catch(handleError);
+          handleResponsereg(data);
+        } else if (data?.code === 404) {
+          setLoaderMsg('Fetching data from Chat-GPT API.');
+          return postDataJson(`${ChatURLAI}`, payload);
+        } else if (data) {
+          handleError(data);
+        }
+      })
+      .then((data) => {
+        if (data?.status) {
+          handleResponse(data);
+        } else if (data) {
+          handleError(data);
+        }
+      })
+      .catch(handleError);
+  };
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      searchData();
+    }
+  };
+
+  const handleFlag = () => {
+    setFlagged(!flagged)
+    const chatDataString = localStorage.getItem('chatData');
+    if (chatDataString) {
+      const chatData = JSON.parse(chatDataString);
+      const updatedChatData = chatData.map((chat: any) => ({
+        ...chat,
+        flagged: !flagged,
+      }));
+      localStorage.setItem('chatData', JSON.stringify(updatedChatData));
+    }
+
+  };
+  const handleExpand = () => {
+    if (selectedchat?.length > 0 || chatLoader) {
+      setIsExpanded(true);
+      const existingChatData = localStorage.getItem('chatData');
+      const expandedChatData = {
+        chats: existingChatData,
+        loading: chatLoader,
+        loaderMessage: loaderMsg,
+        pendingQuestion: search,
+        studentData: studentDetail,
+      };
+      localStorage.setItem(
+        'expandedChatData',
+        JSON.stringify(expandedChatData),
+      );
+      localStorage.removeItem('chatData');
+      navigate('/teacher-dashboard/chat/recentChat');
+    }
+  };
+  useEffect(() => {
+    localStorage.removeItem('expandedChatData');
+
+    return () => {
+      localStorage.removeItem('expandedChatData');
+      setIsExpanded(false);
+    };
+  }, []);
+
+  const handleRegenerate = (question: any) => {
+    setChatLoader(true);
+    setLoaderMsg('Fetching Data from Ollama model.');
+    setSearchErr(false);
+    const prompt = studentDetail?.prompt?.replace('**question**', 'answer');
+    let payload = {};
+    if (selectedchat?.question !== '') {
+      payload = {
+        question: question,
+        prompt: prompt,
+        course: teacherData?.course_name || null,
+        stream: teacherData?.subject || null,
+        chat_hostory: [
+          { role: 'user', content: selectedchat?.question },
+          {
+            role: 'assistant',
+            content: selectedchat?.answer,
+          },
+        ],
+      };
+    } else {
+      payload = {
+        question: question,
+        prompt: prompt,
+        course: teacherData?.course_name || '',
+        stream: teacherData?.subject || '',
+      };
+    }
+    postDataJson(`${ChatOLLAMAURL}`, {
+      user_query: question,
+      student_id: userId,
+      class_or_course_selection:
+        teacherData.entity_type === 'school'
+          ? teacherData?.class_name || ''
+          : teacherData?.course_name || '',
+    })
+      .then((response) => {
+        if (response?.status) {
+          handleResponse(response);
+          const ChatStorepayload = {
+            teacher_id: userId,
+            chat_question: question,
+            response: response?.answer,
+          };
+          postDataJson(`${ChatStore}`, ChatStorepayload).catch(handleError);
+        }
+      })
+      .catch(() => {
+        postDataJson(`${ChatURLAI}`, payload)
+          .then((response) => handleResponse(response))
+          .catch((error) => handleError(error));
+      });
+  };
+  const handleSpeak = async (text: string, index: number) => {
+    stopSpeech(index);
+    const textArray = Array.isArray(text) ? text : [text];
+    const updatedChats = selectedchat.map((chat: any, i: number) => ({
+      ...chat,
+      speak: i === index, // Only the current index is true
+    }));
+
+    setSelectedChat(updatedChats);
+    const speechComplete = await textToSpeech(textArray.join(" "), index);
+    if (speechComplete) {
+      const updatedChatsAfterSpeech = selectedchat.map((chat: any, i: number) => ({
+        ...chat,
+        speak: i === index ? false : chat.speak, // Set the current index's speak to false
+      }));
+
+      setSelectedChat(updatedChatsAfterSpeech);
+    }
+  };
+  const handleStop = async (index: number) => {
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    stopSpeech(index);
+    // Update `speak` state for all chats
+    const updatedChats = selectedchat.map((chat: any, i: number) => ({
+      ...chat,
+      speak: i === index ? false : chat.speak, // Set only the current index to false
+    }));
+    setSelectedChat(updatedChats);
+  };
+
+  const handleCopy = (index: number) => {
+    // Get the text content of the div with the specific inline styles
+    const textToCopy = (
+      document.getElementById(`answer-${index}`) as HTMLDivElement
+    )?.innerText;
+    // Use the Clipboard API to copy the text
+    navigator.clipboard
+      .writeText(textToCopy)
+      .then(() => {
+        const updatedState = {
+          ...isTextCopied,
+          [`answer-${index}`]: true,
+        };
+        setIsTextCopied(updatedState);
+      })
+      .catch((err) => {
+        console.error('Error copying text: ', err);
+      });
+  };
+  const handleLike = (index: number) => {
+    if (selectedchat[index].like_dislike !== null) {
+      return;
+    }
+    setLikedStates((prevStates) => ({
+      ...prevStates,
+      [index]: 'liked',
+    }));
+
+    const updatedChat = [...selectedchat];
+    updatedChat[index] = {
+      ...updatedChat[index],
+      like_dislike: true,
+    };
+    setSelectedChat(updatedChat);
+    const chatDataString = localStorage.getItem('chatData');
+    if (chatDataString) {
+      const chatData = JSON.parse(chatDataString);
+      const updatedChatData = chatData.map((item: any) => {
+        const isMatch =
+          item.question === selectedchat[index].question &&
+          JSON.stringify(item.answer) ===
+          JSON.stringify(selectedchat[index].answer);
+
+        if (isMatch) {
+          return {
+            ...item,
+            like_dislike: true,
+          };
+        }
+        return item;
+      });
+
+      localStorage.setItem('chatData', JSON.stringify(updatedChatData));
+    }
+  };
+
+  const handleDislike = (index: number) => {
+    if (selectedchat[index].like_dislike !== null) {
+      return;
+    }
+    setLikedStates((prevStates) => ({
+      ...prevStates,
+      [index]: 'disliked',
+    }));
+    const updatedChat = [...selectedchat];
+    updatedChat[index] = {
+      ...updatedChat[index],
+      like_dislike: false,
+    };
+    setSelectedChat(updatedChat);
+    const chatDataString = localStorage.getItem('chatData');
+    if (chatDataString) {
+      const chatData = JSON.parse(chatDataString);
+      const updatedChatData = chatData.map((item: any) => {
+        const isMatch =
+          item.question === selectedchat[index].question &&
+          JSON.stringify(item.answer) ===
+          JSON.stringify(selectedchat[index].answer);
+
+        if (isMatch) {
+          return {
+            ...item,
+            like_dislike: false,
+          };
+        }
+        return item;
+      });
+
+      localStorage.setItem('chatData', JSON.stringify(updatedChatData));
+    }
+  };
+
   return (
     <div className="main-wrapper">
       <div className="main-content">
@@ -164,23 +858,6 @@ const TeacherDash = () => {
             }}
           />
           <div className="breadcrumb-title pe-3">Dashboard</div>
-          {/* <div className="ps-3">
-            <nav aria-label="breadcrumb">
-              <ol className="breadcrumb mb-0 p-0">
-                <li className="breadcrumb-item">
-                  <HomeOutlinedIcon
-                    sx={{
-                      fontSize: '18px',
-                    }}
-                  />
-                  <Link to="/"></Link>
-                </li>
-                <li className="breadcrumb-item active" aria-current="page">
-                  Report
-                </li>
-              </ol>
-            </nav>
-          </div> */}
         </div>
 
         <div className="row  g-4 mb-4">
@@ -230,47 +907,6 @@ const TeacherDash = () => {
                     </div>
                   </div>
                 </div>
-                {/* <div className="d-flex align-items-center justify-content-between gap-2 mb-3">
-                  <div>
-                    <h6 className="mb-0 fw-normal">Status</h6>
-                  </div>
-
-                  <div className="form-check form-switch mb-0 ">
-                    <input
-                      className="form-check-input fs-5 m-0"
-                      type="checkbox"
-                      id="status"
-                      checked
-                    />
-                  </div>
-                </div>
-
-                <div className="d-flex align-items-center gap-3 mb-3">
-                  <div className="flex-grow-1">
-                    <h6 className="mb-0 fw-normal">Chat History</h6>
-                  </div>
-                  <div>
-                    <a href="">0</a>
-                  </div>
-                </div>
-
-                <div className="d-flex align-items-center gap-3 mb-3">
-                  <div className="flex-grow-1">
-                    <h6 className="mb-0 fw-normal">Saved Chat</h6>
-                  </div>
-                  <div>
-                    <a href="">0</a>
-                  </div>
-                </div>
-
-                <div className="d-flex align-items-center gap-3 mb-3">
-                  <div className="flex-grow-1">
-                    <h6 className="mb-0 fw-normal">Profile Completed</h6>
-                  </div>
-                  <div>
-                    <a href="profile.html">90%</a>
-                  </div>
-                </div> */}
               </div>
             </div>
           </div>
@@ -521,131 +1157,32 @@ const TeacherDash = () => {
             className="col-xxl-8 d-flex align-items-stretch "
             style={{ marginBottom: '64px' }}
           >
-            <div className="chat-wrapper desk-chat-wrapper rounded-4 mt-lg-5">
-              <div className="chat-header d-flex align-items-center start-0 rounded-top-4">
-                <div>
-                  <img src={robotimg} className="chatroboimg" alt="" />
-                </div>
-                <div className="chat-top-header-menu ms-auto">
-                <OpenInFullOutlinedIcon sx={{ fontSize: '24px' }} />
-                  {/* <Link
-                    to={'/main/Chat/recentChat'}
-                    className="btn-outline-primary btn btn-circle rounded-circle d-flex gap-2 wh-32"
-                  >
-                    <OpenInFullOutlinedIcon sx={{ fontSize: '24px' }} />
-                  </Link> */}
-                </div>
-              </div>
-              <div className="chat-content ms-0 rounded-top-4">
-                <div className="chat-content-rightside">
-                  <div className="d-flex ms-auto">
-                    <div className="flex-grow-1 me-2">
-                      <div className="chat-right-msg">
-                        <span className="anstext">
-                          <SearchOutlinedIcon sx={{ fontSize: '20px' }} />{' '}
-                          Question
-                        </span>
-                        <p className="mb-0">
-                          Give me a description of each one
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="chat-content-leftside">
-                  <div className="d-flex">
-                    <img
-                      src={glogowhite}
-                      width="38"
-                      height="38"
-                      className="rounded-circle p-2 bg-primary"
-                      alt=""
-                    />
-                    <div className="flex-grow-1 ms-2">
-                      <div className="chat-left-msg">
-                        <span className="anstext">
-                          <DescriptionOutlinedIcon sx={{ fontSize: '20px' }} />{' '}
-                          Answer
-                        </span>
-                        <div className="mb-4">
-                          <p>
-                            Lorem ipsum dolor sit amet consectetur adipisicing
-                            elit. Cupiditate alias iste minima! Illo blanditiis
-                            minima aspernatur id iste a! Dolore similique
-                            voluptate earum dolorem pariatur. Pariatur sint
-                            aliquam reiciendis minima.
-                          </p>
-                        </div>
-                        <ul className="ansfooter">
-                          <li>
-                            <ThumbUpAltOutlinedIcon sx={{ fontSize: '14px' }} />
-                          </li>
-                          <li>
-                            <ThumbDownAltOutlinedIcon
-                              sx={{ fontSize: '14px' }}
-                            />
-                          </li>
-                          <li>
-                            <ContentCopyOutlinedIcon
-                              sx={{ fontSize: '14px' }}
-                            />{' '}
-                            <span>Copy</span>
-                          </li>
-                          <li>
-                            <VolumeUpOutlinedIcon sx={{ fontSize: '14px' }} />{' '}
-                            <span>Read</span>
-                          </li>
-                          <li>
-                            <AutorenewOutlinedIcon sx={{ fontSize: '14px' }} />{' '}
-                            <span>Regenerate</span>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="chat-content-rightside">
-                  <div className="d-flex ms-auto">
-                    <div className="flex-grow-1 me-2">
-                      <div className="chat-right-msg">
-                        <span className="anstext">
-                          <SearchOutlinedIcon sx={{ fontSize: '16px' }} />{' '}
-                          Question
-                        </span>
-                        <p className="mb-0">
-                          Give me a description of each one
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="chat-footer d-flex align-items-center start-0 rounded-bottom-4">
-                <div className="flex-grow-1 pe-2">
-                  <div className="input-group">
-                    <span className="input-group-text">
-                      <MicIcon />
-                    </span>
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder="Type a message"
-                    />
-                  </div>
-                </div>
-                <div className="chat-footer-menu">
-                <ArrowUpwardOutlinedIcon />
-                  {/* <Link
-                    to="/"
-                    className="btn btn-outline-light btn-circle rounded-circle d-flex gap-2 wh-48"
-                  >
-                    <ArrowUpwardOutlinedIcon />
-                  </Link> */}
-                </div>
-              </div>
-
-              <div className="overlay chat-toggle-btn-mobile"></div>
-            </div>
+            <ChatComponent
+              robotImage={robotimg}
+              logo={glogowhite}
+              selectedchat={selectedchat}
+              chatLoader={chatLoader}
+              loaderMsg={loaderMsg}
+              search={search}
+              setSearch={setSearch}
+              searcherr={searcherr}
+              onSearch={searchData}
+              onFlag={handleFlag}
+              flagged={flagged}
+              onExpand={handleExpand}
+              onRegenerate={handleRegenerate}
+              onSpeak={handleSpeak}
+              onStop={handleStop}
+              onCopy={handleCopy}
+              onLike={handleLike}
+              onDislike={handleDislike}
+              onKeyDown={handleKeyDown}
+              showExpandButton={true}
+              showFlagButton={true}
+              showFooter={true}
+              isTextCopied={isTextCopied}
+              likedStates={likedStates}
+            />
           </div>
           <div
             className="col-xxl-4 d-flex align-items-stretch "
