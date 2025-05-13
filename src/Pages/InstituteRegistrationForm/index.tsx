@@ -37,7 +37,10 @@ import {
   //Checkbox,
   List,
   ListItem,
+  IconButton,
+  Tooltip,
 } from '@mui/material';
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 // import {
 //   fieldIcon,
 //   inputfield,
@@ -81,7 +84,7 @@ const InstituteRegistrationForm = () => {
   const InstituteAddURL = QUERY_KEYS.INSTITUTE_ADD;
   const InstituteURL = QUERY_KEYS.GET_INSTITUTES;
 
-  const { postRegisterData, getForRegistration, postDataJson ,loading} = useApi();
+  const { postRegisterData, getForRegistration, postDataJson, loading } = useApi();
   const [dataUniversity, setDataUniversity] = useState<IUniversity[]>([]);
   const [valueInstitute, setValueInstitute] = useState<Institute>({
     institute_name: '',
@@ -106,7 +109,7 @@ const InstituteRegistrationForm = () => {
   const [school_name_error, setSchool_name_error] = useState(false);
   const [email_id_error, setEmail_id_error] = useState(false);
   const [mobile_no_error, setMobile_no_error] = useState(false);
-   const [website_error, setWebsite_error] = useState(false);
+  const [website_error, setWebsite_error] = useState(false);
   const [country_error, setCountry_error] = useState(false);
   const [state_error, setState_error] = useState(false);
   const [city_error, setCity_error] = useState(false);
@@ -211,38 +214,38 @@ const InstituteRegistrationForm = () => {
   // Handle file change
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
-    
+
     setDocument_error(false);
     setErrorMessage('');
-  
+
     if (!files) return;
-  
+
     const filesArray = Array.from(files);
-  
+
     // Check for duplicate files (compare name + lastModified for uniqueness)
     const duplicateFiles = filesArray?.filter((file) =>
       allselectedfiles.some(
-        (existingFile) => 
-          existingFile.name === file.name && 
+        (existingFile) =>
+          existingFile.name === file.name &&
           existingFile.lastModified === file.lastModified
       )
     );
-  
+
     if (duplicateFiles.length > 0) {
       setErrorMessage('This document has already been selected');
       event.target.value = '';
       return; // Stop execution to prevent adding duplicate files
     }
-  
+
     setAllSelectedfiles((prevFiles) => [
       ...prevFiles, // Keep previously selected files
       ...filesArray, // Add newly selected files
     ]);
-  
+
     // Reset input field to allow selecting the same files again
     event.target.value = '';
   };
-  
+
 
   const validation = (name: string, value: string) => {
     if (
@@ -329,13 +332,13 @@ const InstituteRegistrationForm = () => {
     if (
       !/^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[a-zA-Z0-9-]*)*(\/)?$/.test(value) && name === 'website_url'
     ) {
-      if(value==''){
+      if (value == '') {
         setWebsite_error(false);
-      }else{
+      } else {
         setWebsite_error(true);
       }
-    }else{
-      setWebsite_error(false);  
+    } else {
+      setWebsite_error(false);
     }
   };
 
@@ -578,11 +581,11 @@ const InstituteRegistrationForm = () => {
       if (data.status === true) {
         alert('Wait for 24-48 hours, the Administrator will inform you.');
         window.location.reload();
-      }else{
-        toast.error(data.message,{
-          hideProgressBar:true,
-          theme:'colored',
-          position:'top-center'
+      } else {
+        toast.error(data.message, {
+          hideProgressBar: true,
+          theme: 'colored',
+          position: 'top-center'
         })
       }
     });
@@ -633,11 +636,11 @@ const InstituteRegistrationForm = () => {
       if (
         !/^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[a-zA-Z0-9-]*)*(\/)?$/.test(
           valueInstitute.website_url,
-        )&& valueInstitute.website_url!=''
+        ) && valueInstitute.website_url != ''
       ) {
         setWebsite_error(true);
         valid = true;
-      }else{
+      } else {
         setWebsite_error(false);
       }
 
@@ -756,10 +759,10 @@ const InstituteRegistrationForm = () => {
   const handleBack = () => {
     setActiveStep((prevStep) => prevStep - 1);
   };
- // console.log(dataUniversity);
+  // console.log(dataUniversity);
   return (
     <>
-        {loading && <FullScreenLoader />}
+      {loading && <FullScreenLoader />}
       <Box sx={{ width: '100%' }} className="Stepperform">
         <div className="p-lg-4 bg-primary-20 flex-column d-none d-lg-flex">
           <div className="logoui mb-4">
@@ -830,17 +833,17 @@ const InstituteRegistrationForm = () => {
                             name="entity_id"
                             value={valueInstitute?.entity_id}
                             variant="outlined"
-                            
-                            
-                            
-                            
+
+
+
+
                           >
                             {dataEntity.map((item, idx) => (
                               <MenuItem
                                 value={item.id}
                                 key={`${item.entity_type}-${idx + 1}`}
-                                
-                                
+
+
                               >
                                 {item.entity_type}
                               </MenuItem>
@@ -874,15 +877,15 @@ const InstituteRegistrationForm = () => {
                         />
 
                         <div>
-                        {website_error === true && (
-                          <p
-                            className="error-text"
-                            style={{ color: 'red' }}
-                          >
-                            <small>Please enter a valid Website.</small>
-                          </p>
-                        )}
-                      </div>
+                          {website_error === true && (
+                            <p
+                              className="error-text"
+                              style={{ color: 'red' }}
+                            >
+                              <small>Please enter a valid Website.</small>
+                            </p>
+                          )}
+                        </div>
                       </div>
                     </div>
                     {selectedEntity.toLowerCase() === 'school' ? (
@@ -929,15 +932,15 @@ const InstituteRegistrationForm = () => {
                               name="university_id"
                               value={valueInstitute?.university_id}
                               variant="outlined"
-                            
-                              
+
+
                             >
                               {dataUniversity?.map((item, idx) => (
                                 <MenuItem
                                   value={item.id}
                                   key={`${item.university_name}-${idx + 1}`}
-                                 
-                                  
+
+
                                 >
                                   {item.university_name}
                                 </MenuItem>
@@ -1243,10 +1246,33 @@ const InstituteRegistrationForm = () => {
                       <div className="col-md-6 col-12 ">
                         <Card>
                           <CardContent>
-                            <label className="col-form-label">
-                              {' '}
-                              Document<span>*</span>
-                            </label>
+                            <Box sx={{ display: "flex", alignItems: "center" }}>
+                              <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                                Document Upload <span style={{ color: "red" }}>*</span>
+                              </Typography>
+
+                              <Tooltip
+                                title={
+                                  <>
+                                    Institution Registration Certificate
+                                    <br />
+                                    Affiliation Certificate,
+                                    <br />
+                                    Address Proof,
+                                    <br />
+                                    PAN Card of Institution
+                                    <br />
+                                    Principal's/Owner's ID Proof
+                                  </>
+                                }
+                                arrow
+                                placement="right"
+                              >
+                                <IconButton size="small" sx={{ ml: 1 }}>
+                                  <InfoOutlinedIcon fontSize="small" />
+                                </IconButton>
+                              </Tooltip>
+                            </Box>
                             <br />
                             <UploadBtn
                               label="Upload Documents"
@@ -1274,10 +1300,25 @@ const InstituteRegistrationForm = () => {
                       <div className="col-md-6 col-12 ">
                         <Card>
                           <CardContent>
-                            <label className="col-form-label">
-                              {' '}
-                              Logo<span></span>
-                            </label>
+                            <Box sx={{ display: "flex", alignItems: "center" }}>
+                              <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                                Logo
+                              </Typography>
+
+                              <Tooltip
+                                title={
+                                  <>
+                                    Institution Logo (optional)
+                                  </>
+                                }
+                                arrow
+                                placement="right"
+                              >
+                                <IconButton size="small" sx={{ ml: 1 }}>
+                                  <InfoOutlinedIcon fontSize="small" />
+                                </IconButton>
+                              </Tooltip>
+                            </Box>
                             <br />
                             <UploadBtn
                               label="Upload Logo"
@@ -1412,40 +1453,40 @@ const InstituteRegistrationForm = () => {
             email={valueInstitute.email_id}
           />
           <footer className="login-footer bg-light">
-                      <p className="mb-0">Copyright © 2025. All rights reserved.</p>
-                      <List
-                        sx={{
-                          display: 'inline-flex',
-                          flexWrap: 'wrap',
-                          gap: 2,
-                          padding: 0,
-                        }}
-                      >
-                        <ListItem sx={{ width: 'auto', padding: 0 }}>
-                          <LinkReact to="/privacypolicy" color="primary">
-                            Privacy Policy
-                          </LinkReact>
-                        </ListItem>
-                        <ListItem sx={{ width: 'auto', padding: 0 }}>
-                          <LinkReact to="/refundpolicy" color="primary">
-                            Refund Policy
-                          </LinkReact>
-                        </ListItem>
-                        <ListItem sx={{ width: 'auto', padding: 0 }}>
-                          <LinkReact to="/Disclaimer" color="primary">
-                            Disclaimer
-                          </LinkReact>
-                        </ListItem>
-                        <ListItem sx={{ width: 'auto', padding: 0 }}>
-                          <LinkReact to="/ServicesAgreement" color="primary">
-                            End User Agreement
-                          </LinkReact>
-                        </ListItem>
-                      </List>
-                    </footer>
+            <p className="mb-0">Copyright © 2025. All rights reserved.</p>
+            <List
+              sx={{
+                display: 'inline-flex',
+                flexWrap: 'wrap',
+                gap: 2,
+                padding: 0,
+              }}
+            >
+              <ListItem sx={{ width: 'auto', padding: 0 }}>
+                <LinkReact to="/privacypolicy" color="primary">
+                  Privacy Policy
+                </LinkReact>
+              </ListItem>
+              <ListItem sx={{ width: 'auto', padding: 0 }}>
+                <LinkReact to="/refundpolicy" color="primary">
+                  Refund Policy
+                </LinkReact>
+              </ListItem>
+              <ListItem sx={{ width: 'auto', padding: 0 }}>
+                <LinkReact to="/Disclaimer" color="primary">
+                  Disclaimer
+                </LinkReact>
+              </ListItem>
+              <ListItem sx={{ width: 'auto', padding: 0 }}>
+                <LinkReact to="/ServicesAgreement" color="primary">
+                  End User Agreement
+                </LinkReact>
+              </ListItem>
+            </List>
+          </footer>
         </Box>
       </Box>
-     
+
     </>
   );
 };

@@ -1215,19 +1215,33 @@ const TeacherQuizPage = () => {
                                 {quiz.timer || 0} Minutes
                               </Typography>
                             </Stack>
-
-                            <Stack
-                              direction="row"
-                              spacing={1}
-                              alignItems="center"
-                              mt={0.5}
+                            <Box
+                              display="flex"
+                              justifyContent="space-between"
+                              sx={{ mt: 1 }}
                             >
-                              <CalendarToday fontSize="small" />
-                              <Typography variant="body2">
-                                Due: {formatDate(quiz.due_date_time)}
-                              </Typography>
-                            </Stack>
-
+                              <Stack
+                                direction="row"
+                                spacing={1}
+                                alignItems="center"
+                                mt={0.5}
+                              >
+                                <CalendarToday fontSize="small" />
+                                <Typography variant='body2'>Create At: {formatDate(quiz?.created_at)}
+                                </Typography>
+                              </Stack>
+                               <Stack
+                                direction="row"
+                                spacing={1}
+                                alignItems="center"
+                                mt={0.5}
+                              >
+                                <CalendarToday fontSize="small" />
+                                <Typography variant="body2">
+                                  Due: {formatDate(quiz.due_date_time)}
+                                </Typography>
+                              </Stack>
+                            </Box>
                             <Stack direction="row" spacing={1} mt={2.5}>
                               <Button
                                 className="w-100"
