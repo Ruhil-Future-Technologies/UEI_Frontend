@@ -31,6 +31,7 @@ import TimerOffIcon from '@mui/icons-material/TimerOff';
 import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck';
 import GetAppOutlinedIcon from '@mui/icons-material/GetAppOutlined';
 import 'react-quill/dist/quill.snow.css';
+import TimerOutlinedIcon from '@mui/icons-material/TimerOutlined';
 import {
   QUERY_KEYS_ASSIGNMENT,
   QUERY_KEYS_ASSIGNMENT_SUBMISSION,
@@ -63,12 +64,15 @@ const PreviewAndSubmit = () => {
   const [statusCheck, setStatusCheck] = useState('Pending');
   const [availableDuration, setAvailableDuration] = useState(0);
   const [darkMode, setDarkMode] = useState(false);
+  const [timer, setTimer] = useState(0);
+  const [maxTime, setMaxTime] = useState(0);
+  const [isTimer, setIsTimer] = useState(false);
   const [question_answer, setQuestion_answer] = useState<Question_andwer[]>([
     {
       question: '',
       answer: '',
       marks: 0,
-    },
+    }
   ]);
   const [q_a_error, setQ_a_error] = useState(false);
   const [contentType, setContentType] = useState('file');
@@ -82,16 +86,29 @@ const PreviewAndSubmit = () => {
 
   const getAssignmentData = () => {
     try {
+      setLoading(true)
       getData(`${QUERY_KEYS_ASSIGNMENT.GET_ASSIGNMENT}${id}`).then(
         (response) => {
           if (response?.status) {
             setAssignmentData(response?.data);
+            setLoading(false);
             if (
               response?.data?.questions &&
               response?.data?.questions.length > 0
             ) {
-              setQuestion_answer(response?.data?.questions);
+              const updatedQuestions = response?.data?.questions?.map((q:Question_andwer) => ({
+                ...q,
+                answer: '', 
+              }));
+
+              setQuestion_answer(updatedQuestions);
+              console.log(response?.data?.questions);
               setContentType('questions');
+              if (response?.data?.timer) {
+                setTimer(response?.data?.timer * 60);
+                setMaxTime(response?.data?.timer * 60);
+                setIsTimer(true)
+              }
             }
             const dueDate = new Date(response?.data?.due_date_time);
             const availableDate = new Date(response?.data?.available_from);
@@ -160,6 +177,21 @@ const PreviewAndSubmit = () => {
   }, []);
 
   useEffect(() => {
+    const interval = setInterval(() => {
+      setTimer(prev => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval); // cleanup
+  }, []);
+
+
+  useEffect(() => {
     const checkDarkMode = () => {
       const currentSetting = localStorage.getItem('isDarkMode') === 'true';
       if (currentSetting !== darkMode) {
@@ -172,6 +204,12 @@ const PreviewAndSubmit = () => {
     return () => clearInterval(intervalId);
   }, [darkMode]);
 
+  useEffect(() => {
+    if (isTimer && timer == 0) {
+      submitAssignment();
+    }
+  }, [timer]);
+
   const isAssignmentSubmitedGet = (assignmentId: string) => {
     getData(
       `${QUERY_KEYS_ASSIGNMENT_SUBMISSION.GET_ASSIGNMENT_SUBMISSION_BY_STUDENT_ID}${student_id}`,
@@ -182,6 +220,7 @@ const PreviewAndSubmit = () => {
             (assignment: any) => assignment?.assignment_id == assignmentId,
           );
           if (filteredAssignment.length > 0) {
+            setIsTimer(false);
             if (filteredAssignment[0]?.description)
               setDescription(filteredAssignment[0].description);
             if (filteredAssignment[0]?.files)
@@ -196,6 +235,7 @@ const PreviewAndSubmit = () => {
               setQuestion_answer(filteredAssignment[0]?.answers);
             if (filteredAssignment[0]?.answers?.length > 0)
               setContentType('questions');
+
             setIssubmited(true);
           } else {
             setIssubmited(false);
@@ -259,7 +299,7 @@ const PreviewAndSubmit = () => {
       setDocument_error(false);
     }
 
-    if (
+    if (timer != 0 &&
       contentType != 'file' &&
       question_answer.find(
         (question) => !question.answer || question.answer === '',
@@ -374,104 +414,125 @@ const PreviewAndSubmit = () => {
     <>
       <div className="main-wrapper">
         <div className="main-content">
-        {loading && <FullScreenLoader />}
-          <div className="page-breadcrumb d-flex align-items-center mb-3">
-            <div className="breadcrumb-title pe-3">
-              <div className="d-flex gap-1 align-items-center" role="button">
-                {' '}
-                <ArrowBackIcon onClick={handleBack} className="me-1" />
-                <Link to={'/main/dashboard'} className="text-dark">
-                  Dashboard
-                </Link>
+          {loading && <FullScreenLoader />}
+          <div className='sticky-header'>
+            <div className="page-breadcrumb d-flex align-items-center mb-3">
+              <div className="breadcrumb-title pe-3">
+                <div className="d-flex gap-1 align-items-center" role="button">
+                  {' '}
+                  <ArrowBackIcon onClick={handleBack} className="me-1" />
+                  <Link to={'/main/dashboard'} className="text-dark">
+                    Dashboard
+                  </Link>
+                </div>
+              </div>
+              <div className="breadcrumb-title pe-3 ms-2">
+                <div className="d-flex gap-1 align-items-center" role="button">
+                  <Link to={'/main/student/assignment'} className="text-dark">
+                    Assignments List
+                  </Link>
+                </div>
+              </div>
+              <div className="ps-3">
+                <nav aria-label="breadcrumb">
+                  <ol className="breadcrumb mb-0 p-0">
+                    <li className="breadcrumb-item active" aria-current="page">
+                      Assignment Details
+                    </li>
+                  </ol>
+                </nav>
               </div>
             </div>
-            <div className="breadcrumb-title pe-3 ms-2">
-              <div className="d-flex gap-1 align-items-center" role="button">
-                <Link to={'/main/student/assignment'} className="text-dark">
-                  Assignments List
-                </Link>
-              </div>
-            </div>
-            <div className="ps-3">
-              <nav aria-label="breadcrumb">
-                <ol className="breadcrumb mb-0 p-0">
-                  <li className="breadcrumb-item active" aria-current="page">
-                    Assignment Details
-                  </li>
-                </ol>
-              </nav>
-            </div>
-          </div>
-          <div className="row g-2">
-            <div className="col-lg-7">
-              <Typography variant="h4" fontWeight="bold">
-                {toTitleCase(assignmentData?.title || '')}
-              </Typography>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                className="d-inline-flex align-items-center gap-2 mt-2"
-                style={{
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                }}
-              >
-                <AccessTimeIcon fontSize="small" /> Time remaining:
-                <Chip
-                  label={remainingDays + ' days'}
+            <div className="row g-2">
+              <div className="col-lg-7">
+                <Typography variant="h4" fontWeight="bold">
+                  {toTitleCase(assignmentData?.title || '')}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  className="d-inline-flex align-items-center gap-2 mt-2"
                   style={{
-                    backgroundColor: getColor(remainingDays, availableDuration),
-                    color: '#fff',
-                  }}
-                />{' '}
-                |
-                <ScoreboardOutlinedIcon fontSize="small" /> Points:
-                <Chip label={assignmentData?.points} color="primary" /> |
-                <TimerOffIcon fontSize="small" /> Late Submission:
-                {assignmentData?.allow_late_submission ? (
-                  <VerifiedIcon style={{ color: 'green' }} />
-                ) : (
-                  <HighlightOffIcon style={{ color: 'red' }} />
-                )}{' '}
-                |
-                <PlaylistAddCheckIcon fontSize="small" /> Add in report:
-                {assignmentData?.add_to_report ? (
-                  <VerifiedIcon style={{ color: 'green' }} />
-                ) : (
-                  <HighlightOffIcon style={{ color: 'red' }} />
-                )}
-              </Typography>
-            </div>
-            <div className="col-lg-5">
-              <div className="d-flex align-items-center justify-content-end">
-                <AccessTimeIcon />
-                <span
-                  className="ms-2 me-3"
-                  style={{
-                    color: getColor(remainingDays, availableDuration),
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
                   }}
                 >
-                  Due: {convertToISTT(assignmentData?.due_date_time as string)}
-                </span>
-                {remainingDays != 0 || assignmentData?.allow_late_submission ? (
+                  {isTimer && (
+                    <>
+                      <TimerOutlinedIcon fontSize="small" /> Timer:
+                      {/* <span className={timer < 20 ? 'popping-heart' : ""} style={{
+                        color: getColor(timer, maxTime),
+                      }}> {Math.floor(timer / 60) + " : " + (timer % 60 == 0 ? "00" : timer % 60)} {Math.floor(timer / 60) < 1 ? "Seconds" : "Minutes"}
+                      </span> */}
+                      <b className={timer < 20 ? 'popping-heart' : ""} style={{
+                        color: getColor(timer, maxTime),
+                      }}>{`${Math.floor(timer / 60)
+                        .toString()
+                        .padStart(2, "0")}:${(timer % 60).toString().padStart(2, "0")}`} {Math.floor(timer / 60) < 1 ? "Seconds" : "Minutes"}</b>
+                      {' '}  |
+                    </>
+
+                  )}
+
+                  <ScoreboardOutlinedIcon fontSize="small" /> Points:
+                  <Chip label={assignmentData?.points} color="primary" /> |
+                  <TimerOffIcon fontSize="small" /> Late Submission:
+                  {assignmentData?.allow_late_submission ? (
+                    <VerifiedIcon style={{ color: 'green' }} />
+                  ) : (
+                    <HighlightOffIcon style={{ color: 'red' }} />
+                  )}{' '}
+                  |
+                  <PlaylistAddCheckIcon fontSize="small" /> Add in report:
+                  {assignmentData?.add_to_report ? (
+                    <VerifiedIcon style={{ color: 'green' }} />
+                  ) : (
+                    <HighlightOffIcon style={{ color: 'red' }} />
+                  )}
+                  |
+                  <AccessTimeIcon fontSize="small" /> Time remaining:
                   <Chip
-                    label={statusCheck}
-                    color={
-                      statusCheck == 'Submitted'
-                        ? 'primary'
-                        : statusCheck == 'Graded'
-                          ? 'success'
-                          : 'error'
-                    }
+                    label={remainingDays + ' days'}
+                    style={{
+                      backgroundColor: getColor(remainingDays, availableDuration),
+                      color: '#fff',
+                    }}
                   />
-                ) : (
-                  <Chip label={'Expired'} color={'error'} />
-                )}
+
+
+                </Typography>
+
+              </div>
+              <div className="col-lg-5">
+                <div className="d-flex align-items-center justify-content-end">
+                  <AccessTimeIcon />
+                  <span
+                    className="ms-2 me-3"
+                    style={{
+                      color: getColor(remainingDays, availableDuration),
+                    }}
+                  >
+                    Due: {convertToISTT(assignmentData?.due_date_time as string)}
+                  </span>
+                  {remainingDays != 0 || assignmentData?.allow_late_submission ? (
+                    <Chip
+                      label={statusCheck}
+                      color={
+                        statusCheck == 'Submitted'
+                          ? 'primary'
+                          : statusCheck == 'Graded'
+                            ? 'success'
+                            : 'error'
+                      }
+                    />
+                  ) : (
+                    <Chip label={'Expired'} color={'error'} />
+                  )}
+                </div>
               </div>
             </div>
           </div>
-
           <Card sx={{ mt: 3 }}>
             <CardContent>
               <Typography variant="h6" className="mt-3">
@@ -489,34 +550,34 @@ const PreviewAndSubmit = () => {
 
               <hr className="my-4" />
               {contentType != 'questions' && (
-              <Box>
-                <Typography variant="h6">Resources</Typography>
-                <ul>
-                  {assignmentData?.files?.map((file, index) => (
-                    <li
-                      key={index}
-                      className="d-flex justify-content-between me-5"
-                    >
-                      {' '}
-                      {/* Ensure a unique key */}
-                      <a
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        href={file as string}
+                <Box>
+                  <Typography variant="h6">Resources</Typography>
+                  <ul>
+                    {assignmentData?.files?.map((file, index) => (
+                      <li
+                        key={index}
+                        className="d-flex justify-content-between me-5"
                       >
-                        {file as string}
-                      </a>
-                      <a
-                        href={file as string}
-                        download
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <GetAppOutlinedIcon />
-                      </a>
-                    </li>
-                  ))}
-                  {/* <li>
+                        {' '}
+                        {/* Ensure a unique key */}
+                        <a
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          href={file as string}
+                        >
+                          {file as string}
+                        </a>
+                        <a
+                          href={file as string}
+                          download
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <GetAppOutlinedIcon />
+                        </a>
+                      </li>
+                    ))}
+                    {/* <li>
                     <a href="#">Project Requirements Document.pdf</a>
                   </li>
                   <li>
@@ -525,8 +586,8 @@ const PreviewAndSubmit = () => {
                   <li>
                     <a href="#">Design Guidelines.pdf</a>
                   </li> */}
-                </ul>
-              </Box>
+                  </ul>
+                </Box>
               )}
             </CardContent>
           </Card>
@@ -605,39 +666,39 @@ const PreviewAndSubmit = () => {
 
               {statusCheck == 'Pending'
                 ? allselectedfiles.map((file, index) => (
-                    <ListItem
-                      className="fileslistitem"
-                      key={index}
-                      secondaryAction={
-                        <IconButton
-                          edge="end"
-                          onClick={() => handleFileRemove(index)}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      }
-                    >
-                      <div className="pinwi-20">
-                        <AttachFileIcon />
-                      </div>
-                      <ListItemText primary={file.name} />
-                    </ListItem>
-                  ))
-                : allselectedfilesToShow.map((file, index) => (
-                    <ListItem className="fileslistitem" key={index}>
-                      <div className="pinwi-20">
-                        <AttachFileIcon />
-                      </div>
-                      <a
-                        download
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        href={file}
+                  <ListItem
+                    className="fileslistitem"
+                    key={index}
+                    secondaryAction={
+                      <IconButton
+                        edge="end"
+                        onClick={() => handleFileRemove(index)}
                       >
-                        <ListItemText primary={file} />
-                      </a>
-                    </ListItem>
-                  ))}
+                        <DeleteIcon />
+                      </IconButton>
+                    }
+                  >
+                    <div className="pinwi-20">
+                      <AttachFileIcon />
+                    </div>
+                    <ListItemText primary={file.name} />
+                  </ListItem>
+                ))
+                : allselectedfilesToShow.map((file, index) => (
+                  <ListItem className="fileslistitem" key={index}>
+                    <div className="pinwi-20">
+                      <AttachFileIcon />
+                    </div>
+                    <a
+                      download
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href={file}
+                    >
+                      <ListItemText primary={file} />
+                    </a>
+                  </ListItem>
+                ))}
 
               {document_error && (
                 <p className="error-text " style={{ color: 'red' }}>

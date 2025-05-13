@@ -92,6 +92,7 @@ export interface Assignment {
   is_active?: any;
   is_deleted?: any;
   questions?: any;
+  timer?:any;
   files: File[] | string[]; // Assuming file is optional and a File object
 }
 type QuestionItem = {
@@ -978,6 +979,11 @@ export const CreateAssignments = () => {
     } else {
       setErrorSelectStudent(false);
     }
+    if(quiz_timer==''){
+      setQuizTimer_error(true);
+    }else{
+      setQuizTimer_error(false);
+    }
     let valid = true;
     if (selectedEntity.toLowerCase() === 'school') {
       boxesForSchool.forEach((box, index) => {
@@ -1045,6 +1051,11 @@ export const CreateAssignments = () => {
     formData.append('assign_to_students', JSON.stringify(students));
     if (assignmentType == 'ai generated') {
       formData.append('files', []);
+      formData.append("timer",quiz_timer);
+    } else {
+      files.forEach((file) => {
+        formData.append('files', file);
+      });
     }
 
     if (selectedEntity.toLowerCase() === 'school') {
@@ -1173,9 +1184,11 @@ export const CreateAssignments = () => {
         allExist
       ) {
         try {
+          setLoading(true)
           putData(`${ASSIGNMENT.EDIT_ASSIGNMENT}${id}`, formData)
             .then((response) => {
               if (response.status) {
+                setLoading(false)
                 toast.success(response.message, {
                   hideProgressBar: true,
                   theme: 'colored',
@@ -1224,8 +1237,10 @@ export const CreateAssignments = () => {
         }
       } else {
         try {
+          setLoading(true)
           putData(`${ASSIGNMETN_DOC_EDIT}${id}`, fileData).then((response) => {
             if (response?.code === 201) {
+              setLoading(false)
               putData(`${ASSIGNMENT.EDIT_ASSIGNMENT}${id}`, formData)
                 .then((response) => {
                   if (response.status) {
@@ -1395,6 +1410,11 @@ export const CreateAssignments = () => {
         setQuizTimer_error(false);
       }
     }
+    if(quiz_timer==''){
+      setQuizTimer_error(true);
+    }else{
+      setQuizTimer_error(false);
+    }
 
     let valid = true;
 
@@ -1477,15 +1497,19 @@ export const CreateAssignments = () => {
 
     try {
       if (type == 'assignment') {
+        setLoading(true)
         postDataJson(ASSIGNMENT.GENERATE_AI_ASSIGNMENT, payload).then(
           (response) => {
+            setLoading(false)
             setAssignmentGenrData(response);
             setAssignmentModalOpen(true);
             setAiAssignmentGenerated(true);
           },
         );
       } else {
+        setLoading(true)
         postDataJson(GENERATE_QUIZ, payload).then((response) => {
+          setLoading(false)
           setQuizData(response);
           setIsModalOpen(true);
         });
@@ -3214,11 +3238,11 @@ export const CreateAssignments = () => {
                             </p>
                           )}
                         </div>
-                        {type === 'quiz' && (
+                        {assignmentType === 'quiz'|| assignmentType=="ai generated" && (
                           <div className="col-lg-4">
                             <TextField
                               type="number"
-                              label="Quiz Duration (minutes)"
+                              label={assignmentType=="ai generated"?"Assignment Duration (minutes)":"Quiz Duration (minutes)"}
                               value={quiz_timer}
                               inputProps={{ min: 0 }}
                               onChange={(e) => {
@@ -3232,7 +3256,10 @@ export const CreateAssignments = () => {
                                 className="error-text"
                                 style={{ color: 'red' }}
                               >
-                                Please enter quiz timer.
+                                <small>
+                                    Please enter quiz timer.
+                                </small>
+                               
                               </p>
                             )}
                           </div>
