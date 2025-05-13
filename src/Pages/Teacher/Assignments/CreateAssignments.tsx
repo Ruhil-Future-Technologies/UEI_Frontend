@@ -92,6 +92,7 @@ export interface Assignment {
   is_active?: any;
   is_deleted?: any;
   questions?: any;
+  timer?:any;
   files: File[] | string[]; // Assuming file is optional and a File object
 }
 type QuestionItem = {
@@ -122,7 +123,7 @@ export const CreateAssignments = () => {
 
   const { id } = useParams();
 
-  const { getData, postData, postDataJson, putDataJson, putData, loading } =
+  const { getData, postData, postDataJson, putDataJson, putData } =
     useApi();
   const [darkMode, setDarkMode] = useState(false);
 
@@ -193,6 +194,7 @@ export const CreateAssignments = () => {
   const [quiz_timer_error, setQuizTimer_error] = useState(false);
   const GENERATE_QUIZ = QUERY_KEYS_QUIZ.GENERATE_QUIZ;
   const ASSIGNMENT = QUERY_KEYS_ASSIGNMENT;
+ const [loading, setLoading] = useState(false);
   const [isAssignmentModalOpen, setAssignmentModalOpen] = useState(false);
   const [assignmentJsonQuestions, setAssignmentJsonQuestions] = useState<any>();
   const [editable, setEditable] = useState(true);
@@ -800,7 +802,7 @@ export const CreateAssignments = () => {
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEditable(false);
+    setEditable(false)
     if (event.target.checked) {
       setSelectedStudents(listOfStudentFiltered || []);
       setSelectAll(true);
@@ -812,7 +814,7 @@ export const CreateAssignments = () => {
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEditable(false);
+    setEditable(false)
     if (event.target.files) {
       setFiles([...files, ...Array.from(event.target.files)]);
       setFile_error(false);
@@ -820,7 +822,7 @@ export const CreateAssignments = () => {
   };
 
   const handleChanges = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEditable(false);
+    setEditable(false)
     const { name, value } = event.target;
     setAssignmentData((prev) => ({
       ...prev,
@@ -829,7 +831,7 @@ export const CreateAssignments = () => {
     validation(name, value);
   };
   const handleQuillChange = (value: string) => {
-    setEditable(false);
+    setEditable(false)
     setAssignmentData((prev) => ({
       ...prev,
       instructions: value, // Update the 'instructions' field in state
@@ -847,10 +849,7 @@ export const CreateAssignments = () => {
       setTitle_error(false);
     }
 
-    if (
-      name == 'points' &&
-      (parseInt(value) > 100 || parseInt(value) < 0 || value == '')
-    ) {
+    if (name == 'points' && ((parseInt(value) > 100) || (parseInt(value) < 0) || value == '')) {
       setPoint_error(true);
     } else {
       setPoint_error(false);
@@ -920,10 +919,9 @@ export const CreateAssignments = () => {
       setFile_error(false);
     }
     if (assignmentDataType != 'json') {
-      if (
-        !/^\d+$/.test(assignmentData.points) ||
-        Number(assignmentData.points) > 100
-      ) {
+
+      if (!/^\d+$/.test(assignmentData.points) || Number(assignmentData.points) > 100) {
+        console.log(assignmentData.points)
         setPoint_error(true);
         valid1 = true;
       } else {
@@ -980,6 +978,11 @@ export const CreateAssignments = () => {
       valid1 = true;
     } else {
       setErrorSelectStudent(false);
+    }
+    if(quiz_timer==''){
+      setQuizTimer_error(true);
+    }else{
+      setQuizTimer_error(false);
     }
     let valid = true;
     if (selectedEntity.toLowerCase() === 'school') {
@@ -1048,6 +1051,11 @@ export const CreateAssignments = () => {
     formData.append('assign_to_students', JSON.stringify(students));
     if (assignmentType == 'ai generated') {
       formData.append('files', []);
+      formData.append("timer",quiz_timer);
+    } else {
+      files.forEach((file) => {
+        formData.append('files', file);
+      });
     }
 
     if (selectedEntity.toLowerCase() === 'school') {
@@ -1119,6 +1127,7 @@ export const CreateAssignments = () => {
       });
 
       try {
+        setLoading(true)
         postData(ASSIGNMENT.ADD_ASSIGNMENT, formData).then((response) => {
           if (response.status) {
             toast.success(response.message, {
@@ -1126,6 +1135,7 @@ export const CreateAssignments = () => {
               theme: 'colored',
               position: 'top-center',
             });
+            setLoading(false)
             navigate('/teacher-dashboard/assignments');
             setAssignmentData({
               title: '',
@@ -1174,9 +1184,11 @@ export const CreateAssignments = () => {
         allExist
       ) {
         try {
+          setLoading(true)
           putData(`${ASSIGNMENT.EDIT_ASSIGNMENT}${id}`, formData)
             .then((response) => {
               if (response.status) {
+                setLoading(false)
                 toast.success(response.message, {
                   hideProgressBar: true,
                   theme: 'colored',
@@ -1225,8 +1237,10 @@ export const CreateAssignments = () => {
         }
       } else {
         try {
+          setLoading(true)
           putData(`${ASSIGNMETN_DOC_EDIT}${id}`, fileData).then((response) => {
             if (response?.code === 201) {
+              setLoading(false)
               putData(`${ASSIGNMENT.EDIT_ASSIGNMENT}${id}`, formData)
                 .then((response) => {
                   if (response.status) {
@@ -1396,6 +1410,11 @@ export const CreateAssignments = () => {
         setQuizTimer_error(false);
       }
     }
+    if(quiz_timer==''){
+      setQuizTimer_error(true);
+    }else{
+      setQuizTimer_error(false);
+    }
 
     let valid = true;
 
@@ -1478,15 +1497,19 @@ export const CreateAssignments = () => {
 
     try {
       if (type == 'assignment') {
+        setLoading(true)
         postDataJson(ASSIGNMENT.GENERATE_AI_ASSIGNMENT, payload).then(
           (response) => {
+            setLoading(false)
             setAssignmentGenrData(response);
             setAssignmentModalOpen(true);
             setAiAssignmentGenerated(true);
           },
         );
       } else {
+        setLoading(true)
         postDataJson(GENERATE_QUIZ, payload).then((response) => {
+          setLoading(false)
           setQuizData(response);
           setIsModalOpen(true);
         });
@@ -1862,7 +1885,7 @@ export const CreateAssignments = () => {
 
         if (name === 'course_id') {
           if (boxes[index].course_id != value) {
-            setEditable(false);
+            setEditable(false)
             const filteredSemesters = semesterData?.filter(
               (item) => item.course_id === value,
             );
@@ -1880,7 +1903,7 @@ export const CreateAssignments = () => {
         }
         if (name === 'semester_number') {
           if (boxes[index].semester_number != value) {
-            setEditable(false);
+            setEditable(false)
             const filteredSubjects = totleSubject?.filter(
               (item) =>
                 item.semester_number === value &&
@@ -1894,7 +1917,7 @@ export const CreateAssignments = () => {
         }
         if (name == 'subjects') {
           if (boxes[index].subjects[0] != value) {
-            setEditable(false);
+            setEditable(false)
             setSelectedStudents([]);
             const filteredStudents = listOfStudent?.filter((student) => {
               const matchedSubject = totleSubject?.find(
@@ -1929,7 +1952,7 @@ export const CreateAssignments = () => {
 
         if (name === 'class_id') {
           if (boxesForSchool[index].class_id != value) {
-            setEditable(false);
+            setEditable(false)
             const selectedClass = dataClass.find(
               (item) => String(item.id) == value,
             )?.class_name;
@@ -1970,7 +1993,7 @@ export const CreateAssignments = () => {
         }
         if (name == 'stream') {
           if (boxesForSchool[index].stream != value) {
-            setEditable(false);
+            setEditable(false)
             const filteredSubjects = totleSubject?.filter(
               (item) =>
                 String(item.stream).toLowerCase() ==
@@ -1990,7 +2013,7 @@ export const CreateAssignments = () => {
         }
         if (name == 'subjects') {
           if (boxesForSchool[index].subjects[0] != value) {
-            setEditable(false);
+            setEditable(false)
             setSelectedStudents([]);
             const filteredStudents = listOfStudent?.filter((student) => {
               const matchedSubject = totleSubject?.find(
@@ -2311,25 +2334,22 @@ export const CreateAssignments = () => {
                           disabled={submittedCount > 0}
                           type="number"
                           inputProps={{ min: 0, max: 100 }}
+
                         />
                         {point_error && (
                           <>
                             {parseInt(assignmentData.points) > 100 ? (
-                              <p
-                                className="error-text"
-                                style={{ color: 'red' }}
-                              >
-                                <small>Points can`t be more then 100.</small>
+                              <p className="error-text" style={{ color: 'red' }}>
+                                <small>Points can`t be more than 100.</small>
                               </p>
                             ) : (
-                              <p
-                                className="error-text"
-                                style={{ color: 'red' }}
-                              >
+                              <p className="error-text" style={{ color: 'red' }}>
                                 <small>Please enter a valid points.</small>
                               </p>
-                            )}
+                            )
+                            }
                           </>
+
                         )}
                       </div>
                       <div className="col-12">
@@ -2435,7 +2455,7 @@ export const CreateAssignments = () => {
                               disabled={isQuizGenerated}
                               onChange={(e) => {
                                 setLevel(e.target.value);
-                                setEditable(false);
+                                setEditable(false)
                               }}
                             >
                               <MenuItem value="easy">Easy</MenuItem>
@@ -2670,10 +2690,7 @@ export const CreateAssignments = () => {
                             type="text"
                             disabled={isQuizGenerated || submittedCount > 0}
                             value={topic}
-                            onChange={(e) => {
-                              setTopic(e.target.value);
-                              setEditable(false);
-                            }}
+                            onChange={(e) => { setTopic(e.target.value); setEditable(false) }}
                             fullWidth
                           />
 
@@ -3062,12 +3079,10 @@ export const CreateAssignments = () => {
                         value={selectedStudents}
                         onChange={(_, newValue) => {
                           if (submittedCount > 0) {
-                            setEditable(false);
-                            const removedProtectedStudents =
-                              selectedStudentsForUpdate.filter(
-                                (student) =>
-                                  !newValue.some((s) => s.id === student.id),
-                              );
+                            setEditable(false)
+                            const removedProtectedStudents = selectedStudentsForUpdate.filter(
+                              (student) => !newValue.some((s) => s.id === student.id)
+                            );
 
                             if (removedProtectedStudents.length > 0) {
                               // Block removal of protected students
@@ -3210,7 +3225,7 @@ export const CreateAssignments = () => {
                             value={dueTime} // Ensure it's a Dayjs object
                             onChange={(newValue) => {
                               setDueTime(newValue);
-                              setEditable(false);
+                              setEditable(false)
                             }} // Directly set Dayjs object
                             closeOnSelect={false}
                             slotProps={{
@@ -3223,16 +3238,16 @@ export const CreateAssignments = () => {
                             </p>
                           )}
                         </div>
-                        {type === 'quiz' && (
+                        {assignmentType === 'quiz'|| assignmentType=="ai generated" && (
                           <div className="col-lg-4">
                             <TextField
                               type="number"
-                              label="Quiz Duration (minutes)"
+                              label={assignmentType=="ai generated"?"Assignment Duration (minutes)":"Quiz Duration (minutes)"}
                               value={quiz_timer}
                               inputProps={{ min: 0 }}
                               onChange={(e) => {
                                 setQuizTimer(e.target.value);
-                                setEditable(false);
+                                setEditable(false)
                               }}
                               fullWidth
                             />
@@ -3241,7 +3256,10 @@ export const CreateAssignments = () => {
                                 className="error-text"
                                 style={{ color: 'red' }}
                               >
-                                Please enter quiz timer.
+                                <small>
+                                    Please enter quiz timer.
+                                </small>
+                               
                               </p>
                             )}
                           </div>

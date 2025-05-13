@@ -388,7 +388,8 @@ const StudentAssignments = () => {
                           >
                             <div className="small">
                               <AccessTime fontSize="small" />
-                              {" 5 minutes"}
+                              {" "}
+                              {assignment.timer+" minutes"} 
                             </div>
                             <div className="small">
                               <Chip
@@ -512,7 +513,7 @@ const StudentAssignments = () => {
                         >
                           <div className="small">
                             <AccessTime fontSize="small" />
-                            {" 5 minutes"}
+                            {assignment.timer+" minutes"} 
                           </div>
                           <div className="small">
                             <Chip
