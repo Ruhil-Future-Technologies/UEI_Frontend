@@ -332,17 +332,71 @@ const TeacherQuizPage = () => {
   const handleStatus = (status: string) => {
     setStatusFilter(status);
     let matchesStatus = [];
-    if (status !== 'all') {
-      if (status === 'closed') {
-        matchesStatus = quizData.filter((quiz) => quiz.status == "closed");
+    if (selectedEntity == "School") {
+      if (status == 'all') {
+        matchesStatus = quizData.filter((quiz) => {
+          const classId = Object.keys(quiz?.class_stream_subjects)[0];
+          const stream = Object.keys(quiz?.class_stream_subjects?.[classId])[0];
+          const subjects = quiz?.class_stream_subjects?.[classId]?.[stream] || [];
+          return ((boxesForSchool[0].subjects.length > 0 ? (subjects.includes(boxesForSchool[0].subjects) && classId == boxesForSchool[0].class_id) : true))
+
+        })
+      } else if (status === 'closed') {
+        matchesStatus = quizData.filter((quiz) => {
+          const classId = Object.keys(quiz?.class_stream_subjects)[0];
+          const stream = Object.keys(quiz?.class_stream_subjects?.[classId])[0];
+          const subjects = quiz?.class_stream_subjects?.[classId]?.[stream] || [];
+          return (quiz.status == "closed" && (boxesForSchool[0].subjects.length > 0 ? (subjects.includes(boxesForSchool[0].subjects) && classId == boxesForSchool[0].class_id) : true))
+        });
       } else if (status === 'draft') {
-        matchesStatus = quizData.filter((quiz) => quiz.save_draft === true);
+        matchesStatus = quizData.filter((quiz) => {
+          const classId = Object.keys(quiz?.class_stream_subjects)[0];
+          const stream = Object.keys(quiz?.class_stream_subjects?.[classId])[0];
+          const subjects = quiz?.class_stream_subjects?.[classId]?.[stream] || [];
+          return (quiz.save_draft === true && (boxesForSchool[0].subjects.length > 0 ? (subjects.includes(boxesForSchool[0].subjects) && classId == boxesForSchool[0].class_id) : true))
+        });
       } else if (status === 'active') {
-        matchesStatus = quizData.filter((quiz) => !quiz.save_draft && quiz.status !== 'closed');
+        matchesStatus = quizData.filter((quiz) => {
+          const classId = Object.keys(quiz?.class_stream_subjects)[0];
+          const stream = Object.keys(quiz?.class_stream_subjects?.[classId])[0];
+          const subjects = quiz?.class_stream_subjects?.[classId]?.[stream] || [];
+          return (!quiz.save_draft && quiz.status !== 'closed' && (boxesForSchool[0].subjects.length > 0 ? (subjects.includes(boxesForSchool[0].subjects) && classId == boxesForSchool[0].class_id) : true))
+        });
       }
+
     } else {
-      matchesStatus = quizData;
+      if (status == 'all') {
+        matchesStatus = quizData.filter((quiz) => {
+          const courseId = Object.keys(quiz?.course_semester_subjects)[0];
+          const semester = Object.keys(quiz?.course_semester_subjects?.[courseId])[0];
+          const subjects = quiz?.course_semester_subjects?.[courseId]?.[semester] || [];
+          return (boxes[0].subjects.length > 0 ? (subjects.includes(boxes[0].subjects) && courseId == boxes[0].course_id) : true)
+        })
+      } else if (status === 'closed') {
+        matchesStatus = quizData.filter((quiz) => {
+          const courseId = Object.keys(quiz?.course_semester_subjects)[0];
+          const semester = Object.keys(quiz?.course_semester_subjects?.[courseId])[0];
+          const subjects = quiz?.course_semester_subjects?.[courseId]?.[semester] || [];
+          return (quiz.status == "closed" && (boxes[0].subjects.length > 0 ? (subjects.includes(boxes[0].subjects) && courseId == boxes[0].course_id) : true))
+        });
+      } else if (status === 'draft') {
+        matchesStatus = quizData.filter((quiz) => {
+          const courseId = Object.keys(quiz?.course_semester_subjects)[0];
+          const semester = Object.keys(quiz?.course_semester_subjects?.[courseId])[0];
+          const subjects = quiz?.course_semester_subjects?.[courseId]?.[semester] || [];
+          return (quiz.save_draft === true && (boxes[0].subjects.length > 0 ? (subjects.includes(boxes[0].subjects) && courseId == boxes[0].course_id) : true))
+        });
+      } else if (status === 'active') {
+        matchesStatus = quizData.filter((quiz) => {
+          const courseId = Object.keys(quiz?.course_semester_subjects)[0];
+          const semester = Object.keys(quiz?.course_semester_subjects?.[courseId])[0];
+          const subjects = quiz?.course_semester_subjects?.[courseId]?.[semester] || [];
+          return (!quiz.save_draft && quiz.status !== 'closed' && (boxes[0].subjects.length > 0 ? (subjects.includes(boxes[0].subjects) && courseId == boxes[0].course_id) : true))
+        });
+      }
     }
+
+
 
     setFilteredQuizzes(matchesStatus)
   }
@@ -408,7 +462,7 @@ const TeacherQuizPage = () => {
   };
   const handleSearchResults = (searchText: string) => {
     setSearchTerm(searchText)
-    if(selectedEntity=="College"){
+    if (selectedEntity == "College") {
       const filterquiz = quizData.filter((quiz) => {
         const courseId = Object.keys(quiz?.course_semester_subjects)[0];
         const semester = Object.keys(quiz?.course_semester_subjects?.[courseId])[0];
@@ -421,22 +475,22 @@ const TeacherQuizPage = () => {
           (subjects[0]).toLowerCase().includes(searchText.toLowerCase()) || (semester).includes(searchText))
       })
       setFilteredQuizzes(filterquiz);
-    }else{
-      
-    
-    const filterquiz = quizData.filter((quiz) => {
-      const classId = Object.keys(quiz?.class_stream_subjects)[0];
-      const stream = Object.keys(quiz?.class_stream_subjects?.[classId])[0];
-      const subjects = quiz?.class_stream_subjects?.[classId]?.[stream] || [];
-      const selectedClass = dataClass.find(
-        (item) => String(item.id) == classId,
-      )?.class_name;
-      return ((quiz.title).toLowerCase().includes(searchText.toLowerCase()) ||
-        (selectedClass && (selectedClass.toLowerCase()).includes(searchText.toLowerCase())) ||
-        (subjects[0]).toLowerCase().includes(searchText.toLowerCase()) || (stream.toLowerCase()).includes(searchText.toLowerCase()))
-    })
-    setFilteredQuizzes(filterquiz);
-  }
+    } else {
+
+
+      const filterquiz = quizData.filter((quiz) => {
+        const classId = Object.keys(quiz?.class_stream_subjects)[0];
+        const stream = Object.keys(quiz?.class_stream_subjects?.[classId])[0];
+        const subjects = quiz?.class_stream_subjects?.[classId]?.[stream] || [];
+        const selectedClass = dataClass.find(
+          (item) => String(item.id) == classId,
+        )?.class_name;
+        return ((quiz.title).toLowerCase().includes(searchText.toLowerCase()) ||
+          (selectedClass && (selectedClass.toLowerCase()).includes(searchText.toLowerCase())) ||
+          (subjects[0]).toLowerCase().includes(searchText.toLowerCase()) || (stream.toLowerCase()).includes(searchText.toLowerCase()))
+      })
+      setFilteredQuizzes(filterquiz);
+    }
   }
 
   const handelSubjectBoxChange = (
@@ -484,11 +538,31 @@ const TeacherQuizPage = () => {
               const courseId = Object.keys(quiz?.course_semester_subjects)[0];
               const semester = Object.keys(quiz?.course_semester_subjects?.[courseId])[0];
               const subjects = quiz?.course_semester_subjects?.[courseId]?.[semester] || [];
+              if (statusFilter != "") {
+
+                if (statusFilter == "all") {
+                  return (
+                    courseId == boxes[index].course_id && semester == boxes[index].semester_number && subjects.includes(value)
+                  )
+                } else if (statusFilter === 'closed') {
+                  return (quiz.status == statusFilter &&
+                    courseId == boxes[index].course_id && semester == boxes[index].semester_number && subjects.includes(value)
+                  )
+
+                } else if (statusFilter === 'draft') {
+                  return (quiz.save_draft === true &&
+                    courseId == boxes[index].course_id && semester == boxes[index].semester_number && subjects.includes(value)
+                  )
+                } else {
+                  return (!quiz.save_draft && quiz.status !== 'closed' &&
+                    courseId == boxes[index].course_id && semester == boxes[index].semester_number && subjects.includes(value)
+                  )
+                }
+              } else {
                 return (
                   courseId == boxes[index].course_id && semester == boxes[index].semester_number && subjects.includes(value)
                 )
-              
-
+              }
             })
             setFilteredQuizzes(filteredQuiz);
 
@@ -576,13 +650,52 @@ const TeacherQuizPage = () => {
                 (item) => String(item.id) == value,
               )?.class_name;
               if (selectedClass === 'class_11' || selectedClass === 'class_12') {
-                return (
-                  classId == boxesForSchool[index].class_id && stream == boxesForSchool[index].stream && subjects.includes(value)
-                )
+                if (statusFilter != '') {
+                  if (statusFilter == "all") {
+                    return (
+                      classId == boxesForSchool[index].class_id && subjects.includes(value)
+                    )
+                  } else
+                    if (statusFilter === 'closed') {
+                      return (
+                        quiz.status == statusFilter && classId == boxesForSchool[index].class_id && stream == boxesForSchool[index].stream && subjects.includes(value)
+                      )
+                    } else if (statusFilter === 'draft') {
+                      return (quiz.save_draft === true &&
+                        classId == boxesForSchool[index].class_id && stream == boxesForSchool[index].stream && subjects.includes(value)
+                      )
+                    } else {
+                      return (
+                        !quiz.save_draft && quiz.status !== 'closed' &&
+                        classId == boxesForSchool[index].class_id && stream == boxesForSchool[index].stream && subjects.includes(value)
+                      )
+                    }
+                } else {
+                  return (
+                    classId == boxesForSchool[index].class_id && stream == boxesForSchool[index].stream && subjects.includes(value)
+                  )
+                }
               } else {
-                return (
-                  classId == boxesForSchool[index].class_id && subjects.includes(value)
-                )
+                if (statusFilter != '') {
+                  if (statusFilter === 'closed') {
+                    return (
+                      quiz.status == statusFilter && classId == boxesForSchool[index].class_id && subjects.includes(value)
+                    )
+                  } else if (statusFilter === 'draft') {
+                    return (quiz.save_draft === true &&
+                      classId == boxesForSchool[index].class_id && subjects.includes(value)
+                    )
+                  } else {
+                    return (
+                      !quiz.save_draft && quiz.status !== 'closed' &&
+                      classId == boxesForSchool[index].class_id && subjects.includes(value)
+                    )
+                  }
+                } else {
+                  return (
+                    classId == boxesForSchool[index].class_id && subjects.includes(value)
+                  )
+                }
               }
 
             })
