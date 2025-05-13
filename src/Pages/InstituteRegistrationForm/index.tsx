@@ -1262,7 +1262,7 @@ const InstituteRegistrationForm = () => {
                                     <br />
                                     PAN Card of Institution
                                     <br />
-                                    Principal's/Owner's ID Proof
+                                    Principal&apos;s/Owner&apos;s ID Proof
                                   </>
                                 }
                                 arrow

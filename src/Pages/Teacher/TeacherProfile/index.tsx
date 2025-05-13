@@ -1760,8 +1760,8 @@ const TeacherProfile = () => {
                       <div>
                         {allselectedfiles.length > 0 && (
                           <ul>
-                            {allselectedfiles.map((file) => (
-                              <a
+                            {allselectedfiles.map((file,index) => (
+                              <a key={index}
                                 href={file.name ? file.name : String(file)}
                                 target="_blank"
                                 rel="noopener noreferrer"
