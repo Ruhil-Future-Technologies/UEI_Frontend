@@ -21,7 +21,7 @@ import {
 } from '@mui/material';
 import {
   AccessTime,
-  CalendarToday,
+  // CalendarToday,
   Edit,
   Delete,
   Assessment,
@@ -326,8 +326,9 @@ const TeacherQuizPage = () => {
 
     const day = date.getDate();
     const month = date.toLocaleString('en-IN', { month: 'short' });
+    const year = date.toLocaleDateString('en-IN', { year: "numeric" })
 
-    return `${hours}.${minutes} ${month} ${day}`;
+    return `${day} ${month} ${year} ${hours}:${minutes} `;
   };
   const handleStatus = (status: string) => {
     setStatusFilter(status);
@@ -1226,17 +1227,17 @@ const TeacherQuizPage = () => {
                                 alignItems="center"
                                 mt={0.5}
                               >
-                                <CalendarToday fontSize="small" />
+                                
                                 <Typography variant='body2'>Create At: {formatDate(quiz?.created_at)}
                                 </Typography>
                               </Stack>
-                               <Stack
+                              <Stack
                                 direction="row"
                                 spacing={1}
                                 alignItems="center"
                                 mt={0.5}
                               >
-                                <CalendarToday fontSize="small" />
+
                                 <Typography variant="body2">
                                   Due: {formatDate(quiz.due_date_time)}
                                 </Typography>
