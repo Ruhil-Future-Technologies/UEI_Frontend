@@ -122,7 +122,7 @@ export const CreateAssignments = () => {
 
   const { id } = useParams();
 
-  const { getData, postData, postDataJson, putDataJson, putData, loading } =
+  const { getData, postData, postDataJson, putDataJson, putData } =
     useApi();
   const [darkMode, setDarkMode] = useState(false);
 
@@ -193,6 +193,7 @@ export const CreateAssignments = () => {
   const [quiz_timer_error, setQuizTimer_error] = useState(false);
   const GENERATE_QUIZ = QUERY_KEYS_QUIZ.GENERATE_QUIZ;
   const ASSIGNMENT = QUERY_KEYS_ASSIGNMENT;
+ const [loading, setLoading] = useState(false);
   const [isAssignmentModalOpen, setAssignmentModalOpen] = useState(false);
   const [assignmentJsonQuestions, setAssignmentJsonQuestions] = useState<any>();
   const [editable, setEditable] = useState(true);
