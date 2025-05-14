@@ -3,8 +3,6 @@ import React, { useEffect, useState } from 'react';
 import profile from '../../../assets/img/profile.png';
 import { useNavigate } from 'react-router-dom';
 import toperstudent from '../../../assets/img/topper-image.png';
-import consultantimg from '../../../assets/img/consultant.png';
-import goaling from '../../../assets/img/goal.png';
 import robotimg from '../../../assets/img/robot.png';
 import glogowhite from '../../../assets/img/g-logo-white.svg';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
@@ -18,7 +16,12 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 
 import useApi from '../../../hooks/useAPI';
-import { QUERY_KEYS, QUERY_KEYS_CLASS, QUERY_KEYS_COURSE, QUERY_KEYS_TEACHER } from '../../../utils/const';
+import {
+  QUERY_KEYS,
+  QUERY_KEYS_CLASS,
+  QUERY_KEYS_COURSE,
+  QUERY_KEYS_TEACHER,
+} from '../../../utils/const';
 import { CourseRep0oDTO, IClass } from '../../../Components/Table/columns';
 import { toast, ToastContentProps } from 'react-toastify';
 import TeacherDashboardCharts from '../TeacherChart';
@@ -26,7 +29,6 @@ import SessionTracker from '../../../Components/Tracker';
 import TeacherGraph from '../TeacherGraphs';
 import ChatComponent from '../../../Components/Chat/ChatComponent';
 import useTextToSpeech from '../../Chat/speech';
-
 
 const TeacherDash = () => {
   const teacherId = localStorage.getItem('user_uuid');
@@ -219,15 +221,15 @@ const TeacherDash = () => {
   };
   const handleError = (e: {
     message:
-    | string
-    | number
-    | boolean
-    | React.ReactElement<any, string | React.JSXElementConstructor<any>>
-    | Iterable<React.ReactNode>
-    | React.ReactPortal
-    | ((props: ToastContentProps<unknown>) => React.ReactNode)
-    | null
-    | undefined;
+      | string
+      | number
+      | boolean
+      | React.ReactElement<any, string | React.JSXElementConstructor<any>>
+      | Iterable<React.ReactNode>
+      | React.ReactPortal
+      | ((props: ToastContentProps<unknown>) => React.ReactNode)
+      | null
+      | undefined;
   }) => {
     setChatLoader(false);
     toast.error(e?.message, {
@@ -330,12 +332,9 @@ const TeacherDash = () => {
             postDataJson(`${ChatRAGURL}`, {
               user_query: search,
               student_id: userId,
-              school_college_selection:
-                teacherData.entity_type,
-              board_selection:
-                null,
-              state_board_selection:
-                null,
+              school_college_selection: teacherData.entity_type,
+              board_selection: null,
+              state_board_selection: null,
               stream_selection: null,
               class_selection: teacherData.class_name || null,
               university_selection: teacherData?.university_name || null,
@@ -632,7 +631,7 @@ const TeacherDash = () => {
   };
 
   const handleFlag = () => {
-    setFlagged(!flagged)
+    setFlagged(!flagged);
     const chatDataString = localStorage.getItem('chatData');
     if (chatDataString) {
       const chatData = JSON.parse(chatDataString);
@@ -642,7 +641,6 @@ const TeacherDash = () => {
       }));
       localStorage.setItem('chatData', JSON.stringify(updatedChatData));
     }
-
   };
   const handleExpand = () => {
     if (selectedchat?.length > 0 || chatLoader) {
@@ -734,12 +732,14 @@ const TeacherDash = () => {
     }));
 
     setSelectedChat(updatedChats);
-    const speechComplete = await textToSpeech(textArray.join(" "), index);
+    const speechComplete = await textToSpeech(textArray.join(' '), index);
     if (speechComplete) {
-      const updatedChatsAfterSpeech = selectedchat.map((chat: any, i: number) => ({
-        ...chat,
-        speak: i === index ? false : chat.speak, // Set the current index's speak to false
-      }));
+      const updatedChatsAfterSpeech = selectedchat.map(
+        (chat: any, i: number) => ({
+          ...chat,
+          speak: i === index ? false : chat.speak, // Set the current index's speak to false
+        }),
+      );
 
       setSelectedChat(updatedChatsAfterSpeech);
     }
@@ -796,7 +796,7 @@ const TeacherDash = () => {
         const isMatch =
           item.question === selectedchat[index].question &&
           JSON.stringify(item.answer) ===
-          JSON.stringify(selectedchat[index].answer);
+            JSON.stringify(selectedchat[index].answer);
 
         if (isMatch) {
           return {
@@ -832,7 +832,7 @@ const TeacherDash = () => {
         const isMatch =
           item.question === selectedchat[index].question &&
           JSON.stringify(item.answer) ===
-          JSON.stringify(selectedchat[index].answer);
+            JSON.stringify(selectedchat[index].answer);
 
         if (isMatch) {
           return {
@@ -1121,36 +1121,6 @@ const TeacherDash = () => {
         </div>
 
         <div className="row">
-          <div className="col-xxl-3 col-xl-6 d-flex align-items-stretch">
-            <div className="card w-100">
-              <div className="card-body text-center">
-                <img src={consultantimg} alt="" />
-                <h6 className="fs-18  fw-bold">Get Consultation</h6>
-                <small className="d-block mb-3">
-                  Take help from our expert AI to Prepare Lectures
-                </small>
-                <button className="btn btn-outline-secondary rounded-pill btn-sm px-lg-3">
-                  Start
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div className="col-xxl-3 col-xl-6 d-flex align-items-stretch">
-            <div className="card w-100">
-              <div className="card-body text-center">
-                <img src={goaling} alt="" />
-                <h6 className="fs-18  fw-bold">Set Target</h6>
-                <small className="d-block mb-3">
-                  Set Targets, Reminders and your class times
-                </small>
-                <button className="btn btn-outline-secondary rounded-pill btn-sm px-lg-3">
-                  Start
-                </button>
-              </div>
-            </div>
-          </div>
-
           <TeacherDashboardCharts />
           <TeacherGraph />
           <div
