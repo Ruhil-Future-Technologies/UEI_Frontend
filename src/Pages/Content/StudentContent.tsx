@@ -412,7 +412,7 @@ const StudentContent = () => {
               </>
             )}
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-              <Tabs value={activeSubTab} onChange={handleSubjectChange}>
+              <Tabs value={activeSubTab} onChange={handleSubjectChange} variant="scrollable" scrollButtons="auto">
                 {studentProfile &&
                 !Array.isArray(studentProfile) &&
                 studentProfile?.entity_name === 'college'
