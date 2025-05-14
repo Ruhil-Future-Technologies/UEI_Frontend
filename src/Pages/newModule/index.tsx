@@ -19,6 +19,7 @@ import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import Select from "react-select";
 import { Country, State } from "country-state-city";
+import { QUERY_KEYS_COURSE } from "../../utils/const";
 
 
 interface Institute {
@@ -60,6 +61,7 @@ const NewModule: React.FC = () => {
   const StudentId = localStorage.getItem("_id");
   const [phone, setPhone] = useState("");
   const navigate = useNavigate();
+  const CourseURL = QUERY_KEYS_COURSE.GET_COURSE;
   const [institutes, setInstitutes] = useState<Institute[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
   const [subjects, setSubjects] = useState<Subject[]>([]);
@@ -161,7 +163,7 @@ const NewModule: React.FC = () => {
         });
       });
 
-    getData("/course/list")
+    getData(`${CourseURL}`)
       .then((response: any) => {
         if (response.status === 200) {
           console.log(response);

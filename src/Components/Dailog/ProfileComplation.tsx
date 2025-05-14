@@ -25,7 +25,7 @@ import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import Select from 'react-select';
 import { Country, State } from 'country-state-city';
-import { QUERY_KEYS_STUDENT } from '../../utils/const';
+import { QUERY_KEYS_CLASS, QUERY_KEYS_COURSE, QUERY_KEYS_STUDENT } from '../../utils/const';
 import SendIcon from '@mui/icons-material/Send';
 import NameContext from '../../Pages/Context/NameContext';
 import {
@@ -130,7 +130,8 @@ export const ProfileDialog: FunctionComponent<{
   const [institutes, setInstitutes] = useState<Institute[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
   const [coursesAll, setCoursesAll] = useState<Course[]>([]);
-
+  const ClassURL = QUERY_KEYS_CLASS.GET_CLASS;
+  const CourseURL = QUERY_KEYS_COURSE.GET_COURSE;
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [classes, setClasses] = useState<Classes[]>([]);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
@@ -629,7 +630,7 @@ export const ProfileDialog: FunctionComponent<{
         setMessages([{ text: filteredQuestions.basic[0], type: 'question' }]);
       }
 
-      getData('/class/list')
+      getData(`${ClassURL}`)
         .then((response: any) => {
           if (response.status) {
             const filteredData = response?.data?.classes_data?.filter(
@@ -692,7 +693,7 @@ export const ProfileDialog: FunctionComponent<{
           });
         });
 
-      getData('/course/list')
+      getData(`${CourseURL}`)
         .then((response: any) => {
           if (response.status) {
             const filteredData = response?.data?.course_data?.filter(

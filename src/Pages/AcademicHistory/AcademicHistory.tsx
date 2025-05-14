@@ -28,6 +28,7 @@ import {
 } from '../../utils/helpers';
 import { State } from 'country-state-city';
 import { ChildComponentProps } from '../StudentProfile';
+import { QUERY_KEYS_CLASS, QUERY_KEYS_COURSE, QUERY_KEYS_STUDENT_ACADEMIC_HISTORY } from '../../utils/const';
 
 export interface Box {
   errors?: any;
@@ -100,7 +101,9 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
   const { namecolor }: any = context;
   const { getData, postData, putDataJson } = useApi();
   const [boxes, setBoxes] = useState<Box[]>([]);
-  // const [checkBoxes, setCheckBoxes] = useState<Box[]>([]);
+  const ClassURL = QUERY_KEYS_CLASS.GET_CLASS;
+  const AcedmicHistory =QUERY_KEYS_STUDENT_ACADEMIC_HISTORY.NEW_STUDENT_ACADEMIC_HISTORY
+  const CourseURL = QUERY_KEYS_COURSE.GET_COURSE;
   const [boxes1, setBoxes1] = useState<Boxset[]>([Boxsetvalue]);
   const [institutes, setInstitutes] = useState<Institute[]>([]);
   const [institutesAll, setInstitutesAll] = useState<Institute[]>([]);
@@ -282,7 +285,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
         });
       });
 
-    getData('/course/list')
+    getData(`${CourseURL}`)
       .then((response: any) => {
         if (response.status) {
           const filteredData = response?.data?.course_data?.filter(
@@ -300,7 +303,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
           position: 'top-center',
         });
       });
-    getData('/class/list')
+    getData(`${ClassURL}`)
       .then((response: any) => {
         if (response.status) {
           // const filteredData = response?.data?.filter((item:any) => item?.is_active === 1);
@@ -329,7 +332,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
         });
       });
     if (StudentId) {
-      getData(`${'new_student_academic_history/get/' + StudentId}`)
+      getData(`${AcedmicHistory + StudentId}`)
         .then((data: any) => {
           if (data?.status) {
             if (data?.data?.[0]?.class_id) {
