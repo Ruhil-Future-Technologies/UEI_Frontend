@@ -235,6 +235,7 @@ export const QUERY_KEYS_STUDENT_ACADEMIC_HISTORY = {
   GET_ADMIN_STUDENT_ACADEMIC_HISTORY: '/student_academic_history/list',
   ADMIN_ADD_STUDENT_ACADEMIC_HISTORY: '/student_academic_history/add',
   ADMIN_EDIT_STUDENT_ACADEMIC_HISTORY: '/student_academic_history/edit',
+  NEW_STUDENT_ACADEMIC_HISTORY:'new_student_academic_history/get/'
 };
 export const QUERY_KEYS_STUDENT_SUBJECT_PREFERENCE = {
   GET_ADMIN_STUDENT_SUBJECT_PREFERENCE: '/subject_preference/list',
