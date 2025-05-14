@@ -654,7 +654,7 @@ const TeacherQuizPage = () => {
                 if (statusFilter != '') {
                   if (statusFilter == "all") {
                     return (
-                      classId == boxesForSchool[index].class_id && subjects.includes(value)
+                      classId == boxesForSchool[index].class_id && subjects.includes(value) && stream == boxesForSchool[index].stream && subjects.includes(value)
                     )
                   } else
                     if (statusFilter === 'closed') {
@@ -678,6 +678,11 @@ const TeacherQuizPage = () => {
                 }
               } else {
                 if (statusFilter != '') {
+                  if (statusFilter == "all") {
+                    return (
+                      classId == boxesForSchool[index].class_id && subjects.includes(value)
+                    )
+                  } else
                   if (statusFilter === 'closed') {
                     return (
                       quiz.status == statusFilter && classId == boxesForSchool[index].class_id && subjects.includes(value)
@@ -767,7 +772,7 @@ const TeacherQuizPage = () => {
       <div className="main-content">
         <div className="page-breadcrumb d-flex align-items-center ">
           <div className="breadcrumb-title pe-3">
-            <Link to={'/main/dashboard'} className="text-dark">
+            <Link to={'/teacher-dashboard'} className="text-dark">
               Dashboard
             </Link>
           </div>

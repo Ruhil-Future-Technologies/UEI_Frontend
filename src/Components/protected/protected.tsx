@@ -20,7 +20,7 @@ const Protected = (props: { Component: any; menuName?: string }) => {
   const isDashboard = () => {
     if (usertype === 'super_admin') return true;
 
-    const currentURL = window.location.href;
+    const currentURL = window.location.pathname;
     const parts = currentURL.split('/');
     const mName = parts[parts.length - 1];
     const uName = parts[parts.length - 2];
