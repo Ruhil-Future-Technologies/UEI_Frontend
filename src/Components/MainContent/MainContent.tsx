@@ -80,10 +80,7 @@ function MainContent() {
   const userid = localStorage.getItem('user_uuid');
   const menuList = localStorage.getItem('menulist1');
   const user_type = localStorage.getItem('user_type');
-  const Id =
-    user_type === 'teacher'
-      ? localStorage.getItem('teacher_id')
-      : localStorage.getItem('student_id');
+  const Id = user_type === 'teacher' ? localStorage.getItem('teacher_id') : localStorage.getItem('student_id');
 
   const profileURL = QUERY_KEYS_STUDENT.STUDENT_GET_PROFILE;
   const profileURLadmin = QUERY_KEYS_ADMIN_BASIC_INFO.ADMIN_GET_PROFILE;
@@ -168,7 +165,7 @@ function MainContent() {
         const isMatch =
           item.question === selectedchat[index].question &&
           JSON.stringify(item.answer) ===
-            JSON.stringify(selectedchat[index].answer);
+          JSON.stringify(selectedchat[index].answer);
 
         if (isMatch) {
           return {
@@ -203,7 +200,7 @@ function MainContent() {
         const isMatch =
           item.question === selectedchat[index].question &&
           JSON.stringify(item.answer) ===
-            JSON.stringify(selectedchat[index].answer);
+          JSON.stringify(selectedchat[index].answer);
 
         if (isMatch) {
           return {
@@ -504,7 +501,7 @@ function MainContent() {
     TuesdayCount: 0,
     WednesdayCount: 0,
   });
-  const [statsChatCount, setStatsChatCount] = useState<any>([]);
+  // const [statsChatCount, setStatsChatCount] = useState<any>([]);
   // {
   //   ChatCount1: 0,
   //   StudentName1:"",
@@ -624,20 +621,20 @@ function MainContent() {
       },
     ],
   };
-  const statsChatCountArray = Array?.isArray(statsChatCount)
-    ? statsChatCount
-    : [];
+  // const statsChatCountArray = Array?.isArray(statsChatCount)
+  //   ? statsChatCount
+  //   : [];
 
-  const top5Chats = statsChatCountArray
-    ?.sort(
-      (a: { chat_count: number }, b: { chat_count: number }) =>
-        b?.chat_count - a?.chat_count,
-    )
-    ?.slice(0, 5);
+  // const top5Chats = statsChatCountArray
+  //   ?.sort(
+  //     (a: { chat_count: number }, b: { chat_count: number }) =>
+  //       b?.chat_count - a?.chat_count,
+  //   )
+  //   ?.slice(0, 5);
 
   // Extract student names and chat counts for the top 5 entries
-  const studentNames = top5Chats?.map((item: any) => item?.student_name);
-  const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
+  // const studentNames = top5Chats?.map((item: any) => item?.student_name);
+  // const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
   // // Sort statsChatCount by chat_count in descending order and take the top 5
   // const top5Chats = statsChatCount
   //   ?.sort((a: { chat_count: number; }, b: { chat_count: number; }) => b?.chat_count - a?.chat_count)
@@ -646,55 +643,55 @@ function MainContent() {
   // // Extract student names and chat counts for the top 5 entries
   // const studentNames = top5Chats?.map((item: any) => item?.student_name);
   // const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
-  const barChartDataStudentChatCount: ChartData<'bar', number[], string> = {
-    labels: studentNames,
-    datasets: [
-      {
-        label: 'This Week',
-        data: chatCounts,
-        backgroundColor: function (context) {
-          const chart = context.chart;
-          const { ctx, chartArea } = chart;
+  // const barChartDataStudentChatCount: ChartData<'bar', number[], string> = {
+  //   labels: studentNames,
+  //   datasets: [
+  //     {
+  //       label: 'This Week',
+  //       data: chatCounts,
+  //       backgroundColor: function (context) {
+  //         const chart = context.chart;
+  //         const { ctx, chartArea } = chart;
 
-          if (!chartArea) {
-            // This case happens on initial chart load
-            return 'rgba(0, 0, 0, 0)';
-          }
+  //         if (!chartArea) {
+  //           // This case happens on initial chart load
+  //           return 'rgba(0, 0, 0, 0)';
+  //         }
 
-          const gradientFill1 = ctx.createLinearGradient(
-            0,
-            chartArea.top,
-            0,
-            chartArea.bottom,
-          );
-          gradientFill1.addColorStop(0, '#005bea');
-          gradientFill1.addColorStop(1, '#00c6fb');
-          return gradientFill1;
-        },
-        borderColor: function (context) {
-          const chart = context.chart;
-          const { ctx, chartArea } = chart;
+  //         const gradientFill1 = ctx.createLinearGradient(
+  //           0,
+  //           chartArea.top,
+  //           0,
+  //           chartArea.bottom,
+  //         );
+  //         gradientFill1.addColorStop(0, '#005bea');
+  //         gradientFill1.addColorStop(1, '#00c6fb');
+  //         return gradientFill1;
+  //       },
+  //       borderColor: function (context) {
+  //         const chart = context.chart;
+  //         const { ctx, chartArea } = chart;
 
-          if (!chartArea) {
-            return '#000000';
-          }
+  //         if (!chartArea) {
+  //           return '#000000';
+  //         }
 
-          const gradientBorder1 = ctx.createLinearGradient(
-            0,
-            chartArea.top,
-            0,
-            chartArea.bottom,
-          );
-          gradientBorder1.addColorStop(0, '#005bea');
-          gradientBorder1.addColorStop(1, '#00c6fb');
-          return gradientBorder1;
-        },
-        borderWidth: 0,
-        borderRadius: 30, // Rounded corners
-        categoryPercentage: 0.3, // Width of the bars
-      },
-    ],
-  };
+  //         const gradientBorder1 = ctx.createLinearGradient(
+  //           0,
+  //           chartArea.top,
+  //           0,
+  //           chartArea.bottom,
+  //         );
+  //         gradientBorder1.addColorStop(0, '#005bea');
+  //         gradientBorder1.addColorStop(1, '#00c6fb');
+  //         return gradientBorder1;
+  //       },
+  //       borderWidth: 0,
+  //       borderRadius: 30, // Rounded corners
+  //       categoryPercentage: 0.3, // Width of the bars
+  //     },
+  //   ],
+  // };
 
   // Define the bar chart options
   const barChartOptionsStudent: ChartOptions<'bar'> = {
@@ -980,8 +977,7 @@ function MainContent() {
             if (basic_info && Object.keys(basic_info).length > 0) {
               if (data?.data?.basic_info?.pic_path !== null && data?.status) {
                 getData(
-                  `${
-                    'upload_file/get_image/' + data?.data?.basic_info?.pic_path
+                  `${'upload_file/get_image/' + data?.data?.basic_info?.pic_path
                   }`,
                 )
                   .then((imgdata: any) => {
@@ -1037,15 +1033,16 @@ function MainContent() {
                   getData(`class/get/${academic_history?.class_id}`).then(
                     (response) => {
                       if (response?.status) {
+
                         setStudentClass(
                           response.data.class_data.class_name
 
                             .replace('_', ' ')
                             .charAt(0)
                             .toUpperCase() +
-                            response.data.class_data.class_name
-                              .replace('_', ' ')
-                              .slice(1),
+                          response.data.class_data.class_name
+                            .replace('_', ' ')
+                            .slice(1),
                         );
                       }
                     },
@@ -1250,16 +1247,15 @@ function MainContent() {
                 data?.data?.admin_data?.basic_info?.pic_path !== undefined
               ) {
                 getData(
-                  `${
-                    'upload_file/get_image/' +
-                    data?.data?.admin_data?.basic_info?.pic_path
+                  `${'upload_file/get_image/' +
+                  data?.data?.admin_data?.basic_info?.pic_path
                   }`,
                 )
                   .then((imgdata: any) => {
                     // setprofileImage(imgdata?.data?.file_url);
                     setProImage(imgdata?.data?.file_url);
                   })
-                  .catch(() => {});
+                  .catch(() => { });
               }
 
               const totalcount = Object.keys(basic_info)?.length;
@@ -1491,23 +1487,23 @@ function MainContent() {
       }
     };
 
-    const fetchStudentChatCountData = async () => {
-      if (usertype === 'admin') {
-        try {
-          const [studentChatCount] = await Promise.allSettled([
-            getData('/chat/api/chat-count'),
-          ]);
-          const studentChatCountdata =
-            studentChatCount?.status === 'fulfilled'
-              ? studentChatCount?.value?.data || 0
-              : 0;
+    // const fetchStudentChatCountData = async () => {
+    //   if (usertype === 'admin') {
+    //     try {
+    //       const [studentChatCount] = await Promise.allSettled([
+    //         getData('/chat/api/chat-count'),
+    //       ]);
+    //       const studentChatCountdata =
+    //         studentChatCount?.status === 'fulfilled'
+    //           ? studentChatCount?.value?.data || 0
+    //           : 0;
 
-          setStatsChatCount(studentChatCountdata);
-        } catch (error) {
-          console.error('Error fetching data:', error);
-        }
-      }
-    };
+    //       setStatsChatCount(studentChatCountdata);
+    //     } catch (error) {
+    //       console.error('Error fetching data:', error);
+    //     }
+    //   }
+    // };
 
     // const fetchstucount = async () => {
     //     getData("hobby/list")
@@ -1527,7 +1523,7 @@ function MainContent() {
     // }
     fetchStudentweeklyData();
     fetchStudentCourseData();
-    fetchStudentChatCountData();
+    //fetchStudentChatCountData();
     fetchData();
     getVoices();
     // fetchstucount();
@@ -1603,15 +1599,15 @@ function MainContent() {
 
   const handleError = (e: {
     message:
-      | string
-      | number
-      | boolean
-      | React.ReactElement<any, string | React.JSXElementConstructor<any>>
-      | Iterable<React.ReactNode>
-      | React.ReactPortal
-      | ((props: ToastContentProps<unknown>) => React.ReactNode)
-      | null
-      | undefined;
+    | string
+    | number
+    | boolean
+    | React.ReactElement<any, string | React.JSXElementConstructor<any>>
+    | Iterable<React.ReactNode>
+    | React.ReactPortal
+    | ((props: ToastContentProps<unknown>) => React.ReactNode)
+    | null
+    | undefined;
   }) => {
     setChatLoader(false);
     toast.error(e?.message, {
@@ -2182,7 +2178,7 @@ function MainContent() {
     //   cleanedText += '.';
     // }
     const utterance = new SpeechSynthesisUtterance(cleanedText);
-    utterance.onerror = () => {};
+    utterance.onerror = () => { };
     // Event listener for when the speech ends
     utterance.onend = () => {
       const updatedChat = [...selectedchat];
@@ -2514,7 +2510,7 @@ function MainContent() {
                     </div>
                   </div>
                 </div>
-                <div className="col-lg-6">
+                {/* <div className="col-lg-6">
                   <div className="card">
                     <div className="card-header py-3">
                       <div className="d-flex align-items-center justify-content-between">
@@ -2546,7 +2542,6 @@ function MainContent() {
                       </div>
                     </div>
                     <div className="card-body">
-                      {/* <Bar data={barData} /> */}
                       <div className="chart-container1">
                         <Bar
                           ref={barChartRef}
@@ -2556,33 +2551,8 @@ function MainContent() {
                       </div>
                     </div>
                   </div>
-                </div>
-                <div className="col-lg-6">
-                  <div className="card">
-                    <div className="card-body">
-                      <PieChart
-                        className="pie"
-                        series={[
-                          {
-                            data: pieDataCourse,
-                            highlightScope: {
-                              faded: 'global',
-                              highlighted: 'item',
-                            },
-                            faded: {
-                              innerRadius: 30,
-                              additionalRadius: -30,
-                              color: 'gray',
-                            },
-                          },
-                        ]}
-                        width={450}
-                        height={200}
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="col-lg-6"></div>
+                </div> */}
+
                 <div className="col-lg-6">
                   <div className="card">
                     <div className="card-header py-3">
@@ -2664,6 +2634,7 @@ function MainContent() {
                     </div>
                   </div>
                 </div>
+                <div className="col-lg-6"></div>
                 <div className="col-lg-6">
                   <div className="card">
                     <div className="card-body">
@@ -2672,6 +2643,31 @@ function MainContent() {
                         series={[
                           {
                             data: pieData,
+                            highlightScope: {
+                              faded: 'global',
+                              highlighted: 'item',
+                            },
+                            faded: {
+                              innerRadius: 30,
+                              additionalRadius: -30,
+                              color: 'gray',
+                            },
+                          },
+                        ]}
+                        width={450}
+                        height={200}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="col-lg-6">
+                  <div className="card">
+                    <div className="card-body">
+                      <PieChart
+                        className="pie"
+                        series={[
+                          {
+                            data: pieDataCourse,
                             highlightScope: {
                               faded: 'global',
                               highlighted: 'item',
@@ -2709,7 +2705,7 @@ function MainContent() {
                                 proImage
                                   ? proImage
                                   : profileDatas?.basic_info?.gender.toLowerCase() ===
-                                      'female'
+                                    'female'
                                     ? femaleImage
                                     : maleImage
                               }
@@ -2782,11 +2778,10 @@ function MainContent() {
                             Profile Completed
                           </h6>
                         </div>
-                        <div style={{ color: `#9943EC` }}>{`${
-                          stats1?.Student_Profile >= 90
+                        <div style={{ color: `#9943EC` }}>{`${stats1?.Student_Profile >= 90
                             ? 100
                             : stats1?.Student_Profile
-                        }%`}</div>
+                          }%`}</div>
                       </div>
                     </div>
                   </div>
@@ -2831,7 +2826,7 @@ function MainContent() {
                               {profileDatas?.subject_preference
                                 ?.score_in_percentage
                                 ? profileDatas?.subject_preference
-                                    ?.score_in_percentage
+                                  ?.score_in_percentage
                                 : ''}
                             </p>
                           </div>
@@ -2989,7 +2984,7 @@ function MainContent() {
                                             fontSize: '14px',
                                             color:
                                               likedStates[index] === 'liked' ||
-                                              chat.like_dislike === true
+                                                chat.like_dislike === true
                                                 ? theme.palette.primary.main
                                                 : chat.like_dislike !== null
                                                   ? '#ccc'
@@ -3000,13 +2995,13 @@ function MainContent() {
                                                 : 'pointer',
                                             transform:
                                               likedStates[index] === 'liked' ||
-                                              chat.like_dislike === true
+                                                chat.like_dislike === true
                                                 ? 'scale(1.3)'
                                                 : 'scale(1)',
                                             transition: 'color 0.3s ease',
                                             opacity:
                                               chat.like_dislike !== null &&
-                                              chat.like_dislike !== true
+                                                chat.like_dislike !== true
                                                 ? 0.5
                                                 : 1,
                                           }}
@@ -3020,7 +3015,7 @@ function MainContent() {
                                             color:
                                               likedStates[index] ===
                                                 'disliked' ||
-                                              chat.like_dislike === false
+                                                chat.like_dislike === false
                                                 ? theme.palette.primary.main
                                                 : chat.like_dislike !== null
                                                   ? '#ccc'
@@ -3032,13 +3027,13 @@ function MainContent() {
                                             transform:
                                               likedStates[index] ===
                                                 'disliked' ||
-                                              chat.like_dislike === false
+                                                chat.like_dislike === false
                                                 ? 'scale(1.3)'
                                                 : 'scale(1)',
                                             transition: 'color 0.3s ease',
                                             opacity:
                                               chat.like_dislike !== null &&
-                                              chat.like_dislike !== false
+                                                chat.like_dislike !== false
                                                 ? 0.5
                                                 : 1,
                                           }}

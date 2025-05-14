@@ -92,6 +92,7 @@ export interface Assignment {
   is_active?: any;
   is_deleted?: any;
   questions?: any;
+  generated_type?:any;
   timer?:any;
   files: File[] | string[]; // Assuming file is optional and a File object
 }
@@ -1050,9 +1051,11 @@ export const CreateAssignments = () => {
 
     formData.append('assign_to_students', JSON.stringify(students));
     if (assignmentType == 'ai generated') {
+      formData.append("generated_type","ai_generated")
       formData.append('files', []);
       formData.append("timer",quiz_timer);
     } else {
+      formData.append("generated_type","manual")
       files.forEach((file) => {
         formData.append('files', file);
       });

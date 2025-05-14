@@ -193,8 +193,12 @@ export const Assignments = () => {
       header: 'contact email',
     },
     {
-      accessorKey: 'type',
-      header: 'type',
+      accessorKey: 'generated_type',
+      header: 'Generated Type',
+       Cell: ({ row }: { row: MRT_Row<Assignment> }) => {
+        const gmtDateStr = row?.original?.generated_type;
+        return gmtDateStr !=null?gmtDateStr.replace("_"," "):"-";
+      },
     },
     {
       accessorKey: 'points',

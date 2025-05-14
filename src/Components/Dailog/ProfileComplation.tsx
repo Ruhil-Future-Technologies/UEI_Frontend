@@ -1131,9 +1131,12 @@ export const ProfileDialog: FunctionComponent<{
     label: option.university_name,
   }));
 
-  const semesterSelectOptions = semester?.map((option) => ({
+ const semesterSelectOptions = semester
+  ?.slice() // make a copy so the original array isn't mutated
+  .sort((a, b) => a.semester_number - b.semester_number) // sort in ascending order
+  .map((option) => ({
     value: option.semester_id,
-    label: `Semester ${option?.semester_number}`,
+    label: `Semester ${option.semester_number}`,
   }));
 
   const teacherSelectOption = teacherList?.map((option) => ({

@@ -87,10 +87,6 @@ const StudentAssignments = () => {
       },
     },
     {
-      accessorKey: 'type',
-      header: 'type',
-    },
-    {
       accessorKey: 'points',
       header: 'Points',
       Cell: ({ row }: { row: MRT_Row<Assignment> }) => {
