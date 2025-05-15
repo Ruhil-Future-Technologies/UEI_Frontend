@@ -93,7 +93,6 @@ export interface Assignment {
   is_deleted?: any;
   questions?: any;
   generated_type?:any;
-  generated_type?:any;
   timer?:any;
   files: File[] | string[]; // Assuming file is optional and a File object
 }
