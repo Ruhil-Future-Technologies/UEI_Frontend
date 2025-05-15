@@ -1220,7 +1220,7 @@ const TeacherQuizPage = () => {
                                 mt={0.5}
                               >
                                 
-                                <Typography variant='body2'>Create At: {formatDate(quiz?.created_at)}
+                                <Typography variant='body2'>Created At: {formatDate(quiz?.created_at)}
                                 </Typography>
                               </Stack>
                               <Stack

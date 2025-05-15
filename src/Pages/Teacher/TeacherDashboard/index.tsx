@@ -60,7 +60,7 @@ const TeacherDash = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [likedStates, setLikedStates] = useState<{ [key: string]: string }>({});
   const [isTextCopied, setIsTextCopied] = useState<any>({});
-  const [listOfStudent, setListOfStudent] = useState<any[]>();
+  const [listOfStudent, setListOfStudent] = useState<any[]>([]);
   const [boxes, setBoxes] = useState<Boxes[]>([
     {
       semester_number: '',
@@ -181,27 +181,27 @@ const TeacherDash = () => {
             setSelectedEntity('college');
             localStorage.setItem("entity","college")
             const courseIds = Object.keys(
-              data.data.course_semester_subjects,
-            ).map((CourseKey) => CourseKey);
+              data?.data?.course_semester_subjects,
+            )?.map((CourseKey) => CourseKey);
             getCourses(courseIds);
             const allsemesters: any = (await getSemester()) || [];
             const allSubject: any = await getSubjects('College') || [];
-            const output: Boxes[] = Object.keys(data.data.course_semester_subjects).flatMap((CourseKey) => {
+            const output: Boxes[] = Object?.keys(data?.data?.course_semester_subjects)?.flatMap((CourseKey) => {
 
-              return Object.keys(data.data.course_semester_subjects[CourseKey]).map((semester_number) => {
+              return Object.keys(data?.data?.course_semester_subjects[CourseKey])?.map((semester_number) => {
                 const filteredSemesters = allsemesters?.filter(
-                  (item: any) => String(item.course_id) === String(CourseKey)
+                  (item: any) => String(item?.course_id) === String(CourseKey)
                 );
 
                 const filteredSubjects = allSubject?.filter(
                   (item: any) =>
-                    String(item.semester_number) === String(semester_number) &&
-                    String(item.course_id) === String(CourseKey)
+                    String(item?.semester_number) === String(semester_number) &&
+                    String(item?.course_id) === String(CourseKey)
                 );
                 return {
                   course_id: CourseKey,
                   semester_number: semester_number,
-                  subjects: data.data.course_semester_subjects[CourseKey][semester_number],
+                  subjects: data?.data?.course_semester_subjects[CourseKey][semester_number],
                   filteredSemesters,
                   filteredSubjects
                 };
@@ -211,7 +211,7 @@ const TeacherDash = () => {
           } else {
             setSelectedEntity('school');
             localStorage.setItem("entity","school")
-            const classIds = Object.keys(data.data.class_stream_subjects).map(
+            const classIds = Object.keys(data.data.class_stream_subjects)?.map(
               (classKey) => classKey,
             );
             getClasslist(classIds);
@@ -219,7 +219,7 @@ const TeacherDash = () => {
             const output: BoxesForSchool[] = Object.keys(
               data.data.class_stream_subjects,
             ).flatMap((classKey) =>
-              Object.keys(data.data.class_stream_subjects[classKey]).map(
+              Object.keys(data.data.class_stream_subjects[classKey])?.map(
                 (stream) => ({
                   stream: stream,
                   subjects: data.data.class_stream_subjects[classKey][stream],
@@ -279,10 +279,14 @@ const TeacherDash = () => {
       return Promise.reject(e); // Reject the promise in case of an error
     }
   };
-  useEffect(() => {
-    getTeacherInfo();
-    getStudentsForTeacher();
-  }, []);
+ useEffect(() => {
+  const fetchData = async () => {
+    getTeacherInfo(); // If this doesn't return a Promise or doesn't need to be awaited
+    await getStudentsForTeacher();
+  };
+
+  fetchData();
+}, []);
   const getCourses = (courseIds: any) => {
     getData(`${CourseURL}`)
       .then((data) => {
@@ -453,7 +457,7 @@ const TeacherDash = () => {
                       const entries = Object.entries(answer);
                       return [
                         entries
-                          .map(([key, value]) => {
+                          ?.map(([key, value]) => {
                             if (
                               typeof value === 'string' &&
                               value.includes('\\frac') &&
@@ -567,7 +571,7 @@ const TeacherDash = () => {
                       const entries = Object.entries(answer);
                       return [
                         entries
-                          .map(([key, value]) => {
+                          ?.map(([key, value]) => {
                             if (
                               typeof value === 'string' &&
                               value.includes('\\frac') &&
@@ -735,7 +739,7 @@ const TeacherDash = () => {
     const chatDataString = localStorage.getItem('chatData');
     if (chatDataString) {
       const chatData = JSON.parse(chatDataString);
-      const updatedChatData = chatData.map((chat: any) => ({
+      const updatedChatData = chatData?.map((chat: any) => ({
         ...chat,
         flagged: !flagged,
       }));
@@ -826,7 +830,7 @@ const TeacherDash = () => {
   const handleSpeak = async (text: string, index: number) => {
     stopSpeech(index);
     const textArray = Array.isArray(text) ? text : [text];
-    const updatedChats = selectedchat.map((chat: any, i: number) => ({
+    const updatedChats = selectedchat?.map((chat: any, i: number) => ({
       ...chat,
       speak: i === index, // Only the current index is true
     }));
@@ -834,7 +838,7 @@ const TeacherDash = () => {
     setSelectedChat(updatedChats);
     const speechComplete = await textToSpeech(textArray.join(' '), index);
     if (speechComplete) {
-      const updatedChatsAfterSpeech = selectedchat.map(
+      const updatedChatsAfterSpeech = selectedchat?.map(
         (chat: any, i: number) => ({
           ...chat,
           speak: i === index ? false : chat.speak, // Set the current index's speak to false
@@ -848,7 +852,7 @@ const TeacherDash = () => {
     await new Promise((resolve) => setTimeout(resolve, 2000));
     stopSpeech(index);
     // Update `speak` state for all chats
-    const updatedChats = selectedchat.map((chat: any, i: number) => ({
+    const updatedChats = selectedchat?.map((chat: any, i: number) => ({
       ...chat,
       speak: i === index ? false : chat.speak, // Set only the current index to false
     }));
@@ -892,7 +896,7 @@ const TeacherDash = () => {
     const chatDataString = localStorage.getItem('chatData');
     if (chatDataString) {
       const chatData = JSON.parse(chatDataString);
-      const updatedChatData = chatData.map((item: any) => {
+      const updatedChatData = chatData?.map((item: any) => {
         const isMatch =
           item.question === selectedchat[index].question &&
           JSON.stringify(item.answer) ===
@@ -928,7 +932,7 @@ const TeacherDash = () => {
     const chatDataString = localStorage.getItem('chatData');
     if (chatDataString) {
       const chatData = JSON.parse(chatDataString);
-      const updatedChatData = chatData.map((item: any) => {
+      const updatedChatData = chatData?.map((item: any) => {
         const isMatch =
           item.question === selectedchat[index].question &&
           JSON.stringify(item.answer) ===
@@ -1024,9 +1028,9 @@ const TeacherDash = () => {
                         <h4 className="fw-bold mb-1 fs-4">
                           {teacherData?.first_name} {teacherData?.last_name}
                         </h4>
-                        <p className="opacity-75 mb-1">
+                        {/* <p className="opacity-75 mb-1">
                           {teacherData?.university_id}
-                        </p>
+                        </p> */}
                         <p className="planbg">Senior Professor</p>
                       </div>
                       <div className="curcc">
@@ -1094,9 +1098,9 @@ const TeacherDash = () => {
                 {
                   selectedEntity === 'college' ? (
                     <>
-                      {boxes.map((box, boxIndex) => (
+                      {boxes?.map((box, boxIndex) => (
                         <div key={boxIndex}>
-                          {box.subjects.map((subject, subjectIndex) => (
+                          {box?.subjects?.map((subject, subjectIndex) => (
                             <SwiperSlide key={subjectIndex}>
                               <div className="card mb-0">
                                 <div className="card-body">
@@ -1105,7 +1109,7 @@ const TeacherDash = () => {
                                       <AttractionsIcon />
                                     </span>
                                     <div className="">
-                                      <h6 className="fs-4">{getCourseName(box.course_id)}</h6>
+                                      <h6 className="fs-4">{getCourseName(box?.course_id)}</h6>
                                       <p> {subject}</p>
                                     </div>
                                   </div>
@@ -1117,7 +1121,7 @@ const TeacherDash = () => {
                                           <SupervisedUserCircleIcon />
                                         </span>
                                         <div className="">
-                                          <h6>Total Students</h6> <p>{getFilteredStusents("college",box.course_id,box.semester_number,subject)?.length}</p>
+                                          <h6>Total Students</h6> <p>{getFilteredStusents("college",box?.course_id,box?.semester_number,subject)?.length}</p>
                                         </div>
                                       </div>
                                     </div>
@@ -1127,7 +1131,7 @@ const TeacherDash = () => {
                                           <StreamIcon />
                                         </span>
                                         <div className="">
-                                          <h6>Semester</h6> <p>{"semster " + box.semester_number}</p>
+                                          <h6>Semester</h6> <p>{"semster " + box?.semester_number}</p>
                                         </div>
                                       </div>
                                     </div>
@@ -1136,7 +1140,7 @@ const TeacherDash = () => {
                                   <button
                                     className="btn btn-outline-primary mt-4 w-100"
                                     onClick={() =>
-                                      navigate(`/teacher-dashboard/student-details?type=college&course_id=${box.course_id}&semester_number=${box.semester_number}&subject=${subject}`)
+                                      navigate(`/teacher-dashboard/student-details?type=college&course_id=${box?.course_id}&semester_number=${box?.semester_number}&subject=${subject}`)
                                     }
                                   >
                                     View Students
@@ -1151,9 +1155,9 @@ const TeacherDash = () => {
 
                   ) : (
                     <>
-                      {boxesForSchool.map((box, boxIndex) => (
+                      {boxesForSchool?.map((box, boxIndex) => (
                         <div key={boxIndex}>
-                          {box.subjects.map((subject, subjectIndex) => (
+                          {box?.subjects?.map((subject, subjectIndex) => (
                             <SwiperSlide key={subjectIndex}>
                               <div className="card mb-0">
                                 <div className="card-body">
@@ -1162,7 +1166,7 @@ const TeacherDash = () => {
                                       <AttractionsIcon />
                                     </span>
                                     <div className="">
-                                      <h6 className="fs-4">{getClassName(box.class_id)}</h6>
+                                      <h6 className="fs-4">{getClassName(box?.class_id)}</h6>
                                       <p> {subject}</p>
                                     </div>
                                   </div>
@@ -1174,7 +1178,7 @@ const TeacherDash = () => {
                                           <SupervisedUserCircleIcon />
                                         </span>
                                         <div className="">
-                                          <h6>Total Students</h6> <p>{getFilteredStusents("school", box.class_id, box.stream, subject)?.length}</p>
+                                          <h6>Total Students</h6> <p>{getFilteredStusents("school", box?.class_id, box?.stream, subject)?.length}</p>
                                         </div>
                                       </div>
                                     </div>
@@ -1184,7 +1188,7 @@ const TeacherDash = () => {
                                           <StreamIcon />
                                         </span>
                                         <div className="">
-                                          <h6>Stream</h6> <p>{box.stream}</p>
+                                          <h6>Stream</h6> <p>{box?.stream}</p>
                                         </div>
                                       </div>
                                     </div>
@@ -1192,7 +1196,7 @@ const TeacherDash = () => {
                                   <button
                                     className="btn btn-outline-primary mt-4 w-100"
                                     onClick={() =>
-                                      navigate(`/teacher-dashboard/student-details?class_id=${box.class_id}&stream=${box.stream}&subject=${subject}`)
+                                      navigate(`/teacher-dashboard/student-details?class_id=${box?.class_id}&stream=${box.stream}&subject=${subject}`)
                                     }
                                   >
                                     View Students
