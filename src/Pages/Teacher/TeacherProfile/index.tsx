@@ -372,10 +372,10 @@ const TeacherProfile = () => {
                   selected_class_name: stream === 'general' ? 'col-6' : 'col-4',
                   filteredSubjects:
                     stream == 'general'
-                      ? allSubject.filter((item) => item.class_id === classKey)
+                      ? allSubject.filter((item) => Number(item.class_id) === Number(classKey))
                       : allSubject.filter(
                           (item) =>
-                            item.class_id === classKey &&
+                            Number(item.class_id) === Number(classKey) &&
                             item.stream === stream,
                         ),
                 }),
