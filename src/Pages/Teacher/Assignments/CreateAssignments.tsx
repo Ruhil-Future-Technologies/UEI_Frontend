@@ -396,6 +396,7 @@ export const CreateAssignments = () => {
                 setAllowLateSubmission(response?.data?.allow_late_submission);
                 setSaveAsDraft(response?.data?.save_draft);
                 setDueDate(dayjs(extractedDate));
+                setQuizTimer(response?.data?.timer);
                 setDueTime(dayjs(response?.data?.due_date_time));
                 setAvailableFrom(dayjs(response?.data?.available_from));
                 const selectedStudents =
@@ -980,11 +981,14 @@ export const CreateAssignments = () => {
     } else {
       setErrorSelectStudent(false);
     }
+    if (assignmentType == 'ai generated') {
     if(quiz_timer==''){
       setQuizTimer_error(true);
+      valid1 = true;
     }else{
       setQuizTimer_error(false);
     }
+  }
     let valid = true;
     if (selectedEntity.toLowerCase() === 'school') {
       boxesForSchool.forEach((box, index) => {
@@ -1056,9 +1060,9 @@ export const CreateAssignments = () => {
       formData.append("timer",quiz_timer);
     } else {
       formData.append("generated_type","manual")
-      files.forEach((file) => {
-        formData.append('files', file);
-      });
+      // files.forEach((file) => {
+      //   formData.append('files', file);
+      // });
     }
 
     if (selectedEntity.toLowerCase() === 'school') {
@@ -1403,18 +1407,9 @@ export const CreateAssignments = () => {
         setConfigInstructoins_error(false);
       }
     }
-
-    if (type !== 'assignment') {
-      if (!Number(quiz_timer) || Number(quiz_timer) == 0) {
-        setQuizTimer_error(true);
-
-        valid1 = true;
-      } else {
-        setQuizTimer_error(false);
-      }
-    }
-    if(quiz_timer==''){
+    if (!Number(quiz_timer) || Number(quiz_timer) == 0) {
       setQuizTimer_error(true);
+       valid1 = true;
     }else{
       setQuizTimer_error(false);
     }
@@ -3241,7 +3236,7 @@ export const CreateAssignments = () => {
                             </p>
                           )}
                         </div>
-                        {assignmentType === 'quiz'|| assignmentType=="ai generated" && (
+                        {(assignmentType == 'quiz' || assignmentType=="ai generated") && (
                           <div className="col-lg-4">
                             <TextField
                               type="number"

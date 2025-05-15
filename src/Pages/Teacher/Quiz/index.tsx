@@ -39,7 +39,7 @@ import { toast } from 'react-toastify';
 import QuizDetailsModal from './QuizDetails';
 import { DeleteDialog } from '../../../Components/Dailog/DeleteDialog';
 import { CourseRep0oDTO, IClass, SemesterRep0oDTO, SubjectRep0oDTO, } from '../../../Components/Table/columns';
-import { fieldIcon, inputfield, inputfieldhover, inputfieldtext } from '../../../utils/helpers';
+import { fieldIcon, formatDate, inputfield, inputfieldhover, inputfieldtext } from '../../../utils/helpers';
 import NameContext from '../../Context/NameContext';
 import { Boxes, BoxesForSchool } from '../../TeacherRgistrationForm';
 
@@ -317,19 +317,6 @@ const TeacherQuizPage = () => {
   //   ),
   // ];
 
-  const formatDate = (dateString: string) => {
-    if (!dateString) return '';
-    const date = new Date(dateString);
-
-    const hours = date.getHours().toString().padStart(2, '0');
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-
-    const day = date.getDate();
-    const month = date.toLocaleString('en-IN', { month: 'short' });
-    const year = date.toLocaleDateString('en-IN', { year: "numeric" })
-
-    return `${day} ${month} ${year} ${hours}:${minutes} `;
-  };
   const handleStatus = (status: string) => {
     setStatusFilter(status);
     let matchesStatus = [];
@@ -654,7 +641,7 @@ const TeacherQuizPage = () => {
                 if (statusFilter != '') {
                   if (statusFilter == "all") {
                     return (
-                      classId == boxesForSchool[index].class_id && subjects.includes(value)
+                      classId == boxesForSchool[index].class_id && subjects.includes(value) && stream == boxesForSchool[index].stream && subjects.includes(value)
                     )
                   } else
                     if (statusFilter === 'closed') {
@@ -678,6 +665,11 @@ const TeacherQuizPage = () => {
                 }
               } else {
                 if (statusFilter != '') {
+                  if (statusFilter == "all") {
+                    return (
+                      classId == boxesForSchool[index].class_id && subjects.includes(value)
+                    )
+                  } else
                   if (statusFilter === 'closed') {
                     return (
                       quiz.status == statusFilter && classId == boxesForSchool[index].class_id && subjects.includes(value)
@@ -767,7 +759,7 @@ const TeacherQuizPage = () => {
       <div className="main-content">
         <div className="page-breadcrumb d-flex align-items-center ">
           <div className="breadcrumb-title pe-3">
-            <Link to={'/main/dashboard'} className="text-dark">
+            <Link to={'/teacher-dashboard'} className="text-dark">
               Dashboard
             </Link>
           </div>
