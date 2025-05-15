@@ -339,13 +339,13 @@ const Sidebar = () => {
                                               Institute
                                             </Link>
                                           </li>
-                                          <li>
+                                          {/* <li>
                                             <Link to="/main/Teacher">
                                               {' '}
                                               <ArrowRightIcon />
                                               Teacher
                                             </Link>
-                                          </li>
+                                          </li> */}
                                           <li>
                                             <Link to="/main/Course">
                                               {' '}
