@@ -183,6 +183,7 @@ const TeacherDash = () => {
           setTeacherData(data.data);
           if (data?.data?.course_semester_subjects != null) {
             setSelectedEntity('college');
+            localStorage.setItem("entity","college")
             const courseIds = Object.keys(
               data.data.course_semester_subjects,
             ).map((CourseKey) => CourseKey);
@@ -213,6 +214,7 @@ const TeacherDash = () => {
             setBoxes([...output]);
           } else {
             setSelectedEntity('school');
+            localStorage.setItem("entity","school")
             const classIds = Object.keys(data.data.class_stream_subjects).map(
               (classKey) => classKey,
             );
@@ -1124,7 +1126,7 @@ const TeacherDash = () => {
                                           <SupervisedUserCircleIcon />
                                         </span>
                                         <div className="">
-                                          <h6>Total Students</h6> <p>{getFilteredStusents("college",box.course_id,box.semester_number,subject).length}</p>
+                                          <h6>Total Students</h6> <p>{getFilteredStusents("college",box.course_id,box.semester_number,subject)?.length}</p>
                                         </div>
                                       </div>
                                     </div>

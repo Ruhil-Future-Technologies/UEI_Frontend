@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 import './Style.scss';
-import { MaterialReactTable, MRT_ColumnDef } from 'material-react-table';
+import { MaterialReactTable, MRT_ColumnDef, MRT_Row } from 'material-react-table';
 import { Box, Breadcrumbs, Link, Typography } from '@mui/material';
 import useApi from '../../../hooks/useAPI';
 import { toast } from 'react-toastify';
 import Student from '../../Student/Student';
 import { useLocation } from 'react-router-dom';
+import { formatDate } from '../../../utils/helpers';
 interface Student {
   class_id?: any
   class_name?: any
@@ -16,6 +17,7 @@ interface Student {
   semester_number?: any
   stream?: any
   subject_id?: any
+  dob?:any
   subject_name?: any
   profileImage?: any
 }
@@ -27,9 +29,9 @@ export const StudentDetails = () => {
   const queryParams = new URLSearchParams(location.search);
   const classId = queryParams.get('class_id');
   const subject = queryParams.get('subject');
-  const course= queryParams.get('course_id');
-  const semester= queryParams.get('semester_number');
-  const type=queryParams.get('type')
+  const course = queryParams.get('course_id');
+  const semester = queryParams.get('semester_number');
+  const type = queryParams.get('type')
   console.log(type);
   useEffect(() => {
     getStudentsForTeacher()
@@ -42,11 +44,11 @@ export const StudentDetails = () => {
       getData(`/student_teacher/teacher/${userId}/students`)
         .then((response) => {
           if (response.status) {
-        console.log(course,semester,subject,classId)
-            if(type=="college"){
-            setListOfStudent(response.data.filter((student: any) => student.course_id == course && student.semester_number==semester &&student.subject_name == subject));
-            }else{
-            setListOfStudent(response.data.filter((student: any) => student.class_id == classId && student.subject_name == subject));
+            console.log(course, semester, subject, classId)
+            if (type == "college") {
+              setListOfStudent(response.data.filter((student: any) => student.course_id == course && student.semester_number == semester && student.subject_name == subject));
+            } else {
+              setListOfStudent(response.data.filter((student: any) => student.class_id == classId && student.subject_name == subject));
             }
           }
         })
@@ -77,7 +79,30 @@ export const StudentDetails = () => {
         />
       ),
     },
-    { accessorKey: 'name', header: 'First Name' }
+    {
+      accessorKey: 'name',
+      header: 'Full Name'
+    },
+    {
+      accessorKey: 'gender',
+      header: 'gender'
+    },
+    {
+      accessorKey: 'dob',
+      header: 'DOB',
+      Cell:({row}:{row:MRT_Row<Student>})=>{
+        
+        return formatDate(row?.original?.dob,true);
+      }
+    },
+    {
+      accessorKey: 'email',
+      header: 'Email'
+    },
+    {
+      accessorKey: 'phone',
+      header: 'Contact no.'
+    },
   ];
 
   console.log(listOfStudent);

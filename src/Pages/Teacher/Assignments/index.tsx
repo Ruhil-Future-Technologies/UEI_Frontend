@@ -30,15 +30,21 @@ import { Assignment } from './CreateAssignments';
 import { toast } from 'react-toastify';
 import GroupsIcon from '@mui/icons-material/Groups';
 import SaveAsIcon from '@mui/icons-material/SaveAs';
-import { QUERY_KEYS_ASSIGNMENT } from '../../../utils/const';
-import { convertToISTT } from '../../../utils/helpers';
+import { QUERY_KEYS_ASSIGNMENT, QUERY_KEYS_CLASS, QUERY_KEYS_COURSE } from '../../../utils/const';
+import { convertToISTT, getkeysvalue } from '../../../utils/helpers';
 import FullScreenLoader from '../../Loader/FullScreenLoader';
+import { CourseRep0oDTO, IClass } from '../../../Components/Table/columns';
 
 export const Assignments = () => {
   const { getData, putData } = useApi();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [openCard, setOpenCard] = useState(false);
+  const [dataClass, setDataClass] = useState<IClass[]>([]);
+  const [coursesData, setCoursesData] = useState<CourseRep0oDTO[]>([]);
+  const entiryType = localStorage.getItem('entity');
+  const ClassURL = QUERY_KEYS_CLASS.GET_CLASS;
+  const CourseURL = QUERY_KEYS_COURSE.GET_COURSE;
 
   const [dataDeleteId, setDataDeleteId] = useState('');
   const [assignmentData, setAssignmentData] = useState<Assignment[]>([
@@ -63,6 +69,8 @@ export const Assignments = () => {
 
   useEffect(() => {
     getListOfAssignments();
+    getCourses();
+    getClasslist();
   }, []);
 
   const getListOfAssignments = () => {
@@ -71,7 +79,7 @@ export const Assignments = () => {
       getData(`${QUERY_KEYS_ASSIGNMENT.GET_ASSIGNMENTS_LIST}`).then(
         (response) => {
           if (response.data) {
-            
+
             const filteredassignment = response?.data?.filter(
               (assignmnet: any) => assignmnet.created_by == teacher_uuid,
             );
@@ -92,6 +100,35 @@ export const Assignments = () => {
         position: 'top-center',
       });
     }
+  };
+  const getCourses = () => {
+    getData(`${CourseURL}`)
+      .then((data) => {
+        if (data.data) {
+          setCoursesData(data?.data?.course_data);
+        }
+      })
+      .catch((e) => {
+        toast.error(e?.message, {
+          hideProgressBar: true,
+          theme: 'colored',
+        });
+      });
+  };
+
+  const getClasslist = () => {
+    getData(`${ClassURL}`)
+      .then((data) => {
+        if (data.data) {
+          setDataClass(data?.data?.classes_data);
+        }
+      })
+      .catch((e) => {
+        toast.error(e?.message, {
+          hideProgressBar: true,
+          theme: 'colored',
+        });
+      });
   };
   // const getStatusChip = (status: string) => {
   //   switch (status) {
@@ -195,10 +232,30 @@ export const Assignments = () => {
     {
       accessorKey: 'generated_type',
       header: 'Generated Type',
-       Cell: ({ row }: { row: MRT_Row<Assignment> }) => {
+      Cell: ({ row }: { row: MRT_Row<Assignment> }) => {
         const gmtDateStr = row?.original?.generated_type;
-        return gmtDateStr !=null?gmtDateStr.replace("_"," "):"-";
+        return gmtDateStr != null ? gmtDateStr.replace("_", " ") : "-";
       },
+    },
+    {
+      accessorKey: 'class_stream_subjects',
+      header:`${entiryType=="college"?"Course":"Class"}`,
+      Cell: ({ row }: { row: MRT_Row<Assignment> }) => {
+        const fallbackObj =
+          row?.original?.class_stream_subjects ??
+          row?.original?.course_semester_subjects;
+
+        if (!fallbackObj) return '-'; // prevent error when both are null
+
+        const gmtDateStr = getkeysvalue(fallbackObj);
+        
+        if (entiryType == "college") {
+          return getClassorCourse("college", gmtDateStr);
+        } else {
+          return getClassorCourse("school", gmtDateStr);
+        }
+
+      }
     },
     {
       accessorKey: 'points',
@@ -323,6 +380,16 @@ export const Assignments = () => {
       size: 150,
     },
   ];
+
+  const getClassorCourse = (type: any, id: any) => {
+    if (type == "college") {
+      return coursesData?.find((item) => item.id == id)?.course_name;
+    } else {
+      console.log(dataClass);
+      return dataClass?.find((item) => item.id == id)?.class_name;
+    }
+
+  }
 
   return (
     <div className="main-wrapper">

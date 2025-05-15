@@ -359,3 +359,25 @@ export const convertToISTT = (dateString: string) => {
     hour12: true,
   });
 };
+
+export const getkeysvalue = (val: any) => {
+  const keys = Object.keys(val)
+  return keys;
+}
+export const formatDate = (dateString: string, time?: any) => {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+
+  const hours = date.getHours().toString().padStart(2, '0');
+  const minutes = date.getMinutes().toString().padStart(2, '0');
+
+  const day = date.getDate();
+  const month = date.toLocaleString('en-IN', { month: 'short' });
+  const year = date.toLocaleDateString('en-IN', { year: "numeric" })
+  if (time) {
+    return `${day} ${month} ${year} `;
+  } else {
+    return `${day} ${month} ${year} ${hours}:${minutes} `;
+  }
+
+};
