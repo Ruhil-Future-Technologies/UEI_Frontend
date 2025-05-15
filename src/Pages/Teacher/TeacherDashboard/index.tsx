@@ -17,7 +17,7 @@ import 'swiper/css/navigation';
 
 import useApi from '../../../hooks/useAPI';
 import { QUERY_KEYS, QUERY_KEYS_CLASS, QUERY_KEYS_COURSE, QUERY_KEYS_SUBJECT, QUERY_KEYS_SUBJECT_SCHOOL, QUERY_KEYS_TEACHER } from '../../../utils/const';
-import { CourseRep0oDTO, IClass, SemesterRep0oDTO, SubjectRep0oDTO } from '../../../Components/Table/columns';
+import { CourseRep0oDTO, IClass, SubjectRep0oDTO } from '../../../Components/Table/columns';
 import { toast, ToastContentProps } from 'react-toastify';
 import TeacherDashboardCharts from '../TeacherChart';
 import SessionTracker from '../../../Components/Tracker';
@@ -77,8 +77,6 @@ const TeacherDash = () => {
       selected_class_name: 'col-6',
     },
   ]);
-  const [semesterData, setSemesterData] = useState<SemesterRep0oDTO[]>([]);
-  const [totleSubject, setTotleSubject] = useState<SubjectRep0oDTO[]>([]);
   const navigate = useNavigate();
   const callAPI = async () => {
     getData(`${chatlisturl}/${userId}`)
@@ -252,7 +250,6 @@ const TeacherDash = () => {
       const data = await getData(`/semester/list`);
 
       if (data?.status && data?.data) {
-        setSemesterData(data?.data?.semesters_data);
         return data?.data?.semesters_data; // Return the fetched semesters
       }
 
@@ -269,7 +266,6 @@ const TeacherDash = () => {
       const data = await getData(url);
 
       if (data?.status) {
-        setTotleSubject(data?.data?.subjects_data);
         return data.data.subjects_data; // Return subjects
       }
 
@@ -997,7 +993,6 @@ const TeacherDash = () => {
 
     return filteredStusents;
   }
-  console.log(totleSubject, semesterData, boxes)
   return (
     <div className="main-wrapper">
       <div className="main-content">
