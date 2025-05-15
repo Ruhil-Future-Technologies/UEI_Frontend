@@ -35,11 +35,12 @@ import {
 import { Teacher } from '../TeacherRgistrationForm';
 import InstitutionCharts from './InstituteChart';
 import SessionTracker from '../../Components/Tracker';
+import { QUERY_KEYS_COURSE } from '../../utils/const';
 
 const InstitutionDash = () => {
   const instituteLoginId = localStorage.getItem('user_uuid');
   const userId = localStorage.getItem('institute_id');
-
+  const CourseURL = QUERY_KEYS_COURSE.GET_COURSE;
   const { getData } = useApi();
   const [instituteInfo, setInstituteInfo] = useState<InstituteRep0oDTO>({
     institute_name: '',
@@ -149,7 +150,7 @@ const InstitutionDash = () => {
   };
   const getCoursesData = async (instituteId: any) => {
     try {
-      await getData(`/course/list/${instituteId}`).then((response) => {
+      await getData(`${CourseURL}/${instituteId}`).then((response) => {
         if (response?.status) {
           setDataCourses(response?.data);
         }
