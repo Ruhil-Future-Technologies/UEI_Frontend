@@ -9,14 +9,15 @@ import {
   QUERY_KEYS,
   QUERY_KEYS_ADMIN_BASIC_INFO,
   QUERY_KEYS_STUDENT,
+  QUERY_KEYS_TEACHER,
 } from '../../utils/const';
 import useApi from '../../hooks/useAPI';
 import NameContext from '../../Pages/Context/NameContext';
 import maleImage from '../../assets/img/avatars/male.png';
 import femaleImage from '../../assets/img/avatars/female.png';
-import App13 from '../../assets/img/apps/13.png';
-import App14 from '../../assets/img/apps/14.png';
-import Avatar6 from '../../assets/img/avatars/06.png';
+// import App13 from '../../assets/img/apps/13.png';
+// import App14 from '../../assets/img/apps/14.png';
+// import Avatar6 from '../../assets/img/avatars/06.png';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
@@ -48,10 +49,14 @@ const Header = () => {
     setProPercentage,
     setActiveForm,
   }: any = context;
-  const StudentId = localStorage.getItem('user_uuid');
+  const user_uuid = localStorage.getItem('user_uuid');
+
   const user_type = localStorage.getItem('user_type');
   // const StuId = localStorage.getItem('_id');
-  const StuId = user_type === 'teacher' ? localStorage.getItem('teacher_id'):localStorage.getItem('student_id');
+  const StuId =
+    user_type === 'teacher'
+      ? localStorage.getItem('teacher_id')
+      : localStorage.getItem('student_id');
   const navigator = useNavigate();
   const profileURL = QUERY_KEYS_STUDENT.STUDENT_GET_PROFILE;
   const adminProfileURL = QUERY_KEYS_ADMIN_BASIC_INFO.ADMIN_GET_PROFILE;
@@ -60,6 +65,7 @@ const Header = () => {
   const synth: SpeechSynthesis = window?.speechSynthesis;
   const { getData, postDataJson } = useApi();
   const [dashboardURL, setDashboardURL] = useState('');
+  const editTeacher = QUERY_KEYS_TEACHER.TEACHER_EDIT;
 
   const chataddconversationurl = QUERY_KEYS.CHAT_HISTORYCON;
   // const userdata = JSON.parse(localStorage?.getItem('userdata') || '{}');
@@ -146,8 +152,8 @@ const Header = () => {
     }
   }
   const callAPI = async () => {
-    getData(`${profileURL}/${StudentId}`)
-      .then((data: any) => {
+    if (user_type === 'student') {
+      getData(`${profileURL}/${user_uuid}`).then((data: any) => {
         if (data.data) {
           const basic_info = data.data.basic_info;
           if (basic_info && Object.keys(basic_info).length > 0) {
@@ -169,11 +175,28 @@ const Header = () => {
           }
           sessionStorage.setItem('profileData', JSON.stringify(data.data));
         }
-      })
-      .catch(() => {});
+      });
+    } else if (user_type === 'teacher') {
+      getData(`${editTeacher}/${user_uuid}`).then(async (data) => {
+        if (data?.status) {
+          setNamepro({
+            first_name: data?.data?.first_name,
+            last_name: data?.data?.last_name,
+            gender: data?.data?.gender,
+          });
+          if (data?.data?.pic_path !== null) {
+            getData(`${'upload_file/get_image/' + data?.data?.pic_path}`)
+              .then((imgdata: any) => {
+                setProImage(imgdata?.data?.file_url);
+              })
+              .catch(() => {});
+          }
+        }
+      });
+    }
   };
   const getAdminDetails = () => {
-    getData(`${adminProfileURL}/${StudentId}`)
+    getData(`${adminProfileURL}/${user_uuid}`)
       .then((response) => {
         if (response?.data) {
           sessionStorage.setItem('profileData', JSON.stringify(response.data));
@@ -217,6 +240,7 @@ const Header = () => {
     } else if (user_type === 'institute') {
       setDashboardURL('/institution-dashboard');
     } else if (user_type === 'teacher') {
+      callAPI();
       setDashboardURL('/teacher-dashboard');
     } else {
       callAPI();
@@ -315,7 +339,7 @@ const Header = () => {
                 data-testid="notifications-toggle"
               >
                 <NotificationsOutlinedIcon />
-                <span className="badge-notify">5</span>
+                <span className="badge-notify">1</span>
               </a>
               <div
                 className="dropdown-menu dropdown-notify dropdown-menu-end shadow"
@@ -391,10 +415,10 @@ const Header = () => {
                           </div>
                           <div className="">
                             <h5 className="notify-title">
-                              Congratulations Jhon...
+                              Welcome to Gyansetu
                             </h5>
                             <p className="mb-0 notify-desc">
-                              Many congtars jhons. You have won the gifts.
+                              You&apos;ve successfully completed your profile
                             </p>
                             <p className="mb-0 notify-time">Today</p>
                           </div>
@@ -404,7 +428,7 @@ const Header = () => {
                         </div>
                       </div>
                     </div>
-                    <div>
+                    {/* <div>
                       <div className="dropdown-item border-bottom py-2">
                         <div className="d-flex align-items-center gap-3">
                           <div className="user-wrapper bg-primary text-primary bg-opacity-10">
@@ -522,7 +546,7 @@ const Header = () => {
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </div> */}
                   </div>
                 </PerfectScrollbar>
               </div>

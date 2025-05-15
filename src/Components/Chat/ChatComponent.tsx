@@ -82,7 +82,7 @@ const ChatComponent: React.FC<ChatComponentProps> = ({
   className = '',
   flagged = false,
   isTextCopied,
-  likedStates
+  likedStates,
 }) => {
   const theme = useTheme();
   const chatRef = useRef<HTMLInputElement>(null);
@@ -96,7 +96,9 @@ const ChatComponent: React.FC<ChatComponentProps> = ({
   };
 
   return (
-    <div className={`chat-wrapper desk-chat-wrapper rounded-4 mt-lg-5 ${className}`}>
+    <div
+      className={`chat-wrapper desk-chat-wrapper rounded-4 mt-lg-5 ${className}`}
+    >
       <div className="chat-header d-flex align-items-center start-0 rounded-top-4">
         <div>
           <img src={robotImage} className="chatroboimg" alt="" />
@@ -151,7 +153,8 @@ const ChatComponent: React.FC<ChatComponentProps> = ({
                     <div className="flex-grow-1 me-2">
                       <div className="chat-right-msg">
                         <span className="anstext">
-                          <SearchOutlinedIcon sx={{ fontSize: '18px' }} /> Question
+                          <SearchOutlinedIcon sx={{ fontSize: '18px' }} />
+                          Question
                         </span>
                         <p className="mb-0">{chat.question}</p>
                       </div>
@@ -173,11 +176,16 @@ const ChatComponent: React.FC<ChatComponentProps> = ({
                     <div className="flex-grow-1 ms-2">
                       <div className="chat-left-msg">
                         <span className="anstext">
-                          <DescriptionOutlinedIcon sx={{ fontSize: '20px' }} /> Answer
+                          <DescriptionOutlinedIcon sx={{ fontSize: '20px' }} />{' '}
+                          Answer
                         </span>
                         <div className="mb-4">
                           <p>
-                            <Chatbot key={chat?.question} answer={chat?.answer} index={index} />
+                            <Chatbot
+                              key={chat?.question}
+                              answer={chat?.answer}
+                              index={index}
+                            />
                           </p>
                           {chat?.diagram_code && (
                             <div
@@ -194,7 +202,9 @@ const ChatComponent: React.FC<ChatComponentProps> = ({
                               }}
                             />
                           )}
-                          {chat?.table_code && <ChatTable tableCode={chat?.table_code} />}
+                          {chat?.table_code && (
+                            <ChatTable tableCode={chat?.table_code} />
+                          )}
                         </div>
                         <ul className="ansfooter">
                           <li>
@@ -202,15 +212,28 @@ const ChatComponent: React.FC<ChatComponentProps> = ({
                               onClick={() => onLike?.(index)}
                               sx={{
                                 fontSize: '14px',
-                                color: likedStates[index] === 'liked' || chat?.like_dislike === true
-                                  ? theme.palette.primary.main
-                                  : chat?.like_dislike !== null ? '#ccc' : '',
-                                cursor: chat?.like_dislike !== null ? 'default' : 'pointer',
-                                transform: likedStates[index] === 'liked' || chat?.like_dislike === true
-                                  ? 'scale(1.3)'
-                                  : 'scale(1)',
+                                color:
+                                  likedStates[index] === 'liked' ||
+                                  chat?.like_dislike === true
+                                    ? theme.palette.primary.main
+                                    : chat?.like_dislike !== null
+                                      ? '#ccc'
+                                      : '',
+                                cursor:
+                                  chat?.like_dislike !== null
+                                    ? 'default'
+                                    : 'pointer',
+                                transform:
+                                  likedStates[index] === 'liked' ||
+                                  chat?.like_dislike === true
+                                    ? 'scale(1.3)'
+                                    : 'scale(1)',
                                 transition: 'color 0.3s ease',
-                                opacity: chat?.like_dislike !== null && chat?.like_dislike !== true ? 0.5 : 1,
+                                opacity:
+                                  chat?.like_dislike !== null &&
+                                  chat?.like_dislike !== true
+                                    ? 0.5
+                                    : 1,
                               }}
                             />
                           </li>
@@ -219,39 +242,62 @@ const ChatComponent: React.FC<ChatComponentProps> = ({
                               onClick={() => onDislike?.(index)}
                               sx={{
                                 fontSize: '14px',
-                                color: likedStates[index] === 'disliked' || chat?.like_dislike === false
-                                  ? theme.palette.primary.main
-                                  : chat?.like_dislike !== null ? '#ccc' : '',
-                                cursor: chat?.like_dislike !== null ? 'default' : 'pointer',
-                                transform: likedStates[index] === 'disliked' || chat?.like_dislike === false
-                                  ? 'scale(1.3)'
-                                  : 'scale(1)',
+                                color:
+                                  likedStates[index] === 'disliked' ||
+                                  chat?.like_dislike === false
+                                    ? theme.palette.primary.main
+                                    : chat?.like_dislike !== null
+                                      ? '#ccc'
+                                      : '',
+                                cursor:
+                                  chat?.like_dislike !== null
+                                    ? 'default'
+                                    : 'pointer',
+                                transform:
+                                  likedStates[index] === 'disliked' ||
+                                  chat?.like_dislike === false
+                                    ? 'scale(1.3)'
+                                    : 'scale(1)',
                                 transition: 'color 0.3s ease',
-                                opacity: chat?.like_dislike !== null && chat?.like_dislike !== false ? 0.5 : 1,
+                                opacity:
+                                  chat?.like_dislike !== null &&
+                                  chat?.like_dislike !== false
+                                    ? 0.5
+                                    : 1,
                               }}
                             />
                           </li>
                           {/* <li onClick={() => onRegenerate?.()}> */}
-                          <li onClick={() => onRegenerate?.(chat.question)
-                          }
-                          >
+                          <li onClick={() => onRegenerate?.(chat.question)}>
                             <CachedOutlinedIcon sx={{ fontSize: '14px' }} />
                             <span>Regenerate</span>
                           </li>
                           {!chat?.speak ? (
-                            <li onClick={() => onSpeak?.(chat.answer || '', index)}>
+                            <li
+                              onClick={() =>
+                                onSpeak?.(chat.answer || '', index)
+                              }
+                            >
                               <VolumeUpOutlinedIcon sx={{ fontSize: '14px' }} />
                               <span>Read</span>
                             </li>
                           ) : (
                             <li onClick={() => onStop?.(index)}>
-                              <VolumeOffOutlinedIcon sx={{ fontSize: '14px' }} />
+                              <VolumeOffOutlinedIcon
+                                sx={{ fontSize: '14px' }}
+                              />
                               <span>Stop</span>
                             </li>
                           )}
                           <li onClick={() => onCopy?.(index)}>
-                            <ContentCopyOutlinedIcon sx={{ fontSize: '14px' }} />
-                            <span>{isTextCopied[`answer-${index}`] ? 'Copied' : 'Copy'}</span>
+                            <ContentCopyOutlinedIcon
+                              sx={{ fontSize: '14px' }}
+                            />
+                            <span>
+                              {isTextCopied[`answer-${index}`]
+                                ? 'Copied'
+                                : 'Copy'}
+                            </span>
                           </li>
                         </ul>
                       </div>
@@ -262,7 +308,10 @@ const ChatComponent: React.FC<ChatComponentProps> = ({
             </React.Fragment>
           ))
         ) : (
-          <div className="d-flex flex-column align-items-center text-center">
+          <div
+            className="d-flex flex-column align-items-center text-center"
+            style={{ height: '200px' }}
+          >
             {chatLogo && <img width={'200px'} src={chatLogo} alt="" />}
             <h4>Hi, How can I help you today?</h4>
           </div>
@@ -273,9 +322,7 @@ const ChatComponent: React.FC<ChatComponentProps> = ({
         <div className="chat-footer d-flex align-items-center start-0 rounded-bottom-4">
           <div className="flex-grow-1 pe-2">
             <div className="input-group">
-              <span className="input-group-text">
-                {/* <MicIcon /> */}
-              </span>
+              <span className="input-group-text">{/* <MicIcon /> */}</span>
               <input
                 type="text"
                 className="form-control"
@@ -303,4 +350,4 @@ const ChatComponent: React.FC<ChatComponentProps> = ({
   );
 };
 
-export default ChatComponent; 
+export default ChatComponent;
