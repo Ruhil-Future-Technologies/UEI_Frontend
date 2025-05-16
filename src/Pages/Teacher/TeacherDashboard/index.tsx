@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import profile from '../../../assets/img/profile.png';
 import { useNavigate } from 'react-router-dom';
-import toperstudent from '../../../assets/img/topper-image.png';
+// import toperstudent from '../../../assets/img/topper-image.png';
 import robotimg from '../../../assets/img/robot.png';
 import glogowhite from '../../../assets/img/g-logo-white.svg';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
@@ -21,7 +21,7 @@ import { CourseRep0oDTO, IClass, SubjectRep0oDTO } from '../../../Components/Tab
 import { toast, ToastContentProps } from 'react-toastify';
 import TeacherDashboardCharts from '../TeacherChart';
 import SessionTracker from '../../../Components/Tracker';
-import TeacherGraph from '../TeacherGraphs';
+// import TeacherGraph from '../TeacherGraphs';
 import ChatComponent from '../../../Components/Chat/ChatComponent';
 import useTextToSpeech from '../../Chat/speech';
 import { Boxes, BoxesForSchool } from '../../TeacherRgistrationForm';
@@ -78,6 +78,8 @@ const TeacherDash = () => {
     },
   ]);
   const navigate = useNavigate();
+  const [institute, setInstitute] = useState<any>({});
+
   const callAPI = async () => {
     getData(`${chatlisturl}/${userId}`)
       .then((data: any) => {
@@ -176,6 +178,17 @@ const TeacherDash = () => {
       getData(`${editTeacher}/${teacherId}`).then(async (data) => {
         if (data?.status) {
           localStorage.setItem('teacher_id', data?.data.id);
+
+          getInstitute().then((response) => {
+            const teacher_institute = response.find(
+              (inst) =>
+                inst.entity_type == data?.data?.entity_type &&
+                inst.id == data?.data?.institute_id,
+            );
+
+            setInstitute(teacher_institute);
+          });
+
           setTeacherData(data.data);
           if (data?.data?.course_semester_subjects != null) {
             setSelectedEntity('college');
@@ -279,14 +292,31 @@ const TeacherDash = () => {
       return Promise.reject(e); // Reject the promise in case of an error
     }
   };
+
+  const getInstitute = async (): Promise<any[]> => {
+    try {
+      const data = await getData(`/institute/list`);
+
+      if (data?.status && data?.data) {
+        return data?.data;
+      }
+
+      return [];
+    } catch (error) {
+      console.error('Error fetching semester data:', error);
+      return Promise.reject(error);
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
-      getTeacherInfo(); // If this doesn't return a Promise or doesn't need to be awaited
-      await getStudentsForTeacher();
+      getTeacherInfo();
+      getStudentsForTeacher();
     };
 
     fetchData();
-  }, []);
+  }, [userId]);
+
   const getCourses = (courseIds: any) => {
     getData(`${CourseURL}`)
       .then((data) => {
@@ -310,8 +340,13 @@ const TeacherDash = () => {
     getData(`${ClassURL}`)
       .then((data) => {
         if (data.data) {
-          const filteredClasses = data?.data?.classes_data?.filter(
-            (classn: any) => classIds.includes(String(classn.id)),
+          const filteredData = data?.data?.classes_data.map((item: any) => ({
+            ...item,
+            class_name: item.class_name.replace(/_/g, ' '),
+          }));
+
+          const filteredClasses = filteredData?.filter((classn: any) =>
+            classIds.includes(String(classn.id)),
           );
           setDataClass(filteredClasses);
         }
@@ -976,27 +1011,38 @@ const TeacherDash = () => {
     }
   };
   const getClassName = (id: any) => {
-
-    const filterClass = dataClass.find((item) => item.id == id)?.class_name
+    const filterClass = dataClass.find((item) => item.id == id)?.class_name;
     return filterClass;
-  }
+  };
   const getCourseName = (id: any) => {
-
-    const filterClass = coursesData.find((item) => item.id == id)?.course_name
+    const filterClass = coursesData.find((item) => item.id == id)?.course_name;
     return filterClass;
-  }
-  const getFilteredStusents = (type: any, classId: any, stream: any, subject: any) => {
+  };
+  const getFilteredStusents = (
+    type: any,
+    classId: any,
+    stream: any,
+    subject: any,
+  ) => {
     let filteredStusents: any = [];
-    if (type == "school") {
-      filteredStusents = listOfStudent?.filter((student) => student.class_id == classId && student.stream == stream && student.subject_name == subject)
-      console.log(filteredStusents, listOfStudent);
+    if (type == 'school') {
+      filteredStusents = listOfStudent?.filter(
+        (student) =>
+          student.class_id == classId &&
+          student.stream == stream &&
+          student.subject_name == subject,
+      );
     } else {
-      filteredStusents = listOfStudent?.filter((student) => student.course_id == classId && student.semester_number == stream && student.subject_name == subject)
-      console.log(filteredStusents, listOfStudent);
+      filteredStusents = listOfStudent?.filter(
+        (student) =>
+          student.course_id == classId &&
+          student.semester_number == stream &&
+          student.subject_name == subject,
+      );
     }
 
     return filteredStusents;
-  }
+  };
   return (
     <div className="main-wrapper">
       <div className="main-content">
@@ -1028,10 +1074,14 @@ const TeacherDash = () => {
                         <h4 className="fw-bold mb-1 fs-4">
                           {teacherData?.first_name} {teacherData?.last_name}
                         </h4>
-                        {/* <p className="opacity-75 mb-1">
-                          {teacherData?.university_id}
-                        </p> */}
-                        <p className="planbg">Senior Professor</p>
+                        <p className="opacity-75 mb-1">
+                          {institute?.institute_name}
+                        </p>
+                        <p className="planbg">
+                          {selectedEntity === 'college'
+                            ? 'Professor'
+                            : 'Teacher'}
+                        </p>
                       </div>
                       <div className="curcc">
                         {selectedEntity === 'college' ? (
@@ -1060,20 +1110,54 @@ const TeacherDash = () => {
               </div>
             </div>
           </div>
+          {/* <div
+            className="col-xxl-4 d-flex align-items-stretch "
+            style={{ marginTop: '40px' }}
+          >
+            <div className="card w-100">
+              <div className="card-body">
+                <h6 className="text-center mb-5 fs-18">Top Students</h6>
+                <ul className="topper-chart">
+                  <li>
+                    <div className="topper-image">
+                      <img src={toperstudent} alt="" />
+                    </div>
+                    <span className="name">Andrew</span>
+                    <div className="bar">2</div>
+                  </li>
 
+                  <li>
+                    <div className="topper-image">
+                      <img src={toperstudent} alt="" />
+                    </div>
+                    <span className="name">Joseph</span>
+                    <div className="bar">1</div>
+                  </li>
+
+                  <li>
+                    <div className="topper-image">
+                      <img src={toperstudent} alt="" />
+                    </div>
+                    <span className="name">Kareen</span>
+                    <div className="bar">3 </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div> */}
           <div className="col-12">
             {selectedEntity === 'college' ? (
               <>
-                <h5 className="mb-1 fw-bold fs-4">Your Courses</h5>
+                <h5 className="mb-1 fw-bold fs-4">Your Subjects</h5>
                 <p className="text-secondary">
-                  Manage your Courses and view student information
+                  Manage your Subjects and view student information
                 </p>
               </>
             ) : (
               <>
-                <h5 className="mb-1 fw-bold fs-4">Your Classes</h5>
+                <h5 className="mb-1 fw-bold fs-4">Your Subjects</h5>
                 <p className="text-secondary">
-                  Manage your classes and view student information
+                  Manage your subjects and view student information
                 </p>
               </>
             )}
@@ -1094,30 +1178,31 @@ const TeacherDash = () => {
                 }}
                 modules={[Navigation, Autoplay]}
                 breakpoints={{
-                  320: { slidesPerView: 1 },
-                  640: { slidesPerView: 1 },
-                  1024: { slidesPerView: 2 },
-                  1440: { slidesPerView: 3 },
+                  320: { slidesPerView: 1 }, // Mobile
+                  640: { slidesPerView: 1 }, // Tablets
+                  1024: { slidesPerView: 2 }, // Laptops
+                  1440: { slidesPerView: 3 }, // Large Screens
                 }}
               >
-                {
-                  selectedEntity === 'college' ? (
-                    <>
-                      {boxes?.map((box, boxIndex) => (
-                        <div key={boxIndex}>
-                          {box?.subjects?.map((subject, subjectIndex) => (
-                            <SwiperSlide key={subjectIndex}>
-                              <div className="card mb-0">
-                                <div className="card-body">
-                                  <div className="carddlex">
-                                    <span>
-                                      <AttractionsIcon />
-                                    </span>
-                                    <div className="">
-                                      <h6 className="fs-4">{getCourseName(box?.course_id)}</h6>
-                                      <p> {subject}</p>
-                                    </div>
+                {selectedEntity === 'college' ? (
+                  <>
+                    {boxes?.map((box, boxIndex) => (
+                      <div key={boxIndex}>
+                        {box?.subjects?.map((subject, subjectIndex) => (
+                          <SwiperSlide key={subjectIndex}>
+                            <div className="card mb-0">
+                              <div className="card-body">
+                                <div className="carddlex">
+                                  <span>
+                                    <AttractionsIcon />
+                                  </span>
+                                  <div className="">
+                                    <h6 className="fs-4">
+                                      {getCourseName(box?.course_id)}
+                                    </h6>
+                                    <p> {subject}</p>
                                   </div>
+                                </div>
 
                                   <div className="row g-2">
                                     <div className="col-lg-6">
@@ -1223,7 +1308,7 @@ const TeacherDash = () => {
 
         <div className="row">
           <TeacherDashboardCharts />
-          <TeacherGraph />
+          {/* <TeacherGraph /> */}
           <div
             className="col-xxl-8 d-flex align-items-stretch "
             style={{ marginBottom: '64px' }}
@@ -1254,41 +1339,6 @@ const TeacherDash = () => {
               isTextCopied={isTextCopied}
               likedStates={likedStates}
             />
-          </div>
-          <div
-            className="col-xxl-4 d-flex align-items-stretch "
-            style={{ marginTop: '40px' }}
-          >
-            <div className="card w-100">
-              <div className="card-body">
-                <h6 className="text-center mb-5 fs-18">Top Students</h6>
-                <ul className="topper-chart">
-                  <li>
-                    <div className="topper-image">
-                      <img src={toperstudent} alt="" />
-                    </div>
-                    <span className="name">Andrew</span>
-                    <div className="bar">2</div>
-                  </li>
-
-                  <li>
-                    <div className="topper-image">
-                      <img src={toperstudent} alt="" />
-                    </div>
-                    <span className="name">Joseph</span>
-                    <div className="bar">1</div>
-                  </li>
-
-                  <li>
-                    <div className="topper-image">
-                      <img src={toperstudent} alt="" />
-                    </div>
-                    <span className="name">Kareen</span>
-                    <div className="bar">3 </div>
-                  </li>
-                </ul>
-              </div>
-            </div>
           </div>
         </div>
       </div>

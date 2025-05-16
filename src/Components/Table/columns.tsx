@@ -2519,16 +2519,6 @@ export const CONTENT_COLUMNS: MRT_ColumnDef<ContentRepoDTO>[] = [
     header: 'Subjects',
   },
   {
-    accessorKey: 'created_at',
-    header: 'Created At',
-    size: 200,
-  },
-  {
-    accessorKey: 'updated_at',
-    header: 'Updated At',
-    size: 200,
-  },
-  {
     accessorKey: 'is_active',
     header: 'Active/DeActive',
     Cell: ({ cell, row }: any) => {
