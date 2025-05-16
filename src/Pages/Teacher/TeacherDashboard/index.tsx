@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import profile from '../../../assets/img/profile.png';
 import { useNavigate } from 'react-router-dom';
-import toperstudent from '../../../assets/img/topper-image.png';
+// import toperstudent from '../../../assets/img/topper-image.png';
 import robotimg from '../../../assets/img/robot.png';
 import glogowhite from '../../../assets/img/g-logo-white.svg';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
@@ -16,16 +16,26 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 
 import useApi from '../../../hooks/useAPI';
-import { QUERY_KEYS, QUERY_KEYS_CLASS, QUERY_KEYS_COURSE, QUERY_KEYS_SUBJECT, QUERY_KEYS_SUBJECT_SCHOOL, QUERY_KEYS_TEACHER } from '../../../utils/const';
-import { CourseRep0oDTO, IClass, SubjectRep0oDTO } from '../../../Components/Table/columns';
+import {
+  QUERY_KEYS,
+  QUERY_KEYS_CLASS,
+  QUERY_KEYS_COURSE,
+  QUERY_KEYS_SUBJECT,
+  QUERY_KEYS_SUBJECT_SCHOOL,
+  QUERY_KEYS_TEACHER,
+} from '../../../utils/const';
+import {
+  CourseRep0oDTO,
+  IClass,
+  SubjectRep0oDTO,
+} from '../../../Components/Table/columns';
 import { toast, ToastContentProps } from 'react-toastify';
 import TeacherDashboardCharts from '../TeacherChart';
 import SessionTracker from '../../../Components/Tracker';
-import TeacherGraph from '../TeacherGraphs';
+// import TeacherGraph from '../TeacherGraphs';
 import ChatComponent from '../../../Components/Chat/ChatComponent';
 import useTextToSpeech from '../../Chat/speech';
 import { Boxes, BoxesForSchool } from '../../TeacherRgistrationForm';
-
 
 const TeacherDash = () => {
   const teacherId = localStorage.getItem('user_uuid');
@@ -78,6 +88,8 @@ const TeacherDash = () => {
     },
   ]);
   const navigate = useNavigate();
+  const [institute, setInstitute] = useState<any>({});
+
   const callAPI = async () => {
     getData(`${chatlisturl}/${userId}`)
       .then((data: any) => {
@@ -176,42 +188,59 @@ const TeacherDash = () => {
       getData(`${editTeacher}/${teacherId}`).then(async (data) => {
         if (data?.status) {
           localStorage.setItem('teacher_id', data?.data.id);
+
+          getInstitute().then((response) => {
+            const teacher_institute = response.find(
+              (inst) =>
+                inst.entity_type == data?.data?.entity_type &&
+                inst.id == data?.data?.institute_id,
+            );
+
+            setInstitute(teacher_institute);
+          });
+
           setTeacherData(data.data);
           if (data?.data?.course_semester_subjects != null) {
             setSelectedEntity('college');
-            localStorage.setItem("entity","college")
+            localStorage.setItem('entity', 'college');
             const courseIds = Object.keys(
-              data.data.course_semester_subjects,
-            ).map((CourseKey) => CourseKey);
+              data?.data?.course_semester_subjects,
+            )?.map((CourseKey) => CourseKey);
             getCourses(courseIds);
             const allsemesters: any = (await getSemester()) || [];
-            const allSubject: any = await getSubjects('College') || [];
-            const output: Boxes[] = Object.keys(data.data.course_semester_subjects).flatMap((CourseKey) => {
-
-              return Object.keys(data.data.course_semester_subjects[CourseKey]).map((semester_number) => {
+            const allSubject: any = (await getSubjects('College')) || [];
+            const output: Boxes[] = Object?.keys(
+              data?.data?.course_semester_subjects,
+            )?.flatMap((CourseKey) => {
+              return Object.keys(
+                data?.data?.course_semester_subjects[CourseKey],
+              )?.map((semester_number) => {
                 const filteredSemesters = allsemesters?.filter(
-                  (item: any) => String(item.course_id) === String(CourseKey)
+                  (item: any) => String(item?.course_id) === String(CourseKey),
                 );
 
                 const filteredSubjects = allSubject?.filter(
                   (item: any) =>
-                    String(item.semester_number) === String(semester_number) &&
-                    String(item.course_id) === String(CourseKey)
+                    String(item?.semester_number) === String(semester_number) &&
+                    String(item?.course_id) === String(CourseKey),
                 );
                 return {
                   course_id: CourseKey,
                   semester_number: semester_number,
-                  subjects: data.data.course_semester_subjects[CourseKey][semester_number],
+                  subjects:
+                    data?.data?.course_semester_subjects[CourseKey][
+                      semester_number
+                    ],
                   filteredSemesters,
-                  filteredSubjects
+                  filteredSubjects,
                 };
               });
             });
             setBoxes([...output]);
           } else {
             setSelectedEntity('school');
-            localStorage.setItem("entity","school")
-            const classIds = Object.keys(data.data.class_stream_subjects).map(
+            localStorage.setItem('entity', 'school');
+            const classIds = Object.keys(data.data.class_stream_subjects)?.map(
               (classKey) => classKey,
             );
             getClasslist(classIds);
@@ -219,7 +248,7 @@ const TeacherDash = () => {
             const output: BoxesForSchool[] = Object.keys(
               data.data.class_stream_subjects,
             ).flatMap((classKey) =>
-              Object.keys(data.data.class_stream_subjects[classKey]).map(
+              Object.keys(data.data.class_stream_subjects[classKey])?.map(
                 (stream) => ({
                   stream: stream,
                   subjects: data.data.class_stream_subjects[classKey][stream],
@@ -230,10 +259,10 @@ const TeacherDash = () => {
                     stream == 'general'
                       ? allSubject.filter((item) => item.class_id === classKey)
                       : allSubject.filter(
-                        (item) =>
-                          item.class_id === classKey &&
-                          item.stream === stream,
-                      ),
+                          (item) =>
+                            item.class_id === classKey &&
+                            item.stream === stream,
+                        ),
                 }),
               ),
             );
@@ -279,10 +308,31 @@ const TeacherDash = () => {
       return Promise.reject(e); // Reject the promise in case of an error
     }
   };
+
+  const getInstitute = async (): Promise<any[]> => {
+    try {
+      const data = await getData(`/institute/list`);
+
+      if (data?.status && data?.data) {
+        return data?.data;
+      }
+
+      return [];
+    } catch (error) {
+      console.error('Error fetching semester data:', error);
+      return Promise.reject(error);
+    }
+  };
+
   useEffect(() => {
-    getTeacherInfo();
-    getStudentsForTeacher();
-  }, []);
+    const fetchData = async () => {
+      getTeacherInfo();
+      getStudentsForTeacher();
+    };
+
+    fetchData();
+  }, [userId]);
+
   const getCourses = (courseIds: any) => {
     getData(`${CourseURL}`)
       .then((data) => {
@@ -306,8 +356,13 @@ const TeacherDash = () => {
     getData(`${ClassURL}`)
       .then((data) => {
         if (data.data) {
-          const filteredClasses = data?.data?.classes_data?.filter(
-            (classn: any) => classIds.includes(String(classn.id)),
+          const filteredData = data?.data?.classes_data.map((item: any) => ({
+            ...item,
+            class_name: item.class_name.replace(/_/g, ' '),
+          }));
+
+          const filteredClasses = filteredData?.filter((classn: any) =>
+            classIds.includes(String(classn.id)),
           );
           setDataClass(filteredClasses);
         }
@@ -453,7 +508,7 @@ const TeacherDash = () => {
                       const entries = Object.entries(answer);
                       return [
                         entries
-                          .map(([key, value]) => {
+                          ?.map(([key, value]) => {
                             if (
                               typeof value === 'string' &&
                               value.includes('\\frac') &&
@@ -567,7 +622,7 @@ const TeacherDash = () => {
                       const entries = Object.entries(answer);
                       return [
                         entries
-                          .map(([key, value]) => {
+                          ?.map(([key, value]) => {
                             if (
                               typeof value === 'string' &&
                               value.includes('\\frac') &&
@@ -735,7 +790,7 @@ const TeacherDash = () => {
     const chatDataString = localStorage.getItem('chatData');
     if (chatDataString) {
       const chatData = JSON.parse(chatDataString);
-      const updatedChatData = chatData.map((chat: any) => ({
+      const updatedChatData = chatData?.map((chat: any) => ({
         ...chat,
         flagged: !flagged,
       }));
@@ -826,7 +881,7 @@ const TeacherDash = () => {
   const handleSpeak = async (text: string, index: number) => {
     stopSpeech(index);
     const textArray = Array.isArray(text) ? text : [text];
-    const updatedChats = selectedchat.map((chat: any, i: number) => ({
+    const updatedChats = selectedchat?.map((chat: any, i: number) => ({
       ...chat,
       speak: i === index, // Only the current index is true
     }));
@@ -834,7 +889,7 @@ const TeacherDash = () => {
     setSelectedChat(updatedChats);
     const speechComplete = await textToSpeech(textArray.join(' '), index);
     if (speechComplete) {
-      const updatedChatsAfterSpeech = selectedchat.map(
+      const updatedChatsAfterSpeech = selectedchat?.map(
         (chat: any, i: number) => ({
           ...chat,
           speak: i === index ? false : chat.speak, // Set the current index's speak to false
@@ -848,7 +903,7 @@ const TeacherDash = () => {
     await new Promise((resolve) => setTimeout(resolve, 2000));
     stopSpeech(index);
     // Update `speak` state for all chats
-    const updatedChats = selectedchat.map((chat: any, i: number) => ({
+    const updatedChats = selectedchat?.map((chat: any, i: number) => ({
       ...chat,
       speak: i === index ? false : chat.speak, // Set only the current index to false
     }));
@@ -892,7 +947,7 @@ const TeacherDash = () => {
     const chatDataString = localStorage.getItem('chatData');
     if (chatDataString) {
       const chatData = JSON.parse(chatDataString);
-      const updatedChatData = chatData.map((item: any) => {
+      const updatedChatData = chatData?.map((item: any) => {
         const isMatch =
           item.question === selectedchat[index].question &&
           JSON.stringify(item.answer) ===
@@ -928,7 +983,7 @@ const TeacherDash = () => {
     const chatDataString = localStorage.getItem('chatData');
     if (chatDataString) {
       const chatData = JSON.parse(chatDataString);
-      const updatedChatData = chatData.map((item: any) => {
+      const updatedChatData = chatData?.map((item: any) => {
         const isMatch =
           item.question === selectedchat[index].question &&
           JSON.stringify(item.answer) ===
@@ -972,27 +1027,38 @@ const TeacherDash = () => {
     }
   };
   const getClassName = (id: any) => {
-
-    const filterClass = dataClass.find((item) => item.id == id)?.class_name
+    const filterClass = dataClass.find((item) => item.id == id)?.class_name;
     return filterClass;
-  }
+  };
   const getCourseName = (id: any) => {
-
-    const filterClass = coursesData.find((item) => item.id == id)?.course_name
+    const filterClass = coursesData.find((item) => item.id == id)?.course_name;
     return filterClass;
-  }
-  const getFilteredStusents = (type: any, classId: any, stream: any, subject: any) => {
+  };
+  const getFilteredStusents = (
+    type: any,
+    classId: any,
+    stream: any,
+    subject: any,
+  ) => {
     let filteredStusents: any = [];
-    if (type == "school") {
-      filteredStusents = listOfStudent?.filter((student) => student.class_id == classId && student.stream == stream && student.subject_name == subject)
-      console.log(filteredStusents, listOfStudent);
+    if (type == 'school') {
+      filteredStusents = listOfStudent?.filter(
+        (student) =>
+          student.class_id == classId &&
+          student.stream == stream &&
+          student.subject_name == subject,
+      );
     } else {
-      filteredStusents = listOfStudent?.filter((student) => student.course_id == classId && student.semester_number == stream && student.subject_name == subject)
-      console.log(filteredStusents, listOfStudent);
+      filteredStusents = listOfStudent?.filter(
+        (student) =>
+          student.course_id == classId &&
+          student.semester_number == stream &&
+          student.subject_name == subject,
+      );
     }
 
     return filteredStusents;
-  }
+  };
   return (
     <div className="main-wrapper">
       <div className="main-content">
@@ -1025,9 +1091,13 @@ const TeacherDash = () => {
                           {teacherData?.first_name} {teacherData?.last_name}
                         </h4>
                         <p className="opacity-75 mb-1">
-                          {teacherData?.university_id}
+                          {institute?.institute_name}
                         </p>
-                        <p className="planbg">Senior Professor</p>
+                        <p className="planbg">
+                          {selectedEntity === 'college'
+                            ? 'Professor'
+                            : 'Teacher'}
+                        </p>
                       </div>
                       <div className="curcc">
                         {selectedEntity === 'college' ? (
@@ -1056,199 +1126,7 @@ const TeacherDash = () => {
               </div>
             </div>
           </div>
-
-          <div className="col-12">
-            {selectedEntity === 'college' ? (
-              <>
-                <h5 className="mb-1 fw-bold fs-4">Your Courses</h5>
-                <p className="text-secondary">
-                  Manage your Courses and view student information
-                </p>
-              </>
-            ) : (
-              <>
-                <h5 className="mb-1 fw-bold fs-4">Your Classes</h5>
-                <p className="text-secondary">
-                  Manage your classes and view student information
-                </p>
-              </>
-            )}
-
-            <div className="swiper-container">
-              <Swiper
-                spaceBetween={24}
-                slidesPerView={3}
-                loop={true}
-                navigation={{
-                  nextEl: '.swiper-button-next',
-                  prevEl: '.swiper-button-prev',
-                }}
-                modules={[Navigation]}
-                breakpoints={{
-                  320: { slidesPerView: 1 }, // Mobile
-                  640: { slidesPerView: 1 }, // Tablets
-                  1024: { slidesPerView: 2 }, // Laptops
-                  1440: { slidesPerView: 3 }, // Large Screens
-                }}
-              >
-                {
-                  selectedEntity === 'college' ? (
-                    <>
-                      {boxes.map((box, boxIndex) => (
-                        <div key={boxIndex}>
-                          {box.subjects.map((subject, subjectIndex) => (
-                            <SwiperSlide key={subjectIndex}>
-                              <div className="card mb-0">
-                                <div className="card-body">
-                                  <div className="carddlex">
-                                    <span>
-                                      <AttractionsIcon />
-                                    </span>
-                                    <div className="">
-                                      <h6 className="fs-4">{getCourseName(box.course_id)}</h6>
-                                      <p> {subject}</p>
-                                    </div>
-                                  </div>
-
-                                  <div className="row g-2">
-                                    <div className="col-lg-6">
-                                      <div className="totallist">
-                                        <span>
-                                          <SupervisedUserCircleIcon />
-                                        </span>
-                                        <div className="">
-                                          <h6>Total Students</h6> <p>{getFilteredStusents("college",box.course_id,box.semester_number,subject)?.length}</p>
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <div className="col-lg-6">
-                                      <div className="totallist">
-                                        <span>
-                                          <StreamIcon />
-                                        </span>
-                                        <div className="">
-                                          <h6>Semester</h6> <p>{"semster " + box.semester_number}</p>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-
-                                  <button
-                                    className="btn btn-outline-primary mt-4 w-100"
-                                    onClick={() =>
-                                      navigate(`/teacher-dashboard/student-details?type=college&course_id=${box.course_id}&semester_number=${box.semester_number}&subject=${subject}`)
-                                    }
-                                  >
-                                    View Students
-                                  </button>
-                                </div>
-                              </div>
-                            </SwiperSlide>
-                          ))}
-                        </div>
-                      ))}
-                    </>
-
-                  ) : (
-                    <>
-                      {boxesForSchool.map((box, boxIndex) => (
-                        <div key={boxIndex}>
-                          {box.subjects.map((subject, subjectIndex) => (
-                            <SwiperSlide key={subjectIndex}>
-                              <div className="card mb-0">
-                                <div className="card-body">
-                                  <div className="carddlex">
-                                    <span>
-                                      <AttractionsIcon />
-                                    </span>
-                                    <div className="">
-                                      <h6 className="fs-4">{getClassName(box.class_id)}</h6>
-                                      <p> {subject}</p>
-                                    </div>
-                                  </div>
-
-                                  <div className="row g-2">
-                                    <div className="col-lg-6">
-                                      <div className="totallist">
-                                        <span>
-                                          <SupervisedUserCircleIcon />
-                                        </span>
-                                        <div className="">
-                                          <h6>Total Students</h6> <p>{getFilteredStusents("school", box.class_id, box.stream, subject)?.length}</p>
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <div className="col-lg-6">
-                                      <div className="totallist">
-                                        <span>
-                                          <StreamIcon />
-                                        </span>
-                                        <div className="">
-                                          <h6>Stream</h6> <p>{box.stream}</p>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <button
-                                    className="btn btn-outline-primary mt-4 w-100"
-                                    onClick={() =>
-                                      navigate(`/teacher-dashboard/student-details?class_id=${box.class_id}&stream=${box.stream}&subject=${subject}`)
-                                    }
-                                  >
-                                    View Students
-                                  </button>
-                                </div>
-                              </div>
-                            </SwiperSlide>
-                          ))}
-                        </div>
-                      ))}
-                    </>
-
-                  )
-                }
-              </Swiper>
-              <div className="swiper-button-prev"></div>
-              <div className="swiper-button-next"></div>
-            </div>
-          </div>
-        </div>
-
-        <div className="row">
-          <TeacherDashboardCharts />
-          <TeacherGraph />
-          <div
-            className="col-xxl-8 d-flex align-items-stretch "
-            style={{ marginBottom: '64px' }}
-          >
-            <ChatComponent
-              robotImage={robotimg}
-              logo={glogowhite}
-              selectedchat={selectedchat}
-              chatLoader={chatLoader}
-              loaderMsg={loaderMsg}
-              search={search}
-              setSearch={setSearch}
-              searcherr={searcherr}
-              onSearch={searchData}
-              onFlag={handleFlag}
-              flagged={flagged}
-              onExpand={handleExpand}
-              onRegenerate={handleRegenerate}
-              onSpeak={handleSpeak}
-              onStop={handleStop}
-              onCopy={handleCopy}
-              onLike={handleLike}
-              onDislike={handleDislike}
-              onKeyDown={handleKeyDown}
-              showExpandButton={true}
-              showFlagButton={true}
-              showFooter={true}
-              isTextCopied={isTextCopied}
-              likedStates={likedStates}
-            />
-          </div>
-          <div
+          {/* <div
             className="col-xxl-4 d-flex align-items-stretch "
             style={{ marginTop: '40px' }}
           >
@@ -1282,6 +1160,224 @@ const TeacherDash = () => {
                 </ul>
               </div>
             </div>
+          </div> */}
+          <div className="col-12">
+            {selectedEntity === 'college' ? (
+              <>
+                <h5 className="mb-1 fw-bold fs-4">Your Subjects</h5>
+                <p className="text-secondary">
+                  Manage your Subjects and view student information
+                </p>
+              </>
+            ) : (
+              <>
+                <h5 className="mb-1 fw-bold fs-4">Your Subjects</h5>
+                <p className="text-secondary">
+                  Manage your subjects and view student information
+                </p>
+              </>
+            )}
+
+            <div className="swiper-container">
+              <Swiper
+                spaceBetween={24}
+                slidesPerView={3}
+                loop={true}
+                navigation={{
+                  nextEl: '.swiper-button-next',
+                  prevEl: '.swiper-button-prev',
+                }}
+                modules={[Navigation]}
+                breakpoints={{
+                  320: { slidesPerView: 1 }, // Mobile
+                  640: { slidesPerView: 1 }, // Tablets
+                  1024: { slidesPerView: 2 }, // Laptops
+                  1440: { slidesPerView: 3 }, // Large Screens
+                }}
+              >
+                {selectedEntity === 'college' ? (
+                  <>
+                    {boxes?.map((box, boxIndex) => (
+                      <div key={boxIndex}>
+                        {box?.subjects?.map((subject, subjectIndex) => (
+                          <SwiperSlide key={subjectIndex}>
+                            <div className="card mb-0">
+                              <div className="card-body">
+                                <div className="carddlex">
+                                  <span>
+                                    <AttractionsIcon />
+                                  </span>
+                                  <div className="">
+                                    <h6 className="fs-4">
+                                      {getCourseName(box?.course_id)}
+                                    </h6>
+                                    <p> {subject}</p>
+                                  </div>
+                                </div>
+
+                                <div className="row g-2">
+                                  <div className="col-lg-6">
+                                    <div className="totallist">
+                                      <span>
+                                        <SupervisedUserCircleIcon />
+                                      </span>
+                                      <div className="">
+                                        <h6>Total Students</h6>{' '}
+                                        <p>
+                                          {
+                                            getFilteredStusents(
+                                              'college',
+                                              box?.course_id,
+                                              box?.semester_number,
+                                              subject,
+                                            )?.length
+                                          }
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div className="col-lg-6">
+                                    <div className="totallist">
+                                      <span>
+                                        <StreamIcon />
+                                      </span>
+                                      <div className="">
+                                        <h6>Semester</h6>{' '}
+                                        <p>
+                                          {'semster ' + box?.semester_number}
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <button
+                                  className="btn btn-outline-primary mt-4 w-100"
+                                  onClick={() =>
+                                    navigate(
+                                      `/teacher-dashboard/student-details?type=college&course_id=${box?.course_id}&semester_number=${box?.semester_number}&subject=${subject}`,
+                                    )
+                                  }
+                                >
+                                  View Students
+                                </button>
+                              </div>
+                            </div>
+                          </SwiperSlide>
+                        ))}
+                      </div>
+                    ))}
+                  </>
+                ) : (
+                  <>
+                    {boxesForSchool?.map((box, boxIndex) => (
+                      <div key={boxIndex}>
+                        {box?.subjects?.map((subject, subjectIndex) => (
+                          <SwiperSlide key={subjectIndex}>
+                            <div className="card mb-0">
+                              <div className="card-body">
+                                <div className="carddlex">
+                                  <span>
+                                    <AttractionsIcon />
+                                  </span>
+                                  <div className="">
+                                    <h6 className="fs-4">
+                                      {getClassName(box?.class_id)}
+                                    </h6>
+                                    <p> {subject}</p>
+                                  </div>
+                                </div>
+
+                                <div className="row g-2">
+                                  <div className="col-lg-6">
+                                    <div className="totallist">
+                                      <span>
+                                        <SupervisedUserCircleIcon />
+                                      </span>
+                                      <div className="">
+                                        <h6>Total Students</h6>{' '}
+                                        <p>
+                                          {
+                                            getFilteredStusents(
+                                              'school',
+                                              box?.class_id,
+                                              box?.stream,
+                                              subject,
+                                            )?.length
+                                          }
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div className="col-lg-6">
+                                    <div className="totallist">
+                                      <span>
+                                        <StreamIcon />
+                                      </span>
+                                      <div className="">
+                                        <h6>Stream</h6> <p>{box?.stream}</p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <button
+                                  className="btn btn-outline-primary mt-4 w-100"
+                                  onClick={() =>
+                                    navigate(
+                                      `/teacher-dashboard/student-details?class_id=${box?.class_id}&stream=${box.stream}&subject=${subject}`,
+                                    )
+                                  }
+                                >
+                                  View Students
+                                </button>
+                              </div>
+                            </div>
+                          </SwiperSlide>
+                        ))}
+                      </div>
+                    ))}
+                  </>
+                )}
+              </Swiper>
+              <div className="swiper-button-prev"></div>
+              <div className="swiper-button-next"></div>
+            </div>
+          </div>
+        </div>
+
+        <div className="row">
+          <TeacherDashboardCharts />
+          {/* <TeacherGraph /> */}
+          <div
+            className="col-xxl-8 d-flex align-items-stretch "
+            style={{ marginBottom: '64px' }}
+          >
+            <ChatComponent
+              robotImage={robotimg}
+              logo={glogowhite}
+              selectedchat={selectedchat}
+              chatLoader={chatLoader}
+              loaderMsg={loaderMsg}
+              search={search}
+              setSearch={setSearch}
+              searcherr={searcherr}
+              onSearch={searchData}
+              onFlag={handleFlag}
+              flagged={flagged}
+              onExpand={handleExpand}
+              onRegenerate={handleRegenerate}
+              onSpeak={handleSpeak}
+              onStop={handleStop}
+              onCopy={handleCopy}
+              onLike={handleLike}
+              onDislike={handleDislike}
+              onKeyDown={handleKeyDown}
+              showExpandButton={true}
+              showFlagButton={true}
+              showFooter={true}
+              isTextCopied={isTextCopied}
+              likedStates={likedStates}
+            />
           </div>
         </div>
       </div>
