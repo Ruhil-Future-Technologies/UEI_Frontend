@@ -27,6 +27,7 @@ import {
   inputfieldtext,
 } from '../../utils/helpers';
 import NameContext from '../Context/NameContext';
+import { QUERY_KEYS_CLASS, QUERY_KEYS_COURSE, QUERY_KEYS_STUDENT_ACADEMIC_HISTORY } from '../../utils/const';
 //import { ChildComponentProps } from "../StudentProfile";
 
 // Define interfaces for Box, Course, and Subject
@@ -76,6 +77,9 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
 }) => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
+  const ClassURL = QUERY_KEYS_CLASS.GET_CLASS;
+  const AcedmicHistory =QUERY_KEYS_STUDENT_ACADEMIC_HISTORY.NEW_STUDENT_ACADEMIC_HISTORY;
+  const CourseURL = QUERY_KEYS_COURSE.GET_COURSE;
   const { getData, postData, putData, deleteData } = useApi();
   const [boxes, setBoxes] = useState<Box[]>([]);
   const StudentId = localStorage.getItem('_id');
@@ -126,7 +130,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
   };
   
   const getclass = async () => {
-    getData('/class/list')
+    getData(`${ClassURL}`)
       .then((response: any) => {
         if (response.status) {
           const filteredData = response?.data?.classes_data?.filter(
@@ -178,7 +182,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
     fetchData();
   }, [activeForm]);
   const getCourse = async () => {
-   await getData('/course/list')
+   await getData(`${CourseURL}`)
       .then((response: any) => {
         if (response.status) {
           const filteredData = response?.data?.course_data?.filter(
@@ -205,7 +209,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
     let class_id:any=0;
     let course_id:any=0;
     let semester_id:any;
-    await getData(`${'new_student_academic_history/get/' + StudentId}`)
+    await getData(`${AcedmicHistory + StudentId}`)
       .then(async (response: any) => {
         if (response.status) {
           setBoxes((prevBoxes) =>

@@ -8,7 +8,7 @@ import MenuItem from '@mui/material/MenuItem';
 import { Grid, InputLabel, Typography } from '@mui/material';
 import useApi from '../../hooks/useAPI';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { QUERY_KEYS_SUBJECT_SCHOOL } from '../../utils/const';
+import { QUERY_KEYS_CLASS, QUERY_KEYS_SUBJECT_SCHOOL } from '../../utils/const';
 import { toast } from 'react-toastify';
 import { Field, Form, Formik, FormikProps } from 'formik';
 import * as Yup from 'yup';
@@ -41,6 +41,7 @@ const AddEditSubjectSchool = () => {
   const SubjectAddURL = QUERY_KEYS_SUBJECT_SCHOOL.SUBJECT_ADD;
   const SubjectEditURL = QUERY_KEYS_SUBJECT_SCHOOL.SUBJECT_EDIT;
   const SubjectEditgetURL = QUERY_KEYS_SUBJECT_SCHOOL.SUBJECT_GET;
+  const ClassURL = QUERY_KEYS_CLASS.GET_CLASS;
   //   const CourseListURL = QUERY_KEYS_COURSE.GET_COURSE;
   const { getData, postDataJson, putDataJson } = useApi();
   const navigator = useNavigate();
@@ -89,7 +90,7 @@ const AddEditSubjectSchool = () => {
   }
 
   const callAPI = async () => {
-    getData('/class/list')
+    getData(`${ClassURL}`)
       .then((response: any) => {
         if (response.status) {
           const filteredData = response?.data?.classes_data?.filter(

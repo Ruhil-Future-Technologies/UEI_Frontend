@@ -87,10 +87,6 @@ const StudentAssignments = () => {
       },
     },
     {
-      accessorKey: 'type',
-      header: 'type',
-    },
-    {
       accessorKey: 'points',
       header: 'Points',
       Cell: ({ row }: { row: MRT_Row<Assignment> }) => {
@@ -388,7 +384,8 @@ const StudentAssignments = () => {
                           >
                             <div className="small">
                               <AccessTime fontSize="small" />
-                              {" 5 minutes"}
+                              {" "}
+                              {assignment.timer+" minutes"} 
                             </div>
                             <div className="small">
                               <Chip
@@ -512,7 +509,7 @@ const StudentAssignments = () => {
                         >
                           <div className="small">
                             <AccessTime fontSize="small" />
-                            {" 5 minutes"}
+                            {assignment.timer+" minutes"} 
                           </div>
                           <div className="small">
                             <Chip

@@ -52,3 +52,26 @@
   top: 0.3em;
   right: -1em;
 }
+
+.sticky-header {
+  position: sticky;
+  top: 0;
+  background-color: white; /* Add background to avoid see-through */
+  z-index: 2; /* To stay above other content */
+  padding: 20px;
+  border-bottom: 1px solid #ccc;
+}
+
+@keyframes pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.popping-heart {
+  display: inline-block;
+  animation: pop 1s infinite;
+  transition: transform 0.3s ease-in-out;
+}
+
+

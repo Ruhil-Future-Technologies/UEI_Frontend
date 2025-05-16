@@ -22,7 +22,7 @@ import {
   //TextField,
   Typography,
 } from '@mui/material';
-import { QUERY_KEYS_SUBJECT } from '../../utils/const';
+import { QUERY_KEYS_CLASS, QUERY_KEYS_COURSE, QUERY_KEYS_SUBJECT } from '../../utils/const';
 import FullScreenLoader from '../Loader/FullScreenLoader';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
@@ -94,6 +94,8 @@ const Uploadpdf = () => {
   const { namecolor }: any = context;
   const navigator = useNavigate();
   const SubjectURL = QUERY_KEYS_SUBJECT.GET_SUBJECT;
+  const ClassURL = QUERY_KEYS_CLASS.GET_CLASS;
+  const CourseURL = QUERY_KEYS_COURSE.GET_COURSE;
   let AdminId: string | null = localStorage.getItem('user_uuid');
   if (AdminId) {
     AdminId = String(AdminId);
@@ -169,7 +171,7 @@ const Uploadpdf = () => {
   useEffect(() => {
     callAPI();
 
-    getData('/class/list')
+    getData(`${ClassURL}`)
       .then((response: any) => {
         if (response.status) {
           const filteredData: any[] = [];
@@ -296,7 +298,7 @@ const Uploadpdf = () => {
         });
       });
 
-    getData('/course/list')
+    getData(`${CourseURL}`)
       .then((response: any) => {
         if (response.status) {
           const filteredData = response?.data?.course_data.filter(
@@ -313,7 +315,7 @@ const Uploadpdf = () => {
           position: 'top-center',
         });
       });
-    getData('/class/list')
+    getData(`${ClassURL}`)
       .then((response: any) => {
         if (response.status) {
           const filteredData = response?.data?.classes_data.filter(

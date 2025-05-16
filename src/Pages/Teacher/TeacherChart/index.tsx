@@ -50,9 +50,9 @@ const TeacherDashboardCharts = () => {
   ].map((classId) => {
     return {
       class_id: classId,
-      class_name: schoolSubjectAll.find(
-        (item: any) => item.class_id === classId,
-      ).class_name,
+      class_name: schoolSubjectAll
+        .find((item: any) => item.class_id === classId)
+        .class_name.replace(/_/g, ' '),
     };
   });
 
@@ -127,7 +127,7 @@ const TeacherDashboardCharts = () => {
   useEffect(() => {
     if (teacher_id) {
       getData(`/assignment/stats-for-teacher/${teacher_id}`).then((data) => {
-        setData(data?.data);
+        setData(data?.data?.assignment);
         setDataStatus(true);
       });
     }
@@ -227,7 +227,7 @@ const TeacherDashboardCharts = () => {
                   if (!acc[item.class_id]) {
                     acc[item.class_id] = {
                       class_id: item.class_id,
-                      class_name: item.class_name,
+                      class_name: item.class_name.replace(/_/g, ' '),
                     };
                   }
                   return acc;
@@ -279,11 +279,11 @@ const TeacherDashboardCharts = () => {
         },
         yaxis: {
           title: {
-            text: 'Performance Metrics',
+            text: 'Student Score',
           },
         },
         title: {
-          text: 'Subject Performance',
+          text: 'Student Performance',
           align: 'center',
         },
       },
@@ -392,7 +392,10 @@ const TeacherDashboardCharts = () => {
       );
 
     return (
-      <div className="chart-wrapper performance-chart" style={{ width: "100%", maxWidth: "100%", overflowX: "auto" }}>
+      <div
+        className="chart-wrapper performance-chart"
+        style={{ width: '100%', maxWidth: '100%', overflowX: 'auto' }}
+      >
         <ReactApexChart
           options={transformSubjectData.performanceChartData.options}
           series={transformSubjectData.performanceChartData.series}
