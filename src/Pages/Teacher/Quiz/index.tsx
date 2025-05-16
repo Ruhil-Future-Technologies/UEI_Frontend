@@ -753,12 +753,7 @@ const TeacherQuizPage = () => {
                       classId == boxesForSchool[index].class_id && subjects.includes(value)
                     )
                   } else
-                  if (statusFilter === 'closed') {
-                    return (
-                      classId == boxesForSchool[index].class_id &&
-                      subjects.includes(value)
-                    );
-                  } else if (statusFilter === 'closed') {
+                     if (statusFilter === 'closed') {
                     return (
                       quiz.status == statusFilter &&
                       classId == boxesForSchool[index].class_id &&
