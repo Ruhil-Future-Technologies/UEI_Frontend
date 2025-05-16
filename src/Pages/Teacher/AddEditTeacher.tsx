@@ -346,9 +346,7 @@ const AddEditTeacher = () => {
           documents: urls,
           first_name: teacherDetail?.data?.first_name || '',
           last_name: teacherDetail?.data?.last_name || '',
-          gender:
-            teacherDetail?.data?.gender.charAt(0).toUpperCase() +
-              teacherDetail?.data?.gender.slice(1) || '',
+          gender: teacherDetail?.data?.gender.toLowerCase() || '',
           dob: teacherDetail?.data?.dob || '',
           phone: teacherDetail?.data?.phone || '',
           email: teacherDetail?.data?.email || '',
@@ -949,7 +947,6 @@ const AddEditTeacher = () => {
         current_docs.length === allfiles.length &&
         allExist
       ) {
-
         putData(`${QUERY_KEYS_TEACHER.TEACHER_EDIT}/${id}`, formData)
           .then((data: any) => {
             if (data.status) {
@@ -972,7 +969,6 @@ const AddEditTeacher = () => {
               navigator('/');
             }
             toast.error(e?.message, {
-
               hideProgressBar: true,
               theme: 'colored',
             });

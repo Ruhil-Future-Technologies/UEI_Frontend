@@ -38,8 +38,19 @@ import {
 import { toast } from 'react-toastify';
 import QuizDetailsModal from './QuizDetails';
 import { DeleteDialog } from '../../../Components/Dailog/DeleteDialog';
-import { CourseRep0oDTO, IClass, SemesterRep0oDTO, SubjectRep0oDTO, } from '../../../Components/Table/columns';
-import { fieldIcon, formatDate, inputfield, inputfieldhover, inputfieldtext } from '../../../utils/helpers';
+import {
+  CourseRep0oDTO,
+  IClass,
+  SemesterRep0oDTO,
+  SubjectRep0oDTO,
+} from '../../../Components/Table/columns';
+import {
+  fieldIcon,
+  formatDate,
+  inputfield,
+  inputfieldhover,
+  inputfieldtext,
+} from '../../../utils/helpers';
 import NameContext from '../../Context/NameContext';
 import { Boxes, BoxesForSchool } from '../../TeacherRgistrationForm';
 
@@ -66,7 +77,7 @@ const TeacherQuizPage = () => {
   const getsubjectSchool = QUERY_KEYS_SUBJECT_SCHOOL.GET_SUBJECT;
   const getSubjectCollege = QUERY_KEYS_SUBJECT.GET_SUBJECT;
   const [teacherCourse, setTeacherCourse] = useState<string[]>();
-  const [statusFilter, setStatusFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState('');
   const [teacherSemester, setTeacherSemester] = useState<string[]>();
   const [tescherSubjects, setTeacherSubjects] = useState<string[]>();
   const [teacherStream, setTeacherStream] = useState<string[]>();
@@ -115,14 +126,17 @@ const TeacherQuizPage = () => {
     }
   };
   const optionOfStatus = [
-    { label: "All", value: "all" }, {
-      label: "Closed", value: "closed"
+    { label: 'All', value: 'all' },
+    {
+      label: 'Closed',
+      value: 'closed',
     },
     {
-      label: "Draft", value: "draft"
+      label: 'Draft',
+      value: 'draft',
     },
-    { label: "Active", value: "active" }
-  ]
+    { label: 'Active', value: 'active' },
+  ];
 
   useEffect(() => {
     getData(`${QUERY_KEYS_CLASS.GET_CLASS}`).then((data) => {
@@ -169,7 +183,7 @@ const TeacherQuizPage = () => {
             setTeacherCourse((prev) => [...(prev || []), ...courseKeys]);
           } else {
             setSelectedEntity('School');
-            getSubjects("school")
+            getSubjects('school');
             const streeamKeys = Object.values(
               data.data.class_stream_subjects as Record<
                 string,
@@ -207,14 +221,14 @@ const TeacherQuizPage = () => {
             setTeacherSchoolSubjects(Subjects?.map(({ subject }) => subject));
           }
         }
-      })
+      });
     } catch (error: any) {
       toast.error(error?.message, {
         hideProgressBar: true,
         theme: 'colored',
       });
     }
-  }
+  };
   const openQuizDetails = (quizId: any, quizTitle: any) => {
     setSelectedQuiz({
       id: quizId,
@@ -320,75 +334,130 @@ const TeacherQuizPage = () => {
   const handleStatus = (status: string) => {
     setStatusFilter(status);
     let matchesStatus = [];
-    if (selectedEntity == "School") {
+    if (selectedEntity == 'School') {
       if (status == 'all') {
         matchesStatus = quizData.filter((quiz) => {
           const classId = Object.keys(quiz?.class_stream_subjects)[0];
           const stream = Object.keys(quiz?.class_stream_subjects?.[classId])[0];
-          const subjects = quiz?.class_stream_subjects?.[classId]?.[stream] || [];
-          return ((boxesForSchool[0].subjects.length > 0 ? (subjects.includes(boxesForSchool[0].subjects) && classId == boxesForSchool[0].class_id) : true))
-
-        })
+          const subjects =
+            quiz?.class_stream_subjects?.[classId]?.[stream] || [];
+          return boxesForSchool[0].subjects.length > 0
+            ? subjects.includes(boxesForSchool[0].subjects) &&
+                classId == boxesForSchool[0].class_id
+            : true;
+        });
       } else if (status === 'closed') {
         matchesStatus = quizData.filter((quiz) => {
           const classId = Object.keys(quiz?.class_stream_subjects)[0];
           const stream = Object.keys(quiz?.class_stream_subjects?.[classId])[0];
-          const subjects = quiz?.class_stream_subjects?.[classId]?.[stream] || [];
-          return (quiz.status == "closed" && (boxesForSchool[0].subjects.length > 0 ? (subjects.includes(boxesForSchool[0].subjects) && classId == boxesForSchool[0].class_id) : true))
+          const subjects =
+            quiz?.class_stream_subjects?.[classId]?.[stream] || [];
+          return (
+            quiz.status == 'closed' &&
+            (boxesForSchool[0].subjects.length > 0
+              ? subjects.includes(boxesForSchool[0].subjects) &&
+                classId == boxesForSchool[0].class_id
+              : true)
+          );
         });
       } else if (status === 'draft') {
         matchesStatus = quizData.filter((quiz) => {
           const classId = Object.keys(quiz?.class_stream_subjects)[0];
           const stream = Object.keys(quiz?.class_stream_subjects?.[classId])[0];
-          const subjects = quiz?.class_stream_subjects?.[classId]?.[stream] || [];
-          return (quiz.save_draft === true && (boxesForSchool[0].subjects.length > 0 ? (subjects.includes(boxesForSchool[0].subjects) && classId == boxesForSchool[0].class_id) : true))
+          const subjects =
+            quiz?.class_stream_subjects?.[classId]?.[stream] || [];
+          return (
+            quiz.save_draft === true &&
+            (boxesForSchool[0].subjects.length > 0
+              ? subjects.includes(boxesForSchool[0].subjects) &&
+                classId == boxesForSchool[0].class_id
+              : true)
+          );
         });
       } else if (status === 'active') {
         matchesStatus = quizData.filter((quiz) => {
           const classId = Object.keys(quiz?.class_stream_subjects)[0];
           const stream = Object.keys(quiz?.class_stream_subjects?.[classId])[0];
-          const subjects = quiz?.class_stream_subjects?.[classId]?.[stream] || [];
-          return (!quiz.save_draft && quiz.status !== 'closed' && (boxesForSchool[0].subjects.length > 0 ? (subjects.includes(boxesForSchool[0].subjects) && classId == boxesForSchool[0].class_id) : true))
+          const subjects =
+            quiz?.class_stream_subjects?.[classId]?.[stream] || [];
+          return (
+            !quiz.save_draft &&
+            quiz.status !== 'closed' &&
+            (boxesForSchool[0].subjects.length > 0
+              ? subjects.includes(boxesForSchool[0].subjects) &&
+                classId == boxesForSchool[0].class_id
+              : true)
+          );
         });
       }
-
     } else {
       if (status == 'all') {
         matchesStatus = quizData.filter((quiz) => {
           const courseId = Object.keys(quiz?.course_semester_subjects)[0];
-          const semester = Object.keys(quiz?.course_semester_subjects?.[courseId])[0];
-          const subjects = quiz?.course_semester_subjects?.[courseId]?.[semester] || [];
-          return (boxes[0].subjects.length > 0 ? (subjects.includes(boxes[0].subjects) && courseId == boxes[0].course_id) : true)
-        })
+          const semester = Object.keys(
+            quiz?.course_semester_subjects?.[courseId],
+          )[0];
+          const subjects =
+            quiz?.course_semester_subjects?.[courseId]?.[semester] || [];
+          return boxes[0].subjects.length > 0
+            ? subjects.includes(boxes[0].subjects) &&
+                courseId == boxes[0].course_id
+            : true;
+        });
       } else if (status === 'closed') {
         matchesStatus = quizData.filter((quiz) => {
           const courseId = Object.keys(quiz?.course_semester_subjects)[0];
-          const semester = Object.keys(quiz?.course_semester_subjects?.[courseId])[0];
-          const subjects = quiz?.course_semester_subjects?.[courseId]?.[semester] || [];
-          return (quiz.status == "closed" && (boxes[0].subjects.length > 0 ? (subjects.includes(boxes[0].subjects) && courseId == boxes[0].course_id) : true))
+          const semester = Object.keys(
+            quiz?.course_semester_subjects?.[courseId],
+          )[0];
+          const subjects =
+            quiz?.course_semester_subjects?.[courseId]?.[semester] || [];
+          return (
+            quiz.status == 'closed' &&
+            (boxes[0].subjects.length > 0
+              ? subjects.includes(boxes[0].subjects) &&
+                courseId == boxes[0].course_id
+              : true)
+          );
         });
       } else if (status === 'draft') {
         matchesStatus = quizData.filter((quiz) => {
           const courseId = Object.keys(quiz?.course_semester_subjects)[0];
-          const semester = Object.keys(quiz?.course_semester_subjects?.[courseId])[0];
-          const subjects = quiz?.course_semester_subjects?.[courseId]?.[semester] || [];
-          return (quiz.save_draft === true && (boxes[0].subjects.length > 0 ? (subjects.includes(boxes[0].subjects) && courseId == boxes[0].course_id) : true))
+          const semester = Object.keys(
+            quiz?.course_semester_subjects?.[courseId],
+          )[0];
+          const subjects =
+            quiz?.course_semester_subjects?.[courseId]?.[semester] || [];
+          return (
+            quiz.save_draft === true &&
+            (boxes[0].subjects.length > 0
+              ? subjects.includes(boxes[0].subjects) &&
+                courseId == boxes[0].course_id
+              : true)
+          );
         });
       } else if (status === 'active') {
         matchesStatus = quizData.filter((quiz) => {
           const courseId = Object.keys(quiz?.course_semester_subjects)[0];
-          const semester = Object.keys(quiz?.course_semester_subjects?.[courseId])[0];
-          const subjects = quiz?.course_semester_subjects?.[courseId]?.[semester] || [];
-          return (!quiz.save_draft && quiz.status !== 'closed' && (boxes[0].subjects.length > 0 ? (subjects.includes(boxes[0].subjects) && courseId == boxes[0].course_id) : true))
+          const semester = Object.keys(
+            quiz?.course_semester_subjects?.[courseId],
+          )[0];
+          const subjects =
+            quiz?.course_semester_subjects?.[courseId]?.[semester] || [];
+          return (
+            !quiz.save_draft &&
+            quiz.status !== 'closed' &&
+            (boxes[0].subjects.length > 0
+              ? subjects.includes(boxes[0].subjects) &&
+                courseId == boxes[0].course_id
+              : true)
+          );
         });
       }
     }
 
-
-
-    setFilteredQuizzes(matchesStatus)
-  }
-
+    setFilteredQuizzes(matchesStatus);
+  };
 
   const draftQuizzes = quizData.filter((quiz) => quiz.save_draft).length;
   const totalQuizzes = quizData.length;
@@ -449,23 +518,27 @@ const TeacherQuizPage = () => {
     }
   };
   const handleSearchResults = (searchText: string) => {
-    setSearchTerm(searchText)
-    if (selectedEntity == "College") {
+    setSearchTerm(searchText);
+    if (selectedEntity == 'College') {
       const filterquiz = quizData.filter((quiz) => {
         const courseId = Object.keys(quiz?.course_semester_subjects)[0];
-        const semester = Object.keys(quiz?.course_semester_subjects?.[courseId])[0];
-        const subjects = quiz?.course_semester_subjects?.[courseId]?.[semester] || [];
+        const semester = Object.keys(
+          quiz?.course_semester_subjects?.[courseId],
+        )[0];
+        const subjects =
+          quiz?.course_semester_subjects?.[courseId]?.[semester] || [];
         const selectedCourse = filteredcoursesData.find(
           (item) => String(item.id) == courseId,
         )?.course_name;
-        return ((quiz.title).toLowerCase().includes(searchText.toLowerCase()) ||
-          (selectedCourse && (selectedCourse).includes(searchText)) ||
-          (subjects[0]).toLowerCase().includes(searchText.toLowerCase()) || (semester).includes(searchText))
-      })
+        return (
+          quiz.title.toLowerCase().includes(searchText.toLowerCase()) ||
+          (selectedCourse && selectedCourse.includes(searchText)) ||
+          subjects[0].toLowerCase().includes(searchText.toLowerCase()) ||
+          semester.includes(searchText)
+        );
+      });
       setFilteredQuizzes(filterquiz);
     } else {
-
-
       const filterquiz = quizData.filter((quiz) => {
         const classId = Object.keys(quiz?.class_stream_subjects)[0];
         const stream = Object.keys(quiz?.class_stream_subjects?.[classId])[0];
@@ -473,13 +546,17 @@ const TeacherQuizPage = () => {
         const selectedClass = dataClass.find(
           (item) => String(item.id) == classId,
         )?.class_name;
-        return ((quiz.title).toLowerCase().includes(searchText.toLowerCase()) ||
-          (selectedClass && (selectedClass.toLowerCase()).includes(searchText.toLowerCase())) ||
-          (subjects[0]).toLowerCase().includes(searchText.toLowerCase()) || (stream.toLowerCase()).includes(searchText.toLowerCase()))
-      })
+        return (
+          quiz.title.toLowerCase().includes(searchText.toLowerCase()) ||
+          (selectedClass &&
+            selectedClass.toLowerCase().includes(searchText.toLowerCase())) ||
+          subjects[0].toLowerCase().includes(searchText.toLowerCase()) ||
+          stream.toLowerCase().includes(searchText.toLowerCase())
+        );
+      });
       setFilteredQuizzes(filterquiz);
     }
-  }
+  };
 
   const handelSubjectBoxChange = (
     event: SelectChangeEvent<string[]>,
@@ -508,52 +585,62 @@ const TeacherQuizPage = () => {
         }
         if (name === 'semester_number') {
           if (boxes[index].semester_number != value) {
-
             const filteredSubjects = totleSubject?.filter(
               (item) =>
                 item.semester_number === value &&
                 item.course_id === boxes[index].course_id,
             );
-            console.log(totleSubject);
             updatedBox = { ...updatedBox, filteredSubjects, subjects: [] };
-
           }
         }
         if (name == 'subjects') {
           if (boxes[index].subjects[0] != value) {
-
             const filteredQuiz = quizData.filter((quiz) => {
               const courseId = Object.keys(quiz?.course_semester_subjects)[0];
-              const semester = Object.keys(quiz?.course_semester_subjects?.[courseId])[0];
-              const subjects = quiz?.course_semester_subjects?.[courseId]?.[semester] || [];
-              if (statusFilter != "") {
-
-                if (statusFilter == "all") {
+              const semester = Object.keys(
+                quiz?.course_semester_subjects?.[courseId],
+              )[0];
+              const subjects =
+                quiz?.course_semester_subjects?.[courseId]?.[semester] || [];
+              if (statusFilter != '') {
+                if (statusFilter == 'all') {
                   return (
-                    courseId == boxes[index].course_id && semester == boxes[index].semester_number && subjects.includes(value)
-                  )
+                    courseId == boxes[index].course_id &&
+                    semester == boxes[index].semester_number &&
+                    subjects.includes(value)
+                  );
                 } else if (statusFilter === 'closed') {
-                  return (quiz.status == statusFilter &&
-                    courseId == boxes[index].course_id && semester == boxes[index].semester_number && subjects.includes(value)
-                  )
-
+                  return (
+                    quiz.status == statusFilter &&
+                    courseId == boxes[index].course_id &&
+                    semester == boxes[index].semester_number &&
+                    subjects.includes(value)
+                  );
                 } else if (statusFilter === 'draft') {
-                  return (quiz.save_draft === true &&
-                    courseId == boxes[index].course_id && semester == boxes[index].semester_number && subjects.includes(value)
-                  )
+                  return (
+                    quiz.save_draft === true &&
+                    courseId == boxes[index].course_id &&
+                    semester == boxes[index].semester_number &&
+                    subjects.includes(value)
+                  );
                 } else {
-                  return (!quiz.save_draft && quiz.status !== 'closed' &&
-                    courseId == boxes[index].course_id && semester == boxes[index].semester_number && subjects.includes(value)
-                  )
+                  return (
+                    !quiz.save_draft &&
+                    quiz.status !== 'closed' &&
+                    courseId == boxes[index].course_id &&
+                    semester == boxes[index].semester_number &&
+                    subjects.includes(value)
+                  );
                 }
               } else {
                 return (
-                  courseId == boxes[index].course_id && semester == boxes[index].semester_number && subjects.includes(value)
-                )
+                  courseId == boxes[index].course_id &&
+                  semester == boxes[index].semester_number &&
+                  subjects.includes(value)
+                );
               }
-            })
+            });
             setFilteredQuizzes(filteredQuiz);
-
           }
         }
         return updatedBox;
@@ -613,11 +700,10 @@ const TeacherQuizPage = () => {
         }
         if (name == 'stream') {
           if (boxesForSchool[index].stream != value) {
-
             const filteredSubjects = totleSubject?.filter(
               (item) =>
                 String(item.stream).toLowerCase() ==
-                value.toString().toLowerCase() &&
+                  value.toString().toLowerCase() &&
                 item.class_id == boxesForSchool[index].class_id,
             );
             updatedBox = {
@@ -632,66 +718,91 @@ const TeacherQuizPage = () => {
           if (boxesForSchool[index].subjects[0] != value) {
             const filteredQuiz = quizData.filter((quiz) => {
               const classId = Object.keys(quiz?.class_stream_subjects)[0];
-              const stream = Object.keys(quiz?.class_stream_subjects?.[classId])[0];
-              const subjects = quiz?.class_stream_subjects?.[classId]?.[stream] || [];
+              const stream = Object.keys(
+                quiz?.class_stream_subjects?.[classId],
+              )[0];
+              const subjects =
+                quiz?.class_stream_subjects?.[classId]?.[stream] || [];
               const selectedClass = dataClass.find(
                 (item) => String(item.id) == value,
               )?.class_name;
-              if (selectedClass === 'class_11' || selectedClass === 'class_12') {
+              if (
+                selectedClass === 'class_11' ||
+                selectedClass === 'class_12'
+              ) {
                 if (statusFilter != '') {
-                  if (statusFilter == "all") {
+                  if (statusFilter == 'all') {
                     return (
-                      classId == boxesForSchool[index].class_id && subjects.includes(value) && stream == boxesForSchool[index].stream && subjects.includes(value)
-                    )
-                  } else
-                    if (statusFilter === 'closed') {
-                      return (
-                        quiz.status == statusFilter && classId == boxesForSchool[index].class_id && stream == boxesForSchool[index].stream && subjects.includes(value)
-                      )
-                    } else if (statusFilter === 'draft') {
-                      return (quiz.save_draft === true &&
-                        classId == boxesForSchool[index].class_id && stream == boxesForSchool[index].stream && subjects.includes(value)
-                      )
-                    } else {
-                      return (
-                        !quiz.save_draft && quiz.status !== 'closed' &&
-                        classId == boxesForSchool[index].class_id && stream == boxesForSchool[index].stream && subjects.includes(value)
-                      )
-                    }
-                } else {
-                  return (
-                    classId == boxesForSchool[index].class_id && stream == boxesForSchool[index].stream && subjects.includes(value)
-                  )
-                }
-              } else {
-                if (statusFilter != '') {
-                  if (statusFilter == "all") {
+                      classId == boxesForSchool[index].class_id &&
+                      subjects.includes(value) &&
+                      stream == boxesForSchool[index].stream &&
+                      subjects.includes(value)
+                    );
+                  } else if (statusFilter === 'closed') {
                     return (
-                      classId == boxesForSchool[index].class_id && subjects.includes(value)
-                    )
-                  } else
-                  if (statusFilter === 'closed') {
-                    return (
-                      quiz.status == statusFilter && classId == boxesForSchool[index].class_id && subjects.includes(value)
-                    )
+                      quiz.status == statusFilter &&
+                      classId == boxesForSchool[index].class_id &&
+                      stream == boxesForSchool[index].stream &&
+                      subjects.includes(value)
+                    );
                   } else if (statusFilter === 'draft') {
-                    return (quiz.save_draft === true &&
-                      classId == boxesForSchool[index].class_id && subjects.includes(value)
-                    )
+                    return (
+                      quiz.save_draft === true &&
+                      classId == boxesForSchool[index].class_id &&
+                      stream == boxesForSchool[index].stream &&
+                      subjects.includes(value)
+                    );
                   } else {
                     return (
-                      !quiz.save_draft && quiz.status !== 'closed' &&
-                      classId == boxesForSchool[index].class_id && subjects.includes(value)
-                    )
+                      !quiz.save_draft &&
+                      quiz.status !== 'closed' &&
+                      classId == boxesForSchool[index].class_id &&
+                      stream == boxesForSchool[index].stream &&
+                      subjects.includes(value)
+                    );
                   }
                 } else {
                   return (
-                    classId == boxesForSchool[index].class_id && subjects.includes(value)
-                  )
+                    classId == boxesForSchool[index].class_id &&
+                    stream == boxesForSchool[index].stream &&
+                    subjects.includes(value)
+                  );
+                }
+              } else {
+                if (statusFilter != '') {
+                  if (statusFilter == 'all') {
+                    return (
+                      classId == boxesForSchool[index].class_id &&
+                      subjects.includes(value)
+                    );
+                  } else if (statusFilter === 'closed') {
+                    return (
+                      quiz.status == statusFilter &&
+                      classId == boxesForSchool[index].class_id &&
+                      subjects.includes(value)
+                    );
+                  } else if (statusFilter === 'draft') {
+                    return (
+                      quiz.save_draft === true &&
+                      classId == boxesForSchool[index].class_id &&
+                      subjects.includes(value)
+                    );
+                  } else {
+                    return (
+                      !quiz.save_draft &&
+                      quiz.status !== 'closed' &&
+                      classId == boxesForSchool[index].class_id &&
+                      subjects.includes(value)
+                    );
+                  }
+                } else {
+                  return (
+                    classId == boxesForSchool[index].class_id &&
+                    subjects.includes(value)
+                  );
                 }
               }
-
-            })
+            });
             setFilteredQuizzes(filteredQuiz);
           }
         }
@@ -734,7 +845,6 @@ const TeacherQuizPage = () => {
       return Promise.reject(error); // Reject the promise if an error occurs
     }
   };
-
 
   const getCourses = () => {
     getData(`${CourseURL}`)
@@ -787,16 +897,16 @@ const TeacherQuizPage = () => {
                     <AssignmentIcon className="svgwhite" />
                   </div>
                 </div>
-                <div className="d-flex align-items-center mt-3 gap-2">
+                {/* <div className="d-flex align-items-center mt-3 gap-2">
                   <div className="card-lable bg-success bg-opacity-10">
                     <p className="text-success mb-0">+34.7%</p>
                   </div>
                   <p className="mb-0 font-13">from last month</p>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
-          <div className="col-md-6 col-lg-3">
+          <div className="col-md-6 col-lg-3 mt-8">
             <div className="card rounded-4 w-100 mb-0">
               <div className="card-body">
                 <div className="d-flex align-items-center justify-content-between mb-3">
@@ -808,12 +918,12 @@ const TeacherQuizPage = () => {
                     <SaveAsIcon className="svgwhite" />
                   </div>
                 </div>
-                <div className="d-flex align-items-center mt-3 gap-2">
+                {/* <div className="d-flex align-items-center mt-3 gap-2">
                   <div className="card-lable bg-success bg-opacity-10">
                     <p className="text-success mb-0">+34.7%</p>
                   </div>
                   <p className="mb-0 font-13">from last month</p>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
@@ -856,7 +966,7 @@ const TeacherQuizPage = () => {
                         {/* <label className="col-form-label">
                                                Course<span>*</span>
                                              </label> */}
-                        <FormControl fullWidth>
+                        <FormControl fullWidth size="small" variant="outlined">
                           <InputLabel id={`course_id_${index}`}>
                             Course
                           </InputLabel>
@@ -865,7 +975,7 @@ const TeacherQuizPage = () => {
                             id={`demo3-multiple-name-${index}`}
                             name="course_id"
                             label="Course"
-                            size='small'
+                            size="small"
                             onChange={(event: any) =>
                               handelSubjectBoxChange(event, index)
                             }
@@ -889,7 +999,7 @@ const TeacherQuizPage = () => {
                         {/* <label className="col-form-label">
                                            {/* Semester Selection */}
 
-                        <FormControl fullWidth>
+                        <FormControl fullWidth size="small" variant="outlined">
                           <InputLabel id={`semester_id_${index}`}>
                             Semester
                           </InputLabel>
@@ -897,7 +1007,7 @@ const TeacherQuizPage = () => {
                             labelId={`semester_id_${index}`}
                             id={`semester_select_${index}`}
                             name="semester_number"
-                            size='small'
+                            size="small"
                             label="Semester"
                             onChange={(event: any) =>
                               handelSubjectBoxChange(event, index)
@@ -920,14 +1030,13 @@ const TeacherQuizPage = () => {
                               ))}
                           </Select>
                         </FormControl>
-
                       </div>
 
                       {/* Subjects Selection */}
                       <div className="col-md-2 col-12">
                         {/* <label className="col-form-label">
                                            {/* Subjects Selection */}
-                        <FormControl fullWidth>
+                        <FormControl fullWidth size="small" variant="outlined">
                           <InputLabel id={`subject_label_${index}`}>
                             Subject
                           </InputLabel>
@@ -936,7 +1045,7 @@ const TeacherQuizPage = () => {
                             id={`subject_select_${index}`}
                             name="subjects"
                             label="subjects"
-                            size='small'
+                            size="small"
                             value={box.subjects || []}
                             onChange={(event: any) =>
                               handelSubjectBoxChange(event, index)
@@ -944,9 +1053,7 @@ const TeacherQuizPage = () => {
                           >
                             {box.filteredSubjects
                               ?.filter((subject) =>
-                                tescherSubjects?.includes(
-                                  subject.subject_name,
-                                ),
+                                tescherSubjects?.includes(subject.subject_name),
                               )
                               ?.map((subject: any) => (
                                 <MenuItem
@@ -970,7 +1077,7 @@ const TeacherQuizPage = () => {
                         {/* <label className="col-form-label">
                                                Class<span>*</span>
                                              </label> */}
-                        <FormControl fullWidth>
+                        <FormControl fullWidth size="small" variant="outlined">
                           <InputLabel id={`class_id_${index}`}>
                             Class
                           </InputLabel>
@@ -978,7 +1085,7 @@ const TeacherQuizPage = () => {
                             labelId={`class_id_${index}`}
                             id={`class_select_${index}`}
                             name="class_id"
-                            size='small'
+                            size="small"
                             onChange={(event: any) =>
                               handelSchoolBoxChange(event, index)
                             }
@@ -998,7 +1105,11 @@ const TeacherQuizPage = () => {
                           {/* <label className="col-form-label">
                                                  Stream Name<span>*</span>
                                                </label> */}
-                          <FormControl fullWidth>
+                          <FormControl
+                            fullWidth
+                            size="small"
+                            variant="outlined"
+                          >
                             <InputLabel id={`stream_id_${index}`}>
                               Stream Name
                             </InputLabel>
@@ -1007,7 +1118,7 @@ const TeacherQuizPage = () => {
                               id={`stream_select_${index}`}
                               name="stream"
                               label="Stream Name"
-                              size='small'
+                              size="small"
                               onChange={(event: any) =>
                                 handelSchoolBoxChange(event, index)
                               }
@@ -1052,7 +1163,7 @@ const TeacherQuizPage = () => {
                         {/* <label className="col-form-label">
                                                Subjects <span>*</span>
                                              </label> */}
-                        <FormControl fullWidth>
+                        <FormControl fullWidth size="small" variant="outlined">
                           <InputLabel id={`subject_label_${index}`}>
                             Subject
                           </InputLabel>
@@ -1061,7 +1172,7 @@ const TeacherQuizPage = () => {
                             id={`subject_select_${index}`}
                             name="subjects"
                             label="subjects"
-                            size='small'
+                            size="small"
                             value={box.subjects || []}
                             onChange={(event: any) =>
                               handelSchoolBoxChange(event, index)
@@ -1087,15 +1198,12 @@ const TeacherQuizPage = () => {
                     </>
                   ))}
 
-
-                <div className="col-md-3">
-                  <FormControl fullWidth>
-                    <InputLabel id={`subject_label`}>
-                      Status
-                    </InputLabel>
+                <div className="col-md-2">
+                  <FormControl fullWidth size="small" variant="outlined">
+                    <InputLabel id="subject_label">Status</InputLabel>
                     <Select
-                      fullWidth
-                      id='subject_label'
+                      labelId="subject_label"
+                      name="status"
                       label="Status"
                       size="small"
                       value={statusFilter}
@@ -1117,7 +1225,9 @@ const TeacherQuizPage = () => {
                       }}
                     >
                       {optionOfStatus.map((item) => (
-                        <MenuItem key={item.value} value={item.value}>{item.label}</MenuItem>
+                        <MenuItem key={item.value} value={item.value}>
+                          {item.label}
+                        </MenuItem>
                       ))}
                     </Select>
                   </FormControl>
@@ -1219,8 +1329,8 @@ const TeacherQuizPage = () => {
                                 alignItems="center"
                                 mt={0.5}
                               >
-                                
-                                <Typography variant='body2'>Create At: {formatDate(quiz?.created_at)}
+                                <Typography variant="body2">
+                                  Create At: {formatDate(quiz?.created_at)}
                                 </Typography>
                               </Stack>
                               <Stack
@@ -1229,7 +1339,6 @@ const TeacherQuizPage = () => {
                                 alignItems="center"
                                 mt={0.5}
                               >
-
                                 <Typography variant="body2">
                                   Due: {formatDate(quiz.due_date_time)}
                                 </Typography>
