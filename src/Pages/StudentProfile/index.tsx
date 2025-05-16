@@ -702,7 +702,7 @@ const StudentProfile = () => {
                                   activeForm === 5 ? 'active' : ''
                                 }`}
                                // onClick={() => setActiveForm(5)}
-                               onClick={checkbasicinfo ? () => setActiveForm(5) : () => setActiveForm(1)}
+                               onClick={checkbasicinfo ? () => setActiveForm(5) : () => undefined}
                                 style={{ cursor: 'pointer' }}
                               >
                                 <div
