@@ -17,6 +17,7 @@ import {
   PDF_LIST_FOR_SCHOOL_COLUMNS,
 } from '../../Components/Table/columns';
 import '../Uploadpdf/Uploadpdf.scss';
+import { QUERY_KEYS_CLASS } from '../../utils/const';
 
 interface FileList {
   pdf_id: string;
@@ -43,9 +44,10 @@ const PDFList = () => {
   const { getData, loading, deleteData } = useApi();
   const collageColumns = PDF_LIST_FOR_COLLAGE_COLUMNS;
   const schoolColumns = PDF_LIST_FOR_SCHOOL_COLUMNS;
+  const ClassURL = QUERY_KEYS_CLASS.GET_CLASS;
 
   useEffect(() => {
-    getData('/class/list')
+    getData(`${ClassURL}`)
       .then((response: any) => {
         if (response.status) {
           const filteredData: any[] = [];

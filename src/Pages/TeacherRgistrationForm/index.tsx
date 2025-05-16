@@ -14,6 +14,7 @@ import {
   DialogTitle,
   FormControl,
   FormControlLabel,
+  IconButton,
   List,
   ListItem,
   ListItemText,
@@ -23,6 +24,7 @@ import {
   Select,
   SelectChangeEvent,
   TextField,
+  Tooltip,
 } from '@mui/material';
 import {
   fieldIcon,
@@ -69,7 +71,7 @@ import SchoolOutlinedIcon from '@mui/icons-material/SchoolOutlined';
 import BusinessIcon from '@mui/icons-material/Business';
 import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
 import WestIcon from '@mui/icons-material/West';
-
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 export interface Teacher {
   id?: string;
   first_name: string;
@@ -368,13 +370,13 @@ const TeacherRegistrationPage = () => {
   const getEntity = () => {
     getForRegistration(`${InstituteEntityURL}`)
       .then((data) => {
-        if(data.status){
+        if (data.status) {
           const filteredData = data?.data?.entityes_data?.filter(
             (entity: any) => entity.is_active === true,
           );
           setDataEntity(filteredData);
         }
-        
+
         // setDataEntity(data?.data)
       })
       .catch((e) => {
@@ -392,9 +394,9 @@ const TeacherRegistrationPage = () => {
     getForRegistration(`${InstituteURL}`)
       .then((data) => {
         if (data.status) {
-        const fiteredInstitutedata = data?.data?.filter(
-          (institute: any) => institute.is_active && institute.is_approve,
-        );
+          const fiteredInstitutedata = data?.data?.filter(
+            (institute: any) => institute.is_active && institute.is_approve,
+          );
           setDataInstitute(fiteredInstitutedata);
         }
       })
@@ -683,7 +685,7 @@ const TeacherRegistrationPage = () => {
   const handelChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     let newValue = value;
-  
+
     if (name === 'experience') {
       // Only allow digits
       if (!/^\d*$/.test(value)) {
@@ -702,15 +704,15 @@ const TeacherRegistrationPage = () => {
         setTeaching_experience_error(false);
       }
     }
-  
+
     // Handle gender or other fields
     if (name === 'gender') {
       setGenderData(newValue);
     }
-  
+
     // Update teacher state
     setTeacher({ ...teacher, [name]: newValue });
-  
+
     // Call validation function
     validation(name, newValue);
   }
@@ -1131,7 +1133,7 @@ const TeacherRegistrationPage = () => {
           const filteredSubjects = totleSubject?.filter(
             (item) =>
               String(item.stream).toLowerCase() ==
-                value.toString().toLowerCase() &&
+              value.toString().toLowerCase() &&
               item.class_id === boxesForSchool[index].class_id,
           );
           updatedBox = {
@@ -1432,7 +1434,7 @@ const TeacherRegistrationPage = () => {
                         <label className="col-form-label w-100 pb-0 fs-14">
                           Gender<span>*</span>
                         </label>
-                        
+
                         <FormControl>
                           <RadioGroup
                             row
@@ -1908,14 +1910,14 @@ const TeacherRegistrationPage = () => {
                             if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
                               e.preventDefault();
                               const currentValue = parseInt(teacher?.experience) || 0;
-                              const newValue = e.key === 'ArrowUp' 
+                              const newValue = e.key === 'ArrowUp'
                                 ? Math.min(currentValue + 1, 40)
                                 : Math.max(currentValue - 1, 0);
                               setTeacher({ ...teacher, experience: newValue.toString() });
                               setTeaching_experience_error(false);
                             }
                           }}
-                          inputProps={{ 
+                          inputProps={{
                             inputMode: 'numeric',
                             pattern: '[0-9]*',
                             maxLength: 2
@@ -1925,7 +1927,7 @@ const TeacherRegistrationPage = () => {
                         {teaching_experience_error === true && (
                           <p className="error-text " style={{ color: 'red' }}>
                             <small>
-                            Please enter a valid Teaching Experience (0 - 40 years)
+                              Please enter a valid Teaching Experience (0 - 40 years)
                             </small>
                           </p>
                         )}
@@ -1939,7 +1941,7 @@ const TeacherRegistrationPage = () => {
                             Qualification*
                           </InputLabel>
                           <Select
-                          
+
                             labelId="demo-multiple-name-label"
                             id="demo1-multiple-name"
                             name="qualification"
@@ -1996,13 +1998,13 @@ const TeacherRegistrationPage = () => {
                             </FormControl>
                             {errorForCourse_semester_subject[index]
                               ?.course_id_error === true && (
-                              <p
-                                className="error-text"
-                                style={{ color: 'red' }}
-                              >
-                                <small>Please select Course name.</small>
-                              </p>
-                            )}
+                                <p
+                                  className="error-text"
+                                  style={{ color: 'red' }}
+                                >
+                                  <small>Please select Course name.</small>
+                                </p>
+                              )}
                           </div>
 
                           {/* Semester Selection */}
@@ -2036,13 +2038,13 @@ const TeacherRegistrationPage = () => {
                             </FormControl>
                             {errorForCourse_semester_subject[index]
                               ?.semester_number_error && (
-                              <p
-                                className="error-text"
-                                style={{ color: 'red' }}
-                              >
-                                <small>Please select a Semester.</small>
-                              </p>
-                            )}
+                                <p
+                                  className="error-text"
+                                  style={{ color: 'red' }}
+                                >
+                                  <small>Please select a Semester.</small>
+                                </p>
+                              )}
                           </div>
 
                           {/* Subjects Selection */}
@@ -2097,15 +2099,15 @@ const TeacherRegistrationPage = () => {
                             </FormControl>
                             {errorForCourse_semester_subject[index]
                               ?.subjects_error && (
-                              <p
-                                className="error-text"
-                                style={{ color: 'red' }}
-                              >
-                                <small>
-                                  Please select at least one subject.
-                                </small>
-                              </p>
-                            )}
+                                <p
+                                  className="error-text"
+                                  style={{ color: 'red' }}
+                                >
+                                  <small>
+                                    Please select at least one subject.
+                                  </small>
+                                </p>
+                              )}
                           </div>
                           <div>
                             {(selectedEntity.toLowerCase() === 'college' ||
@@ -2139,7 +2141,7 @@ const TeacherRegistrationPage = () => {
                           {/* Class Selection */}
                           <div
                             className={box.selected_class_name}
-                            //className="col-md-6 col-12"
+                          //className="col-md-6 col-12"
                           >
                             {/* <label className="col-form-label">
                             Class<span>*</span>
@@ -2167,13 +2169,13 @@ const TeacherRegistrationPage = () => {
                             </FormControl>
                             {errorForClass_stream_subject[index]
                               ?.class_id_error && (
-                              <p
-                                className="error-text"
-                                style={{ color: 'red' }}
-                              >
-                                <small>Please select a Class.</small>
-                              </p>
-                            )}
+                                <p
+                                  className="error-text"
+                                  style={{ color: 'red' }}
+                                >
+                                  <small>Please select a Class.</small>
+                                </p>
+                              )}
                           </div>
                           {box.is_Stream && (
                             <div className="col-md-4 col-12 ">
@@ -2228,13 +2230,13 @@ const TeacherRegistrationPage = () => {
                               </FormControl>
                               {errorForClass_stream_subject[index]
                                 ?.stream_error && (
-                                <p
-                                  className="error-text"
-                                  style={{ color: 'red' }}
-                                >
-                                  <small>Please select a Stream.</small>
-                                </p>
-                              )}
+                                  <p
+                                    className="error-text"
+                                    style={{ color: 'red' }}
+                                  >
+                                    <small>Please select a Stream.</small>
+                                  </p>
+                                )}
                             </div>
                           )}
                           <div className={box.selected_class_name}>
@@ -2288,15 +2290,15 @@ const TeacherRegistrationPage = () => {
                             </FormControl>
                             {errorForClass_stream_subject[index]
                               ?.subjects_error && (
-                              <p
-                                className="error-text"
-                                style={{ color: 'red' }}
-                              >
-                                <small>
-                                  Please select at least one subject.
-                                </small>
-                              </p>
-                            )}
+                                <p
+                                  className="error-text"
+                                  style={{ color: 'red' }}
+                                >
+                                  <small>
+                                    Please select at least one subject.
+                                  </small>
+                                </p>
+                              )}
                           </div>
 
                           <div>
@@ -2323,9 +2325,31 @@ const TeacherRegistrationPage = () => {
                       ))}
                     <div className="row d-flex justify-content-between mt-0 g-4">
                       <div className="col-12 ">
-                        <label className="col-form-label">
-                          Document<span>*</span>
-                        </label>
+                        <Box sx={{ display: "flex", alignItems: "center" }}>
+                          <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                            Documents <span style={{ color: "red" }}>*</span>
+                          </Typography>
+
+                          <Tooltip
+                            title={
+                              <>
+                                ID Proof (Aadhaar / PAN / Passport / Voter ID),
+                                <br />
+                                Qualification Certificates,
+                                <br />
+                                Resume or CV,
+                                <br />
+                                Appointment Letter
+                              </>
+                            }
+                            arrow
+                            placement="right"
+                          >
+                            <IconButton size="small" sx={{ ml: 1 }}>
+                              <InfoOutlinedIcon fontSize="small" />
+                            </IconButton>
+                          </Tooltip>
+                        </Box>
                         <UploadBtn
                           label="Upload Documents"
                           name="document"
