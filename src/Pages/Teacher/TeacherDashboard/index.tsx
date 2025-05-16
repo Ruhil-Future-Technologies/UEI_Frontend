@@ -11,7 +11,7 @@ import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle';
 import StreamIcon from '@mui/icons-material/Stream';
 import AttractionsIcon from '@mui/icons-material/Attractions';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation } from 'swiper/modules';
+import { Autoplay, Navigation } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 
@@ -179,7 +179,7 @@ const TeacherDash = () => {
           setTeacherData(data.data);
           if (data?.data?.course_semester_subjects != null) {
             setSelectedEntity('college');
-            localStorage.setItem("entity","college")
+            localStorage.setItem("entity", "college")
             const courseIds = Object.keys(
               data?.data?.course_semester_subjects,
             )?.map((CourseKey) => CourseKey);
@@ -210,7 +210,7 @@ const TeacherDash = () => {
             setBoxes([...output]);
           } else {
             setSelectedEntity('school');
-            localStorage.setItem("entity","school")
+            localStorage.setItem("entity", "school")
             const classIds = Object.keys(data.data.class_stream_subjects)?.map(
               (classKey) => classKey,
             );
@@ -279,14 +279,14 @@ const TeacherDash = () => {
       return Promise.reject(e); // Reject the promise in case of an error
     }
   };
- useEffect(() => {
-  const fetchData = async () => {
-    getTeacherInfo(); // If this doesn't return a Promise or doesn't need to be awaited
-    await getStudentsForTeacher();
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      getTeacherInfo(); // If this doesn't return a Promise or doesn't need to be awaited
+      await getStudentsForTeacher();
+    };
 
-  fetchData();
-}, []);
+    fetchData();
+  }, []);
   const getCourses = (courseIds: any) => {
     getData(`${CourseURL}`)
       .then((data) => {
@@ -325,15 +325,15 @@ const TeacherDash = () => {
   };
   const handleError = (e: {
     message:
-      | string
-      | number
-      | boolean
-      | React.ReactElement<any, string | React.JSXElementConstructor<any>>
-      | Iterable<React.ReactNode>
-      | React.ReactPortal
-      | ((props: ToastContentProps<unknown>) => React.ReactNode)
-      | null
-      | undefined;
+    | string
+    | number
+    | boolean
+    | React.ReactElement<any, string | React.JSXElementConstructor<any>>
+    | Iterable<React.ReactNode>
+    | React.ReactPortal
+    | ((props: ToastContentProps<unknown>) => React.ReactNode)
+    | null
+    | undefined;
   }) => {
     setChatLoader(false);
     toast.error(e?.message, {
@@ -900,7 +900,7 @@ const TeacherDash = () => {
         const isMatch =
           item.question === selectedchat[index].question &&
           JSON.stringify(item.answer) ===
-            JSON.stringify(selectedchat[index].answer);
+          JSON.stringify(selectedchat[index].answer);
 
         if (isMatch) {
           return {
@@ -936,7 +936,7 @@ const TeacherDash = () => {
         const isMatch =
           item.question === selectedchat[index].question &&
           JSON.stringify(item.answer) ===
-            JSON.stringify(selectedchat[index].answer);
+          JSON.stringify(selectedchat[index].answer);
 
         if (isMatch) {
           return {
@@ -1082,17 +1082,22 @@ const TeacherDash = () => {
               <Swiper
                 spaceBetween={24}
                 slidesPerView={3}
-                loop={true}
+                watchSlidesProgress={true} // ✅ helps resume autoplay properly
+                autoplay={{
+                  delay: 3000,
+                  disableOnInteraction: false,
+                  pauseOnMouseEnter: false, // ✅ optional but recommended
+                }}
                 navigation={{
                   nextEl: '.swiper-button-next',
                   prevEl: '.swiper-button-prev',
                 }}
-                modules={[Navigation]}
+                modules={[Navigation, Autoplay]}
                 breakpoints={{
-                  320: { slidesPerView: 1 }, // Mobile
-                  640: { slidesPerView: 1 }, // Tablets
-                  1024: { slidesPerView: 2 }, // Laptops
-                  1440: { slidesPerView: 3 }, // Large Screens
+                  320: { slidesPerView: 1 },
+                  640: { slidesPerView: 1 },
+                  1024: { slidesPerView: 2 },
+                  1440: { slidesPerView: 3 },
                 }}
               >
                 {
@@ -1121,7 +1126,7 @@ const TeacherDash = () => {
                                           <SupervisedUserCircleIcon />
                                         </span>
                                         <div className="">
-                                          <h6>Total Students</h6> <p>{getFilteredStusents("college",box?.course_id,box?.semester_number,subject)?.length}</p>
+                                          <h6>Total Students</h6> <p>{getFilteredStusents("college", box?.course_id, box?.semester_number, subject)?.length}</p>
                                         </div>
                                       </div>
                                     </div>
@@ -1212,8 +1217,6 @@ const TeacherDash = () => {
                   )
                 }
               </Swiper>
-              <div className="swiper-button-prev"></div>
-              <div className="swiper-button-next"></div>
             </div>
           </div>
         </div>

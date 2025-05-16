@@ -238,12 +238,12 @@ const StudentAssignments = () => {
       if (type) {
         return `${points}`;
       } else {
-      return (
-        <Box display="flex" alignItems="center">
-          <Typography variant="body1">NG/{points}</Typography>
-        </Box>
-      );
-    }
+        return (
+          <Box display="flex" alignItems="center">
+            <Typography variant="body1">NG/{points}</Typography>
+          </Box>
+        );
+      }
     }
   };
 
@@ -391,11 +391,16 @@ const StudentAssignments = () => {
                             justifyContent="space-between"
                             sx={{ mt: 1 }}
                           >
-                            <div className="small">
-                              <AccessTime fontSize="small" />
-                              {" "}
-                              {assignment.timer + " minutes"}
-                            </div>
+                              <div className="small">
+                                <AccessTime fontSize="small" />
+                                {" Duration: "}
+                                {assignment.timer != 0 ?
+                                <>
+                                {assignment.timer + " minutes"}
+                                </>
+                                : <small>No time limit</small>
+                                 }
+                              </div>
                             <div className="small">
                               <Chip
                                 label={`${assignmentGreded(assignment.id, assignment.points, true)} ${assignment.points === 1 ? 'mark' : 'marks'}`}
