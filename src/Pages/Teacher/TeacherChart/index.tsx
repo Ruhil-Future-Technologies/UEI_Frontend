@@ -4,6 +4,7 @@ import ReactApexChart from 'react-apexcharts';
 import './TeacherDashboardCharts.scss';
 import useApi from '../../../hooks/useAPI';
 import {
+  QUERY_KEYS_ASSIGNMENT,
   QUERY_KEYS_SUBJECT,
   QUERY_KEYS_SUBJECT_SCHOOL,
   QUERY_KEYS_TEACHER,
@@ -16,6 +17,7 @@ const TeacherDashboardCharts = () => {
   const TEACHERURL = QUERY_KEYS_TEACHER.TEACHER_EDIT;
   const SUBJECTURL = QUERY_KEYS_SUBJECT.GET_SUBJECT;
   const SUBJECT_SCHOOL_URL = QUERY_KEYS_SUBJECT_SCHOOL.GET_SUBJECT;
+  const STATS_FOR_TEACHER = QUERY_KEYS_ASSIGNMENT.STATS_FOR_TEACHER;
 
   const [selectedClass, setSelectedClass] = useState('');
   const [subjectAll, setSubjectAll] = useState<any[]>([]);
@@ -126,7 +128,7 @@ const TeacherDashboardCharts = () => {
 
   useEffect(() => {
     if (teacher_id) {
-      getData(`/assignment/stats-for-teacher/${teacher_id}`).then((data) => {
+      getData(`${STATS_FOR_TEACHER}${teacher_id}`).then((data) => {
         setData(data?.data?.assignment);
         setDataStatus(true);
       });
@@ -251,45 +253,144 @@ const TeacherDashboardCharts = () => {
     const performanceChartData: any = {
       options: {
         chart: {
-          type: 'bar',
-          height: 350,
+          type: 'line',
+          height: 450,
+
           stacked: false,
-          zoom: {
-            enabled: false,
+          zoom: { enabled: false },
+          toolbar: { show: false },
+          animations: {
+            enabled: true,
+            easing: 'easeinout',
+            speed: 800,
           },
-          toolbar: {
-            show: false,
+          dropShadow: {
+            enabled: true,
+            opacity: 0.3,
+            blur: 5,
+            left: 0,
+            top: 0,
           },
+        },
+        stroke: {
+          width: [0, 4, 3, 3],
+          curve: 'smooth',
         },
         plotOptions: {
           bar: {
-            horizontal: false,
-            columnWidth: '40%',
-            borderRadius: 10,
+            columnWidth: '50%',
+            borderRadius: 5,
           },
         },
         dataLabels: {
           enabled: false,
+          formatter: function (val: number) {
+            return val.toFixed(0);
+          },
+          offsetY: -20,
+        },
+        fill: {
+          type: ['solid', 'gradient', 'solid'],
+          gradient: {
+            shade: 'light',
+            type: 'vertical',
+            shadeIntensity: 0.25,
+            gradientToColors: undefined,
+            inverseColors: true,
+            opacityFrom: 0.85,
+            opacityTo: 0.85,
+          },
+          opacity: [0.85, 0.25, 1],
         },
         xaxis: {
           categories: [],
           title: {
             text: 'Subjects',
+            style: {
+              fontSize: '14px',
+              fontWeight: 600,
+            },
           },
         },
-        yaxis: {
-          title: {
-            text: 'Student Score',
+        yaxis: [
+          {
+            title: {
+              text: 'Average Score',
+              style: {
+                fontSize: '14px',
+                fontWeight: 600,
+              },
+            },
+            max: 100,
           },
-        },
+
+          {
+            show: false,
+            title: {
+              text: 'Student Count',
+            },
+          },
+        ],
+        colors: ['#4E97FD', '#FFB100', '#66C266', '#D9534F'],
         title: {
-          text: 'Student Performance',
+          text: 'Student Performance Analytics',
           align: 'center',
+          style: {
+            fontSize: '18px',
+            fontWeight: 700,
+          },
+        },
+        tooltip: {
+          shared: true,
+          intersect: false,
+          y: {
+            formatter: function (value: number, { seriesIndex }: any) {
+              if (seriesIndex === 0) {
+                return value.toFixed(1) + '%';
+              } else {
+                return value.toFixed(0);
+              }
+            },
+          },
+        },
+        legend: {
+          position: 'bottom',
+          horizontalAlign: 'center',
+        },
+        grid: {
+          borderColor: '#f1f1f1',
+          row: {
+            colors: ['transparent', 'transparent'],
+            opacity: 0.5,
+          },
+        },
+        markers: {
+          size: 4,
+          colors: ['#4E97FD', '#FFB100', '#66C266', '#D9534F'],
+          strokeColors: '#fff',
+          strokeWidth: 2,
         },
       },
       series: [
         {
           name: 'Average Score',
+          type: 'column',
+          data: [],
+        },
+        {
+          name: 'Total Submissions',
+          type: 'line',
+          data: [],
+        },
+
+        {
+          name: 'Assigned Students',
+          type: 'line',
+          data: [],
+        },
+        {
+          name: 'Total Assignments',
+          type: 'line',
           data: [],
         },
       ],
@@ -327,6 +428,17 @@ const TeacherDashboardCharts = () => {
         yaxis: {
           title: {
             text: 'Assignment Completion',
+            offsetX: 10,
+            offsetY: -10,
+            style: {
+              fontSize: '14px',
+              fontWeight: 'bold',
+            },
+          },
+          labels: {
+            formatter: function (val: number) {
+              return val.toFixed(0);
+            },
           },
         },
         title: {
@@ -365,12 +477,26 @@ const TeacherDashboardCharts = () => {
         performanceChartData.options.xaxis.categories.push(
           subject.subject_name,
         );
+        completionChartData.options.xaxis.categories.push(subject.subject_name);
+
         performanceChartData.series[0].data.push(
           subjectPerformance.average_score,
         );
 
-        completionChartData.options.xaxis.categories.push(subject.subject_name);
-        completionChartData.series[0].data.push(subjectPerformance.completed);
+        performanceChartData.series[1].data.push(
+          subjectPerformance.total_submission_count || 0,
+        );
+
+        performanceChartData.series[2].data.push(
+          subjectPerformance.assigned_student_count || 0,
+        );
+
+        performanceChartData.series[3].data.push(
+          subjectPerformance.total_assignments || 0,
+        );
+        completionChartData.series[0].data.push(
+          subjectPerformance.graded_assignments,
+        );
         completionChartData.series[1].data.push(
           subjectPerformance.pending_assignments,
         );
@@ -400,7 +526,7 @@ const TeacherDashboardCharts = () => {
           options={transformSubjectData.performanceChartData.options}
           series={transformSubjectData.performanceChartData.series}
           type="bar"
-          height={350}
+          height={400}
         />
       </div>
     );
@@ -421,7 +547,7 @@ const TeacherDashboardCharts = () => {
           options={transformSubjectData.completionChartData.options}
           series={transformSubjectData.completionChartData.series}
           type="bar"
-          height={350}
+          height={400}
         />
       </div>
     );
