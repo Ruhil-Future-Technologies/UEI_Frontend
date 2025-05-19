@@ -38,19 +38,8 @@ import {
 import { toast } from 'react-toastify';
 import QuizDetailsModal from './QuizDetails';
 import { DeleteDialog } from '../../../Components/Dailog/DeleteDialog';
-import {
-  CourseRep0oDTO,
-  IClass,
-  SemesterRep0oDTO,
-  SubjectRep0oDTO,
-} from '../../../Components/Table/columns';
-import {
-  fieldIcon,
-  formatDate,
-  inputfield,
-  inputfieldhover,
-  inputfieldtext,
-} from '../../../utils/helpers';
+import { CourseRep0oDTO, IClass, SemesterRep0oDTO, SubjectRep0oDTO, } from '../../../Components/Table/columns';
+import { fieldIcon, formatDate, inputfield, inputfieldhover, inputfieldtext } from '../../../utils/helpers';
 import NameContext from '../../Context/NameContext';
 import { Boxes, BoxesForSchool } from '../../TeacherRgistrationForm';
 
@@ -733,34 +722,23 @@ const TeacherQuizPage = () => {
                 if (statusFilter != '') {
                   if (statusFilter == 'all') {
                     return (
-                      classId == boxesForSchool[index].class_id &&
-                      subjects.includes(value) &&
-                      stream == boxesForSchool[index].stream &&
-                      subjects.includes(value)
-                    );
-                  } else if (statusFilter === 'closed') {
-                    return (
-                      quiz.status == statusFilter &&
-                      classId == boxesForSchool[index].class_id &&
-                      stream == boxesForSchool[index].stream &&
-                      subjects.includes(value)
-                    );
-                  } else if (statusFilter === 'draft') {
-                    return (
-                      quiz.save_draft === true &&
-                      classId == boxesForSchool[index].class_id &&
-                      stream == boxesForSchool[index].stream &&
-                      subjects.includes(value)
-                    );
-                  } else {
-                    return (
-                      !quiz.save_draft &&
-                      quiz.status !== 'closed' &&
-                      classId == boxesForSchool[index].class_id &&
-                      stream == boxesForSchool[index].stream &&
-                      subjects.includes(value)
-                    );
-                  }
+                      classId == boxesForSchool[index].class_id && subjects.includes(value) && stream == boxesForSchool[index].stream && subjects.includes(value)
+                    )
+                  } else
+                    if (statusFilter === 'closed') {
+                      return (
+                        quiz.status == statusFilter && classId == boxesForSchool[index].class_id && stream == boxesForSchool[index].stream && subjects.includes(value)
+                      )
+                    } else if (statusFilter === 'draft') {
+                      return (quiz.save_draft === true &&
+                        classId == boxesForSchool[index].class_id && stream == boxesForSchool[index].stream && subjects.includes(value)
+                      )
+                    } else {
+                      return (
+                        !quiz.save_draft && quiz.status !== 'closed' &&
+                        classId == boxesForSchool[index].class_id && stream == boxesForSchool[index].stream && subjects.includes(value)
+                      )
+                    }
                 } else {
                   return (
                     classId == boxesForSchool[index].class_id &&
@@ -770,12 +748,12 @@ const TeacherQuizPage = () => {
                 }
               } else {
                 if (statusFilter != '') {
-                  if (statusFilter == 'all') {
+                  if (statusFilter == "all") {
                     return (
-                      classId == boxesForSchool[index].class_id &&
-                      subjects.includes(value)
-                    );
-                  } else if (statusFilter === 'closed') {
+                      classId == boxesForSchool[index].class_id && subjects.includes(value)
+                    )
+                  } else
+                     if (statusFilter === 'closed') {
                     return (
                       quiz.status == statusFilter &&
                       classId == boxesForSchool[index].class_id &&
@@ -1329,8 +1307,8 @@ const TeacherQuizPage = () => {
                                 alignItems="center"
                                 mt={0.5}
                               >
-                                <Typography variant="body2">
-                                  Create At: {formatDate(quiz?.created_at)}
+                                
+                                <Typography variant='body2'>Created At: {formatDate(quiz?.created_at)}
                                 </Typography>
                               </Stack>
                               <Stack
