@@ -46,7 +46,7 @@ describe('StudentFeedback', () => {
     mockGetData.mockResolvedValueOnce({ data: [] });
     renderComponent();
     await waitFor(() => {
-      expect(screen.getByText('Student Feedback')).toBeInTheDocument();
+      expect(screen.getByText('Submitted Feedbacks')).toBeInTheDocument();
     });
   });
 
@@ -74,7 +74,7 @@ describe('StudentFeedback', () => {
     render(<StudentFeedback />);
     await waitFor(() => {
       expect(mockGetData).toHaveBeenCalledWith(
-        '/feedback/all_student_feedback',
+        '/feedback/all_teacher_feedback',
       );
     });
   });
