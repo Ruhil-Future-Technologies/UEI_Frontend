@@ -244,7 +244,7 @@ export const QUERY_KEYS_STUDENT_ACADEMIC_HISTORY = {
   GET_ADMIN_STUDENT_ACADEMIC_HISTORY: '/student_academic_history/list',
   ADMIN_ADD_STUDENT_ACADEMIC_HISTORY: '/student_academic_history/add',
   ADMIN_EDIT_STUDENT_ACADEMIC_HISTORY: '/student_academic_history/edit',
-  NEW_STUDENT_ACADEMIC_HISTORY:'new_student_academic_history/get/'
+  NEW_STUDENT_ACADEMIC_HISTORY: 'new_student_academic_history/get/',
 };
 export const QUERY_KEYS_STUDENT_SUBJECT_PREFERENCE = {
   GET_ADMIN_STUDENT_SUBJECT_PREFERENCE: '/subject_preference/list',
@@ -284,6 +284,8 @@ export const QUERY_KEYS_ASSIGNMENT = {
   ADD_ASSIGNMENT: 'assignment/add',
   GENERATE_AI_ASSIGNMENT: '/AIchatbot/generate-questions',
   ASSIGNMENT_DOC_EDIT: '/assignment/edit-assignment-docs/',
+  GET_TOP3: '/assignment/top3-students/',
+  STATS_FOR_TEACHER: '/assignment/stats-for-teacher/',
 };
 
 export const QUERY_KEYS_ASSIGNMENT_SUBMISSION = {

@@ -423,6 +423,7 @@ export const Assignments = () => {
     if (type == "college") {
       return coursesData?.find((item) => item.id == id)?.course_name;
     } else {
+      console.log(dataClass);
       return dataClass?.find((item) => item.id == id)?.class_name;
     }
 
