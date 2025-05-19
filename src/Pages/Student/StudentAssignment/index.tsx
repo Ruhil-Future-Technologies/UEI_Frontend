@@ -430,7 +430,7 @@ const StudentAssignments = () => {
                               display="block"
                               sx={{ mt: 1 }}
                             >
-                              <TimerOffIcon fontSize="small" /> Late Submission:
+                              <TimerOffIcon fontSize="small" /> Late Submission
                             </Typography>
                             <Typography
                               variant="caption"
