@@ -129,8 +129,10 @@ const TeacherDashboardCharts = () => {
   useEffect(() => {
     if (teacher_id) {
       getData(`${STATS_FOR_TEACHER}${teacher_id}`).then((data) => {
-        setData(data?.data?.assignment);
-        setDataStatus(true);
+        if (data.status) {
+          setData(data?.data?.assignment);
+          setDataStatus(true);
+        }
       });
     }
   }, [teacher_id]);

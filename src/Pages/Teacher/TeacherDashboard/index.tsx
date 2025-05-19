@@ -102,25 +102,27 @@ const TeacherDash = () => {
   const callAPI = async () => {
     if (userId) {
       getData(`${GET_TOP3}${userId}`).then((data) => {
-        const filtredStudents: any = [];
-        data?.data?.assignment?.top_students.map((student: any) => {
-          if (student?.pic_path) {
-            getData(`${'upload_file/get_image/' + student?.pic_path}`).then(
-              (data) => {
-                const current_student = {
-                  ...student,
-                  pic_path: data.data?.file_url,
-                };
+        if (data.status) {
+          const filtredStudents: any = [];
+          data?.data?.assignment?.top_students.map((student: any) => {
+            if (student?.pic_path) {
+              getData(`${'upload_file/get_image/' + student?.pic_path}`).then(
+                (data) => {
+                  const current_student = {
+                    ...student,
+                    pic_path: data.data?.file_url,
+                  };
 
-                filtredStudents.push(current_student);
-              },
-            );
-          } else {
-            filtredStudents.push(student);
-          }
-        });
+                  filtredStudents.push(current_student);
+                },
+              );
+            } else {
+              filtredStudents.push(student);
+            }
+          });
 
-        setTopStudents(filtredStudents);
+          setTopStudents(filtredStudents);
+        }
       });
       getData(`${chatlisturl}/${userId}`)
         .then((data: any) => {
