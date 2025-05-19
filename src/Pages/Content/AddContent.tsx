@@ -2275,31 +2275,67 @@ const AddContent = () => {
                           </div>
                         </div>
                       )}
-                      <div className="row mt-4">
-                        <div className="col-md-4">
-                          <div className="form_field_wrapper">
-                            <Field
-                              fullWidth
-                              component={TextField}
-                              label="Description *"
-                              name="description"
-                              value={values?.description}
-                              onChange={(
-                                e: React.ChangeEvent<HTMLInputElement>,
-                              ) => handleChange(e, 'description')}
-                              multiline
-                              rows={2}
-                            />
-                            {touched?.description && errors?.description && (
+                       <div className="row d-flex justify-content-between mt-0 g-4">
+                        <div className="col-6">
+                          <InputLabel id="">Content *</InputLabel>
+                          <UploadBtn
+                            label="Upload Files"
+                            name="document"
+                            accept=".pdf, .jpg, .jpeg, .png, .gif, .mp4"
+                            handleFileChange={handleFileChange}
+                          />
+                          <div className="col-8">
+                            {allselectedfiles?.length > 0 && (
+                              <ul className="doclist">
+                                {allselectedfiles?.map((file, index) => (
+                                  <li
+                                    key={index}
+                                    className="flex mt-2 items-center justify-between "
+                                  >
+                                    {'name' in file
+                                      ? file.name
+                                      : (file as any)?.url}
+
+                                    <DeleteOutlinedIcon
+                                      className="m-2 cursor-pointer"
+                                      onClick={() => handleRemoveFile(index)}
+                                    />
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
+                            {allfiles?.length > 0 && (
+                              <ul className="doclist">
+                                {allfiles?.map((file, index) => (
+                                  <li
+                                    key={index}
+                                    className="flex mt-2 items-center justify-between "
+                                  >
+                                    {'name' in file
+                                      ? file.name
+                                      : (file as any)?.url}
+
+                                    <DeleteOutlinedIcon
+                                      className="m-2 cursor-pointer"
+                                      onClick={() =>
+                                        handleDeleteFile((file as any)?.id)
+                                      }
+                                    />
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
+                          </div>
+                          <div>
+                            {touched?.documents && errors?.documents && (
                               <p className="error">
-                                {String(errors.description)}
+                                {String(errors.documents)}
                               </p>
                             )}
                           </div>
                         </div>
-                      </div>
-                      <div className="row d-flex justify-content-between mt-0 g-4">
-                        <div className="col-12 ">
+                        <div className="col-6">
+                          <InputLabel id="">Content *</InputLabel>
                           <UploadBtn
                             label="Upload Files"
                             name="document"
@@ -2357,6 +2393,30 @@ const AddContent = () => {
                           </div>
                         </div>
                       </div>
+                      <div className="row mt-4">
+                        <div className="col-md-4">
+                          <div className="form_field_wrapper">
+                            <Field
+                              fullWidth
+                              component={TextField}
+                              label="Description *"
+                              name="description"
+                              value={values?.description}
+                              onChange={(
+                                e: React.ChangeEvent<HTMLInputElement>,
+                              ) => handleChange(e, 'description')}
+                              multiline
+                              rows={2}
+                            />
+                            {touched?.description && errors?.description && (
+                              <p className="error">
+                                {String(errors.description)}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                     
                     </div>
                     <button
                       type="submit"
