@@ -129,7 +129,7 @@ const StudentDashboardCharts = () => {
         if (student_id) {
           getData(`/assignment/stats-for-student/${student_id}`).then(
             (response) => {
-              performanceData = response?.data?.subject_stats.assignments;
+              performanceData = response?.data?.subject_stats?.assignments;
 
               if (userdata?.entity_name === 'college') {
                 const subjectMap: any = {};

@@ -2,56 +2,92 @@
 import React, { useEffect, useState } from 'react';
 import '../Hobby/Hobby.scss';
 import useApi from '../../hooks/useAPI';
-import { Box, Typography } from '@mui/material';
+import { Box, Tab, Tabs, Typography } from '@mui/material';
 import { MaterialReactTable } from 'material-react-table';
 import {
   IStudentFeedback,
   STUDENT_FEEDBACK_COLUMNS,
 } from '../../Components/Table/columns';
 import { useNavigate } from 'react-router-dom';
-import { QUERY_KEYS_STUDENT_FEEDBACK } from '../../utils/const';
+import { QUERY_KEYS_STUDENT_FEEDBACK, QUERY_KEYS_TEACHER_FEEDBACK } from '../../utils/const';
 import { toast } from 'react-toastify';
 import FullScreenLoader from '../Loader/FullScreenLoader';
 
 const StudentFeedback = () => {
-  const FeedbackURL = QUERY_KEYS_STUDENT_FEEDBACK.GET_FEEDBACK;
+  //const FeedbackURL = QUERY_KEYS_STUDENT_FEEDBACK.GET_FEEDBACK;
+  const GET_FEEDBACKS_BY_TEACHERS = QUERY_KEYS_TEACHER_FEEDBACK.GET_FEEDBACKS_BY_TEACHERS;
+  const GET_FEEDBACKS_BY_STUDENT = QUERY_KEYS_STUDENT_FEEDBACK.GET_FEEDBACKS_BY_STUDENT;
   const columns = STUDENT_FEEDBACK_COLUMNS;
   const navigate = useNavigate();
   const { getData, loading } = useApi();
+  const [tabValue, setTabValue] = useState('teacher');
   const [dataFeedback, setDataStudent] = useState<IStudentFeedback[]>([]);
+  const [teacherFeedbackData, setTeacherFeedbackData] = useState<IStudentFeedback[]>([]);
+
 
   const callAPI = async () => {
-    getData(`${FeedbackURL}`)
-      .then((data) => {
-        if (data?.status) {
-          const sortedData = Array.isArray(data?.data?.feedbacks_array)
-            ? data?.data?.feedbacks_array.sort((a: any, b: any) => {
-              const dateA = new Date(a?.created_at);
-              const dateB = new Date(b?.created_at);
-              return dateB.getTime() - dateA.getTime();
-            })
-            : [];
-          // Update your state with the sorted data
-          setDataStudent(sortedData || []);
-        }
-      })
-      .catch((e) => {
-        if (e?.response?.code === 401) {
-          navigate('/');
-        } else if (e?.response?.code === 404) {
-          setDataStudent([]);
-        } else {
-          toast.error(e?.message, {
-            hideProgressBar: true,
-            theme: 'colored',
-          });
-        }
-      });
+    if (tabValue == "student") {
+      getData(`${GET_FEEDBACKS_BY_STUDENT}`)
+        .then((data) => {
+          if (data?.status) {
+            const sortedData = Array.isArray(data?.data?.feedbacks_array)
+              ? data?.data?.feedbacks_array.sort((a: any, b: any) => {
+                const dateA = new Date(a?.created_at);
+                const dateB = new Date(b?.created_at);
+                return dateB.getTime() - dateA.getTime();
+              })
+              : [];
+            // Update your state with the sorted data
+            setDataStudent(sortedData || []);
+          }
+        })
+        .catch((e) => {
+          if (e?.response?.code === 401) {
+            navigate('/');
+          } else if (e?.response?.code === 404) {
+            setDataStudent([]);
+          } else {
+            toast.error(e?.message, {
+              hideProgressBar: true,
+              theme: 'colored',
+            });
+          }
+        });
+    } else {
+      getData(`${GET_FEEDBACKS_BY_TEACHERS}`)
+        .then((data) => {
+          if (data?.status) {
+            const sortedData = Array.isArray(data?.data?.feedbacks_array)
+              ? data?.data?.feedbacks_array.sort((a: any, b: any) => {
+                const dateA = new Date(a?.created_at);
+                const dateB = new Date(b?.created_at);
+                return dateB.getTime() - dateA.getTime();
+              })
+              : [];
+            // Update your state with the sorted data
+            setTeacherFeedbackData(sortedData || []);
+          }
+        })
+        .catch((e) => {
+          if (e?.response?.code === 401) {
+            navigate('/');
+          } else if (e?.response?.code === 404) {
+            setDataStudent([]);
+          } else {
+            toast.error(e?.message, {
+              hideProgressBar: true,
+              theme: 'colored',
+            });
+          }
+        });
+    }
+
+
   };
 
   useEffect(() => {
     callAPI();
-  }, []);
+  }, [tabValue]);
 
   return (
     <>
@@ -71,13 +107,23 @@ const StudentFeedback = () => {
                     }}
                   >
                     <Typography variant="h6" sx={{ m: 1 }}>
-                      <div className="main_title">Student Feedback</div>
+                      <div className="main_title">Submitted Feedbacks</div>
                     </Typography>
                   </div>
+                  <Tabs
+                    value={tabValue}
+                    onChange={(_, newValue) => setTabValue(newValue)}
+                    textColor="primary"
+                    indicatorColor="primary"
+                    aria-label="secondary tabs example"
+                  >
+                    <Tab value="teacher" label="Teacher" />
+                    <Tab value="student" label="Student" />
+                  </Tabs>
                   <Box marginTop="10px">
                     <MaterialReactTable
                       columns={columns}
-                      data={dataFeedback}
+                      data={tabValue == "teacher" ? teacherFeedbackData : dataFeedback}
                       enableRowVirtualization
                       positionActionsColumn="first"
                       muiTablePaperProps={{

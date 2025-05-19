@@ -87,10 +87,6 @@ const StudentAssignments = () => {
       },
     },
     {
-      accessorKey: 'type',
-      header: 'type',
-    },
-    {
       accessorKey: 'points',
       header: 'Points',
       Cell: ({ row }: { row: MRT_Row<Assignment> }) => {
@@ -221,24 +217,33 @@ const StudentAssignments = () => {
       return { label: 'Pending', color: 'error' };
     }
   };
-  const assignmentGreded = (assignmentId: string, points: string) => {
+  const assignmentGreded = (assignmentId: string, points: string, type?: any) => {
     const assign = assignmentsSubmited.filter(
       (item) => item?.assignment_id == assignmentId,
     );
     if (assign.length > 0 && assign[0].graded_points) {
-      return (
-        <Box display="flex" alignItems="center">
-          <Typography variant="body1">
-            {assign[0].graded_points}/{points}
-          </Typography>
-        </Box>
-      );
+      if (type) {
+        return `${assign[0].graded_points}/${points}`;
+      } else {
+        return (
+          <Box display="flex" alignItems="center">
+            <Typography variant="body1">
+              {assign[0].graded_points}/{points}
+            </Typography>
+          </Box>
+        );
+      }
+
     } else {
-      return (
-        <Box display="flex" alignItems="center">
-          <Typography variant="body1">NG/{points}</Typography>
-        </Box>
-      );
+      if (type) {
+        return `${points}`;
+      } else {
+        return (
+          <Box display="flex" alignItems="center">
+            <Typography variant="body1">NG/{points}</Typography>
+          </Box>
+        );
+      }
     }
   };
 
@@ -287,7 +292,7 @@ const StudentAssignments = () => {
     <>
       <div className="main-wrapper">
         <div className="main-content">
-        {loading && <FullScreenLoader />}
+          {loading && <FullScreenLoader />}
           <div className="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
             <div className="breadcrumb-title pe-3">
               {' '}
@@ -386,13 +391,19 @@ const StudentAssignments = () => {
                             justifyContent="space-between"
                             sx={{ mt: 1 }}
                           >
-                            <div className="small">
-                              <AccessTime fontSize="small" />
-                              {" 5 minutes"}
-                            </div>
+                              <div className="small">
+                                <AccessTime fontSize="small" />
+                                {" Duration: "}
+                                {assignment.timer != 0 ?
+                                <>
+                                {assignment.timer + " minutes"}
+                                </>
+                                : <small>No time limit</small>
+                                 }
+                              </div>
                             <div className="small">
                               <Chip
-                                label={`${assignment.points} ${assignment.points === 1 ? 'mark' : 'marks'}`}
+                                label={`${assignmentGreded(assignment.id, assignment.points, true)} ${assignment.points === 1 ? 'mark' : 'marks'}`}
                                 size="small"
                                 color="primary"
                                 variant="outlined"
@@ -512,7 +523,7 @@ const StudentAssignments = () => {
                         >
                           <div className="small">
                             <AccessTime fontSize="small" />
-                            {" 5 minutes"}
+                            {assignment.timer + " minutes"}
                           </div>
                           <div className="small">
                             <Chip

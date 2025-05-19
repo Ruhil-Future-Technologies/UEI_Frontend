@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { Box, Button, IconButton, Tooltip, Typography } from '@mui/material';
+import { Box, Button, IconButton, Tab, Tabs, Tooltip, Typography } from '@mui/material';
 import { MaterialReactTable } from 'material-react-table';
 import { toast } from 'react-toastify';
 import useApi from '../../hooks/useAPI';
@@ -23,14 +23,51 @@ const AdminFeedback = () => {
   const columns = FEEDBACK_COLUMNS;
   const navigate = useNavigate();
   const { getData, deleteData, loading } = useApi();
-  const [dataFeedback, setDataFeedback] = useState<IFeedback[]>([]);
+  const [dataFeedback, setDataFeedback] = useState<IFeedback>({
+  teacher: [{
+    created_at: '',
+    options: '',
+    question: '',
+    id: 0,
+    is_active: 0,
+    updated_at: ''
+  }],
+  student: [{
+    created_at: '',
+    options: '',
+    question: '',
+    id: 0,
+    is_active: 0,
+    updated_at: ''
+  }],
+});
+  const [filteredDataFeedback, setFilteredDataFeedback] = useState<IFeedback>({
+  teacher: [{
+    created_at: '',
+    options: '',
+    question: '',
+    id: 0,
+    is_active: 0,
+    updated_at: ''
+  }],
+  student: [{
+    created_at: '',
+    options: '',
+    question: '',
+    id: 0,
+    is_active: 0,
+    updated_at: ''
+  }],
+});
   const [dataDelete, setDataDelete] = useState(false);
   const [dataDeleteId, setDataDeleteId] = useState<number>();
+  const [tabValue, setTabValue] = useState('teacher');
   const callAPI = async () => {
     getData(`${FeedbackURL}`)
       .then((data) => {
         if (data.status) {
-          setDataFeedback(data?.data?.feedbacks_data);
+          setDataFeedback(data?.data?.feedbacks);
+          setFilteredDataFeedback(data?.data?.feedbacks)
         }
       })
       .catch((e) => {
@@ -47,6 +84,15 @@ const AdminFeedback = () => {
   useEffect(() => {
     callAPI();
   }, []);
+
+  useEffect(() => {
+    if (tabValue == "teacher") {
+      setDataFeedback(dataFeedback)
+    } else {
+      setDataFeedback(dataFeedback)
+    }
+
+  }, [])
 
   const handleEditFile = (id: number) => {
     navigate(`edit-feedback/${id}`);
@@ -81,6 +127,8 @@ const AdminFeedback = () => {
         });
       });
   };
+
+
   return (
     <>
       {loading && <FullScreenLoader />}
@@ -111,11 +159,22 @@ const AdminFeedback = () => {
                       Add Feedback
                     </Button>
                     {/* )} */}
+
                   </div>
+                  <Tabs
+                    value={tabValue}
+                    onChange={(_, newValue) => setTabValue(newValue)}
+                    textColor="primary"
+                    indicatorColor="primary"
+                    aria-label="secondary tabs example"
+                  >
+                    <Tab value="teacher" label="Teacher" />
+                    <Tab value="student" label="Student" />
+                  </Tabs>
                   <Box marginTop="10px">
                     <MaterialReactTable
                       columns={columns}
-                      data={dataFeedback}
+                      data={tabValue=='teacher'?filteredDataFeedback?.teacher ||[]:filteredDataFeedback?.student ||[]}
                       enableRowVirtualization
                       positionActionsColumn="first"
                       muiTablePaperProps={{

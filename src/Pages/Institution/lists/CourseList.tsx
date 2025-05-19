@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import useApi from '../../../hooks/useAPI';
 import Box from '@mui/material/Box';
 import { MaterialReactTable, MRT_ColumnDef } from 'material-react-table';
+import { QUERY_KEYS_COURSE } from '../../../utils/const';
 
 interface Course {
   id: string;
@@ -13,6 +14,7 @@ interface Course {
 }
 const CourseListingByInstitution = () => {
   const instituteId = localStorage.getItem('institute_id');
+  const CourseURL = QUERY_KEYS_COURSE.GET_COURSE;
   const collmns: MRT_ColumnDef<Course>[] = [
     {
       accessorKey: 'course_name',
@@ -42,7 +44,7 @@ const CourseListingByInstitution = () => {
 
   const getCoursesData = async () => {
     try {
-      await getData(`/course/list/${instituteId}`).then((response) => {
+      await getData(`${CourseURL}/${instituteId}`).then((response) => {
         if (response?.status) {
           setDataCourses(response?.data);
         }

@@ -102,7 +102,7 @@ const TeacherProfile = () => {
     is_verified: false,
     is_kyc_verified: false,
     pic_path: '',
-    email:'',
+    email: '',
     institute_id: '',
   });
 
@@ -233,11 +233,11 @@ const TeacherProfile = () => {
 
   const getCourses = async (instituteId: any) => {
     getData(`${CourseURL}`)
-      .then((data:any) => {
+      .then((data: any) => {
         if (data.status) {
           setCoursesData(data?.data?.course_data);
           const filtredCourses = data?.data?.course_data.filter(
-            (course:any) => course.institution_id === instituteId,
+            (course: any) => course.institution_id === instituteId,
           );
           setFilteredCoursesData(filtredCourses);
         }
@@ -253,13 +253,13 @@ const TeacherProfile = () => {
     getData(`${InstituteURL}`)
       .then((data) => {
         if (data.status) {
-        const fiteredInstitutedata = data.data.filter(
-          (institute: any) =>
-            institute.is_active &&
-            institute.is_approve === true &&
-            institute.entity_id === entityId,
-        );
-       
+          const fiteredInstitutedata = data.data.filter(
+            (institute: any) =>
+              institute.is_active &&
+              institute.is_approve === true &&
+              institute.entity_id === entityId,
+          );
+
           setInstitutionsData(fiteredInstitutedata);
           setFiteredInstitute(fiteredInstitutedata);
         }
@@ -276,13 +276,13 @@ const TeacherProfile = () => {
   const getEntity = () => {
     getData(`${InstituteEntityURL}`)
       .then((data) => {
-        if(data?.status){
+        if (data?.status) {
           const filteredData = data?.data?.entityes_data?.filter(
-            (entity:any) => entity.is_active,
+            (entity: any) => entity.is_active,
           );
           setDataEntity(filteredData);
         }
-        
+
       })
       .catch((e) => {
         if (e?.response?.status === 401) {
@@ -321,22 +321,22 @@ const TeacherProfile = () => {
           setTeacherId(data?.data?.id);
           const universityId = Number(data?.data?.university_id);
           if (!Number.isNaN(universityId) && universityId > 0) {
-            const allsemesters:any = (await getSemester()) || [];
-            const allSubject:any = await getSubjects('College') || [];
-         
+            const allsemesters: any = (await getSemester()) || [];
+            const allSubject: any = await getSubjects('College') || [];
+
             setSelectedEntity('College');
-            await getCourses(data.data.institute_id); 
-          
+            await getCourses(data.data.institute_id);
+
             try {
               const output: Boxes[] = Object.keys(data.data.course_semester_subjects).flatMap((CourseKey) => {
-            
+
                 return Object.keys(data.data.course_semester_subjects[CourseKey]).map((semester_number) => {
                   const filteredSemesters = allsemesters?.filter(
-                    (item:any) => String(item.course_id) === String(CourseKey)
+                    (item: any) => String(item.course_id) === String(CourseKey)
                   );
-            
+
                   const filteredSubjects = allSubject?.filter(
-                    (item:any) =>
+                    (item: any) =>
                       String(item.semester_number) === String(semester_number) &&
                       String(item.course_id) === String(CourseKey)
                   );
@@ -353,10 +353,10 @@ const TeacherProfile = () => {
             } catch (error) {
               console.error("🔥 ERROR in flatMap execution:", error);
             }
-            
+
           }
-          
-           else {
+
+          else {
             getSubjects('School');
             setSelectedEntity('School');
             const allSubject: SubjectRep0oDTO[] = await getSubjects('School');
@@ -372,12 +372,12 @@ const TeacherProfile = () => {
                   selected_class_name: stream === 'general' ? 'col-6' : 'col-4',
                   filteredSubjects:
                     stream == 'general'
-                      ? allSubject.filter((item) => item.class_id === classKey)
+                      ? allSubject.filter((item) => Number(item.class_id) === Number(classKey))
                       : allSubject.filter(
-                          (item) =>
-                            item.class_id === classKey &&
-                            item.stream === stream,
-                        ),
+                        (item) =>
+                          Number(item.class_id) === Number(classKey) &&
+                          item.stream === stream,
+                      ),
                 }),
               ),
             );
@@ -385,7 +385,7 @@ const TeacherProfile = () => {
           }
           if (data.data.stream) {
             setSelectedClassName('col-6');
-          }          
+          }
         }
       });
     } catch (error) {
@@ -542,7 +542,7 @@ const TeacherProfile = () => {
               item.semester_number == value &&
               item.course_id == boxes[index].course_id,
           );
-          
+
           updatedBox = { ...updatedBox, filteredSubjects, subjects: [] };
         }
 
@@ -835,7 +835,7 @@ const TeacherProfile = () => {
       console.error(error);
     }
   };
-  
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
 
@@ -910,7 +910,7 @@ const TeacherProfile = () => {
       setBoxes([...boxes, newbox]);
     }
   };
-  console.log("===ty",selectedClassName,boxes);
+  console.log("===ty", selectedClassName, boxes);
   return (
     <div className="main-wrapper">
       <div className="main-content">
@@ -926,11 +926,11 @@ const TeacherProfile = () => {
                 <div className="card-body">
                   <div className="row d-flex justify-content-center g-4">
                     <div className="col-md-6 col-12">
-                      
+
 
                       <TextField
                         autoComplete="off"
-                        name="first_name"                        
+                        name="first_name"
                         className='w-100'
                         type="text"
                         label="First Name *"
@@ -944,7 +944,7 @@ const TeacherProfile = () => {
                       )}
                     </div>
                     <div className="col-md-6 col-12">
-                     
+
                       <TextField
                         autoComplete="off"
                         name="last_name"
@@ -960,10 +960,10 @@ const TeacherProfile = () => {
                         </p>
                       )}
                     </div>
-                  
+
                     <div className="col-md-6 col-12">
-                      
-                      
+
+
                       <FormControl>
                         <FormLabel id="demo-controlled-radio-buttons-group">Gender *</FormLabel>
                         <RadioGroup
@@ -987,7 +987,7 @@ const TeacherProfile = () => {
                       </FormControl>
                     </div>
                     <div className="col-md-6 col-12">
-                     
+
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DemoContainer
                           components={[
@@ -1016,9 +1016,9 @@ const TeacherProfile = () => {
                         </p>
                       )}
                     </div>
-                  
+
                     <div className="col-md-6 col-12 ">
-                      
+
                       <TextField
                         autoComplete="off"
                         name="phone"
@@ -1035,7 +1035,7 @@ const TeacherProfile = () => {
                       )}
                     </div>
                     <div className="col-md-6 col-12 ">
-                     
+
                       <TextField
                         autoComplete="off"
                         name="email_id"
@@ -1047,7 +1047,7 @@ const TeacherProfile = () => {
                         value={teacherData.email}
                       />
                     </div>
-                
+
                     <div className="col-md-6 col-12">
                       <label className={`col-form-label`}>
                         Country<span>*</span>
@@ -1088,9 +1088,9 @@ const TeacherProfile = () => {
                         </p>
                       )}
                     </div>
-                
+
                     <div className="col-md-6 col-12">
-                     
+
                       <TextField
                         autoComplete="off"
                         name="district"
@@ -1107,10 +1107,10 @@ const TeacherProfile = () => {
                       )}
                     </div>
                     <div className="col-md-6 col-12 ">
-                    
+
                       <TextField
                         autoComplete="off"
-                         label="City *"
+                        label="City *"
                         name="city"
                         className="w-100"
                         type="text"
@@ -1123,9 +1123,9 @@ const TeacherProfile = () => {
                         </p>
                       )}
                     </div>
-                  
+
                     <div className="col-md-6 col-12 ">
-                    
+
                       <TextField
                         autoComplete="off"
                         name="address"
@@ -1142,7 +1142,7 @@ const TeacherProfile = () => {
                       )}
                     </div>
                     <div className="col-md-6 col-12 ">
-                      
+
                       <TextField
                         autoComplete="off"
                         name="pincode"
@@ -1158,9 +1158,9 @@ const TeacherProfile = () => {
                         </p>
                       )}
                     </div>
-                
+
                     <div className="col-md-6 col-12 ">
-                     
+
 
                       <FormControl fullWidth>
                         <InputLabel id="demo-simple-select-label">
@@ -1210,7 +1210,7 @@ const TeacherProfile = () => {
                     </div>
                     {selectedEntity.toLowerCase() === 'college' ? (
                       <div className="col-md-6 col-12">
-                        
+
                         <FormControl fullWidth>
                           <InputLabel id="university_id">
                             University Name
@@ -1263,7 +1263,7 @@ const TeacherProfile = () => {
                       </div>
                     ) : (
                       <div className="col-md-6 col-12">
-                       
+
                         <FormControl fullWidth>
                           <InputLabel id="institution_id">Institute</InputLabel>
                           <Select
@@ -1313,11 +1313,11 @@ const TeacherProfile = () => {
                         )}
                       </div>
                     )}
-                  
-                  {selectedEntity.toLowerCase() === 'college' && (
-                    
+
+                    {selectedEntity.toLowerCase() === 'college' && (
+
                       <div className="col-md-12 col-12">
-                       
+
                         <FormControl fullWidth>
                           <InputLabel id="institution_id">Institute</InputLabel>
                           <Select
@@ -1366,11 +1366,11 @@ const TeacherProfile = () => {
                           </p>
                         )}
                       </div>
-                    
-                  )}
-                  
+
+                    )}
+
                     <div className="col-md-6 col-12 ">
-                     
+
                       <TextField
                         autoComplete="off"
                         name="experience"
@@ -1390,7 +1390,7 @@ const TeacherProfile = () => {
                       )}
                     </div>
                     <div className="col-md-6 col-12 ">
-                      
+
                       <FormControl fullWidth>
                         <InputLabel id="demo-multiple-name-label">
                           Qualification
@@ -1428,7 +1428,7 @@ const TeacherProfile = () => {
                       >
                         {/* Course Selection */}
                         <div className="col-md-3 col-12">
-                          
+
                           <FormControl fullWidth>
                             <InputLabel id={`course_id_${index}`}>
                               Course
@@ -1452,15 +1452,15 @@ const TeacherProfile = () => {
                           </FormControl>
                           {errorForCourse_semester_subject[index]
                             ?.course_id_error === true && (
-                            <p className="error-text" style={{ color: 'red' }}>
-                              <small>Please enter a valid Course.</small>
-                            </p>
-                          )}
+                              <p className="error-text" style={{ color: 'red' }}>
+                                <small>Please enter a valid Course.</small>
+                              </p>
+                            )}
                         </div>
 
                         {/* Semester Selection */}
                         <div className="col-md-3 col-12">
-                         
+
                           <FormControl fullWidth>
                             <InputLabel id={`semester_id_${index}`}>
                               Semester
@@ -1487,15 +1487,15 @@ const TeacherProfile = () => {
                           </FormControl>
                           {errorForCourse_semester_subject[index]
                             ?.semester_number_error && (
-                            <p className="error-text" style={{ color: 'red' }}>
-                              <small>Please select a Semester.</small>
-                            </p>
-                          )}
+                              <p className="error-text" style={{ color: 'red' }}>
+                                <small>Please select a Semester.</small>
+                              </p>
+                            )}
                         </div>
 
                         {/* Subjects Selection */}
                         <div className="col-md-3 col-12">
-                         
+
                           <FormControl fullWidth>
                             <InputLabel id={`subject_label_${index}`}>
                               Subject
@@ -1541,13 +1541,13 @@ const TeacherProfile = () => {
                           </FormControl>
                           {errorForCourse_semester_subject[index]
                             ?.subjects_error && (
-                            <p className="error-text" style={{ color: 'red' }}>
-                              <small>Please select at least one subject.</small>
-                            </p>
-                          )}
+                              <p className="error-text" style={{ color: 'red' }}>
+                                <small>Please select at least one subject.</small>
+                              </p>
+                            )}
                         </div>
                         <div className='col-lg-3'>
-                          {}
+                          { }
                           {(selectedEntity.toLowerCase() === 'college' ||
                             selectedEntity.toLowerCase() === 'school') &&
                             ((boxes.length === 1 && index === 0) ||
@@ -1578,7 +1578,7 @@ const TeacherProfile = () => {
                       >
                         {/* Class Selection */}
                         <div className={box.selected_class_name}>
-                          
+
                           <FormControl fullWidth>
                             <InputLabel id={`class_id_${index}`}>
                               Class
@@ -1602,10 +1602,10 @@ const TeacherProfile = () => {
                           </FormControl>
                           {errorForClass_stream_subject[index]
                             ?.class_id_error && (
-                            <p className="error-text" style={{ color: 'red' }}>
-                              <small>Please select a Class.</small>
-                            </p>
-                          )}
+                              <p className="error-text" style={{ color: 'red' }}>
+                                <small>Please select a Class.</small>
+                              </p>
+                            )}
                         </div>
                         {box.is_Stream && (
                           <div className="col-md-4 col-12 mb-3">
@@ -1661,17 +1661,17 @@ const TeacherProfile = () => {
                             </FormControl>
                             {errorForClass_stream_subject[index]
                               ?.stream_error && (
-                              <p
-                                className="error-text"
-                                style={{ color: 'red' }}
-                              >
-                                <small>Please select a Stream.</small>
-                              </p>
-                            )}
+                                <p
+                                  className="error-text"
+                                  style={{ color: 'red' }}
+                                >
+                                  <small>Please select a Stream.</small>
+                                </p>
+                              )}
                           </div>
                         )}
                         <div className={box.selected_class_name}>
-                          
+
                           <FormControl fullWidth>
                             <InputLabel id={`subject_label_${index}`}>
                               Subject
@@ -1717,10 +1717,10 @@ const TeacherProfile = () => {
                           </FormControl>
                           {errorForClass_stream_subject[index]
                             ?.subjects_error && (
-                            <p className="error-text" style={{ color: 'red' }}>
-                              <small>Please select at least one subject.</small>
-                            </p>
-                          )}
+                              <p className="error-text" style={{ color: 'red' }}>
+                                <small>Please select at least one subject.</small>
+                              </p>
+                            )}
                         </div>
 
                         <div>
@@ -1760,10 +1760,14 @@ const TeacherProfile = () => {
                       <div>
                         {allselectedfiles.length > 0 && (
                           <ul>
-                            {allselectedfiles.map((file, index) => (
-                              <li key={index}>
+                            {allselectedfiles.map((file,index) => (
+                              <a key={index}
+                                href={file.name ? file.name : String(file)}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
                                 {file.name ? file.name : String(file)}
-                              </li>
+                              </a>
                             ))}
                           </ul>
                         )}

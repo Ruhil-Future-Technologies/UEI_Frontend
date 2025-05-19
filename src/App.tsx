@@ -125,8 +125,11 @@ function App() {
   const synth: SpeechSynthesis = window?.speechSynthesis;
   const user_type = localStorage.getItem('user_type');
   // const StuId = localStorage.getItem('_id');
-  const StuId = user_type === 'teacher' ? localStorage.getItem('teacher_id'):localStorage.getItem('student_id');
-  
+  const StuId =
+    user_type === 'teacher'
+      ? localStorage.getItem('teacher_id')
+      : localStorage.getItem('student_id');
+
   const chataddconversationurl = QUERY_KEYS.CHAT_HISTORYCON;
   const { postDataJson } = useApi();
 
@@ -437,9 +440,7 @@ function App() {
           />
           <Route
             path="/parent-dashboard/quiz"
-            element={
-              <Protected Component={StudentQuiz} menuName="content" />
-            }
+            element={<Protected Component={StudentQuiz} menuName="content" />}
           />
         </Route>
 
@@ -900,12 +901,10 @@ function App() {
               element={<Protected Component={ChatList} menuName="ChatList" />}
             />
           </Route>
-          <Route path="/main/SuperAdmin">
+          <Route path="/main/Admin">
             <Route
               path=""
-              element={
-                <Protected Component={SuperAdmin} menuName="SuperAdmin" />
-              }
+              element={<Protected Component={SuperAdmin} menuName="Admin" />}
             />
           </Route>
           <Route path="/main/ChangePassword">
