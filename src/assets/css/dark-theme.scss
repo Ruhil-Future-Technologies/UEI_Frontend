@@ -153,9 +153,9 @@
   .MuiInputBase-input {
     color: $headingColor !important;
   }
-  .Mui-disabled {
-    -webkit-text-fill-color: $date_text;
-  }
+  // .Mui-disabled {
+  //   -webkit-text-fill-color: $date_text;
+  // }
   .MuiIconButton-root {
     color: $date_text;
   }
@@ -168,9 +168,9 @@
   .MuiDayCalendar-weekDayLabel {
     color: $date_text;
   }
-  .MuiPickersDay-root {
-    color: $date_text;
-  }
+  // .MuiPickersDay-root {
+  //   color: $date_text;
+  // }
   .MuiSelect-icon {
     color: $date_text;
   }
