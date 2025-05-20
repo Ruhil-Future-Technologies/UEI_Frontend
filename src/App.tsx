@@ -329,6 +329,42 @@ function App() {
               element={<Protected Component={AddContent} menuName="Content" />}
             />
           </Route>
+          <Route path="/institution-dashboard/Teacher">
+            <Route
+              path=""
+              element={<Protected Component={Teacher} menuName="Teacher" />}
+            />
+            <Route
+              path="add-teacher"
+              element={
+                <Protected Component={AddEditTeacher} menuName="Teacher" />
+              }
+            />
+            <Route
+              path="edit-teacher/:id"
+              element={
+                <Protected Component={AddEditTeacher} menuName="Teacher" />
+              }
+            />
+          </Route>
+          <Route path="/institution-dashboard/Student">
+            <Route
+              path=""
+              element={<Protected Component={Student} menuName="Student" />}
+            />
+            <Route
+              path="add-student"
+              element={
+                <Protected Component={AddEditStudent} menuName="Student" />
+              }
+            />
+            <Route
+              path="edit-student/:id"
+              element={
+                <Protected Component={AddEditStudent} menuName="Student" />
+              }
+            />
+          </Route>
         </Route>
         <Route path="/teacher-dashboard" element={<TeacherMain />}>
           <Route
