@@ -391,16 +391,16 @@ const StudentAssignments = () => {
                             justifyContent="space-between"
                             sx={{ mt: 1 }}
                           >
-                              <div className="small">
-                                <AccessTime fontSize="small" />
-                                {" Duration: "}
-                                {assignment.timer != 0 ?
+                            <div className="small">
+                              <AccessTime fontSize="small" />
+                              {" Duration: "}
+                              {assignment.timer != 0 ?
                                 <>
-                                {assignment.timer + " minutes"}
+                                  {assignment.timer + " minutes"}
                                 </>
                                 : <small>No time limit</small>
-                                 }
-                              </div>
+                              }
+                            </div>
                             <div className="small">
                               <Chip
                                 label={`${assignmentGreded(assignment.id, assignment.points, true)} ${assignment.points === 1 ? 'mark' : 'marks'}`}
@@ -523,7 +523,13 @@ const StudentAssignments = () => {
                         >
                           <div className="small">
                             <AccessTime fontSize="small" />
-                            {assignment.timer + " minutes"}
+                            {" Duration: "}
+                            {assignment.timer != 0 ?
+                              <>
+                                {assignment.timer + " minutes"}
+                              </>
+                              : <small>No time limit</small>
+                            }
                           </div>
                           <div className="small">
                             <Chip
