@@ -30,11 +30,7 @@ import { Assignment } from './CreateAssignments';
 import { toast } from 'react-toastify';
 import GroupsIcon from '@mui/icons-material/Groups';
 import SaveAsIcon from '@mui/icons-material/SaveAs';
-import {
-  QUERY_KEYS_ASSIGNMENT,
-  QUERY_KEYS_CLASS,
-  QUERY_KEYS_COURSE,
-} from '../../../utils/const';
+import { QUERY_KEYS_ASSIGNMENT, QUERY_KEYS_CLASS, QUERY_KEYS_COURSE } from '../../../utils/const';
 import { convertToISTT, getkeysvalue } from '../../../utils/helpers';
 import FullScreenLoader from '../../Loader/FullScreenLoader';
 import { CourseRep0oDTO, IClass } from '../../../Components/Table/columns';
@@ -84,6 +80,7 @@ export const Assignments = () => {
       getData(`${QUERY_KEYS_ASSIGNMENT.GET_ASSIGNMENTS_LIST}`).then(
         (response) => {
           if (response.data) {
+
             const filteredassignment = response?.data?.filter(
               (assignmnet: any) => assignmnet.created_by == teacher_uuid,
             );
@@ -248,12 +245,12 @@ export const Assignments = () => {
       header: 'Generated Type',
       Cell: ({ row }: { row: MRT_Row<Assignment> }) => {
         const gmtDateStr = row?.original?.generated_type;
-        return gmtDateStr != null ? gmtDateStr.replace('_', ' ') : '-';
+        return gmtDateStr != null ? gmtDateStr.replace("_", " ") : "-";
       },
     },
     {
       accessorKey: 'class_stream_subjects',
-      header: `${entiryType == 'college' ? 'Course' : 'Class'}`,
+      header:`${entiryType=="college"?"Course":"Class"}`,
       Cell: ({ row }: { row: MRT_Row<Assignment> }) => {
         const fallbackObj =
           row?.original?.class_stream_subjects ??
@@ -262,13 +259,34 @@ export const Assignments = () => {
         if (!fallbackObj) return '-'; // prevent error when both are null
 
         const gmtDateStr = getkeysvalue(fallbackObj);
-
-        if (entiryType == 'college') {
-          return getClassorCourse('college', gmtDateStr);
+        
+        if (entiryType == "college") {
+          return getClassorCourse("college", gmtDateStr);
         } else {
-          return getClassorCourse('school', gmtDateStr);
+          return getClassorCourse("school", gmtDateStr);
         }
-      },
+
+      }
+    },
+    {
+      accessorKey: 'class_stream_subjects',
+      header:`${entiryType=="college"?"Course":"Class"}`,
+      Cell: ({ row }: { row: MRT_Row<Assignment> }) => {
+        const fallbackObj =
+          row?.original?.class_stream_subjects ??
+          row?.original?.course_semester_subjects;
+
+        if (!fallbackObj) return '-'; // prevent error when both are null
+
+        const gmtDateStr = getkeysvalue(fallbackObj);
+        
+        if (entiryType == "college") {
+          return getClassorCourse("college", gmtDateStr);
+        } else {
+          return getClassorCourse("school", gmtDateStr);
+        }
+
+      }
     },
     {
       accessorKey: 'points',
@@ -395,12 +413,14 @@ export const Assignments = () => {
   ];
 
   const getClassorCourse = (type: any, id: any) => {
-    if (type == 'college') {
+    if (type == "college") {
       return coursesData?.find((item) => item.id == id)?.course_name;
     } else {
+      console.log(dataClass);
       return dataClass?.find((item) => item.id == id)?.class_name;
     }
-  };
+
+  }
 
   return (
     <div className="main-wrapper">

@@ -32,7 +32,6 @@ import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined
 import LockResetOutlinedIcon from '@mui/icons-material/LockResetOutlined';
 import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
 import PowerSettingsNewOutlinedIcon from '@mui/icons-material/PowerSettingsNewOutlined';
-
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import 'react-perfect-scrollbar/dist/css/styles.css';
 import { IconButton } from '@mui/material';
@@ -50,7 +49,6 @@ const Header = () => {
     setActiveForm,
   }: any = context;
   const user_uuid = localStorage.getItem('user_uuid');
-
   const user_type = localStorage.getItem('user_type');
   // const StuId = localStorage.getItem('_id');
   const StuId =
@@ -66,13 +64,20 @@ const Header = () => {
   const { getData, postDataJson } = useApi();
   const [dashboardURL, setDashboardURL] = useState('');
   const editTeacher = QUERY_KEYS_TEACHER.TEACHER_EDIT;
-
   const chataddconversationurl = QUERY_KEYS.CHAT_HISTORYCON;
   // const userdata = JSON.parse(localStorage?.getItem('userdata') || '{}');
+  const [notifications, setNotifications] = useState<any[]>([
+    {
+      id: '1',
+      title: 'Welcome to Gyansetu',
+      description: "You've successfully completed your profile",
+      time: 'Today',
+      image: maleImage,
+    },
+  ]);
 
   const saveChat = async () => {
     const chatDataString = localStorage?.getItem('chatData');
-
     let chatData: any;
     if (chatDataString) {
       chatData = JSON.parse(chatDataString);
@@ -82,7 +87,6 @@ const Header = () => {
 
     const isChatFlagged =
       chatData?.[0]?.flagged ?? localStorage?.getItem('chatsaved') === 'true';
-
     let chat_payload;
 
     if (Array.isArray(chatData)) {
@@ -95,7 +99,6 @@ const Header = () => {
 
       try {
         await postDataJson(`${chataddconversationurl}`, chat_payload);
-
         localStorage.removeItem('chatData');
         localStorage.removeItem('chatsaved');
       } catch (e: any) {
@@ -151,6 +154,17 @@ const Header = () => {
       }
     }
   }
+
+  const handleCloseNotification = (id: string) => {
+    setNotifications(
+      notifications.filter((notification) => notification.id !== id),
+    );
+  };
+
+  const handleMarkAllAsRead = () => {
+    setNotifications([]);
+  };
+
   const callAPI = async () => {
     if (user_type === 'student') {
       getData(`${profileURL}/${user_uuid}`).then((data: any) => {
@@ -329,7 +343,6 @@ const Header = () => {
                 </li>
               </ul>
             </li>
-
             <li className="nav-item dropdown">
               <a
                 className="nav-link dropdown-toggle dropdown-toggle-nocaret position-relative"
@@ -339,7 +352,9 @@ const Header = () => {
                 data-testid="notifications-toggle"
               >
                 <NotificationsOutlinedIcon />
-                <span className="badge-notify">1</span>
+                {notifications.length > 0 && (
+                  <span className="badge-notify">{notifications.length}</span>
+                )}
               </a>
               <div
                 className="dropdown-menu dropdown-notify dropdown-menu-end shadow"
@@ -368,7 +383,11 @@ const Header = () => {
                         </div>
                       </div>
                       <div>
-                        <div className="dropdown-item d-flex align-items-center gap-2 py-2">
+                        <div
+                          className="dropdown-item d-flex align-items-center gap-2 py-2"
+                          onClick={handleMarkAllAsRead}
+                          style={{ cursor: 'pointer' }}
+                        >
                           <DoneAllOutlinedIcon style={{ fontSize: '1rem' }} />
                           Mark all as read
                         </div>
@@ -400,158 +419,60 @@ const Header = () => {
                   </div>
                 </div>
                 <PerfectScrollbar className="notify-list">
-                  <div>
-                    <div>
-                      <div className="dropdown-item border-bottom py-2">
-                        <div className="d-flex align-items-center gap-3">
-                          <div className="">
-                            <img
-                              src={maleImage}
-                              className="rounded-circle"
-                              width="45"
-                              height="45"
-                              alt=""
-                            />
-                          </div>
-                          <div className="">
-                            <h5 className="notify-title">
-                              Welcome to Gyansetu
-                            </h5>
-                            <p className="mb-0 notify-desc">
-                              You&apos;ve successfully completed your profile
-                            </p>
-                            <p className="mb-0 notify-time">Today</p>
-                          </div>
-                          <div className="notify-close position-absolute end-0 me-3">
-                            <CloseOutlinedIcon />
+                  {notifications.length > 0 ? (
+                    notifications.map((notification) => (
+                      <div key={notification.id}>
+                        <div className="dropdown-item border-bottom py-2">
+                          <div className="d-flex align-items-center gap-3">
+                            <div className="">
+                              {notification.image ? (
+                                <img
+                                  src={notification.image}
+                                  className="rounded-circle"
+                                  width="45"
+                                  height="45"
+                                  alt=""
+                                />
+                              ) : (
+                                <div
+                                  className={`user-wrapper ${notification.avatarBg || 'bg-primary'} ${notification.avatarBg?.replace('bg-', 'text-') || 'text-primary'} bg-opacity-10`}
+                                >
+                                  <span>{notification.avatarText || 'N'}</span>
+                                </div>
+                              )}
+                            </div>
+                            <div className="">
+                              <h5 className="notify-title">
+                                {notification.title}
+                              </h5>
+                              <p className="mb-0 notify-desc">
+                                {notification.description}
+                              </p>
+                              <p className="mb-0 notify-time">
+                                {notification.time}
+                              </p>
+                            </div>
+                            <div
+                              className="notify-close position-absolute end-0 me-3"
+                              onClick={() =>
+                                handleCloseNotification(notification.id)
+                              }
+                              style={{ cursor: 'pointer' }}
+                            >
+                              <CloseOutlinedIcon />
+                            </div>
                           </div>
                         </div>
                       </div>
+                    ))
+                  ) : (
+                    <div className="p-3 text-center">
+                      <p>No notifications</p>
                     </div>
-                    {/* <div>
-                      <div className="dropdown-item border-bottom py-2">
-                        <div className="d-flex align-items-center gap-3">
-                          <div className="user-wrapper bg-primary text-primary bg-opacity-10">
-                            <span>RS</span>
-                          </div>
-                          <div className="">
-                            <h5 className="notify-title">
-                              New Account Created
-                            </h5>
-                            <p className="mb-0 notify-desc">
-                              From USA an user has registered.
-                            </p>
-                            <p className="mb-0 notify-time">Yesterday</p>
-                          </div>
-                          <div className="notify-close position-absolute end-0 me-3">
-                            <CloseOutlinedIcon />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div>
-                      <div className="dropdown-item border-bottom py-2">
-                        <div className="d-flex align-items-center gap-3">
-                          <div className="">
-                            <img
-                              src={App13}
-                              className="rounded-circle"
-                              width="45"
-                              height="45"
-                              alt=""
-                            />
-                          </div>
-                          <div className="">
-                            <h5 className="notify-title">Payment Recived</h5>
-                            <p className="mb-0 notify-desc">
-                              New payment recived successfully
-                            </p>
-                            <p className="mb-0 notify-time">1d ago</p>
-                          </div>
-                          <div className="notify-close position-absolute end-0 me-3">
-                            <CloseOutlinedIcon />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div>
-                      <div className="dropdown-item border-bottom py-2">
-                        <div className="d-flex align-items-center gap-3">
-                          <div className="">
-                            <img
-                              src={App14}
-                              className="rounded-circle"
-                              width="45"
-                              height="45"
-                              alt=""
-                            />
-                          </div>
-                          <div className="">
-                            <h5 className="notify-title">New Order Recived</h5>
-                            <p className="mb-0 notify-desc">
-                              Recived new order from michle
-                            </p>
-                            <p className="mb-0 notify-time">2:15 AM</p>
-                          </div>
-                          <div className="notify-close position-absolute end-0 me-3">
-                            <CloseOutlinedIcon />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div>
-                      <div className="dropdown-item border-bottom py-2">
-                        <div className="d-flex align-items-center gap-3">
-                          <div className="">
-                            <img
-                              src={Avatar6}
-                              className="rounded-circle"
-                              width="45"
-                              height="45"
-                              alt=""
-                            />
-                          </div>
-                          <div className="">
-                            <h5 className="notify-title">
-                              Congratulations Jhon
-                            </h5>
-                            <p className="mb-0 notify-desc">
-                              Many congtars jhon. You have won the gifts.
-                            </p>
-                            <p className="mb-0 notify-time">Today</p>
-                          </div>
-                          <div className="notify-close position-absolute end-0 me-3">
-                            <CloseOutlinedIcon />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div>
-                      <div className="dropdown-item py-2">
-                        <div className="d-flex align-items-center gap-3">
-                          <div className="user-wrapper bg-danger text-danger bg-opacity-10">
-                            <span>PK</span>
-                          </div>
-                          <div className="">
-                            <h5 className="notify-title">
-                              New Account Created
-                            </h5>
-                            <p className="mb-0 notify-desc">
-                              From USA an user has registered.
-                            </p>
-                            <p className="mb-0 notify-time">Yesterday</p>
-                          </div>
-                          <div className="notify-close position-absolute end-0 me-3">
-                            <CloseOutlinedIcon />
-                          </div>
-                        </div>
-                      </div>
-                    </div> */}
-                  </div>
+                  )}
                 </PerfectScrollbar>
               </div>
             </li>
-
             <li className="nav-item dropdown">
               <a
                 href="javascrpt:;"
@@ -603,32 +524,27 @@ const Header = () => {
                   className="dropdown-item d-flex align-items-center gap-2 py-2"
                   onClick={gotoProfile}
                 >
-                  <PersonOutlineOutlinedIcon />
-                  Profile
+                  <PersonOutlineOutlinedIcon /> Profile
                 </button>
                 <Link
                   className="dropdown-item d-flex align-items-center gap-2 py-2"
                   to={dashboardURL}
                 >
-                  <DashboardOutlinedIcon />
-                  Dashboard
+                  <DashboardOutlinedIcon /> Dashboard
                 </Link>
                 <Link
                   className="dropdown-item d-flex align-items-center gap-2 py-2"
                   to="/main/changepassword"
                 >
-                  <LockResetOutlinedIcon />
-                  Change Password
+                  <LockResetOutlinedIcon /> Change Password
                 </Link>
-
                 <hr className="dropdown-divider" />
                 <button
                   data-testid="logout-btn"
                   className="dropdown-item d-flex align-items-center gap-2 py-2"
                   onClick={() => handlogout()}
                 >
-                  <PowerSettingsNewOutlinedIcon />
-                  Logout
+                  <PowerSettingsNewOutlinedIcon /> Logout
                 </button>
               </div>
             </li>
