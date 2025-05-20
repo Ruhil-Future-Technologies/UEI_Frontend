@@ -27,6 +27,7 @@ export const QUERY_KEYS = {
   CHAT_LISTGETALL: '/Chatbot/getalldata',
   INSITUTE_APPROVE: './institute/approve',
   INSITUTE_DISAPPROVE: './institute/disapprove',
+  GET_STUDENT_SESSION: '/session/student-individual-stats/',
 };
 export const QUERY_KEYS_STUDENT = {
   GET_STUDENT: '/student/list',
@@ -191,7 +192,7 @@ export const QUERY_KEYS_HOBBY = {
 };
 export const QUERY_KEYS_FEEDBACK = {
   GET_FEEDBACK: '/feedback/list',
-  GET_BY_ID:'/feedback/',
+  GET_BY_ID: '/feedback/',
   FEEDBACK_ADD: '/feedback/add',
   FEEDBACK_EDIT: '/feedback/edit',
   FEEDBACK_DELETE: '/feedback/delete',
@@ -199,14 +200,14 @@ export const QUERY_KEYS_FEEDBACK = {
   GET_FEEDBACK_DEACTIVE: '/feedback/deactivate',
 };
 export const QUERY_KEYS_STUDENT_FEEDBACK = {
-  GET_FEEDBACKS_BY_STUDENT:'/feedback/all_student_feedback',
+  GET_FEEDBACKS_BY_STUDENT: '/feedback/all_student_feedback',
   GET_FEEDBACK: '/feedback/student_feedback/',
   FEEDBACK_ADD: '/feedback/student_feedback',
   GET_FEEDBACK_ACTIVE: '/feedback/student_activate',
   GET_FEEDBACK_DEACTIVE: '/feedback/student_deactivate',
 };
 export const QUERY_KEYS_TEACHER_FEEDBACK = {
-  GET_FEEDBACKS_BY_TEACHERS:'/feedback/all_teacher_feedback',
+  GET_FEEDBACKS_BY_TEACHERS: '/feedback/all_teacher_feedback',
   FEEDBACK_ADD: '/feedback/teacher_feedback',
   FEEDBACK_EDIT: '/feedback/teacher_feedback/',
   GET_FEEDBACK_ACTIVE: '/feedback/teacher_activate',
@@ -286,6 +287,7 @@ export const QUERY_KEYS_ASSIGNMENT = {
   ASSIGNMENT_DOC_EDIT: '/assignment/edit-assignment-docs/',
   GET_TOP3: '/assignment/top3-students/',
   STATS_FOR_TEACHER: '/assignment/stats-for-teacher/',
+  STATS_FOR_STUDENT: '/assignment/stats-for-student/',
 };
 
 export const QUERY_KEYS_ASSIGNMENT_SUBMISSION = {
