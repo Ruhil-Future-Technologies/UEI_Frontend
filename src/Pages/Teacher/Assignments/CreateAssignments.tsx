@@ -720,7 +720,7 @@ export const CreateAssignments = () => {
 
             const uniqueStreamKeys = [...new Set(streeamKeys)];
 
-            setTeacherStream(uniqueStreamKeys);
+            setTeacherStream(uniqueStreamKeys.filter((item)=>item!="general"));
 
             const classIds = Object.keys(data.data.class_stream_subjects)?.map(
               (classKey) => parseInt(classKey, 10),
