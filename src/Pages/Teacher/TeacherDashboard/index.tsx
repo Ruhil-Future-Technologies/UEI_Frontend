@@ -139,7 +139,7 @@ const TeacherDash = () => {
 
   useEffect(() => {
     callAPI();
-  }, []);
+  }, [userId]);
 
   const sortedStudents = [...topStudents].sort(
     (a, b) => b.score_percentage - a.score_percentage,
@@ -1196,7 +1196,7 @@ const TeacherDash = () => {
             <div className="card w-100">
               <div className="card-body">
                 <h6 className="text-center mb-5 fs-18">
-                  Top Students of
+                  Top Students of{' '}
                   {new Date().toLocaleString('default', { month: 'long' })}
                 </h6>
 

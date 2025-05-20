@@ -27,6 +27,7 @@ export const QUERY_KEYS = {
   CHAT_LISTGETALL: '/Chatbot/getalldata',
   INSITUTE_APPROVE: './institute/approve',
   INSITUTE_DISAPPROVE: './institute/disapprove',
+  GET_STUDENT_SESSION: '/session/student-individual-stats/',
 };
 export const QUERY_KEYS_STUDENT = {
   GET_STUDENT: '/student/list',
@@ -286,6 +287,7 @@ export const QUERY_KEYS_ASSIGNMENT = {
   ASSIGNMENT_DOC_EDIT: '/assignment/edit-assignment-docs/',
   GET_TOP3: '/assignment/top3-students/',
   STATS_FOR_TEACHER: '/assignment/stats-for-teacher/',
+  STATS_FOR_STUDENT: '/assignment/stats-for-student/',
 };
 
 export const QUERY_KEYS_ASSIGNMENT_SUBMISSION = {

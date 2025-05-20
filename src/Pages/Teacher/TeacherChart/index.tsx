@@ -289,7 +289,6 @@ const TeacherDashboardCharts = () => {
           formatter: function (val: number) {
             return val.toFixed(0);
           },
-          offsetY: -20,
         },
         fill: {
           type: ['solid', 'gradient', 'solid'],
@@ -317,6 +316,8 @@ const TeacherDashboardCharts = () => {
         yaxis: [
           {
             title: {
+              offsetX: -20,
+              offsetY: 0,
               text: 'Average Score',
               style: {
                 fontSize: '14px',
@@ -430,8 +431,8 @@ const TeacherDashboardCharts = () => {
         yaxis: {
           title: {
             text: 'Assignment Completion',
-            offsetX: 10,
-            offsetY: -10,
+            offsetX: 5,
+            offsetY: -5,
             style: {
               fontSize: '14px',
               fontWeight: 'bold',
@@ -528,7 +529,7 @@ const TeacherDashboardCharts = () => {
           options={transformSubjectData.performanceChartData.options}
           series={transformSubjectData.performanceChartData.series}
           type="bar"
-          height={400}
+          height={450}
         />
       </div>
     );
@@ -549,7 +550,7 @@ const TeacherDashboardCharts = () => {
           options={transformSubjectData.completionChartData.options}
           series={transformSubjectData.completionChartData.series}
           type="bar"
-          height={400}
+          height={450}
         />
       </div>
     );
