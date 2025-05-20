@@ -251,6 +251,7 @@ export const QUERY_KEYS_STUDENT_SUBJECT_PREFERENCE = {
   GET_ADMIN_STUDENT_SUBJECT_PREFERENCE: '/subject_preference/list',
   ADMIN_ADD_STUDENT_SUBJECT_PREFERENCE: '/subject_preference/add',
   ADMIN_EDIT_STUDENT_SUBJECT_PREFERENCE: '/subject_preference/edit',
+  STUDENT_SUBJECT_PREFRENCE_BY_ID:'/subject_preference/get/'
 };
 
 export const QUERY_KEYS_CONTENT = {

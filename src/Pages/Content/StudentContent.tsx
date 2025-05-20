@@ -35,6 +35,7 @@ import {
   QUERY_KEYS_CONTENT,
   QUERY_KEYS_SEMESTER,
   QUERY_KEYS_STUDENT,
+  QUERY_KEYS_STUDENT_SUBJECT_PREFERENCE,
   QUERY_KEYS_SUBJECT,
   QUERY_KEYS_SUBJECT_SCHOOL,
 } from '../../utils/const';
@@ -114,7 +115,7 @@ const StudentContent = () => {
         `${QUERY_KEYS_STUDENT.STUDENT_GET_PROFILE}/${user_uuid}`,
       );
 
-      const studentSubjectPrefrence = await getData('/subject_preference/get/' + StudentId);
+      const studentSubjectPrefrence = await getData(QUERY_KEYS_STUDENT_SUBJECT_PREFERENCE.STUDENT_SUBJECT_PREFRENCE_BY_ID + StudentId);
       if (studentProfileData.status) {
         const studentPreference = studentProfileData?.data?.subject_preference;
         const studentCourseId = studentPreference?.course_id;
