@@ -191,6 +191,7 @@ export const QUERY_KEYS_HOBBY = {
 };
 export const QUERY_KEYS_FEEDBACK = {
   GET_FEEDBACK: '/feedback/list',
+  GET_BY_ID: '/feedback/',
   FEEDBACK_ADD: '/feedback/add',
   FEEDBACK_EDIT: '/feedback/edit',
   FEEDBACK_DELETE: '/feedback/delete',
@@ -198,10 +199,18 @@ export const QUERY_KEYS_FEEDBACK = {
   GET_FEEDBACK_DEACTIVE: '/feedback/deactivate',
 };
 export const QUERY_KEYS_STUDENT_FEEDBACK = {
-  GET_FEEDBACK: '/feedback/all_student_feedback',
+  GET_FEEDBACKS_BY_STUDENT: '/feedback/all_student_feedback',
+  GET_FEEDBACK: '/feedback/student_feedback/',
   FEEDBACK_ADD: '/feedback/student_feedback',
-  GET_FEEDBACK_ACTIVE: '/feedback/activate',
-  GET_FEEDBACK_DEACTIVE: '/feedback/deactivate',
+  GET_FEEDBACK_ACTIVE: '/feedback/student_activate',
+  GET_FEEDBACK_DEACTIVE: '/feedback/student_deactivate',
+};
+export const QUERY_KEYS_TEACHER_FEEDBACK = {
+  GET_FEEDBACKS_BY_TEACHERS: '/feedback/all_teacher_feedback',
+  FEEDBACK_ADD: '/feedback/teacher_feedback',
+  FEEDBACK_EDIT: '/feedback/teacher_feedback/',
+  GET_FEEDBACK_ACTIVE: '/feedback/teacher_activate',
+  GET_FEEDBACK_DEACTIVE: '/feedback/teacher_deactivate',
 };
 export const QUERY_KEYS_ADMIN_BASIC_INFO = {
   GET_ADMIN_BASIC_INFO: '/admin/list',
@@ -235,7 +244,7 @@ export const QUERY_KEYS_STUDENT_ACADEMIC_HISTORY = {
   GET_ADMIN_STUDENT_ACADEMIC_HISTORY: '/student_academic_history/list',
   ADMIN_ADD_STUDENT_ACADEMIC_HISTORY: '/student_academic_history/add',
   ADMIN_EDIT_STUDENT_ACADEMIC_HISTORY: '/student_academic_history/edit',
-  NEW_STUDENT_ACADEMIC_HISTORY:'new_student_academic_history/get/'
+  NEW_STUDENT_ACADEMIC_HISTORY: 'new_student_academic_history/get/',
 };
 export const QUERY_KEYS_STUDENT_SUBJECT_PREFERENCE = {
   GET_ADMIN_STUDENT_SUBJECT_PREFERENCE: '/subject_preference/list',
@@ -275,6 +284,8 @@ export const QUERY_KEYS_ASSIGNMENT = {
   ADD_ASSIGNMENT: 'assignment/add',
   GENERATE_AI_ASSIGNMENT: '/AIchatbot/generate-questions',
   ASSIGNMENT_DOC_EDIT: '/assignment/edit-assignment-docs/',
+  GET_TOP3: '/assignment/top3-students/',
+  STATS_FOR_TEACHER: '/assignment/stats-for-teacher/',
 };
 
 export const QUERY_KEYS_ASSIGNMENT_SUBMISSION = {

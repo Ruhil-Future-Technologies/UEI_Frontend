@@ -61,7 +61,7 @@ const Content = () => {
 
   const getUniversityName = (id: string) => {
     return collegeInstitutes?.find((inst) => inst.university_id == id)
-      ?.institute_name;
+      ?.university_name;
   };
 
   const getCourseOrClassName = (ids: any, type: string): string => {
