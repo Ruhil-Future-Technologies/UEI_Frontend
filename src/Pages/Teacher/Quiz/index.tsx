@@ -182,7 +182,7 @@ const TeacherQuizPage = () => {
 
             const uniqueStreamKeys = [...new Set(streeamKeys)];
 
-            setTeacherStream(uniqueStreamKeys);
+            setTeacherStream(uniqueStreamKeys.filter((item)=>item !="general"));
 
             const classIds = Object.keys(data.data.class_stream_subjects)?.map(
               (classKey) => parseInt(classKey, 10),
@@ -698,8 +698,33 @@ const TeacherQuizPage = () => {
               };
             }
           }
-          const filteredQuiz = quizData.filter((quiz) =>
-            Object.keys(quiz?.class_stream_subjects)[0] == value
+          const filteredQuiz = quizData.filter((quiz) => {
+            if (statusFilter != '') {
+              if (statusFilter == 'all') {
+                return (
+                  Object.keys(quiz?.class_stream_subjects)[0] == value)
+              } else
+                if (statusFilter === 'closed') {
+                  return (
+                    quiz.status == statusFilter && Object.keys(quiz?.class_stream_subjects)[0] == value
+                  )
+                } else if (statusFilter === 'draft') {
+                  return (quiz.save_draft === true &&
+                    Object.keys(quiz?.class_stream_subjects)[0] == value
+                  )
+                } else {
+                  return (
+                    !quiz.save_draft && quiz.status !== 'closed' &&
+                    Object.keys(quiz?.class_stream_subjects)[0] == value
+                  )
+                }
+            } else {
+              return (
+                Object.keys(quiz?.class_stream_subjects)[0] == value
+              );
+            }
+          }
+
           )
           setFilteredQuizzes(filteredQuiz);
         }
@@ -723,7 +748,31 @@ const TeacherQuizPage = () => {
             const stream = Object.keys(
               quiz?.class_stream_subjects?.[classId],
             )[0];
-            return (classId == boxesForSchool[index].class_id, stream == value)
+            if (statusFilter != '') {
+              if (statusFilter == 'all') {
+                return (
+                  (classId == boxesForSchool[index].class_id, stream == value)
+                )
+              } else
+                if (statusFilter === 'closed') {
+                  return (
+                    quiz.status == statusFilter && (classId == boxesForSchool[index].class_id, stream == value)
+                  )
+                } else if (statusFilter === 'draft') {
+                  return (quiz.save_draft === true &&
+                    (classId == boxesForSchool[index].class_id, stream == value)
+                  )
+                } else {
+                  return (
+                    !quiz.save_draft && quiz.status !== 'closed' &&
+                    (classId == boxesForSchool[index].class_id, stream == value))
+                }
+            } else {
+              return (
+                (classId == boxesForSchool[index].class_id, stream == value)
+              );
+            }
+
           })
           setFilteredQuizzes(filteredQuiz);
         }
@@ -1289,7 +1338,7 @@ const TeacherQuizPage = () => {
                             >
                               {quiz.semester
                                 ? `Semester ${quiz.semester}`
-                                : `Stream ${quiz.stream}`}
+                                : quiz.stream =="general"?"":`Stream ${quiz.stream}`}
                             </Typography>
                             <Typography
                               variant="body2"

@@ -431,15 +431,15 @@ const TeacherDash = () => {
   };
   const handleError = (e: {
     message:
-      | string
-      | number
-      | boolean
-      | React.ReactElement<any, string | React.JSXElementConstructor<any>>
-      | Iterable<React.ReactNode>
-      | React.ReactPortal
-      | ((props: ToastContentProps<unknown>) => React.ReactNode)
-      | null
-      | undefined;
+    | string
+    | number
+    | boolean
+    | React.ReactElement<any, string | React.JSXElementConstructor<any>>
+    | Iterable<React.ReactNode>
+    | React.ReactPortal
+    | ((props: ToastContentProps<unknown>) => React.ReactNode)
+    | null
+    | undefined;
   }) => {
     setChatLoader(false);
     toast.error(e?.message, {
@@ -1006,7 +1006,7 @@ const TeacherDash = () => {
         const isMatch =
           item.question === selectedchat[index].question &&
           JSON.stringify(item.answer) ===
-            JSON.stringify(selectedchat[index].answer);
+          JSON.stringify(selectedchat[index].answer);
 
         if (isMatch) {
           return {
@@ -1042,7 +1042,7 @@ const TeacherDash = () => {
         const isMatch =
           item.question === selectedchat[index].question &&
           JSON.stringify(item.answer) ===
-            JSON.stringify(selectedchat[index].answer);
+          JSON.stringify(selectedchat[index].answer);
 
         if (isMatch) {
           return {
@@ -1289,41 +1289,28 @@ const TeacherDash = () => {
                                   </div>
                                 </div>
 
-                                <div className="row g-2">
-                                  <div className="col-lg-6">
-                                    <div className="totallist">
-                                      <span>
-                                        <SupervisedUserCircleIcon />
-                                      </span>
-                                      <div className="">
-                                        <h6>Total Students</h6>{' '}
-                                        <p>
-                                          {
-                                            getFilteredStusents(
-                                              'college',
-                                              box?.course_id,
-                                              box?.semester_number,
-                                              subject,
-                                            )?.length
-                                          }
-                                        </p>
+                                  <div className="row g-2">
+                                    <div className="col-lg-6">
+                                      <div className="totallist">
+                                        <span>
+                                          <SupervisedUserCircleIcon />
+                                        </span>
+                                        <div className="">
+                                          <h6>Total Students</h6> <p>{getFilteredStusents("college", box?.course_id, box?.semester_number, subject)?.length}</p>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div className="col-lg-6">
+                                      <div className="totallist">
+                                        <span>
+                                          <StreamIcon />
+                                        </span>
+                                        <div className="">
+                                          <h6>Semester</h6> <p>{"semster " + box?.semester_number}</p>
+                                        </div>
                                       </div>
                                     </div>
                                   </div>
-                                  <div className="col-lg-6">
-                                    <div className="totallist">
-                                      <span>
-                                        <StreamIcon />
-                                      </span>
-                                      <div className="">
-                                        <h6>Semester</h6>{' '}
-                                        <p>
-                                          {'semster ' + box?.semester_number}
-                                        </p>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
 
                                 <button
                                   className="btn btn-outline-primary mt-4 w-100"
@@ -1362,56 +1349,46 @@ const TeacherDash = () => {
                                   </div>
                                 </div>
 
-                                <div className="row g-2">
-                                  <div className="col-lg-6">
-                                    <div className="totallist">
-                                      <span>
-                                        <SupervisedUserCircleIcon />
-                                      </span>
-                                      <div className="">
-                                        <h6>Total Students</h6>{' '}
-                                        <p>
-                                          {
-                                            getFilteredStusents(
-                                              'school',
-                                              box?.class_id,
-                                              box?.stream,
-                                              subject,
-                                            )?.length
-                                          }
-                                        </p>
+                                  <div className="row g-2">
+                                    <div className="col-lg-6">
+                                      <div className="totallist">
+                                        <span>
+                                          <SupervisedUserCircleIcon />
+                                        </span>
+                                        <div className="">
+                                          <h6>Total Students</h6> <p>{getFilteredStusents("school", box?.class_id, box?.stream, subject)?.length}</p>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div className="col-lg-6">
+                                      <div className="totallist">
+                                        <span>
+                                          <StreamIcon />
+                                        </span>
+                                        <div className="">
+                                          <h6>Stream</h6> <p>{box?.stream}</p>
+                                        </div>
                                       </div>
                                     </div>
                                   </div>
-                                  <div className="col-lg-6">
-                                    <div className="totallist">
-                                      <span>
-                                        <StreamIcon />
-                                      </span>
-                                      <div className="">
-                                        <h6>Stream</h6> <p>{box?.stream}</p>
-                                      </div>
-                                    </div>
-                                  </div>
+                                  <button
+                                    className="btn btn-outline-primary mt-4 w-100"
+                                    onClick={() =>
+                                      navigate(`/teacher-dashboard/student-details?class_id=${box?.class_id}&stream=${box.stream}&subject=${subject}`)
+                                    }
+                                  >
+                                    View Students
+                                  </button>
                                 </div>
-                                <button
-                                  className="btn btn-outline-primary mt-4 w-100"
-                                  onClick={() =>
-                                    navigate(
-                                      `/teacher-dashboard/student-details?class_id=${box?.class_id}&stream=${box.stream}&subject=${subject}`,
-                                    )
-                                  }
-                                >
-                                  View Students
-                                </button>
                               </div>
-                            </div>
-                          </SwiperSlide>
-                        ))}
-                      </div>
-                    ))}
-                  </>
-                )}
+                            </SwiperSlide>
+                          ))}
+                        </div>
+                      ))}
+                    </>
+
+                  )
+                }
               </Swiper>
             </div>
           </div>
