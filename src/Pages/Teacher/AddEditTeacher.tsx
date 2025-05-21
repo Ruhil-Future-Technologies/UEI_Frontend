@@ -1566,6 +1566,9 @@ const AddEditTeacher = () => {
                             label="First Name *"
                             name="first_name"
                             value={values?.first_name}
+                            inputProps={{
+                              'data-id': 'first-name',
+                            }}
                             onChange={(
                               e: React.ChangeEvent<HTMLInputElement>,
                             ) => handleChange(e, 'first_name')}
@@ -1585,6 +1588,9 @@ const AddEditTeacher = () => {
                             label="Last Name *"
                             name="last_name"
                             value={values?.last_name}
+                            inputProps={{
+                              'data-id': 'last-name',
+                            }}
                             onChange={(
                               e: React.ChangeEvent<HTMLInputElement>,
                             ) => handleChange(e, 'last_name')}
@@ -1602,6 +1608,9 @@ const AddEditTeacher = () => {
                               name="gender"
                               value={values?.gender || ''}
                               label="Gender *"
+                              inputProps={{
+                                'data-id': 'gender',
+                              }}
                               onChange={(e: SelectChangeEvent<string>) =>
                                 handleChange(e, 'gender')
                               }
@@ -1639,6 +1648,7 @@ const AddEditTeacher = () => {
                                     variant: 'outlined',
 
                                     inputProps: {
+                                      'data-id': 'dob',
                                       maxLength: 10,
                                       'aria-label': 'datepicker_label',
                                     },
@@ -1662,6 +1672,9 @@ const AddEditTeacher = () => {
                             name="email"
                             type="email"
                             value={values?.email}
+                            inputProps={{
+                              'data-id': 'email',
+                            }}
                             onChange={(
                               e: React.ChangeEvent<HTMLInputElement>,
                             ) => handleChange(e, 'email')}
@@ -1678,7 +1691,10 @@ const AddEditTeacher = () => {
                             component={TextField}
                             label="Mobile Number*"
                             name="phone"
-                            inputProps={{ maxLength: 10 }}
+                            inputProps={{
+                              maxLength: 10,
+                              'data-id': 'phone',
+                            }}
                             value={values?.phone}
                             onChange={(
                               e: React.ChangeEvent<HTMLInputElement>,
@@ -1701,6 +1717,9 @@ const AddEditTeacher = () => {
                               onChange={(e: SelectChangeEvent<string>) =>
                                 handleChange(e, 'qualification')
                               }
+                              inputProps={{
+                                'data-id': 'qualification',
+                              }}
                               sx={{
                                 backgroundColor: inputfield(namecolor),
                                 color: inputfieldtext(namecolor),
@@ -1750,6 +1769,9 @@ const AddEditTeacher = () => {
                             label="Experience (years) *"
                             name="experience"
                             type="number"
+                            inputProps={{
+                              'data-id': 'experience',
+                            }}
                             value={values?.experience}
                             onInput={(
                               e: React.ChangeEvent<HTMLInputElement>,
@@ -1785,6 +1807,9 @@ const AddEditTeacher = () => {
                               }}
                               label="Entity"
                               name="entity_id"
+                              inputProps={{
+                                'data-id': 'entity',
+                              }}
                               value={values?.entity_id}
                               disabled={user_type === 'institute'}
                               variant="outlined"
@@ -1857,6 +1882,9 @@ const AddEditTeacher = () => {
                               onChange={(e: SelectChangeEvent<string>) =>
                                 handleChange(e, 'university_id')
                               }
+                              inputProps={{
+                                'data-id': 'university',
+                              }}
                               style={{
                                 backgroundColor:
                                   isSchoolEntity(values?.entity_id) ||
@@ -1929,6 +1957,9 @@ const AddEditTeacher = () => {
                               name="institute_id"
                               value={values?.institute_id || ''}
                               disabled={user_type === 'institute'}
+                              inputProps={{
+                                'data-id': 'institute',
+                              }}
                               label={
                                 isSchoolEntity(values?.entity_id)
                                   ? 'School Name *'
@@ -2008,6 +2039,9 @@ const AddEditTeacher = () => {
                                         name={`courses.${index}.course_id`}
                                         value={course.course_id}
                                         label="Course *"
+                                        inputProps={{
+                                          'data-id': 'course',
+                                        }}
                                         onChange={(
                                           e: SelectChangeEvent<string>,
                                         ) =>
@@ -2065,6 +2099,9 @@ const AddEditTeacher = () => {
                                         name={`courses.${index}.semester`}
                                         value={course.semester}
                                         label="Semester *"
+                                        inputProps={{
+                                          'data-id': 'semester',
+                                        }}
                                         onChange={(
                                           e: SelectChangeEvent<string>,
                                         ) =>
@@ -2126,6 +2163,9 @@ const AddEditTeacher = () => {
                                         name={`courses.${index}.subjects`}
                                         value={course.subjects}
                                         label="Subjects *"
+                                        inputProps={{
+                                          'data-id': 'subject',
+                                        }}
                                         onChange={(
                                           e: SelectChangeEvent<string[]>,
                                         ) =>
@@ -2259,6 +2299,9 @@ const AddEditTeacher = () => {
                                     <FormControl fullWidth>
                                       <InputLabel>Class *</InputLabel>
                                       <Select
+                                        inputProps={{
+                                          'data-id': 'class',
+                                        }}
                                         name={`classes.${index}.class_id`}
                                         value={cls.class_id}
                                         label="Class *"
@@ -2319,6 +2362,9 @@ const AddEditTeacher = () => {
                                       <FormControl fullWidth>
                                         <InputLabel>Stream *</InputLabel>
                                         <Select
+                                          inputProps={{
+                                            'data-id': 'stream',
+                                          }}
                                           name={`classes.${index}.stream`}
                                           value={cls.stream}
                                           label="Stream *"
@@ -2385,6 +2431,9 @@ const AddEditTeacher = () => {
                                       <Select
                                         multiple
                                         name={`classes.${index}.subjects`}
+                                        inputProps={{
+                                          'data-id': 'subjects',
+                                        }}
                                         value={
                                           Array.isArray(cls.subjects)
                                             ? cls.subjects
@@ -2534,6 +2583,9 @@ const AddEditTeacher = () => {
                             component={TextField}
                             label="Address *"
                             name="address"
+                            inputProps={{
+                              'data-id': 'address',
+                            }}
                             value={values?.address}
                             onChange={(
                               e: React.ChangeEvent<HTMLInputElement>,
@@ -2563,6 +2615,7 @@ const AddEditTeacher = () => {
                             classes="form-control custom-dropdown"
                             defaultOptionLabel={values?.country || ''}
                             value={values?.country || ''}
+                            data-id="country"
                             onChange={(e) =>
                               handleInputChangecountry(
                                 e,
@@ -2592,6 +2645,7 @@ const AddEditTeacher = () => {
                           tabIndex={-1}
                         >
                           <RegionDropdown
+                            data-id="state"
                             classes="form-control custom-dropdown"
                             defaultOptionLabel={values?.state || ''}
                             country={values?.country || ''}
@@ -2618,6 +2672,9 @@ const AddEditTeacher = () => {
                             component={TextField}
                             label="City *"
                             name="city"
+                            inputProps={{
+                              'data-id': 'city',
+                            }}
                             value={values?.city}
                             onChange={(
                               e: React.ChangeEvent<HTMLInputElement>,
@@ -2635,6 +2692,9 @@ const AddEditTeacher = () => {
                             component={TextField}
                             label="District *"
                             name="district"
+                            inputProps={{
+                              'data-id': 'district',
+                            }}
                             value={values?.district}
                             onChange={(
                               e: React.ChangeEvent<HTMLInputElement>,
@@ -2652,6 +2712,9 @@ const AddEditTeacher = () => {
                             component={TextField}
                             label="Pincode *"
                             name="pincode"
+                            inputProps={{
+                              'data-id': 'pincode',
+                            }}
                             value={values?.pincode}
                             onChange={(
                               e: React.ChangeEvent<HTMLInputElement>,
@@ -2668,6 +2731,7 @@ const AddEditTeacher = () => {
                           <UploadBtn
                             label="Upload Documents"
                             name="document"
+                            data-id="document"
                             accept=".pdf, .jpg, .jpeg, .png, .gif, .mp4"
                             handleFileChange={handleFileChange}
                           />
