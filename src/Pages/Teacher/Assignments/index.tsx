@@ -67,6 +67,7 @@ export const Assignments = () => {
   const [draftCount, setDreftCount] = useState(0);
   const teacher_uuid = localStorage.getItem('user_uuid');
   const [gradedCount, setGradedCount] = useState(0);
+  const [activeAssignmentCount,setActiveAssignmentCount]=useState(0);
 
   useEffect(() => {
     getListOfAssignments();
@@ -89,7 +90,12 @@ export const Assignments = () => {
               (assignmnet: any) =>
                 assignmnet.save_draft && assignmnet.created_by == teacher_uuid,
             );
+            const todayDate=new Date();
             setDreftCount(filteredassignmentcount.length);
+            const activeAssignment=filteredassignment.filter((item:any)=>
+             new Date(item.due_date_time)>=todayDate
+            )
+            setActiveAssignmentCount(activeAssignment.length);
             getData('/assignment_submission/list/').then((response: any) => {
               const uniqueGradedAssignments = new Set(
                 response?.data
@@ -269,6 +275,7 @@ export const Assignments = () => {
       }
     },
     {
+       id: 'class_stream_subjects_subject_names',
       accessorKey: 'class_stream_subjects',
       header:`${entiryType=="college"?"Course":"Class"}`,
       Cell: ({ row }: { row: MRT_Row<Assignment> }) => {
@@ -527,7 +534,7 @@ export const Assignments = () => {
                   <div>
                     <p className="mb-1">Active Assignment</p>
                     <h3 className="mb-0">
-                      {assignmentData.length - draftCount}
+                      {activeAssignmentCount}
                     </h3>
                   </div>
                   <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-grd-danger">

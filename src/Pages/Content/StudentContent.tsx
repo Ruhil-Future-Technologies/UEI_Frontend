@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, {  useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Tabs,
@@ -17,9 +17,9 @@ import {
   TableHead,
   TableRow,
   Paper,
- // Dialog,
- // DialogContent,
- // IconButton,
+  // Dialog,
+  // DialogContent,
+  // IconButton,
 } from '@mui/material';
 import NoteIcon from '@mui/icons-material/Note';
 import ArticleIcon from '@mui/icons-material/Article';
@@ -35,6 +35,7 @@ import {
   QUERY_KEYS_CONTENT,
   QUERY_KEYS_SEMESTER,
   QUERY_KEYS_STUDENT,
+  QUERY_KEYS_STUDENT_SUBJECT_PREFERENCE,
   QUERY_KEYS_SUBJECT,
   QUERY_KEYS_SUBJECT_SCHOOL,
 } from '../../utils/const';
@@ -83,6 +84,7 @@ const StudentContent = () => {
   const [notes, setNotes] = useState([]);
   const [researchPapers, setResearchPapers] = useState([]);
   const user_uuid = localStorage.getItem('user_uuid');
+  const StudentId = localStorage.getItem('_id');
   const [studentProfile, setStudentProfile] = useState<any>({});
   const [collegeSubjects, setCollegeSubjects] = useState<any[]>([]);
   const [schoolSubjects, setSchoolSubjects] = useState<any[]>([]);
@@ -113,6 +115,7 @@ const StudentContent = () => {
         `${QUERY_KEYS_STUDENT.STUDENT_GET_PROFILE}/${user_uuid}`,
       );
 
+      const studentSubjectPrefrence = await getData(QUERY_KEYS_STUDENT_SUBJECT_PREFERENCE.STUDENT_SUBJECT_PREFRENCE_BY_ID + StudentId);
       if (studentProfileData.status) {
         const studentPreference = studentProfileData?.data?.subject_preference;
         const studentCourseId = studentPreference?.course_id;
@@ -128,13 +131,20 @@ const StudentContent = () => {
               sem.semester_id ==
               studentProfileData?.data.subject_preference.sem_id,
           );
+          const filteredSub = college_subs?.filter((sub: any) => {
+              const isCourseMatch = sub.course_id ==studentProfileData?.data.subject_preference.course_id;
+              const isSemesterMatch = sub.semester_id == semester.semester_id;
 
-          const filteredSub = college_subs?.filter(
-            (sub: any) =>
-              sub.course_id ==
-                studentProfileData?.data.subject_preference.course_id &&
-              sub.semester_id == semester.semester_id,
-          );
+              let isInPreference = true; // default to true if no preference
+
+              if (studentSubjectPrefrence?.status && Array.isArray(studentSubjectPrefrence?.data)) {
+                isInPreference = studentSubjectPrefrence.data.some(
+                  (pref: any) => pref?.subject_id === sub.subject_id
+                );
+              }
+
+              return isCourseMatch && isSemesterMatch && isInPreference;
+            });
 
           setCollegeSubjects(filteredSub);
           if (contentData.status) {
@@ -177,11 +187,20 @@ const StudentContent = () => {
             studentProfileData?.data.class.name === 'class_11' ||
             studentProfileData?.data.class.name === 'class_12'
           ) {
-            const filteredSub = school_subs?.filter(
-              (sub: any) =>
-                sub.class_id == studentProfileData?.data.class.id &&
-                studentProfileData?.data.academic_history.stream == sub.stream,
-            );
+            const filteredSub = school_subs?.filter((sub: any) => {
+              const isClassMatch = sub.class_id === studentProfileData?.data?.class?.id;
+              const isStreamMatch = sub.stream === studentProfileData?.data?.academic_history?.stream;
+
+              let isInPreference = true; // default to true if no preference
+
+              if (studentSubjectPrefrence?.status && Array.isArray(studentSubjectPrefrence?.data)) {
+                isInPreference = studentSubjectPrefrence.data.some(
+                  (pref: any) => pref?.subject_id === sub.subject_id
+                );
+              }
+
+              return isClassMatch && isStreamMatch && isInPreference;
+            });
 
             setSchoolSubjects(filteredSub);
             if (contentData.status) {
@@ -221,9 +240,18 @@ const StudentContent = () => {
               );
             }
           } else {
-            const filteredSub = school_subs?.filter(
-              (sub: any) => sub.class_id == studentProfileData?.data.class.id,
-            );
+            const filteredSub = school_subs?.filter((sub: any) => {
+              const isClassMatch = sub.class_id === studentProfileData?.data?.class?.id;
+              let isInPreference = true; // default to true if no preference
+
+              if (studentSubjectPrefrence?.status && Array.isArray(studentSubjectPrefrence?.data)) {
+                isInPreference = studentSubjectPrefrence.data.some(
+                  (pref: any) => pref?.subject_id === sub.subject_id
+                );
+              }
+
+              return isClassMatch && isInPreference;
+            });
 
             setSchoolSubjects(filteredSub);
             if (contentData.status) {
@@ -414,26 +442,26 @@ const StudentContent = () => {
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
               <Tabs value={activeSubTab} onChange={handleSubjectChange} variant="scrollable" scrollButtons="auto">
                 {studentProfile &&
-                !Array.isArray(studentProfile) &&
-                studentProfile?.entity_name === 'college'
+                  !Array.isArray(studentProfile) &&
+                  studentProfile?.entity_name === 'college'
                   ? collegeSubjects.map((sub) => {
-                      return (
-                        <Tab
-                          key={sub?.subject_id}
-                          label={sub?.subject_name}
-                         
-                        />
-                      );
-                    })
+                    return (
+                      <Tab
+                        key={sub?.subject_id}
+                        label={sub?.subject_name}
+
+                      />
+                    );
+                  })
                   : schoolSubjects.map((sub) => {
-                      return (
-                        <Tab
-                          key={sub?.subject_id}
-                          label={sub?.subject_name}
-                         
-                        />
-                      );
-                    })}
+                    return (
+                      <Tab
+                        key={sub?.subject_id}
+                        label={sub?.subject_name}
+
+                      />
+                    );
+                  })}
               </Tabs>
               <Tabs
                 value={tabIndex}
@@ -471,7 +499,7 @@ const StudentContent = () => {
                   {videos.map((video: any) => (
                     <div className="col-lg-3" key={video.id}>
                       <Card
-                       // onClick={() => handleVideoOpen(video.url[0].url)}
+                        // onClick={() => handleVideoOpen(video.url[0].url)}
                         sx={{
                           borderRadius: 2,
                           boxShadow: 2,
@@ -488,7 +516,7 @@ const StudentContent = () => {
                           <CardMedia
                             component="img"
                             height="180"
-                            image="https://plus.unsplash.com/premium_photo-1695186450459-8d3c896ca573?q=80&w=768"
+                            image={`${video.thumbnail ? video.thumbnail : "https://plus.unsplash.com/premium_photo-1695186450459-8d3c896ca573?q=80&w=768"}`}
                             alt={video.title}
                           />
                           <CardContent>
@@ -526,7 +554,7 @@ const StudentContent = () => {
                       >
                         <CardMedia
                           component="img"
-                          image={Ebook}
+                          image={book.cover_page ? book.cover_page : Ebook}
                           height="180"
                           alt={book.description}
                         />
