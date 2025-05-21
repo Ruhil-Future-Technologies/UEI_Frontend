@@ -1333,7 +1333,7 @@ const TeacherDash = () => {
                   <>
                     {boxesForSchool?.map((box, boxIndex) => (
                       <div key={boxIndex}>
-                        {box?.subjects?.map((subject, subjectIndex) => (
+                         {Array.isArray(box?.subjects) && box?.subjects?.map((subject, subjectIndex) => (
                           <SwiperSlide key={subjectIndex}>
                             <div className="card mb-0">
                               <div className="card-body">
