@@ -428,7 +428,7 @@ const InstitutionDash = () => {
                 <div className="swiper-next d-flex">
                   <ArrowForwardOutlinedIcon />
                 </div>
-                <Link to="/" className="d-block text-dark btn rounded-3 btn-sm">
+                <Link to="" className="d-block text-dark btn rounded-3 btn-sm">
                   See All
                 </Link>
               </div>
