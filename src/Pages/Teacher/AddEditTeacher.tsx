@@ -169,6 +169,8 @@ const AddEditTeacher = () => {
   const [error, setError] = React.useState<string | null>(null);
   const [allselectedfiles, setAllSelectedfiles] = useState<File[]>([]);
   const [allfiles, setAllfiles] = useState<[]>([]);
+  const user_type = localStorage.getItem('user_type') || '';
+  const user_uuid = localStorage.getItem('user_uuid');
 
   const isSchoolEntity = (entityId: string | string[]): boolean => {
     const selectedEntity = dataEntity?.find(
@@ -384,6 +386,18 @@ const AddEditTeacher = () => {
           theme: 'colored',
         });
       }
+    }
+    if (user_type === 'institute') {
+      await getData(`${QUERY_KEYS.INSTITUTE_EDIT}/${user_uuid}`).then(
+        (data) => {
+          setTeacher((prevState) => ({
+            ...prevState,
+            entity_id: data?.data.entity_id,
+            university_id: data?.data.university_id,
+            institute_id: data?.data.id,
+          }));
+        },
+      );
     }
   };
 
@@ -950,7 +964,11 @@ const AddEditTeacher = () => {
         putData(`${QUERY_KEYS_TEACHER.TEACHER_EDIT}/${id}`, formData)
           .then((data: any) => {
             if (data.status) {
-              navigator('/main/Teacher');
+              if (user_type === 'admin') {
+                navigator('/main/Teacher');
+              } else if (user_type === 'institute') {
+                navigator('/institution-dashboard/Teacher');
+              }
               toast.success(data.message, {
                 hideProgressBar: true,
                 theme: 'colored',
@@ -979,7 +997,12 @@ const AddEditTeacher = () => {
             putData(`${QUERY_KEYS_TEACHER.TEACHER_EDIT}/${id}`, formData)
               .then((data: any) => {
                 if (data.status) {
-                  navigator('/main/Teacher');
+                  if (user_type === 'admin') {
+                    navigator('/main/Teacher');
+                  } else if (user_type === 'institute') {
+                    navigator('/institution-dashboard/Teacher');
+                  }
+
                   toast.success(data.message, {
                     hideProgressBar: true,
                     theme: 'colored',
@@ -1763,6 +1786,7 @@ const AddEditTeacher = () => {
                               label="Entity"
                               name="entity_id"
                               value={values?.entity_id}
+                              disabled={user_type === 'institute'}
                               variant="outlined"
                               sx={{
                                 backgroundColor: inputfield(namecolor),
@@ -1778,6 +1802,20 @@ const AddEditTeacher = () => {
                                     color: inputfieldtext(namecolor),
                                   },
                                 },
+                              }}
+                              style={{
+                                backgroundColor:
+                                  user_type === 'institute'
+                                    ? '#f0f0f0'
+                                    : inputfield(namecolor),
+                                color:
+                                  user_type === 'institute'
+                                    ? '#999999'
+                                    : inputfieldtext(namecolor),
+                                border:
+                                  user_type === 'institute'
+                                    ? '1px solid #d0d0d0'
+                                    : undefined,
                               }}
                             >
                               {dataEntity?.map((item, idx) => (
@@ -1820,11 +1858,11 @@ const AddEditTeacher = () => {
                                 handleChange(e, 'university_id')
                               }
                               style={{
-                                backgroundColor: isSchoolEntity(
-                                  values?.entity_id,
-                                )
-                                  ? '#f0f0f0'
-                                  : inputfield(namecolor),
+                                backgroundColor:
+                                  isSchoolEntity(values?.entity_id) ||
+                                  user_type === 'institute'
+                                    ? '#f0f0f0'
+                                    : inputfield(namecolor),
                                 color: isSchoolEntity(values?.entity_id)
                                   ? '#999999'
                                   : inputfieldtext(namecolor),
@@ -1832,7 +1870,10 @@ const AddEditTeacher = () => {
                                   ? '1px solid #d0d0d0'
                                   : undefined,
                               }}
-                              disabled={isSchoolEntity(values?.entity_id)}
+                              disabled={
+                                isSchoolEntity(values?.entity_id) ||
+                                user_type === 'institute'
+                              }
                               sx={{
                                 backgroundColor: inputfield(namecolor),
                                 color: inputfieldtext(namecolor),
@@ -1887,6 +1928,7 @@ const AddEditTeacher = () => {
                             <Select
                               name="institute_id"
                               value={values?.institute_id || ''}
+                              disabled={user_type === 'institute'}
                               label={
                                 isSchoolEntity(values?.entity_id)
                                   ? 'School Name *'
@@ -1911,6 +1953,20 @@ const AddEditTeacher = () => {
                                     color: inputfieldtext(namecolor),
                                   },
                                 },
+                              }}
+                              style={{
+                                backgroundColor:
+                                  user_type === 'institute'
+                                    ? '#f0f0f0'
+                                    : inputfield(namecolor),
+                                color:
+                                  user_type === 'institute'
+                                    ? '#999999'
+                                    : inputfieldtext(namecolor),
+                                border:
+                                  user_type === 'institute'
+                                    ? '1px solid #d0d0d0'
+                                    : undefined,
                               }}
                             >
                               {filteredInstitutes?.map((institute: any) => (
