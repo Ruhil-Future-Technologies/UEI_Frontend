@@ -374,7 +374,7 @@ const Bulkupload = () => {
         };
 
         formData.append('institute_id', selectInstiutte);
-        formData.append('entity', JSON.stringify(selectedEntity));
+        formData.append('entity', selectedEntity);
         formData.append('subject_preference', JSON.stringify(subject_preference));
         formData.append('course', JSON.stringify(mainFieldValues.course));
         formData.append('semester', JSON.stringify(mainFieldValues.semester));
@@ -411,13 +411,13 @@ const Bulkupload = () => {
         };
 
         formData.append('institute_id', selectInstiutte);
-        formData.append('entity', JSON.stringify(selectedEntity));
+        formData.append('entity', selectedEntity);
         formData.append('subject_preference', JSON.stringify(subject_preference));
         formData.append('class', JSON.stringify(mainFieldValues.class));
         if (mainFieldValues.stream) {
-            formData.append('stream', JSON.stringify(mainFieldValues.stream));
+            formData.append('stream', mainFieldValues.stream);
         } else {
-            formData.append('stream', JSON.stringify("general"));
+            formData.append('stream', "general");
         }
 
         try {
