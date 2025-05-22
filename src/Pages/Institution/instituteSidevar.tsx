@@ -113,6 +113,18 @@ const InstituteSidevar = () => {
               <div className="menu-title">Student</div>
             </Link>
           </li>
+          <li>
+            <Link
+              to="/institution-dashboard/bulkupload"
+              onClick={removeMobileToggle}
+            >
+              <div className="parent-icon">
+                {' '}
+                <LibraryBooksOutlinedIcon />
+              </div>
+              <div className="menu-title">Bluk Data upload</div>
+            </Link>
+          </li>
 
           {/* <!-- <li>
                     <a href="javascript:;" className="has-arrow">
