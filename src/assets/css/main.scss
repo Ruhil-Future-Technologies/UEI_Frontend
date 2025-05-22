@@ -1966,3 +1966,13 @@ font-size: 14px;
     
   }
 }
+
+.App{
+  position: relative;
+}
+
+@media (max-width:768px) {
+  .main-wrapper{
+    min-height: 100vh;
+  }
+}

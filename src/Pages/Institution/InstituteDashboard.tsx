@@ -170,8 +170,8 @@ const InstitutionDash = () => {
   ];
 
   return (
-    <div className="main-wrapper">
-      <div className="main-content">
+    <div className="main-wrapper pb-5">
+      <div className="main-content pb-5">
         <div className="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
           <HomeOutlinedIcon
             sx={{
