@@ -357,7 +357,7 @@ const TeacherDashboardCharts = () => {
           style: {
             fontSize: '18px',
             fontWeight: 700,
-            color: '#666666'
+            color: '#666666',
           },
         },
         tooltip: {
@@ -378,8 +378,8 @@ const TeacherDashboardCharts = () => {
           position: 'bottom',
           //horizontalAlign: 'center',
           labels: {
-              colors: ['#666', '#666', '#666', '#666'], // Change this to a dark/light color based on theme
-            },
+            colors: ['#666', '#666', '#666', '#666'], // Change this to a dark/light color based on theme
+          },
         },
         grid: {
           borderColor: '#f1f1f1',
@@ -429,8 +429,7 @@ const TeacherDashboardCharts = () => {
           theme: {
             mode: isDarkMode ? 'dark' : 'light',
           },
-          
-        
+
           zoom: {
             enabled: false,
           },
@@ -455,15 +454,13 @@ const TeacherDashboardCharts = () => {
             style: {
               fontSize: '14px',
               fontWeight: 'bold',
-              color: '#666'
+              color: '#666',
             },
           },
           labels: {
-            
-            
             style: {
-                colors: '#666', // color of x-axis labels
-              },
+              colors: '#666', // color of x-axis labels
+            },
           },
         },
         yaxis: {
@@ -474,7 +471,7 @@ const TeacherDashboardCharts = () => {
             style: {
               fontSize: '14px',
               fontWeight: 'bold',
-              color: '#666'
+              color: '#666',
             },
           },
           labels: {
@@ -482,8 +479,8 @@ const TeacherDashboardCharts = () => {
               return val.toFixed(0);
             },
             style: {
-                colors: '#666', // color of x-axis labels
-              },
+              colors: '#666', // color of x-axis labels
+            },
           },
         },
         title: {
@@ -492,20 +489,18 @@ const TeacherDashboardCharts = () => {
           style: {
             fontSize: '18px',
             fontWeight: 700,
-            color: '#666666'
+            color: '#666666',
           },
         },
         tooltip: {
-          
           theme: isDarkMode ? 'dark' : 'light',
-         
         },
-          legend: {
-            position: 'bottom',
-            labels: {
-              colors: ['#666', '#666'], // Change this to a dark/light color based on theme
-            },
+        legend: {
+          position: 'bottom',
+          labels: {
+            colors: ['#666', '#666'], // Change this to a dark/light color based on theme
           },
+        },
         colors: ['#66C266', '#D9534F'],
       },
       series: [
@@ -565,7 +560,7 @@ const TeacherDashboardCharts = () => {
     });
 
     return { performanceChartData, completionChartData };
-  }, [filteredSubjects, data]);
+  }, [filteredSubjects, data, isDarkMode]);
 
   const renderPerformanceData = (transformSubjectData: any) => {
     if (
