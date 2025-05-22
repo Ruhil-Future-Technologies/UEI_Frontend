@@ -434,7 +434,7 @@ const StudentContent = () => {
                 </Typography>
                 {studentProfile?.academic_history.stream && (
                   <Typography variant="h6" mb={2}>
-                    {studentProfile?.academic_history.stream}
+                    {studentProfile?.academic_history.stream=="general"?"":studentProfile?.academic_history.stream}
                   </Typography>
                 )}
               </>

@@ -86,6 +86,9 @@ const Protected = (props: { Component: any; menuName?: string }) => {
       (usertype === 'teacher' && uName.toLowerCase() === 'teacher-dashboard'
         ? mName.toLowerCase() === 'chat'
         : '') ||
+        (usertype === 'teacher' && uName.toLowerCase() === 'teacher-dashboard'
+        ? mName.toLowerCase() === 'students'
+        : '') ||
       (usertype === 'teacher' && uName.toLowerCase() === 'teacher-dashboard'
         ? mName.toLowerCase() === 'feedback'
         : '') ||

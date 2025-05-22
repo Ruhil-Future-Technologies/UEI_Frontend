@@ -117,6 +117,7 @@ import ParentMain from './Pages/Parent';
 import ParentFeedback from './Pages/Parent/ParentFeedback';
 import ParentChat from './Pages/Parent/ParentChat';
 import ParentProfile from './Pages/Parent/ParentProfile';
+import StudentsForTeacher from './Pages/Teacher/StudentsForTeacher';
 
 function App() {
   const navigate = useNavigate();
@@ -365,6 +366,10 @@ function App() {
             path="/teacher-dashboard/assignments"
             element={<Protected Component={Assignments} />}
           />
+           <Route
+              path="/teacher-dashboard/students"
+              element={<Protected Component={StudentsForTeacher} menuName="Student" />}
+            />
           <Route
             path="/teacher-dashboard/create-assignment"
             element={<Protected Component={CreateAssignments} />}
