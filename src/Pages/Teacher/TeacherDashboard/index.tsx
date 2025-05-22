@@ -1,8 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useEffect, useState } from 'react';
-import profile from '../../../assets/img/profile.png';
+import React, { useContext, useEffect, useState } from 'react';
+// import profile from '../../../assets/img/profile.png';
+import maleImage from '../../..//assets/img/avatars/male.png';
+import femaleImage from '../../..//assets/img/avatars/male.png';
 import { useNavigate } from 'react-router-dom';
-// import toperstudent from '../../../assets/img/topper-image.png';
+import femaleProfile from '../../../assets/img/topper-image.png';
+import maleProfile from '../../../assets/img/profile.png';
 import robotimg from '../../../assets/img/robot.png';
 import glogowhite from '../../../assets/img/g-logo-white.svg';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
@@ -16,8 +19,20 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 
 import useApi from '../../../hooks/useAPI';
-import { QUERY_KEYS, QUERY_KEYS_CLASS, QUERY_KEYS_COURSE, QUERY_KEYS_SUBJECT, QUERY_KEYS_SUBJECT_SCHOOL, QUERY_KEYS_TEACHER } from '../../../utils/const';
-import { CourseRep0oDTO, IClass, SubjectRep0oDTO } from '../../../Components/Table/columns';
+import {
+  QUERY_KEYS,
+  QUERY_KEYS_ASSIGNMENT,
+  QUERY_KEYS_CLASS,
+  QUERY_KEYS_COURSE,
+  QUERY_KEYS_SUBJECT,
+  QUERY_KEYS_SUBJECT_SCHOOL,
+  QUERY_KEYS_TEACHER,
+} from '../../../utils/const';
+import {
+  CourseRep0oDTO,
+  IClass,
+  SubjectRep0oDTO,
+} from '../../../Components/Table/columns';
 import { toast, ToastContentProps } from 'react-toastify';
 import TeacherDashboardCharts from '../TeacherChart';
 import SessionTracker from '../../../Components/Tracker';
@@ -25,7 +40,7 @@ import SessionTracker from '../../../Components/Tracker';
 import ChatComponent from '../../../Components/Chat/ChatComponent';
 import useTextToSpeech from '../../Chat/speech';
 import { Boxes, BoxesForSchool } from '../../TeacherRgistrationForm';
-
+import NameContext from '../../Context/NameContext';
 
 const TeacherDash = () => {
   const teacherId = localStorage.getItem('user_uuid');
@@ -42,6 +57,7 @@ const TeacherDash = () => {
   const editTeacher = QUERY_KEYS_TEACHER.TEACHER_EDIT;
   const getsubjectSchool = QUERY_KEYS_SUBJECT_SCHOOL.GET_SUBJECT;
   const getSubjectCollege = QUERY_KEYS_SUBJECT.GET_SUBJECT;
+  const GET_TOP3 = QUERY_KEYS_ASSIGNMENT.GET_TOP3;
   const { getData, postDataJson } = useApi();
 
   const [teacherData, setTeacherData] = useState<any>();
@@ -79,23 +95,65 @@ const TeacherDash = () => {
   ]);
   const navigate = useNavigate();
   const [institute, setInstitute] = useState<any>({});
+  const [topStudents, setTopStudents] = useState<any>([]);
+  const context = useContext(NameContext);
+  const { proImage }: any = context;
 
   const callAPI = async () => {
-    getData(`${chatlisturl}/${userId}`)
-      .then((data: any) => {
-        setchatlistData(data?.data);
-      })
-      .catch((e) => {
-        toast.error(e?.message, {
-          hideProgressBar: true,
-          theme: 'colored',
-        });
+    if (userId) {
+      getData(`${GET_TOP3}${userId}`).then((data) => {
+        if (data.status) {
+          const filtredStudents: any = [];
+          data?.data?.assignment?.top_students.map((student: any) => {
+            if (student?.pic_path) {
+              getData(`${'upload_file/get_image/' + student?.pic_path}`).then(
+                (data) => {
+                  const current_student = {
+                    ...student,
+                    pic_path: data.data?.file_url,
+                  };
+
+                  filtredStudents.push(current_student);
+                },
+              );
+            } else {
+              filtredStudents.push(student);
+            }
+          });
+
+          setTopStudents(filtredStudents);
+        }
       });
+      getData(`${chatlisturl}/${userId}`)
+        .then((data: any) => {
+          setchatlistData(data?.data);
+        })
+        .catch((e) => {
+          toast.error(e?.message, {
+            hideProgressBar: true,
+            theme: 'colored',
+          });
+        });
+    }
   };
 
   useEffect(() => {
     callAPI();
-  }, []);
+  }, [userId]);
+
+  const sortedStudents = [...topStudents].sort(
+    (a, b) => b.score_percentage - a.score_percentage,
+  );
+
+  const rankedStudents = sortedStudents.map((student, i) => ({
+    ...student,
+    rank: i + 1,
+  }));
+
+  const reorderedStudents =
+    rankedStudents.length >= 2
+      ? [rankedStudents[1], rankedStudents[0], ...rankedStudents.slice(2)]
+      : rankedStudents;
 
   const saveChat = async () => {
     const chatDataString = localStorage?.getItem('chatData');
@@ -174,88 +232,101 @@ const TeacherDash = () => {
     };
   }, [isExpanded]);
   const getTeacherInfo = () => {
-    try {
-      getData(`${editTeacher}/${teacherId}`).then(async (data) => {
-        if (data?.status) {
-          localStorage.setItem('teacher_id', data?.data.id);
+    if (teacherId) {
+      try {
+        getData(`${editTeacher}/${teacherId}`).then(async (data) => {
+          if (data?.status) {
+            localStorage.setItem('teacher_id', data?.data.id);
+            getData(`${'upload_file/get_image/' + data?.data?.pic_path}`);
+            getInstitute().then((response) => {
+              const teacher_institute = response.find(
+                (inst) =>
+                  inst.entity_type == data?.data?.entity_type &&
+                  inst.id == data?.data?.institute_id,
+              );
 
-          getInstitute().then((response) => {
-            const teacher_institute = response.find(
-              (inst) =>
-                inst.entity_type == data?.data?.entity_type &&
-                inst.id == data?.data?.institute_id,
-            );
-
-            setInstitute(teacher_institute);
-          });
-
-          setTeacherData(data.data);
-          if (data?.data?.course_semester_subjects != null) {
-            setSelectedEntity('college');
-            localStorage.setItem("entity", "college")
-            const courseIds = Object.keys(
-              data?.data?.course_semester_subjects,
-            )?.map((CourseKey) => CourseKey);
-            getCourses(courseIds);
-            const allsemesters: any = (await getSemester()) || [];
-            const allSubject: any = await getSubjects('College') || [];
-            const output: Boxes[] = Object?.keys(data?.data?.course_semester_subjects)?.flatMap((CourseKey) => {
-
-              return Object.keys(data?.data?.course_semester_subjects[CourseKey])?.map((semester_number) => {
-                const filteredSemesters = allsemesters?.filter(
-                  (item: any) => String(item?.course_id) === String(CourseKey)
-                );
-
-                const filteredSubjects = allSubject?.filter(
-                  (item: any) =>
-                    String(item?.semester_number) === String(semester_number) &&
-                    String(item?.course_id) === String(CourseKey)
-                );
-                return {
-                  course_id: CourseKey,
-                  semester_number: semester_number,
-                  subjects: data?.data?.course_semester_subjects[CourseKey][semester_number],
-                  filteredSemesters,
-                  filteredSubjects
-                };
-              });
+              setInstitute(teacher_institute);
             });
-            setBoxes([...output]);
-          } else {
-            setSelectedEntity('school');
-            localStorage.setItem("entity", "school")
-            const classIds = Object.keys(data.data.class_stream_subjects)?.map(
-              (classKey) => classKey,
-            );
-            getClasslist(classIds);
-            const allSubject: SubjectRep0oDTO[] = await getSubjects('School');
-            const output: BoxesForSchool[] = Object.keys(
-              data.data.class_stream_subjects,
-            ).flatMap((classKey) =>
-              Object.keys(data.data.class_stream_subjects[classKey])?.map(
-                (stream) => ({
-                  stream: stream,
-                  subjects: data.data.class_stream_subjects[classKey][stream],
-                  class_id: classKey,
-                  is_Stream: stream !== 'general',
-                  selected_class_name: stream === 'general' ? 'col-6' : 'col-4',
-                  filteredSubjects:
-                    stream == 'general'
-                      ? allSubject.filter((item) => item.class_id === classKey)
-                      : allSubject.filter(
-                        (item) =>
-                          item.class_id === classKey &&
-                          item.stream === stream,
-                      ),
-                }),
-              ),
-            );
-            setBoxesForSchool(output);
+
+            setTeacherData(data.data);
+            if (data?.data?.course_semester_subjects != null) {
+              setSelectedEntity('college');
+              localStorage.setItem('entity', 'college');
+              const courseIds = Object.keys(
+                data?.data?.course_semester_subjects,
+              )?.map((CourseKey) => CourseKey);
+              getCourses(courseIds);
+              const allsemesters: any = (await getSemester()) || [];
+              const allSubject: any = (await getSubjects('College')) || [];
+              const output: Boxes[] = Object?.keys(
+                data?.data?.course_semester_subjects,
+              )?.flatMap((CourseKey) => {
+                return Object.keys(
+                  data?.data?.course_semester_subjects[CourseKey],
+                )?.map((semester_number) => {
+                  const filteredSemesters = allsemesters?.filter(
+                    (item: any) =>
+                      String(item?.course_id) === String(CourseKey),
+                  );
+
+                  const filteredSubjects = allSubject?.filter(
+                    (item: any) =>
+                      String(item?.semester_number) ===
+                        String(semester_number) &&
+                      String(item?.course_id) === String(CourseKey),
+                  );
+                  return {
+                    course_id: CourseKey,
+                    semester_number: semester_number,
+                    subjects:
+                      data?.data?.course_semester_subjects[CourseKey][
+                        semester_number
+                      ],
+                    filteredSemesters,
+                    filteredSubjects,
+                  };
+                });
+              });
+              setBoxes([...output]);
+            } else {
+              setSelectedEntity('school');
+              localStorage.setItem('entity', 'school');
+              const classIds = Object.keys(
+                data.data.class_stream_subjects,
+              )?.map((classKey) => classKey);
+              getClasslist(classIds);
+              const allSubject: SubjectRep0oDTO[] = await getSubjects('School');
+              const output: BoxesForSchool[] = Object.keys(
+                data.data.class_stream_subjects,
+              ).flatMap((classKey) =>
+                Object.keys(data.data.class_stream_subjects[classKey])?.map(
+                  (stream) => ({
+                    stream: stream,
+                    subjects: data.data.class_stream_subjects[classKey][stream],
+                    class_id: classKey,
+                    is_Stream: stream !== 'general',
+                    selected_class_name:
+                      stream === 'general' ? 'col-6' : 'col-4',
+                    filteredSubjects:
+                      stream == 'general'
+                        ? allSubject.filter(
+                            (item) => item.class_id === classKey,
+                          )
+                        : allSubject.filter(
+                            (item) =>
+                              item.class_id === classKey &&
+                              item.stream === stream,
+                          ),
+                  }),
+                ),
+              );
+              setBoxesForSchool(output);
+            }
           }
-        }
-      });
-    } catch (error) {
-      console.log(error);
+        });
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
   const getSemester = async (): Promise<any[]> => {
@@ -467,7 +538,7 @@ const TeacherDash = () => {
     Promise.resolve({ status: true }) // Skipping ChatURL and faking a success
       .then((data) => {
         if (data.status) {
-          if (teacherData.entity_type === 'school') {
+          if (teacherData?.entity_type === 'school') {
             postDataJson(`${ChatRAGURL}`, {
               user_query: search,
               student_id: userId,
@@ -987,27 +1058,29 @@ const TeacherDash = () => {
   };
 
   const getStudentsForTeacher = () => {
-    try {
-      getData(`/student_teacher/teacher/${userId}/students`)
-        .then((response) => {
-          if (response.status) {
-            //setListOfStudentFiltered(response.data);
-            setListOfStudent(response.data);
-          }
-        })
-        .catch((error) => {
-          toast.error(error.message, {
-            hideProgressBar: true,
-            theme: 'colored',
-            position: 'top-center',
+    if (userId) {
+      try {
+        getData(`/student_teacher/teacher/${userId}/students`)
+          .then((response) => {
+            if (response.status) {
+              //setListOfStudentFiltered(response.data);
+              setListOfStudent(response.data);
+            }
+          })
+          .catch((error) => {
+            toast.error(error.message, {
+              hideProgressBar: true,
+              theme: 'colored',
+              position: 'top-center',
+            });
           });
+      } catch (error: any) {
+        toast.error(error.message, {
+          hideProgressBar: true,
+          theme: 'colored',
+          position: 'top-center',
         });
-    } catch (error: any) {
-      toast.error(error.message, {
-        hideProgressBar: true,
-        theme: 'colored',
-        position: 'top-center',
-      });
+      }
     }
   };
   const getClassName = (id: any) => {
@@ -1064,7 +1137,13 @@ const TeacherDash = () => {
                   <div className="col-12">
                     <div className="d-flex align-items-center gap-3 flex-column">
                       <img
-                        src={profile}
+                        src={
+                          proImage
+                            ? proImage
+                            : teacherData?.gender.toLowerCase() === 'female'
+                              ? femaleImage
+                              : maleImage
+                        }
                         className="rounded-circle bg-grd-info p-1"
                         width="94"
                         height="94"
@@ -1110,41 +1189,47 @@ const TeacherDash = () => {
               </div>
             </div>
           </div>
-          {/* <div
+          <div
             className="col-xxl-4 d-flex align-items-stretch "
             style={{ marginTop: '40px' }}
           >
             <div className="card w-100">
               <div className="card-body">
-                <h6 className="text-center mb-5 fs-18">Top Students</h6>
+                <h6 className="text-center mb-5 fs-18">
+                  Top Students of{' '}
+                  {new Date().toLocaleString('default', { month: 'long' })}
+                </h6>
+
                 <ul className="topper-chart">
-                  <li>
-                    <div className="topper-image">
-                      <img src={toperstudent} alt="" />
-                    </div>
-                    <span className="name">Andrew</span>
-                    <div className="bar">2</div>
-                  </li>
-
-                  <li>
-                    <div className="topper-image">
-                      <img src={toperstudent} alt="" />
-                    </div>
-                    <span className="name">Joseph</span>
-                    <div className="bar">1</div>
-                  </li>
-
-                  <li>
-                    <div className="topper-image">
-                      <img src={toperstudent} alt="" />
-                    </div>
-                    <span className="name">Kareen</span>
-                    <div className="bar">3 </div>
-                  </li>
+                  {reorderedStudents.map((student: any) => {
+                    return (
+                      <li key={student.student_id}>
+                        <div className="topper-image">
+                          <img
+                            className="rounded-circle p-1"
+                            width="94"
+                            height="94"
+                            src={
+                              student?.pic_path
+                                ? student?.pic_path
+                                : student?.gender.toLowerCase() === 'male'
+                                  ? maleProfile
+                                  : femaleProfile
+                            }
+                            alt=""
+                          />
+                        </div>
+                        <span className="name">
+                          {student?.first_name + ' ' + student?.last_name}
+                        </span>
+                        <div className="bar">#{student.rank}</div>
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
             </div>
-          </div> */}
+          </div>
           <div className="col-12">
             {selectedEntity === 'college' ? (
               <>
@@ -1227,39 +1312,42 @@ const TeacherDash = () => {
                                     </div>
                                   </div>
 
-                                  <button
-                                    className="btn btn-outline-primary mt-4 w-100"
-                                    onClick={() =>
-                                      navigate(`/teacher-dashboard/student-details?type=college&course_id=${box?.course_id}&semester_number=${box?.semester_number}&subject=${subject}`)
-                                    }
-                                  >
-                                    View Students
-                                  </button>
-                                </div>
+                                <button
+                                  className="btn btn-outline-primary mt-4 w-100"
+                                  onClick={() =>
+                                    navigate(
+                                      `/teacher-dashboard/student-details?type=college&course_id=${box?.course_id}&semester_number=${box?.semester_number}&subject=${subject}`,
+                                    )
+                                  }
+                                >
+                                  View Students
+                                </button>
                               </div>
-                            </SwiperSlide>
-                          ))}
-                        </div>
-                      ))}
-                    </>
-
-                  ) : (
-                    <>
-                      {boxesForSchool?.map((box, boxIndex) => (
-                        <div key={boxIndex}>
-                          {box?.subjects?.map((subject, subjectIndex) => (
-                            <SwiperSlide key={subjectIndex}>
-                              <div className="card mb-0">
-                                <div className="card-body">
-                                  <div className="carddlex">
-                                    <span>
-                                      <AttractionsIcon />
-                                    </span>
-                                    <div className="">
-                                      <h6 className="fs-4">{getClassName(box?.class_id)}</h6>
-                                      <p> {subject}</p>
-                                    </div>
+                            </div>
+                          </SwiperSlide>
+                        ))}
+                      </div>
+                    ))}
+                  </>
+                ) : (
+                  <>
+                    {boxesForSchool?.map((box, boxIndex) => (
+                      <div key={boxIndex}>
+                         {Array.isArray(box?.subjects) && box?.subjects?.map((subject, subjectIndex) => (
+                          <SwiperSlide key={subjectIndex}>
+                            <div className="card mb-0">
+                              <div className="card-body">
+                                <div className="carddlex">
+                                  <span>
+                                    <AttractionsIcon />
+                                  </span>
+                                  <div className="">
+                                    <h6 className="fs-4">
+                                      {getClassName(box?.class_id)}
+                                    </h6>
+                                    <p> {subject}</p>
                                   </div>
+                                </div>
 
                                   <div className="row g-2">
                                     <div className="col-lg-6">

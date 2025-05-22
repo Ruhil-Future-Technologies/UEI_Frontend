@@ -27,6 +27,7 @@ export const QUERY_KEYS = {
   CHAT_LISTGETALL: '/Chatbot/getalldata',
   INSITUTE_APPROVE: './institute/approve',
   INSITUTE_DISAPPROVE: './institute/disapprove',
+  GET_STUDENT_SESSION: '/session/student-individual-stats/',
 };
 export const QUERY_KEYS_STUDENT = {
   GET_STUDENT: '/student/list',
@@ -244,12 +245,13 @@ export const QUERY_KEYS_STUDENT_ACADEMIC_HISTORY = {
   GET_ADMIN_STUDENT_ACADEMIC_HISTORY: '/student_academic_history/list',
   ADMIN_ADD_STUDENT_ACADEMIC_HISTORY: '/student_academic_history/add',
   ADMIN_EDIT_STUDENT_ACADEMIC_HISTORY: '/student_academic_history/edit',
-  NEW_STUDENT_ACADEMIC_HISTORY:'new_student_academic_history/get/'
+  NEW_STUDENT_ACADEMIC_HISTORY: 'new_student_academic_history/get/',
 };
 export const QUERY_KEYS_STUDENT_SUBJECT_PREFERENCE = {
   GET_ADMIN_STUDENT_SUBJECT_PREFERENCE: '/subject_preference/list',
   ADMIN_ADD_STUDENT_SUBJECT_PREFERENCE: '/subject_preference/add',
   ADMIN_EDIT_STUDENT_SUBJECT_PREFERENCE: '/subject_preference/edit',
+  STUDENT_SUBJECT_PREFRENCE_BY_ID:'/subject_preference/get/'
 };
 
 export const QUERY_KEYS_CONTENT = {
@@ -284,6 +286,9 @@ export const QUERY_KEYS_ASSIGNMENT = {
   ADD_ASSIGNMENT: 'assignment/add',
   GENERATE_AI_ASSIGNMENT: '/AIchatbot/generate-questions',
   ASSIGNMENT_DOC_EDIT: '/assignment/edit-assignment-docs/',
+  GET_TOP3: '/assignment/top3-students/',
+  STATS_FOR_TEACHER: '/assignment/stats-for-teacher/',
+  STATS_FOR_STUDENT: '/assignment/stats-for-student/',
 };
 
 export const QUERY_KEYS_ASSIGNMENT_SUBMISSION = {

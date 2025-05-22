@@ -381,3 +381,6 @@ export const formatDate = (dateString: string, time?: any) => {
   }
 
 };
+export  const getModifyClassMane = (value: string) => {
+  return value?.replace('_', ' ');
+};
