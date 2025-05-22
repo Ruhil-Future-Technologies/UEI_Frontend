@@ -30,7 +30,7 @@ const Bulkupload = () => {
     const [dynamicCourses, setDynamicCourses] = useState<any[]>([]);
     const [dynamicSem, setDynamicSem] = useState<any[]>([]);
     const streams = ['Science', 'Arts', 'Commerce'];
-    const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
+
     const callAPI = async () => {
         if (selectedEntity === 'school') {
             getData(`${ClassURL}`)
@@ -363,7 +363,15 @@ const Bulkupload = () => {
             }
         },
     ];
-    // Define the submit handler for the college entity (similar to handleSchoolSubmit but with college payload)
+    // Add auto download function
+    const autoDownloadFile = (url: string) => {
+        const link = document.createElement('a');
+        link.href = url;
+        // link.target = '_blank';
+        link.click();
+    };
+
+    // Update handleCollegeSubmit
     const handleCollegeSubmit = async (formData: FormData, mainFieldValues: { [key: string]: any }, repeatableRowValues: Array<{ [key: string]: any }>) => {
         const subjects = repeatableRowValues.map(row => row.subject);
         const teachers = repeatableRowValues.map(row => row.teacher);
@@ -384,23 +392,24 @@ const Bulkupload = () => {
                 if (data?.status) {
                     setSelectedCourse(null);
                     setSelectedSemester(null);
-                    // Set download URL from response
-                    setDownloadUrl(data?.data?.confirmation_file?.download_url || null);
+                    // Auto download the file
                     toast.success('College data uploaded successfully', {
                         hideProgressBar: true,
                         theme: 'colored',
                     });
+                    if (data?.data?.confirmation_file?.download_url) {
+                        autoDownloadFile(data.data.confirmation_file.download_url);
+                    }
                 } else {
                     message.error('College data upload failed');
-                    setDownloadUrl(null);
                 }
             });
         } catch (error) {
             console.error('Upload error:', error);
-            setDownloadUrl(null);
         }
     };
-    // Define the submit handler for the school entity
+
+    // Update handleSchoolSubmit
     const handleSchoolSubmit = async (formData: FormData, mainFieldValues: { [key: string]: any }, repeatableRowValues: Array<{ [key: string]: any }>) => {
         const subjects = repeatableRowValues.map(row => row.subject);
         const teachers = repeatableRowValues.map(row => row.teacher);
@@ -425,20 +434,20 @@ const Bulkupload = () => {
                 if (data?.status) {
                     setSelectedClass(null);
                     setSelectedStream(null);
-                    // Set download URL from response
-                    setDownloadUrl(data?.data?.confirmation_file?.download_url || null);
+                    // Auto download the file
                     toast.success('School data uploaded successfully', {
                         hideProgressBar: true,
                         theme: 'colored',
                     });
+                    if (data?.data?.confirmation_file?.download_url) {
+                        autoDownloadFile(data.data.confirmation_file.download_url);
+                    }
                 } else {
                     message.error('School data upload failed');
-                    setDownloadUrl(null);
                 }
             });
         } catch (error) {
             console.error('Upload error:', error);
-            setDownloadUrl(null);
         }
     };
 
@@ -490,17 +499,10 @@ const Bulkupload = () => {
         return values;
     };
 
-    // Add download handler
-    const handleDownload = () => {
-        if (downloadUrl) {
-            window.open(downloadUrl, '_blank');
-        }
-    };
-
     return (
         <div>
             <BulkUploadForm
-                title={selectedEntity !== "school" ? "College Data Upload" : "School Data Upload"}
+                title={selectedEntity !== "school" ? "Students Data Upload" : "Students Data Upload"}
                 mainFields={selectedEntity !== "school" ? mainFieldsConfigCollege : mainFieldsConfig}
                 repeatableFieldsConfig={selectedEntity !== "school" ? repeatableFieldsConfigCollege : repeatableFieldsConfig}
                 onSubmit={selectedEntity !== "school" ? handleCollegeSubmit : handleSchoolSubmit}
@@ -509,23 +511,6 @@ const Bulkupload = () => {
                 dynamicData={{ dynamicTeacher, dynamicClasses, dynamicSubject }}
                 entityType={selectedEntity}
             />
-            {downloadUrl && (
-                <div style={{ marginTop: '20px', textAlign: 'center' }}>
-                    <button
-                        onClick={handleDownload}
-                        style={{
-                            padding: '8px 16px',
-                            backgroundColor: '#1890ff',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '4px',
-                            cursor: 'pointer'
-                        }}
-                    >
-                        Download Confirmation File
-                    </button>
-                </div>
-            )}
         </div>
     );
 };
