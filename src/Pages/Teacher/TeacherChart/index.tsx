@@ -10,8 +10,9 @@ import {
   QUERY_KEYS_TEACHER,
 } from '../../../utils/const';
 import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
-
+import { useTheme } from '../../../ThemeProvider';
 const TeacherDashboardCharts = () => {
+  const { isDarkMode } = useTheme();
   const { getData } = useApi();
 
   const TEACHERURL = QUERY_KEYS_TEACHER.TEACHER_EDIT;
@@ -257,6 +258,9 @@ const TeacherDashboardCharts = () => {
         chart: {
           type: 'line',
           height: 450,
+          theme: {
+            mode: isDarkMode ? 'dark' : 'light',
+          },
 
           stacked: false,
           zoom: { enabled: false },
@@ -310,6 +314,12 @@ const TeacherDashboardCharts = () => {
             style: {
               fontSize: '14px',
               fontWeight: 600,
+              color: '#666666',
+            },
+          },
+          labels: {
+            style: {
+              colors: '#666', // color of x-axis labels
             },
           },
         },
@@ -322,9 +332,15 @@ const TeacherDashboardCharts = () => {
               style: {
                 fontSize: '14px',
                 fontWeight: 600,
+                color: '#666666',
               },
             },
             max: 100,
+            labels: {
+              style: {
+                colors: '#666', // color of x-axis labels
+              },
+            },
           },
 
           {
@@ -341,11 +357,13 @@ const TeacherDashboardCharts = () => {
           style: {
             fontSize: '18px',
             fontWeight: 700,
+            color: '#666666'
           },
         },
         tooltip: {
           shared: true,
           intersect: false,
+          theme: isDarkMode ? 'dark' : 'light',
           y: {
             formatter: function (value: number, { seriesIndex }: any) {
               if (seriesIndex === 0) {
@@ -358,7 +376,10 @@ const TeacherDashboardCharts = () => {
         },
         legend: {
           position: 'bottom',
-          horizontalAlign: 'center',
+          //horizontalAlign: 'center',
+          labels: {
+              colors: ['#666', '#666', '#666', '#666'], // Change this to a dark/light color based on theme
+            },
         },
         grid: {
           borderColor: '#f1f1f1',
@@ -405,6 +426,11 @@ const TeacherDashboardCharts = () => {
           type: 'bar',
           height: 350,
           stacked: true,
+          theme: {
+            mode: isDarkMode ? 'dark' : 'light',
+          },
+          
+        
           zoom: {
             enabled: false,
           },
@@ -426,6 +452,18 @@ const TeacherDashboardCharts = () => {
           categories: [],
           title: {
             text: 'Subjects',
+            style: {
+              fontSize: '14px',
+              fontWeight: 'bold',
+              color: '#666'
+            },
+          },
+          labels: {
+            
+            
+            style: {
+                colors: '#666', // color of x-axis labels
+              },
           },
         },
         yaxis: {
@@ -436,18 +474,38 @@ const TeacherDashboardCharts = () => {
             style: {
               fontSize: '14px',
               fontWeight: 'bold',
+              color: '#666'
             },
           },
           labels: {
             formatter: function (val: number) {
               return val.toFixed(0);
             },
+            style: {
+                colors: '#666', // color of x-axis labels
+              },
           },
         },
         title: {
           text: 'Assignment Completion Status',
           align: 'center',
+          style: {
+            fontSize: '18px',
+            fontWeight: 700,
+            color: '#666666'
+          },
         },
+        tooltip: {
+          
+          theme: isDarkMode ? 'dark' : 'light',
+         
+        },
+          legend: {
+            position: 'bottom',
+            labels: {
+              colors: ['#666', '#666'], // Change this to a dark/light color based on theme
+            },
+          },
         colors: ['#66C266', '#D9534F'],
       },
       series: [
