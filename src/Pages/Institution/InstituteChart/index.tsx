@@ -132,7 +132,7 @@ const InstitutionCharts = () => {
       collectMonths(sessionData.students);
       collectMonths(sessionData.teachers);
 
-      if (allMonthNumbers.length > 0) {
+      if (allMonthNumbers?.length > 0) {
         const maxMonth = Math.max(...allMonthNumbers);
         setActiveMonth(monthMapping[maxMonth]);
       }
@@ -208,7 +208,7 @@ const InstitutionCharts = () => {
         (semester) => semester.course_id === selectedCourse,
       );
 
-      if (semestersForCourse.length > 0) {
+      if (semestersForCourse?.length > 0) {
         setSelectedSemester(semestersForCourse[0]?.semester_id.toString());
       } else {
         setSelectedSemester('');
@@ -415,7 +415,7 @@ const InstitutionCharts = () => {
         if (!userData) {
           return {
             name: name,
-            data: Array(weekKeys.length).fill(0),
+            data: Array(weekKeys?.length).fill(0),
           };
         }
 
@@ -435,7 +435,7 @@ const InstitutionCharts = () => {
         if (!userData)
           return {
             name: user.id,
-            data: Array(allMonths.length).fill(0),
+            data: Array(allMonths?.length).fill(0),
           };
 
         if (userType === 'teachers') {
@@ -467,7 +467,7 @@ const InstitutionCharts = () => {
   };
 
   const renderSubjectPerformanceChart = (subjectData: any) => {
-    if (!subjectData || Object.keys(subjectData).length === 0) {
+    if (!subjectData || Object.keys(subjectData)?.length === 0) {
       return <div className="chart-placeholder">No subject data available</div>;
     }
 
@@ -533,7 +533,7 @@ const InstitutionCharts = () => {
           rotateAlways: false,
           style: { fontSize: '12px', fontWeight: '500' },
           formatter: function (value) {
-            return typeof value === 'string' && value.length > 15
+            return typeof value === 'string' && value?.length > 15
               ? value.substring(0, 15) + '...'
               : value;
           },
@@ -595,7 +595,7 @@ const InstitutionCharts = () => {
         'student',
       );
 
-      if (!calendarData || calendarData.length === 0) {
+      if (!calendarData || calendarData?.length === 0) {
         return (
           <div className="chart-placeholder">No data for selected view</div>
         );
@@ -684,7 +684,7 @@ const InstitutionCharts = () => {
         'students',
       );
 
-      if (series.length === 0) {
+      if (series?.length === 0) {
         return (
           <div className="chart-placeholder">No data for selected view</div>
         );
@@ -1003,7 +1003,7 @@ const InstitutionCharts = () => {
         'teacher',
       );
 
-      if (!calendarData || calendarData.length === 0) {
+      if (!calendarData || calendarData?.length === 0) {
         return (
           <div className="chart-placeholder">No data for selected view</div>
         );
@@ -1094,7 +1094,7 @@ const InstitutionCharts = () => {
         'teachers',
       );
 
-      if (series.length === 0) {
+      if (series?.length === 0) {
         return (
           <div className="chart-placeholder">No data for selected view</div>
         );
@@ -1183,7 +1183,7 @@ const InstitutionCharts = () => {
       userData.more_active[activeMonth]?.weeks || []
     )?.map((week: number) => Math.floor(week));
 
-    if (!lessActiveData.length || !moreActiveData.length) {
+    if (!lessActiveData?.length || !moreActiveData?.length) {
       return (
         <div className="chart-placeholder">No data for selected month</div>
       );
@@ -1275,7 +1275,7 @@ const InstitutionCharts = () => {
   };
 
   const transformedSubjectData = useMemo(() => {
-    if (!filteredSubjects.length) return {};
+    if (!filteredSubjects?.length) return {};
 
     const result: any = {};
 
