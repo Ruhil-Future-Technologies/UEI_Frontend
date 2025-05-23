@@ -1361,16 +1361,20 @@ const TeacherDash = () => {
                                         </div>
                                       </div>
                                     </div>
+                                     {box?.stream !="general"&&
                                     <div className="col-lg-6">
                                       <div className="totallist">
                                         <span>
                                           <StreamIcon />
                                         </span>
+                                       
                                         <div className="">
                                           <h6>Stream</h6> <p>{box?.stream}</p>
                                         </div>
+                                        
                                       </div>
                                     </div>
+                                    }
                                   </div>
                                   <button
                                     className="btn btn-outline-primary mt-4 w-100"

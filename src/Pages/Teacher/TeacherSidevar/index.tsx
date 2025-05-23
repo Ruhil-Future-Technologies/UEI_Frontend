@@ -6,6 +6,7 @@ import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
  import LiveHelpOutlinedIcon from '@mui/icons-material/LiveHelpOutlined';
 import QuestionAnswerOutlinedIcon from '@mui/icons-material/QuestionAnswerOutlined';
  import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+ import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
 // import Header from "../../Components/Header";
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import logowhite from '../../../assets/img/logo-white.svg';
@@ -118,6 +119,17 @@ const TeacherSideVar = () => {
                   <QuestionAnswerOutlinedIcon />
                 </div>
                 <div className="menu-title">Quiz</div>
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/teacher-dashboard/students"
+                onClick={removeMobileToggle}
+              >
+                <div className="parent-icon">
+                  <AdminPanelSettingsOutlinedIcon />
+                </div>
+                <div className="menu-title">Students</div>
               </Link>
             </li>
           </ul>
