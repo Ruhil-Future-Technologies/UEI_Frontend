@@ -177,9 +177,9 @@ export const ThemeProviderWrapper: React.FC<{ children: React.ReactNode }> = ({
             },
             components: {
               Select: {
-                colorBgContainer: isDarkMode ? '#212529' : '#fff',
+                colorBgContainer: isDarkMode ? '#212529' : '#EFEFEF',
                 colorText: isDarkMode ? 'light' : 'dark',
-                colorBorder: isDarkMode ? '#555' : '#a8a8a8',
+                colorBorder: isDarkMode ? '#555' : '#E5E7EB',
                 optionSelectedBg: isDarkMode ? '#444' : '#e6f7ff',
                 optionSelectedColor: isDarkMode ? '#fff' : '#000',
                 controlItemBgHover: isDarkMode ? '#444' : '#f0f0f0',

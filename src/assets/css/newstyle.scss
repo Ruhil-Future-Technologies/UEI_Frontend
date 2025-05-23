@@ -2917,7 +2917,7 @@ a {
   margin-bottom: 1.5rem;
   box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
   border: 0 !important;
-  border-radius: 1rem !important;
+  border-radius: 12px;
   width: 100%;
   overflow: hidden;
   .card-header {
@@ -3370,4 +3370,25 @@ a {
 }
 .sidebar-wrapper{
   flex-wrap: nowrap;
+}
+
+.title-color{
+  color: #111827;
+}
+.paragraph-color{
+  color: #4B5563;
+}
+.infocard{
+  background-color: #EFF6FF;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  p{
+    color: #374151;
+  }
+}
+.bulk-upload-container{
+  select{
+    border: 0px!important;
+  }
 }

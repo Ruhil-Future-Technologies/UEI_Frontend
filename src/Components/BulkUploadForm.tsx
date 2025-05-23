@@ -1,12 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from 'react';
-import { Button, message, Select, Upload } from 'antd';
-import { UploadOutlined } from '@mui/icons-material';
+import { Button, message, Select } from 'antd';
+import {
+  Add,
+  DownloadDoneRounded,
+  InboxOutlined,
+  InfoOutlined,
+} from '@mui/icons-material';
 import { IconButton, MenuItem } from '@mui/material';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 // import DownloadCSVButton from '../Components/DownloadCSVButton';
 import { useNavigate } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import Dragger from 'antd/es/upload/Dragger';
 interface OptionType {
   value: any;
   label: string;
@@ -225,6 +231,7 @@ const BulkUploadForm: React.FC<BulkUploadFormProps> = ({
       return false;
     },
   };
+  
 
   useEffect(() => {
     setRepeatableRows([{}]);
@@ -259,9 +266,33 @@ const BulkUploadForm: React.FC<BulkUploadFormProps> = ({
 
         <div className="row justify-content-center">
           <div className="col-lg-6">
+            <div className="text-center">
+              <h3 className="fw-bold mb-2 title-color">
+                Collage Data Upload Form
+              </h3>
+              <p className="mb-4 paragraph-color">
+                Import your student information using CSV, Excel, or JSON file
+                format
+              </p>
+            </div>
             <div className="card p-lg-2">
               <div className="card-body">
                 <div className="bulk-upload-container">
+                  <div className="infocard">
+                    <div className="d-flex gap-2">
+                      <InfoOutlined fontSize="small" />
+                      <p className="fs-14 mb-0">
+                        Select a CSV, Excel, or JSON file from your device.
+                        Ensure the file format matches the required data
+                        structure. Maximum file size: 10MB. <br></br>
+                        <a className="fs-14 mt-1 d-block">
+                          <DownloadDoneRounded fontSize="small" /> Download
+                          sample data
+                        </a>
+                      </p>
+                    </div>
+                  </div>
+
                   {/* peindiing for download csv  */}
                   {/* <div style={{ marginBottom: '20px' }}>
                         <DownloadCSVButton
@@ -270,10 +301,7 @@ const BulkUploadForm: React.FC<BulkUploadFormProps> = ({
                         />
                     </div> */}
 
-                    <h5 className='fw-bold mb-3'>Collage Data Upload Form</h5>
-                    <p className='mb-4 text-dark-emphasis small opacity-75'>Select a CSV, Excel, or JSON file from your device. Ensure the file format matches the required data structure. Maximum file size: 10MB. Click to download <a href="#" className='text-primary'> sample data</a></p>
-
-                  <div className='d-flex flex-column gap-3'>
+                  <div className="d-flex flex-column gap-3 mb-3">
                     {mainFields.map((fieldConfig) =>
                       fieldConfig.isVisible !== false ? (
                         <Select
@@ -296,7 +324,8 @@ const BulkUploadForm: React.FC<BulkUploadFormProps> = ({
                       const mainFieldValues = getMainFieldValues();
                       return (
                         <div
-                          key={rowIndex} className='d-flex flex-column gap-3'
+                          key={rowIndex}
+                          className="d-flex flex-column gap-3"
                         >
                           {repeatableFieldsConfig.map((fieldConfig) => {
                             const options = fieldConfig.getDynamicOptions
@@ -349,39 +378,41 @@ const BulkUploadForm: React.FC<BulkUploadFormProps> = ({
                     })}
                   </div>
 
+                  
+
+                  <Dragger {...uploadProps} className="mt-3">
+                    <p className="ant-upload-drag-icon">
+                      <InboxOutlined />
+                    </p>
+                    <p className="ant-upload-text">
+                      Click or drag CSV file to this area to upload
+                    </p>
+                    <p className="ant-upload-hint">
+                      Support for a single CSV file. Ensure it is formatted
+                      correctly.
+                    </p>
+                  </Dragger>
+                  {selectedFile && (
+                    <span style={{ marginTop: '10px', display: 'block' }}>
+                      Selected file: {selectedFile.name}
+                    </span>
+                  )}
+
+
                   <Button
-                    variant="outlined"
+                    variant="link"
                     color="primary"
                     onClick={addRow}
-                    className='mt-3 ms-auto d-block'
+                    className="mt-3 px-0"
                   >
-                    Add More
+                   <Add/> Add More
                   </Button>
-
-                  <div
-                   className='mt-3'
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '10px',
-                      marginBottom: '20px',
-                    }}
-                  >
-                    <Upload {...uploadProps}>
-                      <Button icon={<UploadOutlined />}>Select CSV File</Button>
-                    </Upload>
-                    {selectedFile && (
-                      <span style={{ marginLeft: '10px' }}>
-                        Selected file: {selectedFile.name}
-                      </span>
-                    )}
-                  </div>
 
                   <Button
                     type="primary"
                     onClick={handleFormSubmit}
-                    className='d-block mx-auto'
-                    size='large'
+                    className="d-block w-100 mt-3"
+                    size="large"
                     disabled={
                       !selectedFile ||
                       repeatableRows.length === 0 ||
