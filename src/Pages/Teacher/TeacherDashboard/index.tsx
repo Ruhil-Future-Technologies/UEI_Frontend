@@ -1190,9 +1190,7 @@ const TeacherDash = () => {
             </div>
           </div>
           <div
-            className="col-xxl-4 d-flex align-items-stretch "
-            style={{ marginTop: '40px' }}
-          >
+            className="col-xxl-4 d-flex align-items-stretch ">
             <div className="card w-100">
               <div className="card-body">
                 <h6 className="text-center mb-5 fs-18">
@@ -1333,7 +1331,7 @@ const TeacherDash = () => {
                   <>
                     {boxesForSchool?.map((box, boxIndex) => (
                       <div key={boxIndex}>
-                        {box?.subjects?.map((subject, subjectIndex) => (
+                         {Array.isArray(box?.subjects) && box?.subjects?.map((subject, subjectIndex) => (
                           <SwiperSlide key={subjectIndex}>
                             <div className="card mb-0">
                               <div className="card-body">

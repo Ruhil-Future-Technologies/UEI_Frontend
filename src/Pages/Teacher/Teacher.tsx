@@ -47,7 +47,7 @@ const Teacher = () => {
   const [dataDeleteId, setDataDeleteId] = useState<number>();
   const [activeTab, setActiveTab] = useState(0);
   const [filteredTeachers, setFilteredTeachers] = useState<any[]>([]);
-  const [activeSubTab, setActiveSubTab] = useState(0);
+  const [activeSubTab, setActiveSubTab] = useState<any>(null);
   const [open, setOpen] = useState(false);
   const [selectedTeacher, setSelectedTeacher] = useState<any>({});
   const [dataClasses, setDataClasses] = useState<any>([]);
@@ -55,6 +55,9 @@ const Teacher = () => {
   const [schoolInstitutes, setSchoolInstitutes] = useState<any[]>([]);
   const [collegeInstitutes, setCollegeInstitutes] = useState<any[]>([]);
   const [columnVisibility, setColumnVisibility] = useState({});
+  const user_type = localStorage.getItem('user_type') || '';
+  const institute_id = localStorage.getItem('institute_id') || '';
+  const institute_entity = localStorage.getItem('entity') || '';
 
   const callAPI = async () => {
     getData('/entity/list').then((data) => {
@@ -93,7 +96,15 @@ const Teacher = () => {
             teacher.updated_at = updated_time.toLocaleString();
             return teacher;
           });
-          setDataTeacher(teacherData);
+          if (user_type === 'admin') {
+            setDataTeacher(teacherData);
+          } else if (user_type === 'institute') {
+            const filteredTeacher = teacherData.filter(
+              (teacher) => teacher?.institute_id === institute_id,
+            );
+
+            setDataTeacher(filteredTeacher);
+          }
         } else {
           setDataTeacher([]);
         }
@@ -184,7 +195,9 @@ const Teacher = () => {
     _event: React.SyntheticEvent,
     newValue: number,
   ) => {
-    setActiveSubTab(newValue);
+    if (user_type == 'admin') {
+      setActiveSubTab(newValue);
+    }
   };
 
   useEffect(() => {
@@ -512,6 +525,14 @@ const Teacher = () => {
     schoolInstitutes,
   ]);
 
+  useEffect(() => {
+    if (institute_entity === 'college') {
+      setActiveSubTab(0);
+    } else if (institute_entity === 'school') {
+      setActiveSubTab(1);
+    }
+  }, [institute_entity, institute_id]);
+
   const handleApproveTeacher = (id: number) => {
     putData(`${QUERY_KEYS_TEACHER.TEACHER_APPROVE}/${id}`)
       .then(() => {
@@ -720,20 +741,45 @@ const Teacher = () => {
 
                   {activeTab === 0 && (
                     <Tabs value={activeSubTab} onChange={handleSubTabChange}>
-                      <Tab label="College" />
-                      <Tab label="School" />
+                      {(user_type === 'admin' ||
+                        (user_type === 'institute' &&
+                          institute_entity === 'college')) && (
+                        <Tab label="College" />
+                      )}
+                      {(user_type === 'admin' ||
+                        (user_type === 'institute' &&
+                          institute_entity === 'school')) && (
+                        <Tab label="School" />
+                      )}
                     </Tabs>
                   )}
+
                   {activeTab === 1 && (
                     <Tabs value={activeSubTab} onChange={handleSubTabChange}>
-                      <Tab label="College" />
-                      <Tab label="School" />
+                      {(user_type === 'admin' ||
+                        (user_type === 'institute' &&
+                          institute_entity === 'college')) && (
+                        <Tab label="College" />
+                      )}
+                      {(user_type === 'admin' ||
+                        (user_type === 'institute' &&
+                          institute_entity === 'school')) && (
+                        <Tab label="School" />
+                      )}
                     </Tabs>
                   )}
                   {activeTab === 2 && (
                     <Tabs value={activeSubTab} onChange={handleSubTabChange}>
-                      <Tab label="College" />
-                      <Tab label="School" />
+                      {(user_type === 'admin' ||
+                        (user_type === 'institute' &&
+                          institute_entity === 'college')) && (
+                        <Tab label="College" />
+                      )}
+                      {(user_type === 'admin' ||
+                        (user_type === 'institute' &&
+                          institute_entity === 'school')) && (
+                        <Tab label="School" />
+                      )}
                     </Tabs>
                   )}
                   <Box marginTop="10px">

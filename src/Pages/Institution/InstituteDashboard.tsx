@@ -118,6 +118,7 @@ const InstitutionDash = () => {
           getTeahcersData(response?.data?.id);
           getCoursesData(response?.data?.id);
           localStorage.setItem('institute_id', response?.data?.id);
+          localStorage.setItem('entity', response?.data?.entity_type);
         }
       });
     } catch (error) {
@@ -427,7 +428,7 @@ const InstitutionDash = () => {
                 <div className="swiper-next d-flex">
                   <ArrowForwardOutlinedIcon />
                 </div>
-                <Link to="/" className="d-block text-dark btn rounded-3 btn-sm">
+                <Link to="" className="d-block text-dark btn rounded-3 btn-sm">
                   See All
                 </Link>
               </div>
@@ -477,10 +478,7 @@ const InstitutionDash = () => {
           <div className="col-lg-12">
             <InstitutionCharts />
           </div>
-          
           <InstituteGraphRepo />
-         
-          
 
           <div className="col-xxl-8 d-flex align-items-stretch">
             <div className="chat-wrapper desk-chat-wrapper rounded-4 mt-lg-5">
