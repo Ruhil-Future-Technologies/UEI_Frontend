@@ -117,6 +117,8 @@ import ParentMain from './Pages/Parent';
 import ParentFeedback from './Pages/Parent/ParentFeedback';
 import ParentChat from './Pages/Parent/ParentChat';
 import ParentProfile from './Pages/Parent/ParentProfile';
+import Bulkupload from './Pages/BlulkUploadData/Bulkupload';
+import StudentsForTeacher from './Pages/Teacher/StudentsForTeacher';
 
 function App() {
   const navigate = useNavigate();
@@ -125,8 +127,11 @@ function App() {
   const synth: SpeechSynthesis = window?.speechSynthesis;
   const user_type = localStorage.getItem('user_type');
   // const StuId = localStorage.getItem('_id');
-  const StuId = user_type === 'teacher' ? localStorage.getItem('teacher_id'):localStorage.getItem('student_id');
-  
+  const StuId =
+    user_type === 'teacher'
+      ? localStorage.getItem('teacher_id')
+      : localStorage.getItem('student_id');
+
   const chataddconversationurl = QUERY_KEYS.CHAT_HISTORYCON;
   const { postDataJson } = useApi();
 
@@ -326,6 +331,48 @@ function App() {
               element={<Protected Component={AddContent} menuName="Content" />}
             />
           </Route>
+          <Route path="/institution-dashboard/Teacher">
+            <Route
+              path=""
+              element={<Protected Component={Teacher} menuName="Teacher" />}
+            />
+            <Route
+              path="add-teacher"
+              element={
+                <Protected Component={AddEditTeacher} menuName="Teacher" />
+              }
+            />
+            <Route
+              path="edit-teacher/:id"
+              element={
+                <Protected Component={AddEditTeacher} menuName="Teacher" />
+              }
+            />
+          </Route>
+          <Route path="/institution-dashboard/Student">
+            <Route
+              path=""
+              element={<Protected Component={Student} menuName="Student" />}
+            />
+            <Route
+              path="add-student"
+              element={
+                <Protected Component={AddEditStudent} menuName="Student" />
+              }
+            />
+            <Route
+              path="edit-student/:id"
+              element={
+                <Protected Component={AddEditStudent} menuName="Student" />
+              }
+            />
+          </Route>
+          <Route path="/institution-dashboard/bulkupload">
+            <Route
+              path=""
+              element={<Protected Component={Bulkupload} menuName="bulkupload" />}
+            />
+          </Route>
         </Route>
         <Route path="/teacher-dashboard" element={<TeacherMain />}>
           <Route
@@ -362,6 +409,10 @@ function App() {
             path="/teacher-dashboard/assignments"
             element={<Protected Component={Assignments} />}
           />
+           <Route
+              path="/teacher-dashboard/students"
+              element={<Protected Component={StudentsForTeacher} menuName="Student" />}
+            />
           <Route
             path="/teacher-dashboard/create-assignment"
             element={<Protected Component={CreateAssignments} />}
@@ -437,9 +488,7 @@ function App() {
           />
           <Route
             path="/parent-dashboard/quiz"
-            element={
-              <Protected Component={StudentQuiz} menuName="content" />
-            }
+            element={<Protected Component={StudentQuiz} menuName="content" />}
           />
         </Route>
 
@@ -900,12 +949,10 @@ function App() {
               element={<Protected Component={ChatList} menuName="ChatList" />}
             />
           </Route>
-          <Route path="/main/SuperAdmin">
+          <Route path="/main/Admin">
             <Route
               path=""
-              element={
-                <Protected Component={SuperAdmin} menuName="SuperAdmin" />
-              }
+              element={<Protected Component={SuperAdmin} menuName="Admin" />}
             />
           </Route>
           <Route path="/main/ChangePassword">

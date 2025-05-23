@@ -73,31 +73,28 @@ export function deepEqual(a: any, b: any) {
 }
 
 export const hasSubMenu = (menuListdata: any, menuName: any) => {
+  const admin_type = localStorage.getItem('admin_type') || '';
+
   if (!Array.isArray(menuListdata)) {
     console.error('menuListdata is not an array:', menuListdata);
     return false;
   }
-
+  if (menuName === 'Admin List' && admin_type === 'super_admin') {
+    return true;
+  }
   return menuListdata.some((menu) => {
     if (!Array.isArray(menu?.submenus)) {
       console.error('submenus is not an array for menu:', menu);
       return false;
     }
 
-    // const hasSubMenu = menu.submenus.some((submenu:any) => submenu.menu_name === menuName);
-    const hasSubMenu = menu?.submenus.some((submenu: any) => {
-      // Check if either menu_name or menu.menu_name matches
+    const normalize = (str: string) =>
+      str.trim().replace(/\s+/g, '').toLowerCase();
 
-      // return submenu?.menu_name?.toLowerCase() === menuName?.toLowerCase();
-
-      const normalizedSubmenuName = submenu?.menu_name
-        ?.replace(/\s+/g, '')
-        .toLowerCase();
-      const normalizedMenuName = menuName?.replace(/\s+/g, '').toLowerCase();
-      console.log(normalizedSubmenuName);
-      return normalizedMenuName;
+    const hasSubMenu = menu.submenus.some((submenu: any) => {
+      return normalize(submenu.menu_name) === normalize(menuName);
     });
-    // console.log(`Checking menu: ${menu.menu_name.toLowerCase()}, hasSubMenu: ${hasSubMenu} `);
+
     return hasSubMenu;
   });
 };
@@ -361,4 +358,29 @@ export const convertToISTT = (dateString: string) => {
     second: '2-digit',
     hour12: true,
   });
+};
+
+export const getkeysvalue = (val: any) => {
+  const keys = Object.keys(val)
+  return keys;
+}
+export const formatDate = (dateString: string, time?: any) => {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+
+  const hours = date.getHours().toString().padStart(2, '0');
+  const minutes = date.getMinutes().toString().padStart(2, '0');
+
+  const day = date.getDate();
+  const month = date.toLocaleString('en-IN', { month: 'short' });
+  const year = date.toLocaleDateString('en-IN', { year: "numeric" })
+  if (time) {
+    return `${day} ${month} ${year} `;
+  } else {
+    return `${day} ${month} ${year} ${hours}:${minutes} `;
+  }
+
+};
+export  const getModifyClassMane = (value: string) => {
+  return value?.replace('_', ' ');
 };

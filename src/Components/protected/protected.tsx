@@ -18,7 +18,9 @@ const Protected = (props: { Component: any; menuName?: string }) => {
   // const usertype: any = 'teacher';
 
   const isDashboard = () => {
-    const currentURL = window.location.href;
+    if (usertype === 'super_admin') return true;
+
+    const currentURL = window.location.pathname;
     const parts = currentURL.split('/');
     const mName = parts[parts.length - 1];
     const uName = parts[parts.length - 2];
@@ -74,16 +76,6 @@ const Protected = (props: { Component: any; menuName?: string }) => {
       (usertype === 'admin'
         ? feedbackRoute.toLowerCase() === `edit-feedback/${id}`
         : '') ||
-      (usertype === 'admin' ? mName.toLowerCase() === 'teacher' : '') ||
-      (usertype === 'admin' ? mName.toLowerCase() === 'add-teacher' : '') ||
-      (usertype === 'admin' && uName.toLowerCase() === 'edit-teacher'
-        ? true
-        : '') ||
-      (usertype === 'admin' ? mName.toLowerCase() === 'content' : '') ||
-      (usertype === 'admin' ? mName.toLowerCase() === 'add-content' : '') ||
-      (usertype === 'admin' && uName.toLowerCase() === 'edit-content'
-        ? true
-        : '') ||
       (usertype === 'admin' ? mName.toLowerCase() === '/admin-list' : '') ||
       (usertype === 'teacher'
         ? mName.toLowerCase() === 'teacher-dashboard'
@@ -93,6 +85,9 @@ const Protected = (props: { Component: any; menuName?: string }) => {
         : '') ||
       (usertype === 'teacher' && uName.toLowerCase() === 'teacher-dashboard'
         ? mName.toLowerCase() === 'chat'
+        : '') ||
+        (usertype === 'teacher' && uName.toLowerCase() === 'teacher-dashboard'
+        ? mName.toLowerCase() === 'students'
         : '') ||
       (usertype === 'teacher' && uName.toLowerCase() === 'teacher-dashboard'
         ? mName.toLowerCase() === 'feedback'
@@ -176,6 +171,17 @@ const Protected = (props: { Component: any; menuName?: string }) => {
       (usertype === 'institute' && uName.toLowerCase() === 'edit-content'
         ? true
         : '') ||
+      (usertype === 'institute' ? mName.toLowerCase() === 'teacher' : '') ||
+      (usertype === 'institute' ? mName.toLowerCase() === 'add-teacher' : '') ||
+      (usertype === 'institute' && uName.toLowerCase() === 'edit-teacher'
+        ? true
+        : '') ||
+      (usertype === 'institute' ? mName.toLowerCase() === 'student' : '') ||
+      (usertype === 'institute' ? mName.toLowerCase() === 'add-student' : '') ||
+      (usertype === 'institute' && uName.toLowerCase() === 'edit-student'
+        ? true
+        : '') ||
+        (usertype === 'institute' ? mName.toLowerCase() === 'bulkupload' : '') ||
       (usertype === 'admin' && mName?.toLowerCase() === 'servicesagreement') ||
       (usertype === 'admin' && mName?.toLowerCase() === 'privacypolicy') ||
       (usertype === 'admin' && mName?.toLowerCase() === 'refundpolicy') ||
@@ -198,6 +204,8 @@ const Protected = (props: { Component: any; menuName?: string }) => {
   };
 
   const isAllowed = () => {
+    if (usertype === 'super_admin') return true;
+
     const menuList = localStorage.getItem('menulist1')
       ? JSON.parse(localStorage.getItem('menulist1') as string)
       : [];

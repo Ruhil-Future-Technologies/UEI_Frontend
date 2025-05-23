@@ -3,9 +3,10 @@ import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
 import LibraryBooksOutlinedIcon from '@mui/icons-material/LibraryBooksOutlined';
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
-import LiveHelpOutlinedIcon from '@mui/icons-material/LiveHelpOutlined';
+ import LiveHelpOutlinedIcon from '@mui/icons-material/LiveHelpOutlined';
 import QuestionAnswerOutlinedIcon from '@mui/icons-material/QuestionAnswerOutlined';
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+ import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
 // import Header from "../../Components/Header";
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import logowhite from '../../../assets/img/logo-white.svg';
@@ -120,6 +121,17 @@ const TeacherSideVar = () => {
                 <div className="menu-title">Quiz</div>
               </Link>
             </li>
+            <li>
+              <Link
+                to="/teacher-dashboard/students"
+                onClick={removeMobileToggle}
+              >
+                <div className="parent-icon">
+                  <AdminPanelSettingsOutlinedIcon />
+                </div>
+                <div className="menu-title">Students</div>
+              </Link>
+            </li>
           </ul>
           {/* <!-- <li>
                     <a href="javascript:;" className="has-arrow">
@@ -137,7 +149,7 @@ const TeacherSideVar = () => {
 
           {/* <li className="menu-label">UI Elements</li>  */}
         </div>
-        <div className="sidebar-footer">
+         <div className="sidebar-footer">
           {' '}
           <ul className="metismenu">
             <li>
@@ -160,7 +172,7 @@ const TeacherSideVar = () => {
               </Link>
             </li>
           </ul>
-        </div>
+        </div> 
       </aside>
     </>
   );

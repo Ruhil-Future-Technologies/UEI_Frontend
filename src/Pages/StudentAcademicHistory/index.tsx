@@ -27,6 +27,7 @@ import {
   tabletools,
 } from '../../utils/helpers';
 import { ChildComponentProps } from '../StudentProfile';
+import { QUERY_KEYS_CLASS, QUERY_KEYS_COURSE } from '../../utils/const';
 
 interface Box {
   id: number;
@@ -69,6 +70,8 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
   useTheme();
   const context = useContext(NameContext);
   const { namecolor }: any = context;
+  const ClassURL = QUERY_KEYS_CLASS.GET_CLASS;
+  const CourseURL = QUERY_KEYS_COURSE.GET_COURSE;
   const { getData, postData, putData, deleteData } = useApi();
   const [boxes, setBoxes] = useState<Box[]>([]);
   const [boxes1, setBoxes1] = useState<Boxset[]>([Boxsetvalue]);
@@ -139,7 +142,7 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
   useEffect(() => {
     listData();
 
-    getData('/course/list')
+    getData(`${CourseURL}`)
       .then((response: any) => {
         if (response.status) {
           const filteredData = response?.data?.filter(
@@ -155,7 +158,7 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
           theme: 'colored',
         });
       });
-    getData('/class/list')
+    getData(`${ClassURL}`)
       .then((response: any) => {
         if (response.status) {
           const filteredData = response?.data?.filter(

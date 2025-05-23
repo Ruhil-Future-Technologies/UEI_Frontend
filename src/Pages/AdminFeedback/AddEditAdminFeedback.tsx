@@ -19,6 +19,7 @@ import {
 } from 'formik';
 import TextField from '@mui/material/TextField';
 import React from 'react';
+import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 interface IFeedbackForm {
   question: string | null;
   options: any[];
@@ -32,8 +33,9 @@ const AddEditAdminFeedback = () => {
   const { namecolor }: any = context;
   const { getData, postData, putData } = useApi();
   const FeedbackAddURL = QUERY_KEYS_FEEDBACK.FEEDBACK_ADD;
-  const GetFeedbackURL = QUERY_KEYS_FEEDBACK.GET_FEEDBACK;
+  const GetFeedbackURL = QUERY_KEYS_FEEDBACK.GET_BY_ID;
   const FeedbackEditURL = QUERY_KEYS_FEEDBACK.FEEDBACK_EDIT;
+  const [feedbackType,setFeedbackType]=useState("");
 
   const [initialValues, setInitialValues] = useState<any>({
     question: '',
@@ -42,23 +44,21 @@ const AddEditAdminFeedback = () => {
 
   useEffect(() => {
     if (id) {
-      getData(`${GetFeedbackURL}`).then((data: any) => {
-        const datavalue = data?.data?.feedbacks_data;
+      getData(`${GetFeedbackURL}`+id).then((data: any) => {
+        const datavalue = data?.data?.feedback_data;
 
-        const getByIdFeedbackData = datavalue?.filter(
-          (data: any) => data.id == id,
-        );
-        const optionStringify = getByIdFeedbackData[0]?.options
-          ? JSON.parse(getByIdFeedbackData[0]?.options)
+        const optionStringify = datavalue?.options
+          ? JSON.parse(datavalue?.options)
           : [];
         const optionData = optionStringify?.map((str: any) => {
           return { option: str };
         });
 
         const newObject = {
-          question: getByIdFeedbackData[0].question,
+          question: datavalue.question,
           options: optionData,
         };
+        setFeedbackType(datavalue.feedback_type)
 
         setInitialValues(JSON.parse(JSON.stringify(newObject)));
       });
@@ -76,6 +76,7 @@ const AddEditAdminFeedback = () => {
     const payload = {
       question: formData.question,
       options: stringifyOptions,
+      feedback_type:feedbackType
     };
 
     const formData1 = new FormData();
@@ -96,18 +97,18 @@ const AddEditAdminFeedback = () => {
           navigate('/main/feedback');
           // setOptions([""]);
           // setQuestion("");
-        }else{
-          toast.error(response?.message,{
-            hideProgressBar:true,
-            theme:'colored',
-            position:'top-center'
+        } else {
+          toast.error(response?.message, {
+            hideProgressBar: true,
+            theme: 'colored',
+            position: 'top-center'
           })
         }
-      }).catch((error)=>{
-        toast.error(error?.message,{
-          hideProgressBar:true,
-          theme:'colored',
-          position:'top-center'
+      }).catch((error) => {
+        toast.error(error?.message, {
+          hideProgressBar: true,
+          theme: 'colored',
+          position: 'top-center'
         })
       });
     } else {
@@ -121,20 +122,20 @@ const AddEditAdminFeedback = () => {
           navigate('/main/feedback');
           // setOptions([""]);
           // setQuestion("");
-        }else{
-                toast.error(response?.message,{
-                  hideProgressBar:true,
-                  theme:'colored',
-                  position:'top-center'
-                })
-              }
-            }).catch((error)=>{
-              toast.error(error?.message,{
-                hideProgressBar:true,
-                theme:'colored',
-                position:'top-center'
-              })
-            });
+        } else {
+          toast.error(response?.message, {
+            hideProgressBar: true,
+            theme: 'colored',
+            position: 'top-center'
+          })
+        }
+      }).catch((error) => {
+        toast.error(error?.message, {
+          hideProgressBar: true,
+          theme: 'colored',
+          position: 'top-center'
+        })
+      });
     }
   };
 
@@ -162,6 +163,10 @@ const AddEditAdminFeedback = () => {
       }),
     ),
   });
+   
+  const handleFeedbacktype=(event:SelectChangeEvent)=>{
+    setFeedbackType(event.target.value);
+  }
 
   return (
     <div className="main-wrapper">
@@ -186,9 +191,26 @@ const AddEditAdminFeedback = () => {
                   <div className="row gy-4">
                     <div className="col-md-4">
                       <div className="form_field_wrapper mb-4 mt-2">
+                      <FormControl fullWidth>
+                        <InputLabel id="entitys">Feedback type</InputLabel>
+                        <Select
+                          label="Feedback type"
+                          id='entitys'
+                          labelId='entitys'
+                          name='entitys'
+                          value={feedbackType}
+                          onChange={handleFeedbacktype}
+                        >
+                          <MenuItem value="teacher"> Teahcer</MenuItem>
+                          <MenuItem value="student"> Student</MenuItem>
+                        </Select>
+                      </FormControl>
+                      </div>
+                      <div className="form_field_wrapper mb-4 mt-2">
                         <TextField
                           label="Question *"
                           name="question"
+                          fullWidth
                           value={values.question}
                           variant="outlined"
                           onChange={handleQuestionChange}
@@ -206,15 +228,15 @@ const AddEditAdminFeedback = () => {
                               {values.options.length > 0 &&
                                 values.options.map(
                                   (option: any, index: number) => (
-                                    <div key={index} className="d-flex">
+                                    <div key={index} className="d-flex justify-content-between align-items-center">
                                       <div className="mb-3  pb-2">
                                         <TextField
                                           label="Option *"
                                           name={`options[${index}].option`}
+                                          fullWidth
                                           value={option.option}
-                                          placeholder={`Enter Option ${
-                                            index + 1
-                                          }`}
+                                          placeholder={`Enter Option ${index + 1
+                                            }`}
                                           variant="outlined"
                                           onChange={handleQuestionChange}
                                         />

@@ -6,7 +6,7 @@ import './FullScreenLoader.scss'; // Import CSS for styling
 const FullScreenLoader = (props) => {
   const getMessage = () => {
     if (props.flag === 'chat') {
-      return 'Searching';
+      return 'Thinking';
     }
     return props.msg 
   };

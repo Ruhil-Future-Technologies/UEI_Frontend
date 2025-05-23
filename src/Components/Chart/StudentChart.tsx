@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import useApi from '../../hooks/useAPI';
 import {
+  QUERY_KEYS,
+  QUERY_KEYS_ASSIGNMENT,
   QUERY_KEYS_SUBJECT,
   QUERY_KEYS_SUBJECT_SCHOOL,
 } from '../../utils/const';
@@ -14,6 +16,7 @@ import { useTheme } from '../../ThemeProvider';
 const StudentDashboardCharts = () => {
   const { isDarkMode } = useTheme();
   const { getData } = useApi();
+  const STATS_FOR_STUDENT = QUERY_KEYS_ASSIGNMENT.STATS_FOR_STUDENT;
 
   const userdata = JSON.parse(localStorage.getItem('userdata') ?? '""');
   const [activeTab, setActiveTab] = useState('weekly');
@@ -92,6 +95,22 @@ const StudentDashboardCharts = () => {
   const [studentData, setStudentData] = useState<any>('');
   const student_id = localStorage.getItem('_id') || '';
 
+  const getTitle = (timeData: any) => {
+    if (!timeData?.dailyData?.length) return 'No Learning Time Data Available';
+    if (activeTab === 'daily') return 'Daily Learning Time';
+    if (activeTab === 'weekly') return 'Weekly Learning Time';
+    return 'Monthly Learning Time';
+  };
+
+  const getStreakChartTitle = (streaksData: any) => {
+    if (!streaksData?.engagement?.length)
+      return 'No Study Streaks Data Available';
+    if (activeTab === 'daily') return 'Daily Study Engagement & Streaks';
+    if (activeTab === 'weekly')
+      return 'Weekly Study Momentum and Engagement Score';
+    return 'Monthly Study Momentum and Engagement Score';
+  };
+
   const getMonths = () => {
     if (!studentData) return [];
 
@@ -127,110 +146,108 @@ const StudentDashboardCharts = () => {
         let study_data: any = [];
 
         if (student_id) {
-          getData(`/assignment/stats-for-student/${student_id}`).then(
-            (response) => {
-              performanceData = response?.data;
+          getData(`${STATS_FOR_STUDENT}${student_id}`).then((response) => {
+            performanceData = response?.data?.subject_stats?.assignments;
 
-              if (userdata?.entity_name === 'college') {
-                const subjectMap: any = {};
+            if (userdata?.entity_name === 'college') {
+              const subjectMap: any = {};
 
-                collegeData?.data?.subjects_data?.forEach((subject: any) => {
-                  subjectMap[subject?.subject_name] = subject?.subject_name;
-                });
+              collegeData?.data?.subjects_data?.forEach((subject: any) => {
+                subjectMap[subject?.subject_name] = subject?.subject_name;
+              });
 
-                const labels: any = [];
-                const currentScores: any = [];
-                const previousScores: any = [];
-                const completedAssignments: any = [];
-                const pendingAssignments: any = [];
+              const labels: any = [];
+              const currentScores: any = [];
+              const previousScores: any = [];
+              const completedAssignments: any = [];
+              const pendingAssignments: any = [];
 
-                Object.entries(performanceData)?.forEach(
-                  ([subject_name, data]: [string, any]) => {
-                    if (subjectMap[subject_name]) {
-                      labels.push(subjectMap[subject_name]);
-                      currentScores.push(data.current);
-                      previousScores.push(data.previous);
-                      completedAssignments.push(data.completed);
-                      pendingAssignments.push(data.pending);
-                    } else {
-                      labels.push(`Subject ${subject_name}`);
-                      currentScores.push(data.current);
-                      previousScores.push(data.previous);
-                      completedAssignments.push(data.completed);
-                      pendingAssignments.push(data.pending);
-                    }
-                  },
-                );
+              Object.entries(performanceData)?.forEach(
+                ([subject_name, data]: [string, any]) => {
+                  if (subjectMap[subject_name]) {
+                    labels.push(subjectMap[subject_name]);
+                    currentScores.push(data.current);
+                    previousScores.push(data.previous);
+                    completedAssignments.push(data.completed);
+                    pendingAssignments.push(data.pending);
+                  } else {
+                    labels.push(`Subject ${subject_name}`);
+                    currentScores.push(data.current);
+                    previousScores.push(data.previous);
+                    completedAssignments.push(data.completed);
+                    pendingAssignments.push(data.pending);
+                  }
+                },
+              );
 
-                setAcademicPerformanceData(
-                  createAcademicPerformanceConfig(
-                    currentScores,
-                    previousScores,
-                    labels,
-                    isDarkMode,
-                  ),
-                );
+              setAcademicPerformanceData(
+                createAcademicPerformanceConfig(
+                  currentScores,
+                  previousScores,
+                  labels,
+                  isDarkMode,
+                ),
+              );
 
-                setCompletionRateData(
-                  createCompletionRateConfig(
-                    completedAssignments,
-                    pendingAssignments,
-                    labels,
-                    isDarkMode,
-                  ),
-                );
-              } else {
-                const subjectMap: any = {};
+              setCompletionRateData(
+                createCompletionRateConfig(
+                  completedAssignments,
+                  pendingAssignments,
+                  labels,
+                  isDarkMode,
+                ),
+              );
+            } else {
+              const subjectMap: any = {};
 
-                schoolData?.data?.subjects_data?.forEach((subject: any) => {
-                  subjectMap[subject?.subject_name] = subject?.subject_name;
-                });
+              schoolData?.data?.subjects_data?.forEach((subject: any) => {
+                subjectMap[subject?.subject_name] = subject?.subject_name;
+              });
 
-                const labels: any = [];
-                const currentScores: any = [];
-                const previousScores: any = [];
-                const completedAssignments: any = [];
-                const pendingAssignments: any = [];
-                if (!performanceData) return;
-                Object.entries(performanceData)?.forEach(
-                  ([subject_name, data]: [string, any]) => {
-                    if (subjectMap[subject_name]) {
-                      labels.push(subjectMap[subject_name]);
-                      currentScores.push(data.current);
-                      previousScores.push(data.previous);
-                      completedAssignments.push(data.completed);
-                      pendingAssignments.push(data.pending);
-                    } else {
-                      labels.push(`Subject ${subject_name}`);
-                      currentScores.push(data.current);
-                      previousScores.push(data.previous);
-                      completedAssignments.push(data.completed);
-                      pendingAssignments.push(data.pending);
-                    }
-                  },
-                );
+              const labels: any = [];
+              const currentScores: any = [];
+              const previousScores: any = [];
+              const completedAssignments: any = [];
+              const pendingAssignments: any = [];
+              if (!performanceData) return;
+              Object.entries(performanceData)?.forEach(
+                ([subject_name, data]: [string, any]) => {
+                  if (subjectMap[subject_name]) {
+                    labels.push(subjectMap[subject_name]);
+                    currentScores.push(data.current);
+                    previousScores.push(data.previous);
+                    completedAssignments.push(data.completed);
+                    pendingAssignments.push(data.pending);
+                  } else {
+                    labels.push(`Subject ${subject_name}`);
+                    currentScores.push(data.current);
+                    previousScores.push(data.previous);
+                    completedAssignments.push(data.completed);
+                    pendingAssignments.push(data.pending);
+                  }
+                },
+              );
 
-                setAcademicPerformanceData(
-                  createAcademicPerformanceConfig(
-                    currentScores,
-                    previousScores,
-                    labels,
-                    isDarkMode,
-                  ),
-                );
-                setCompletionRateData(
-                  createCompletionRateConfig(
-                    completedAssignments,
-                    pendingAssignments,
-                    labels,
-                    isDarkMode,
-                  ),
-                );
-              }
-            },
-          );
+              setAcademicPerformanceData(
+                createAcademicPerformanceConfig(
+                  currentScores,
+                  previousScores,
+                  labels,
+                  isDarkMode,
+                ),
+              );
+              setCompletionRateData(
+                createCompletionRateConfig(
+                  completedAssignments,
+                  pendingAssignments,
+                  labels,
+                  isDarkMode,
+                ),
+              );
+            }
+          });
 
-          getData(`/session/student-individual-stats/${student_id}`).then(
+          getData(`${QUERY_KEYS.GET_STUDENT_SESSION}${student_id}`).then(
             (response) => {
               const sessionData = response.data.monthly_data;
 
@@ -465,8 +482,13 @@ const StudentDashboardCharts = () => {
                   xaxis: {
                     categories: timeData?.labels,
                     title: {
-                      text: 'Time Period',
+                      text: 'Day Period',
                       style: { fontWeight: 600, color: '#666' },
+                    },
+                    labels: {
+                      style: {
+                        colors: '#666', // color of x-axis labels
+                      },
                     },
                   },
                   yaxis: [
@@ -476,8 +498,14 @@ const StudentDashboardCharts = () => {
                         text: 'Daily Time (Hours)',
                         style: { fontWeight: 600, color: '#666' },
                       },
+
                       min: 0,
-                      labels: { formatter: (val: any) => val.toFixed(1) },
+                      labels: {
+                        formatter: (val: any) => val.toFixed(1),
+                        style: {
+                          colors: '#666', // color of x-axis labels
+                        },
+                      },
                     },
                     ...(activeTab !== 'daily'
                       ? [
@@ -506,9 +534,8 @@ const StudentDashboardCharts = () => {
                     colors: ['#666666', '#666666', '#666666'],
                   },
                   title: {
-                    text: timeData?.dailyData?.length
-                      ? 'Learning Time Analysis'
-                      : 'No Learning Time Data Available',
+                    text: getTitle(timeData),
+
                     align: 'center',
                     style: {
                       fontSize: '18px',
@@ -676,10 +703,15 @@ const StudentDashboardCharts = () => {
                   xaxis: {
                     categories: streaksData?.labels,
                     title: {
-                      text: 'Time Period',
+                      text: 'Day Period',
                       style: {
                         fontWeight: 600,
                         color: '#666',
+                      },
+                    },
+                    labels: {
+                      style: {
+                        colors: '#666', // color of x-axis labels
                       },
                     },
                   },
@@ -691,6 +723,12 @@ const StudentDashboardCharts = () => {
                         style: {
                           fontWeight: 600,
                           color: '#666',
+                        },
+                      },
+                      labels: {
+                        formatter: (val: number) => val.toFixed(2),
+                        style: {
+                          colors: '#666', // color of x-axis labels
                         },
                       },
                       min: 0,
@@ -717,7 +755,7 @@ const StudentDashboardCharts = () => {
                             ? 7
                             : 30,
                       labels: {
-                        formatter: (val: number) => val.toFixed(0),
+                        formatter: (val: number) => val.toFixed(),
                       },
                     },
                   ],
@@ -726,9 +764,7 @@ const StudentDashboardCharts = () => {
                     colors: ['#666666', '#666666', '#666666'],
                   },
                   title: {
-                    text: streaksData?.engagement?.length
-                      ? 'Study Streaks & Engagement'
-                      : 'No Study Streaks Data Available',
+                    text: getStreakChartTitle(streaksData),
                     align: 'center',
                     style: {
                       fontSize: '18px',
@@ -737,6 +773,14 @@ const StudentDashboardCharts = () => {
                     },
                   },
                   tooltip: {
+                    y: {
+                      formatter: (val: number, { seriesIndex, w }: any) => {
+                        const seriesName = w.config.series[seriesIndex]?.name;
+                        if (seriesName === 'Engagement Score')
+                          return val.toFixed(2);
+                        return val.toFixed(0);
+                      },
+                    },
                     theme: isDarkMode ? 'dark' : 'light',
                     shared: true,
                     intersect: false,

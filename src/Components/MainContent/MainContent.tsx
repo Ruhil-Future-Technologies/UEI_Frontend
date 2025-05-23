@@ -2,7 +2,7 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 //import "./MainContent.css";
 import { Bar, Line } from 'react-chartjs-2';
-import Chart from 'react-apexcharts';
+// import Chart from 'react-apexcharts';
 import 'chart.js/auto';
 import { PieChart } from '@mui/x-charts/PieChart';
 import { Chart as ChartJS, ChartOptions, ChartData } from 'chart.js';
@@ -24,7 +24,7 @@ import CreateIcon from '@mui/icons-material/Create';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import CollectionsBookmarkIcon from '@mui/icons-material/CollectionsBookmark';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import MoreVertOutlinedIcon from '@mui/icons-material/MoreVertOutlined';
+// import MoreVertOutlinedIcon from '@mui/icons-material/MoreVertOutlined';
 import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';
 import OpenInFullOutlinedIcon from '@mui/icons-material/OpenInFullOutlined';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
@@ -38,8 +38,8 @@ import VolumeUpOutlinedIcon from '@mui/icons-material/VolumeUpOutlined';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import VolumeOffOutlinedIcon from '@mui/icons-material/VolumeOffOutlined';
 import CachedOutlinedIcon from '@mui/icons-material/CachedOutlined';
-import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined';
-import TrendingUpOutlinedIcon from '@mui/icons-material/TrendingUpOutlined';
+// import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined';
+// import TrendingUpOutlinedIcon from '@mui/icons-material/TrendingUpOutlined';
 import CircularProgress from '@mui/material/CircularProgress';
 import IconButton from '@mui/material/IconButton';
 import { toast, ToastContentProps } from 'react-toastify';
@@ -80,7 +80,10 @@ function MainContent() {
   const userid = localStorage.getItem('user_uuid');
   const menuList = localStorage.getItem('menulist1');
   const user_type = localStorage.getItem('user_type');
-  const Id = user_type === 'teacher' ? localStorage.getItem('teacher_id'):localStorage.getItem('student_id');
+  const Id =
+    user_type === 'teacher'
+      ? localStorage.getItem('teacher_id')
+      : localStorage.getItem('student_id');
 
   const profileURL = QUERY_KEYS_STUDENT.STUDENT_GET_PROFILE;
   const profileURLadmin = QUERY_KEYS_ADMIN_BASIC_INFO.ADMIN_GET_PROFILE;
@@ -88,7 +91,8 @@ function MainContent() {
   const ChatStore = QUERY_KEYS.CHAT_STORE;
   const ChatRAGURL = QUERY_KEYS.CHATRAGMODEL;
   const ChatOLLAMAURL = QUERY_KEYS.CHATOLLAMA;
-  const chatlisturl = user_type === 'teacher' ? QUERY_KEYS.CHAT_LIST_T : QUERY_KEYS.CHAT_LIST;
+  const chatlisturl =
+    user_type === 'teacher' ? QUERY_KEYS.CHAT_LIST_T : QUERY_KEYS.CHAT_LIST;
   const ChatURLAI = QUERY_KEYS.CHATADDAI;
   const chataddconversationurl = QUERY_KEYS.CHAT_HISTORYCON;
   const university_list = QUERY_KEYS_UNIVERSITY.GET_UNIVERSITY;
@@ -214,221 +218,6 @@ function MainContent() {
     }
   };
 
-  const barChartOptions = {
-    chart: {
-      id: 'chart5',
-      height: 295,
-      width: '100%',
-      toolbar: {
-        show: false,
-      },
-    },
-    plotOptions: {
-      bar: {
-        borderRadius: 5,
-        horizontal: false,
-        columnWidth: '50%',
-      },
-    },
-    xaxis: {
-      categories: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-    },
-    grid: {
-      show: false,
-    },
-    dataLabels: {
-      enabled: false,
-    },
-    stroke: {
-      show: true,
-      width: 2,
-      colors: ['#00E396'], // Green border for the bars
-    },
-    colors: ['#00E396'],
-    fill: {
-      type: 'gradient',
-      gradient: {
-        shade: 'dark',
-        type: 'vertical',
-        shadeIntensity: 0.5,
-        gradientToColors: ['#009FFD'],
-        inverseColors: true,
-        // opacityFrom: 0.85,
-        // opacityTo: 0.85,
-        stops: [50, 80],
-      },
-    },
-  };
-
-  const barChartSeries = [
-    {
-      name: 'Data',
-      data: [10, 40, 35, 55, 30, 25, 30], // The values based on the chart
-    },
-  ];
-
-  const radialChartOptions = {
-    chart: {
-      id: 'chart1',
-    },
-    plotOptions: {
-      radialBar: {
-        startAngle: -115, // Starts from the left
-        endAngle: 115, // Ends on the right (half-circle gauge)
-        hollow: {
-          size: '70%', // Creates the hollow center
-        },
-        dataLabels: {
-          name: {
-            show: false, // Hides the name label
-          },
-          value: {
-            fontSize: '22px',
-            show: true,
-            formatter: function (val: any) {
-              return val + '%'; // Display the percentage value in the center
-            },
-          },
-        },
-        track: {
-          background: '#e7e7e7', // Gray background for the unused portion
-          strokeWidth: '97%',
-          margin: 5, // Margin between the track and the bar
-        },
-      },
-    },
-    fill: {
-      type: 'gradient',
-      gradient: {
-        shade: 'light',
-        type: 'horizontal',
-        shadeIntensity: 0.5,
-        gradientToColors: ['#FF0080'], // Gradient from yellow to red
-        inverseColors: false,
-        opacityFrom: 1,
-        opacityTo: 1,
-        stops: [0, 100],
-      },
-    },
-    stroke: {
-      lineCap: 'round' as const,
-    },
-    labels: ['Progress'], // Label (hidden as per the dataLabels.name.show: false)
-  };
-
-  const lineChartOptions = {
-    chart: {
-      id: 'chart2',
-      sparkline: {
-        enabled: !0,
-      },
-      zoom: {
-        enabled: false,
-      },
-    },
-    dataLabels: {
-      enabled: false,
-    },
-    stroke: {
-      width: 2,
-      curve: 'smooth' as const,
-    },
-    fill: {
-      type: 'gradient',
-      gradient: {
-        shade: 'dark',
-        gradientToColors: ['#02c27a'],
-        shadeIntensity: 1,
-        type: 'vertical',
-        opacityFrom: 0.8,
-        opacityTo: 0.1,
-        stops: [0, 100, 100, 100],
-      },
-    },
-
-    colors: ['#02c27a'],
-    xaxis: {
-      categories: [
-        'Jan',
-        'Feb',
-        'Mar',
-        'Apr',
-        'May',
-        'Jun',
-        'Jul',
-        'Aug',
-        'Sep',
-      ],
-    },
-  };
-
-  const secondLineChartOptions = {
-    chart: {
-      id: 'chart8',
-      height: '100%',
-      width: '100%',
-      zoom: {
-        enabled: false, // Disables zoom functionality
-      },
-      sparkline: {
-        enabled: !0,
-      },
-    },
-    fill: {
-      type: 'gradient',
-      gradient: {
-        shade: 'dark',
-        gradientToColors: ['#7DFF50'],
-        shadeIntensity: 1,
-        type: 'vertical',
-        opacityFrom: 0.8,
-        opacityTo: 0.1,
-        stops: [0, 100, 100, 100],
-      },
-    },
-
-    colors: ['#7DFF50'],
-    dataLabels: {
-      enabled: false,
-    },
-    stroke: {
-      curve: 'straight' as const,
-      width: 2,
-      colors: ['#7DFF50'],
-    },
-    markers: {
-      size: 5,
-      colors: ['#7DFF50'],
-      strokeColors: '#fff',
-      strokeWidth: 2,
-      hover: {
-        size: 7,
-      },
-    },
-    xaxis: {
-      categories: [
-        'Jan',
-        'Feb',
-        'Mar',
-        'Apr',
-        'May',
-        'Jun',
-        'Jul',
-        'Aug',
-        'Sep',
-      ],
-      labels: {
-        show: false, // Hides the x-axis values
-      },
-    },
-    yaxis: {
-      show: false, // Hides the y-axis values
-    },
-    grid: {
-      show: false, // Hides grid lines
-    },
-  };
-
   useEffect(() => {
     if (usertype === 'admin') {
       setUserName('admin');
@@ -488,7 +277,7 @@ function MainContent() {
     TuesdayCount: 0,
     WednesdayCount: 0,
   });
-  const [statsChatCount, setStatsChatCount] = useState<any>([]);
+  // const [statsChatCount, setStatsChatCount] = useState<any>([]);
   // {
   //   ChatCount1: 0,
   //   StudentName1:"",
@@ -608,20 +397,20 @@ function MainContent() {
       },
     ],
   };
-  const statsChatCountArray = Array?.isArray(statsChatCount)
-    ? statsChatCount
-    : [];
+  // const statsChatCountArray = Array?.isArray(statsChatCount)
+  //   ? statsChatCount
+  //   : [];
 
-  const top5Chats = statsChatCountArray
-    ?.sort(
-      (a: { chat_count: number }, b: { chat_count: number }) =>
-        b?.chat_count - a?.chat_count,
-    )
-    ?.slice(0, 5);
+  // const top5Chats = statsChatCountArray
+  //   ?.sort(
+  //     (a: { chat_count: number }, b: { chat_count: number }) =>
+  //       b?.chat_count - a?.chat_count,
+  //   )
+  //   ?.slice(0, 5);
 
   // Extract student names and chat counts for the top 5 entries
-  const studentNames = top5Chats?.map((item: any) => item?.student_name);
-  const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
+  // const studentNames = top5Chats?.map((item: any) => item?.student_name);
+  // const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
   // // Sort statsChatCount by chat_count in descending order and take the top 5
   // const top5Chats = statsChatCount
   //   ?.sort((a: { chat_count: number; }, b: { chat_count: number; }) => b?.chat_count - a?.chat_count)
@@ -630,55 +419,55 @@ function MainContent() {
   // // Extract student names and chat counts for the top 5 entries
   // const studentNames = top5Chats?.map((item: any) => item?.student_name);
   // const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
-  const barChartDataStudentChatCount: ChartData<'bar', number[], string> = {
-    labels: studentNames,
-    datasets: [
-      {
-        label: 'This Week',
-        data: chatCounts,
-        backgroundColor: function (context) {
-          const chart = context.chart;
-          const { ctx, chartArea } = chart;
+  // const barChartDataStudentChatCount: ChartData<'bar', number[], string> = {
+  //   labels: studentNames,
+  //   datasets: [
+  //     {
+  //       label: 'This Week',
+  //       data: chatCounts,
+  //       backgroundColor: function (context) {
+  //         const chart = context.chart;
+  //         const { ctx, chartArea } = chart;
 
-          if (!chartArea) {
-            // This case happens on initial chart load
-            return 'rgba(0, 0, 0, 0)';
-          }
+  //         if (!chartArea) {
+  //           // This case happens on initial chart load
+  //           return 'rgba(0, 0, 0, 0)';
+  //         }
 
-          const gradientFill1 = ctx.createLinearGradient(
-            0,
-            chartArea.top,
-            0,
-            chartArea.bottom,
-          );
-          gradientFill1.addColorStop(0, '#005bea');
-          gradientFill1.addColorStop(1, '#00c6fb');
-          return gradientFill1;
-        },
-        borderColor: function (context) {
-          const chart = context.chart;
-          const { ctx, chartArea } = chart;
+  //         const gradientFill1 = ctx.createLinearGradient(
+  //           0,
+  //           chartArea.top,
+  //           0,
+  //           chartArea.bottom,
+  //         );
+  //         gradientFill1.addColorStop(0, '#005bea');
+  //         gradientFill1.addColorStop(1, '#00c6fb');
+  //         return gradientFill1;
+  //       },
+  //       borderColor: function (context) {
+  //         const chart = context.chart;
+  //         const { ctx, chartArea } = chart;
 
-          if (!chartArea) {
-            return '#000000';
-          }
+  //         if (!chartArea) {
+  //           return '#000000';
+  //         }
 
-          const gradientBorder1 = ctx.createLinearGradient(
-            0,
-            chartArea.top,
-            0,
-            chartArea.bottom,
-          );
-          gradientBorder1.addColorStop(0, '#005bea');
-          gradientBorder1.addColorStop(1, '#00c6fb');
-          return gradientBorder1;
-        },
-        borderWidth: 0,
-        borderRadius: 30, // Rounded corners
-        categoryPercentage: 0.3, // Width of the bars
-      },
-    ],
-  };
+  //         const gradientBorder1 = ctx.createLinearGradient(
+  //           0,
+  //           chartArea.top,
+  //           0,
+  //           chartArea.bottom,
+  //         );
+  //         gradientBorder1.addColorStop(0, '#005bea');
+  //         gradientBorder1.addColorStop(1, '#00c6fb');
+  //         return gradientBorder1;
+  //       },
+  //       borderWidth: 0,
+  //       borderRadius: 30, // Rounded corners
+  //       categoryPercentage: 0.3, // Width of the bars
+  //     },
+  //   ],
+  // };
 
   // Define the bar chart options
   const barChartOptionsStudent: ChartOptions<'bar'> = {
@@ -1020,11 +809,10 @@ function MainContent() {
                 if (academic_history?.class_id) {
                   getData(`class/get/${academic_history?.class_id}`).then(
                     (response) => {
-                      if(response?.status){
-
+                      if (response?.status) {
                         setStudentClass(
                           response.data.class_data.class_name
-  
+
                             .replace('_', ' ')
                             .charAt(0)
                             .toUpperCase() +
@@ -1476,23 +1264,23 @@ function MainContent() {
       }
     };
 
-    const fetchStudentChatCountData = async () => {
-      if (usertype === 'admin') {
-        try {
-          const [studentChatCount] = await Promise.allSettled([
-            getData('/chat/api/chat-count'),
-          ]);
-          const studentChatCountdata =
-            studentChatCount?.status === 'fulfilled'
-              ? studentChatCount?.value?.data || 0
-              : 0;
+    // const fetchStudentChatCountData = async () => {
+    //   if (usertype === 'admin') {
+    //     try {
+    //       const [studentChatCount] = await Promise.allSettled([
+    //         getData('/chat/api/chat-count'),
+    //       ]);
+    //       const studentChatCountdata =
+    //         studentChatCount?.status === 'fulfilled'
+    //           ? studentChatCount?.value?.data || 0
+    //           : 0;
 
-          setStatsChatCount(studentChatCountdata);
-        } catch (error) {
-          console.error('Error fetching data:', error);
-        }
-      }
-    };
+    //       setStatsChatCount(studentChatCountdata);
+    //     } catch (error) {
+    //       console.error('Error fetching data:', error);
+    //     }
+    //   }
+    // };
 
     // const fetchstucount = async () => {
     //     getData("hobby/list")
@@ -1512,7 +1300,7 @@ function MainContent() {
     // }
     fetchStudentweeklyData();
     fetchStudentCourseData();
-    fetchStudentChatCountData();
+    //fetchStudentChatCountData();
     fetchData();
     getVoices();
     // fetchstucount();
@@ -1776,7 +1564,9 @@ function MainContent() {
                       if (response?.status === 200) {
                         handleResponse(response);
                         const ChatStorepayload = {
-                          [user_type === 'teacher' ? 'teacher_id' : 'student_id']: Id,
+                          [user_type === 'teacher'
+                            ? 'teacher_id'
+                            : 'student_id']: Id,
                           chat_question: search,
                           response: response?.answer,
                         };
@@ -1808,7 +1598,8 @@ function MainContent() {
                     if (response?.status === 200) {
                       handleResponse(response);
                       const ChatStorepayload = {
-                        [user_type === 'teacher' ? 'teacher_id' : 'student_id']: Id,
+                        [user_type === 'teacher' ? 'teacher_id' : 'student_id']:
+                          Id,
                         chat_question: search,
                         response: response?.answer,
                       };
@@ -1838,7 +1629,7 @@ function MainContent() {
               profileDatas?.subject_preference || {};
             const university: any =
               university_list_data?.filter(
-                (university: any) => university.university_id == university_id,
+                (university: any) => university?.university_id == university_id,
               ) || null;
             const queryParams = {
               user_query: search,
@@ -1917,7 +1708,9 @@ function MainContent() {
                       if (response?.status === 200) {
                         handleResponse(response);
                         const ChatStorepayload = {
-                          [user_type === 'teacher' ? 'teacher_id' : 'student_id']: Id,
+                          [user_type === 'teacher'
+                            ? 'teacher_id'
+                            : 'student_id']: Id,
                           chat_question: search,
                           response: response?.answer,
                         };
@@ -1950,7 +1743,8 @@ function MainContent() {
                     if (response?.status === 200) {
                       handleResponse(response);
                       const ChatStorepayload = {
-                        [user_type === 'teacher' ? 'teacher_id' : 'student_id']: Id,
+                        [user_type === 'teacher' ? 'teacher_id' : 'student_id']:
+                          Id,
                         chat_question: search,
                         response: response?.answer,
                       };
@@ -2351,6 +2145,9 @@ function MainContent() {
           [`answer-${index}`]: true,
         };
         setIsTextCopied(updatedState);
+        setTimeout(() => {
+          setIsTextCopied({});
+        }, 3000);
       })
       .catch((err) => {
         console.error('Error copying text: ', err);
@@ -2493,7 +2290,7 @@ function MainContent() {
                     </div>
                   </div>
                 </div>
-                <div className="col-lg-6">
+                {/* <div className="col-lg-6">
                   <div className="card">
                     <div className="card-header py-3">
                       <div className="d-flex align-items-center justify-content-between">
@@ -2525,7 +2322,6 @@ function MainContent() {
                       </div>
                     </div>
                     <div className="card-body">
-                      {/* <Bar data={barData} /> */}
                       <div className="chart-container1">
                         <Bar
                           ref={barChartRef}
@@ -2535,33 +2331,8 @@ function MainContent() {
                       </div>
                     </div>
                   </div>
-                </div>
-                <div className="col-lg-6">
-                  <div className="card">
-                    <div className="card-body">
-                      <PieChart
-                        className="pie"
-                        series={[
-                          {
-                            data: pieDataCourse,
-                            highlightScope: {
-                              faded: 'global',
-                              highlighted: 'item',
-                            },
-                            faded: {
-                              innerRadius: 30,
-                              additionalRadius: -30,
-                              color: 'gray',
-                            },
-                          },
-                        ]}
-                        width={450}
-                        height={200}
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="col-lg-6"></div>
+                </div> */}
+
                 <div className="col-lg-6">
                   <div className="card">
                     <div className="card-header py-3">
@@ -2643,6 +2414,7 @@ function MainContent() {
                     </div>
                   </div>
                 </div>
+                <div className="col-lg-6"></div>
                 <div className="col-lg-6">
                   <div className="card">
                     <div className="card-body">
@@ -2651,6 +2423,31 @@ function MainContent() {
                         series={[
                           {
                             data: pieData,
+                            highlightScope: {
+                              faded: 'global',
+                              highlighted: 'item',
+                            },
+                            faded: {
+                              innerRadius: 30,
+                              additionalRadius: -30,
+                              color: 'gray',
+                            },
+                          },
+                        ]}
+                        width={450}
+                        height={200}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="col-lg-6">
+                  <div className="card">
+                    <div className="card-body">
+                      <PieChart
+                        className="pie"
+                        series={[
+                          {
+                            data: pieDataCourse,
                             highlightScope: {
                               faded: 'global',
                               highlighted: 'item',
@@ -3103,7 +2900,7 @@ function MainContent() {
                   </div>
                 </div>
                 <StudentDashboardCharts />
-                <div className="col-xl-6 d-flex align-items-stretch">
+                {/* <div className="col-xl-6 d-flex align-items-stretch">
                   <div className="row  g-4">
                     <div className="col-lg-12 ">
                       <div className="card w-100 rounded-4 desk-card addcomingsoon">
@@ -3313,7 +3110,7 @@ function MainContent() {
                       </div>
                     </div>
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
           </main>
