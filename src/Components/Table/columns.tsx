@@ -41,7 +41,7 @@ import {
   QUERY_KEYS_CONTENT,
 } from '../../utils/const';
 import { toast } from 'react-toastify';
-import React, { useEffect, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 
 export const EMPTY_CELL_VALUE = '-';
 
@@ -305,7 +305,7 @@ export interface IFeedback {
 export interface IStudentFeedback {
   created_at: string;
   student_name: string;
-  teacher_name:string
+  teacher_name: string
   responses: IFeedbackResponse[];
   is_active: number;
 }
@@ -1171,6 +1171,104 @@ export const STUDENT_COLUMNS: MRT_ColumnDef<any>[] = [
     size: 150,
   },
 ];
+export const col_for_t=(entity:string)=>{
+
+ const STUDENT_COLUMNS_FOR_TEACEHR: MRT_ColumnDef<any>[] = [
+  // const columns: any[] = [
+  // {
+  //     accessorKey: "aim",
+  //     header: "Aim ",
+  //     size: 150,
+  // },
+  // {
+  //   accessorKey: 'pic_path',
+  //   header: 'Profile Image',
+  //   size: 150,
+  //   Cell: ({ cell }: any) => {
+  //     const value: any = cell?.getValue();
+
+  //     if (isNullOrUndefined(value) || value === 0) {
+  //       return EMPTY_CELL_VALUE;
+  //     }
+
+  //     return (
+  //       <div className="profile_img">
+  //         <img
+  //           src={value !== '' ? value : profile}
+  //           alt="profile"
+  //           height="50px"
+  //           width="50px"
+  //           style={{ borderRadius: '50%', objectFit: 'cover' }}
+  //         />
+  //       </div>
+  //     );
+  //   },
+  // },
+  {
+    accessorKey: 'name',
+    header: 'Full Name',
+    size: 150,
+  },
+  {
+    accessorKey: 'email',
+    header: 'Email',
+    size: 250,
+  },
+
+  {
+    accessorKey: 'phone',
+    header: 'Mobile No',
+    size: 150,
+  },
+  {
+    accessorKey: 'gender',
+    header: 'Gender',
+    size: 150,
+    Cell: ({ cell }: any) => {
+      const value = cell?.getValue() as string | undefined;
+
+      const camelCaseValue = value?.replace(/\b(\w)/g, (match: string) =>
+        match?.toUpperCase(),
+      );
+      return <div>{camelCaseValue}</div>;
+    },
+  },
+  {
+    accessorKey: 'dob',
+    header: 'DOB',
+    size: 150,
+    Cell: ({ cell }) => {
+      const value = cell.getValue();
+
+      if (isNullOrUndefined(value) || value === 0) {
+        return EMPTY_CELL_VALUE;
+      }
+
+      return getDateFormat(value);
+    },
+  },
+  {
+    accessorKey: `${entity == "school" ? "class_name" : 'Course_name'}`,
+    header: `${entity == "school" ? "Class" : 'Course'}`,
+    size: 150
+  },
+  {
+    accessorKey: entity == "school" ? "stream" : "semester_number",
+    header: entity == "school" ? "Stream" : "Semester",
+    size: 150,
+    Cell: ({ cell }): ReactNode => {
+      const value = cell.getValue();
+      return value === "general" ? "-" : `${value}`;
+    }
+  },
+  {
+    accessorKey: "subject_name",
+    header: "Subject Name",
+    size: 150
+  }
+];
+return STUDENT_COLUMNS_FOR_TEACEHR;
+}
 
 export const MENU_COLUMNS: MRT_ColumnDef<MenuRep0oDTO>[] = [
   {

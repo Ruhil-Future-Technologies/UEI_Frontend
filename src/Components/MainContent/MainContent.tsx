@@ -1629,7 +1629,7 @@ function MainContent() {
               profileDatas?.subject_preference || {};
             const university: any =
               university_list_data?.filter(
-                (university: any) => university.university_id == university_id,
+                (university: any) => university?.university_id == university_id,
               ) || null;
             const queryParams = {
               user_query: search,
@@ -2145,6 +2145,9 @@ function MainContent() {
           [`answer-${index}`]: true,
         };
         setIsTextCopied(updatedState);
+        setTimeout(() => {
+          setIsTextCopied({});
+        }, 3000);
       })
       .catch((err) => {
         console.error('Error copying text: ', err);
