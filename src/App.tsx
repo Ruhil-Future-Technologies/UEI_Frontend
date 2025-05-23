@@ -117,6 +117,7 @@ import ParentMain from './Pages/Parent';
 import ParentFeedback from './Pages/Parent/ParentFeedback';
 import ParentChat from './Pages/Parent/ParentChat';
 import ParentProfile from './Pages/Parent/ParentProfile';
+import Bulkupload from './Pages/BlulkUploadData/Bulkupload';
 
 function App() {
   const navigate = useNavigate();
@@ -327,6 +328,48 @@ function App() {
             <Route
               path="edit-content/:id"
               element={<Protected Component={AddContent} menuName="Content" />}
+            />
+          </Route>
+          <Route path="/institution-dashboard/Teacher">
+            <Route
+              path=""
+              element={<Protected Component={Teacher} menuName="Teacher" />}
+            />
+            <Route
+              path="add-teacher"
+              element={
+                <Protected Component={AddEditTeacher} menuName="Teacher" />
+              }
+            />
+            <Route
+              path="edit-teacher/:id"
+              element={
+                <Protected Component={AddEditTeacher} menuName="Teacher" />
+              }
+            />
+          </Route>
+          <Route path="/institution-dashboard/Student">
+            <Route
+              path=""
+              element={<Protected Component={Student} menuName="Student" />}
+            />
+            <Route
+              path="add-student"
+              element={
+                <Protected Component={AddEditStudent} menuName="Student" />
+              }
+            />
+            <Route
+              path="edit-student/:id"
+              element={
+                <Protected Component={AddEditStudent} menuName="Student" />
+              }
+            />
+          </Route>
+          <Route path="/institution-dashboard/bulkupload">
+            <Route
+              path=""
+              element={<Protected Component={Bulkupload} menuName="bulkupload" />}
             />
           </Route>
         </Route>

@@ -39,6 +39,8 @@ const Student = () => {
   const [filteredDataAcess, setFilteredDataAcess] = useState<
     MenuListinter | any
   >([]);
+  const user_type = localStorage.getItem('user_type') || '';
+  const institute_id = localStorage.getItem('institute_id') || '';
 
   useEffect(() => {
     setFilteredDataAcess(
@@ -57,9 +59,17 @@ const Student = () => {
 
   const callAPI = async () => {
     try {
-      const response = await getData(StudentURL);
-      if (response.data) {
-        setDataStudent(response.data);
+      if (user_type === 'admin') {
+        const response = await getData(StudentURL);
+        if (response.data) {
+          setDataStudent(response.data);
+        }
+      } else if (user_type === 'institute') {
+        const response = await getData(`/student/list/${institute_id}`);
+
+        if (response.data) {
+          setDataStudent(response.data);
+        }
       }
     } catch (e: any) {
       toast.error(e.message, {
@@ -128,11 +138,7 @@ const Student = () => {
                     <Box marginTop="10px">
                       <MaterialReactTable
                         columns={columns}
-                        data={
-                          filteredDataAcess?.form_data?.is_search
-                            ? filteredData
-                            : []
-                        }
+                        data={filteredData}
                         enableRowVirtualization
                         positionActionsColumn="first"
                         muiTablePaperProps={{

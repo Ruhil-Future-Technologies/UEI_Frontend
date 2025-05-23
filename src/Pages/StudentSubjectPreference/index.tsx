@@ -11,7 +11,7 @@ import {
   MenuItem,
   Select,
   // SelectChangeEvent,
-  TextField,
+  // TextField,
   Typography,
 } from '@mui/material';
 import AddCircleOutlinedIcon from '@mui/icons-material/AddCircleOutlined';
@@ -35,8 +35,8 @@ interface Box {
   id: number;
   course_id: string;
   subject_id: string;
-  preference: string;
-  score_in_percentage: string;
+  // preference?: string;
+  // score_in_percentage?: string;
   sem_id: string;
   class_id: string;
   stream: string;
@@ -103,8 +103,8 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
   const [error, setError] = useState<{
     [key: number]: {
       subject_error: boolean;
-      preference_error: any;
-      percentage_error: any;
+      // preference_error: any;
+      // percentage_error: any;
       teacher_error: any;
     };
   }>({});
@@ -117,14 +117,14 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
         ...(field === 'subject_id' && {
           subject_error: !boxes[index]?.subject_id,
         }),
-        ...(field === 'preference' && {
-          preference_error: boxes[index]?.preference
-            ? !/^[a-zA-Z]+(\s[a-zA-Z]+)*$/.test(boxes[index]?.preference.trim())
-            : !boxes[index]?.preference,
-        }),
-        ...(field === 'score_in_percentage' && {
-          percentage_error: !boxes[index]?.score_in_percentage,
-        }),
+        // ...(field === 'preference' && {
+        //   preference_error: boxes[index]?.preference
+        //     ? !/^[a-zA-Z]+(\s[a-zA-Z]+)*$/.test(boxes[index]?.preference.trim())
+        //     : !boxes[index]?.preference,
+        // }),
+        // ...(field === 'score_in_percentage' && {
+        //   percentage_error: !boxes[index]?.score_in_percentage,
+        // }),
       },
     }));
   };
@@ -284,8 +284,8 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                   id: item.id,
                   course_id: '',
                   subject_id: '',
-                  preference: '',
-                  score_in_percentage: '',
+                  // preference: '',
+                  // score_in_percentage: '',
                   sem_id: '',
                   class_id: class_id,
                   stream: item?.stream,
@@ -304,8 +304,8 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                   id: item.id,
                   course_id: course_id,
                   subject_id: '',
-                  preference: '',
-                  score_in_percentage: '',
+                  // preference: '',
+                  // score_in_percentage: '',
                   sem_id:semester_id,
                   class_id: '',
                   stream:'',
@@ -323,8 +323,8 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
               id: item.id,
               course_id:course_id || item?.course_id,
               subject_id: item?.subject_id,
-              preference: item?.preference,
-              score_in_percentage: item?.score_in_percentage,
+              // preference: item?.preference,
+              // score_in_percentage: item?.score_in_percentage,
               sem_id:semester_id|| item?.sem_id,
               class_id: item?.class_id,
               stream: item?.stream,
@@ -337,8 +337,8 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
               setInitialState({
                 course_id: String(item?.course_id),
                 subject_id: String(item?.subject_id),
-                preference: item?.preference,
-                score_in_percentage: item?.score_in_percentage,
+                // preference: item?.preference,
+                // score_in_percentage: item?.score_in_percentage,
                 student_id: String(item?.student_id),
                 sem_id: String(item?.sem_id),
                 teacher_id: String(item?.teacher_id),
@@ -374,8 +374,8 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                 id: 0,
                 course_id: course_id,
                 subject_id: '',
-                preference: '',
-                score_in_percentage: '',
+                // preference: '',
+                // score_in_percentage: '',
                 sem_id: semester_id,
                 class_id: class_id,
                 stream: '',
@@ -390,8 +390,8 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                 id: 0,
                 course_id: '',
                 subject_id: '',
-                preference: '',
-                score_in_percentage: '',
+                // preference: '',
+                // score_in_percentage: '',
                 sem_id: '',
                 class_id: '',
                 stream: '',
@@ -568,8 +568,8 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
       course_id: boxes[0]?.course_id || '',
       // subject_id: boxes[0]?.subject_id || '',
       subject_id: '',
-      preference: '',
-      score_in_percentage: '',
+      // preference: '',
+      // score_in_percentage: '',
       sem_id: boxes[0]?.sem_id || '',
       class_id: boxes[0]?.class_id || '',
       stream: boxes[0]?.stream || 'general',
@@ -612,10 +612,10 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
     boxes.forEach((box, index) => {
       if (
         !box?.subject_id ||
-        !box?.preference ||
-        !box?.score_in_percentage ||
-        !box?.teacher_id ||
-        !/^[a-zA-Z]+(\s[a-zA-Z]+)*$/.test(box?.preference)
+        // !box?.preference ||
+        // !box?.score_in_percentage ||
+        !box?.teacher_id 
+        // !/^[a-zA-Z]+(\s[a-zA-Z]+)*$/.test(box?.preference)
       ) {
         valid = false;
         setError((prevError) => ({
@@ -623,12 +623,12 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
           [index]: {
             subject_error: !box?.subject_id,
             teacher_error: !box?.teacher_id,
-            preference_error: boxes[index]?.preference
-              ? !/^[a-zA-Z]+(\s[a-zA-Z]+)*$/.test(
-                boxes[index]?.preference.trim(),
-              )
-              : !boxes[index]?.preference,
-            percentage_error: !box?.score_in_percentage,
+            // preference_error: boxes[index]?.preference
+            //   ? !/^[a-zA-Z]+(\s[a-zA-Z]+)*$/.test(
+            //     boxes[index]?.preference.trim(),
+            //   )
+            //   : !boxes[index]?.preference,
+            // percentage_error: !box?.score_in_percentage,
           },
         }));
       }
@@ -648,8 +648,8 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
           ...(box.course_id ? { course_id: String(box.course_id) } : {}),
           ...(box.subject_id ? { subject_id: String(box.subject_id) } : {}),
           ...(box.teacher_id ? { teacher_id: String(box.teacher_id) } : {}),
-          preference: box.preference,
-          score_in_percentage: box.score_in_percentage,
+          // preference: box.preference,
+          // score_in_percentage: box.score_in_percentage,
           // sem_id:String(box.sem_id),
           // class_id:String(box.class_id) !== null ? String(box.class_id) : "",
           // stream:(particularClass === "class_11" || particularClass === "class_12") ? String(box.stream) :""
@@ -712,8 +712,8 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
             id: 0,
             course_id: '',
             subject_id: '',
-            preference: '',
-            score_in_percentage: '',
+            // preference: '',
+            // score_in_percentage: '',
             sem_id: '',
             class_id: '',
             stream: '',
@@ -737,8 +737,8 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
             id: 0,
             course_id: '',
             subject_id: '',
-            preference: '',
-            score_in_percentage: '',
+            // preference: '',
+            // score_in_percentage: '',
             sem_id: '',
             class_id: '',
             stream: '',
@@ -1071,7 +1071,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                 )}
               </FormControl>
             </div>
-            <div className="col-lg-3 form_field_wrapper">
+            {/* <div className="col-lg-3 form_field_wrapper">
               <FormControl className="w-100" size='small'>
                 <TextField
                   name="preference"
@@ -1139,7 +1139,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                     </FormHelperText>
                   )}
               </FormControl>
-            </div>
+            </div> */}
             <div className="col-lg-3 form_field_wrapper">
               <IconButton
                 onClick={addRow}

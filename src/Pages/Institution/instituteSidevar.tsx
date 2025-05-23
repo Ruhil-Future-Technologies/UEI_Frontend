@@ -8,6 +8,8 @@ import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import { Link } from 'react-router-dom';
 import logowhite from '../../assets/img/logo-white.svg';
 import LiveHelpOutlinedIcon from '@mui/icons-material/LiveHelpOutlined';
+import SchoolOutlinedIcon from '@mui/icons-material/SchoolOutlined';
+import Person2OutlinedIcon from '@mui/icons-material/Person2Outlined';
 const InstituteSidevar = () => {
   const handleMouseEnter = () => {
     document.body.classList.add('sidebar-hovered');
@@ -85,6 +87,42 @@ const InstituteSidevar = () => {
                 <LibraryBooksOutlinedIcon />
               </div>
               <div className="menu-title">Content Library</div>
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/institution-dashboard/Teacher"
+              onClick={removeMobileToggle}
+            >
+              <div className="parent-icon">
+                {' '}
+                <Person2OutlinedIcon />
+              </div>
+              <div className="menu-title">Teacher</div>
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/institution-dashboard/Student"
+              onClick={removeMobileToggle}
+            >
+              <div className="parent-icon">
+                {' '}
+                <SchoolOutlinedIcon />
+              </div>
+              <div className="menu-title">Student</div>
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/institution-dashboard/bulkupload"
+              onClick={removeMobileToggle}
+            >
+              <div className="parent-icon">
+                {' '}
+                <LibraryBooksOutlinedIcon />
+              </div>
+              <div className="menu-title">Bluk Data upload</div>
             </Link>
           </li>
 
