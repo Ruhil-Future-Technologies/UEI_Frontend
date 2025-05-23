@@ -1,11 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
+  Avatar,
   Box,
+  Button,
   Checkbox,
   FormControl,
   IconButton,
   InputLabel,
   LinearProgress,
+  List,
+  ListItem,
   MenuItem,
   Select,
   SelectChangeEvent,
@@ -55,6 +59,8 @@ interface IContentForm {
   author: string;
   description: string;
   documents?: File[];
+  thumnail?: File;
+  cover_page?: File;
 }
 
 const AddContent = () => {
@@ -93,10 +99,17 @@ const AddContent = () => {
   const [classSubjects, setClassSubjects] = useState<{ [key: number]: any[] }>(
     {},
   );
+  const [classSubjectsTeacher, setClassSubjectsTeacher] = useState<string[]>(
+    []
+  );
   const [classStreams, setClassStreams] = useState<{ [key: number]: string[] }>(
     {},
   );
+  const [classStreamsTeacher, setClassStreamsTeacher] = useState<string[]>(
+    []
+  );
   const [allselectedfiles, setAllSelectedfiles] = useState<File[]>([]);
+  const [selectedthumnail_cover, setSelectedthumnail_cover] = useState<File | null>(null);
   const [allfiles, setAllfiles] = useState<File[]>([]);
   const user_type = localStorage.getItem('user_type');
   const user_uuid = localStorage.getItem('user_uuid');
@@ -104,6 +117,7 @@ const AddContent = () => {
   const DeleteContentURL = QUERY_KEYS_CONTENT.CONTENT_FILE_DELETE;
   const [isInitialDataLoaded, setIsInitialDataLoaded] = useState(false);
   const [showAuthor, setShowAuthor] = useState(false);
+  const [showthumnail, setShowthumnail] = useState("");
   const [loading, setLoading] = useState(false);
   const [teacherClasses, setTeacherClasses] = useState<any>([]);
 
@@ -362,21 +376,39 @@ const AddContent = () => {
       );
     }
     if (user_type === 'teacher') {
+      setLoading(true);
       await getData(`${QUERY_KEYS_TEACHER.TEACHER_EDIT}/${user_uuid}`).then(
         (data) => {
           const filteredCourses = data?.data?.course_semester_subjects;
 
           if (data?.data?.entity_type === 'school') {
-            const validClassIds = new Set(
-              Object.keys(data?.data?.class_stream_subjects).map((id) =>
-                Number(id),
-              ),
-            );
+            const classStreamSubjects = data.data.class_stream_subjects as Record<
+              string,
+              Record<string, string[]>
+            >;
 
-            setTeacherClasses(
-              dataClasses.filter((cls) => validClassIds.has(cls.id)),
-            );
+            // Pre-compute values once
+            const validClassIds = new Set(Object.keys(classStreamSubjects).map(Number));
+
+            const uniqueStreamKeys = new Set<string>();
+            const subjects: string[] = [];
+
+            for (const streams of Object.values(classStreamSubjects)) {
+              for (const [streamName, subjectArray] of Object.entries(streams)) {
+                if (streamName !== "general") uniqueStreamKeys.add(streamName);
+                for (const subject of subjectArray) {
+                  subjects.push(subject);
+                }
+              }
+            }
+
+            // Set state in batch
+            setClassSubjectsTeacher(subjects);
+            setClassStreamsTeacher([...uniqueStreamKeys]);
+            setTeacherClasses(dataClasses.filter((cls) => validClassIds.has(cls.id)));
+            setLoading(false);
           }
+
           setTeacherCourses((prevCourses) => ({
             ...prevCourses,
             ...filteredCourses,
@@ -620,7 +652,7 @@ const AddContent = () => {
 
         if (course.semester) {
           const filteredSubjects = allSubjects.filter(
-            (subject) => subject.semester_number === Number(course.semester),
+            (subject) => subject.semester_number === Number(course.semester) && subject?.course_id === initialCourses[index]?.course_id,
           );
 
           setCourseSubjects((prev) => ({
@@ -969,6 +1001,15 @@ const AddContent = () => {
       allselectedfiles.forEach((file) => {
         formData.append('documents[]', file);
       });
+      if (selectedthumnail_cover) {
+        if (showthumnail == "e-book") {
+          formData.append("cover_page", selectedthumnail_cover);
+        }
+        if (showthumnail == "video_lecture") {
+          formData.append("thumbnail", selectedthumnail_cover);
+        }
+      }
+
       Object.keys(formattedData).forEach((key) => {
         formData.append(key, formattedData[key]);
       });
@@ -1041,6 +1082,14 @@ const AddContent = () => {
       Object.keys(formattedData).forEach((key) => {
         formData.append(key, formattedData[key]);
       });
+      if (selectedthumnail_cover) {
+        if (showthumnail == "e-book") {
+          formData.append("thumbnail", selectedthumnail_cover);
+        }
+        if (showthumnail == "video_lecture") {
+          formData.append("thumbnail", selectedthumnail_cover);
+        }
+      }
       allselectedfiles.forEach((file) => {
         formData.append('documents[]', file);
       });
@@ -1067,6 +1116,7 @@ const AddContent = () => {
               description: '',
               author: '',
             }));
+            setSelectedthumnail_cover(null);
             setAllSelectedfiles([]);
             setLoading(false);
           } else {
@@ -1104,6 +1154,7 @@ const AddContent = () => {
       value === 'video_lecture' ||
       value === 'research_paper'
     ) {
+      setShowthumnail(value);
       setShowAuthor(true);
       setContent((prevState: any) => ({
         ...prevState,
@@ -1189,14 +1240,14 @@ const AddContent = () => {
               const courseSubjects = collegeSubjects.filter(
                 (subject) => subject.course_id === value,
               );
-
+              console.log(courseSubjects, collegeSubjects, value);
               const uniqueSemesters = courseSubjects
                 .map((subject) => subject.semester_number)
                 .filter(
                   (semester, index, array) => array.indexOf(semester) === index,
                 )
                 .sort((a, b) => Number(a) - Number(b));
-
+              console.log(uniqueSemesters);
               setCourseSemesters((prev) => ({
                 ...prev,
                 [currentIndex]: uniqueSemesters,
@@ -1256,12 +1307,12 @@ const AddContent = () => {
 
                   return isHigher
                     ? index1 !== index2 &&
-                        class1.class_id &&
-                        class2.class_id &&
-                        class1.stream &&
-                        class2.stream &&
-                        class1.class_id === class2.class_id &&
-                        class1.stream === class2.stream
+                    class1.class_id &&
+                    class2.class_id &&
+                    class1.stream &&
+                    class2.stream &&
+                    class1.class_id === class2.class_id &&
+                    class1.stream === class2.stream
                     : index1 !== index2 && class1.class_id === class2.class_id;
                 });
               },
@@ -1467,6 +1518,24 @@ const AddContent = () => {
     }
   };
 
+  const handleFileChangeThumnail = (event: React.ChangeEvent<HTMLInputElement>, type: any) => {
+    const file = event.target.files;
+    if (file) {
+      if (type == "Cover page") {
+        setContent((prevState) => ({
+          ...prevState,
+          cover_page: file[0],
+        }));
+      }
+      if (type == "Thumnail") {
+        setContent((prevState) => ({
+          ...prevState,
+          thumnail: file[0],
+        }));
+      }
+      setSelectedthumnail_cover(file[0])
+    }
+  }
   const handleRemoveFile = (index: number) => {
     setAllSelectedfiles((previous) =>
       previous.filter((_, ind) => ind !== index),
@@ -1582,17 +1651,17 @@ const AddContent = () => {
                               style={{
                                 backgroundColor:
                                   user_type === 'institute' ||
-                                  user_type === 'teacher'
+                                    user_type === 'teacher'
                                     ? '#f0f0f0'
                                     : inputfield(namecolor),
                                 color:
                                   user_type === 'institute' ||
-                                  user_type === 'teacher'
+                                    user_type === 'teacher'
                                     ? '#999999'
                                     : inputfieldtext(namecolor),
                                 border:
                                   user_type === 'institute' ||
-                                  user_type === 'teacher'
+                                    user_type === 'teacher'
                                     ? '1px solid #d0d0d0'
                                     : undefined,
                               }}
@@ -1620,7 +1689,11 @@ const AddContent = () => {
                             <InputLabel>University *</InputLabel>
                             <Select
                               name="university_id"
-                              value={values?.university_id}
+                              value={
+                                dataUniversity?.some(u => u.id === values?.university_id)
+                                  ? values.university_id
+                                  : ''
+                              }
                               label="University *"
                               onChange={(e: SelectChangeEvent<string>) =>
                                 handleChange(e, 'university_id')
@@ -1628,20 +1701,20 @@ const AddContent = () => {
                               style={{
                                 backgroundColor:
                                   isSchoolEntity(values?.entity_id) ||
-                                  user_type === 'institute' ||
-                                  user_type === 'teacher'
+                                    user_type === 'institute' ||
+                                    user_type === 'teacher'
                                     ? '#f0f0f0'
                                     : inputfield(namecolor),
                                 color:
                                   isSchoolEntity(values?.entity_id) ||
-                                  user_type === 'institute' ||
-                                  user_type === 'teacher'
+                                    user_type === 'institute' ||
+                                    user_type === 'teacher'
                                     ? '#999999'
                                     : inputfieldtext(namecolor),
                                 border:
                                   isSchoolEntity(values?.entity_id) ||
-                                  user_type === 'institute' ||
-                                  user_type === 'teacher'
+                                    user_type === 'institute' ||
+                                    user_type === 'teacher'
                                     ? '1px solid #d0d0d0'
                                     : undefined,
                               }}
@@ -1686,17 +1759,17 @@ const AddContent = () => {
                               style={{
                                 backgroundColor:
                                   user_type === 'institute' ||
-                                  user_type === 'teacher'
+                                    user_type === 'teacher'
                                     ? '#f0f0f0'
                                     : inputfield(namecolor),
                                 color:
                                   user_type === 'institute' ||
-                                  user_type === 'teacher'
+                                    user_type === 'teacher'
                                     ? '#999999'
                                     : inputfieldtext(namecolor),
                                 border:
                                   user_type === 'institute' ||
-                                  user_type === 'teacher'
+                                    user_type === 'teacher'
                                     ? '1px solid #d0d0d0'
                                     : undefined,
                               }}
@@ -1927,59 +2000,58 @@ const AddContent = () => {
                                           },
                                         }}
                                       >
-                                        {user_type === 'admin' ||
-                                        user_type == 'institute'
+                                        {(user_type === 'admin' || user_type === 'institute') && dataClasses?.length > 0
                                           ? dataClasses?.map((cls: any) => (
-                                              <MenuItem
-                                                key={cls.id}
-                                                value={cls.id}
-                                                sx={{
+                                            <MenuItem
+                                              key={cls.id}
+                                              value={cls.id}
+                                              sx={{
+                                                backgroundColor:
+                                                  inputfield(namecolor),
+                                                color:
+                                                  inputfieldtext(namecolor),
+                                                '&:hover': {
                                                   backgroundColor:
-                                                    inputfield(namecolor),
-                                                  color:
-                                                    inputfieldtext(namecolor),
-                                                  '&:hover': {
+                                                    inputfieldhover(
+                                                      namecolor,
+                                                    ),
+                                                },
+                                              }}
+                                            >
+                                              {cls.class_name.replace(
+                                                'class_',
+                                                'Class ',
+                                              )}
+                                            </MenuItem>
+                                          ))
+                                          : user_type === 'teacher' && teacherClasses?.length > 0
+                                            ? teacherClasses?.map(
+                                              (cls: any) => (
+                                                <MenuItem
+                                                  key={cls.id}
+                                                  value={cls.id}
+                                                  sx={{
                                                     backgroundColor:
-                                                      inputfieldhover(
+                                                      inputfield(namecolor),
+                                                    color:
+                                                      inputfieldtext(
                                                         namecolor,
                                                       ),
-                                                  },
-                                                }}
-                                              >
-                                                {cls.class_name.replace(
-                                                  'class_',
-                                                  'Class ',
-                                                )}
-                                              </MenuItem>
-                                            ))
-                                          : user_type === 'teacher'
-                                            ? teacherClasses?.map(
-                                                (cls: any) => (
-                                                  <MenuItem
-                                                    key={cls.id}
-                                                    value={cls.id}
-                                                    sx={{
+                                                    '&:hover': {
                                                       backgroundColor:
-                                                        inputfield(namecolor),
-                                                      color:
-                                                        inputfieldtext(
+                                                        inputfieldhover(
                                                           namecolor,
                                                         ),
-                                                      '&:hover': {
-                                                        backgroundColor:
-                                                          inputfieldhover(
-                                                            namecolor,
-                                                          ),
-                                                      },
-                                                    }}
-                                                  >
-                                                    {cls.class_name.replace(
-                                                      'class_',
-                                                      'Class ',
-                                                    )}
-                                                  </MenuItem>
-                                                ),
-                                              )
+                                                    },
+                                                  }}
+                                                >
+                                                  {cls.class_name.replace(
+                                                    'class_',
+                                                    'Class ',
+                                                  )}
+                                                </MenuItem>
+                                              ),
+                                            )
                                             : ''}
                                       </Select>
                                     </FormControl>
@@ -1989,69 +2061,70 @@ const AddContent = () => {
                                   cls.class_id,
                                   dataClasses,
                                 ) && (
-                                  <div className="col-md-2">
-                                    <div className="form_field_wrapper">
-                                      <FormControl fullWidth>
-                                        <InputLabel>Stream *</InputLabel>
-                                        <Select
-                                          name={`classes.${index}.stream`}
-                                          value={cls.stream}
-                                          label="Stream *"
-                                          onChange={(
-                                            e: SelectChangeEvent<string>,
-                                          ) =>
-                                            handleChange(
-                                              e,
-                                              `classes.${index}.stream`,
-                                            )
-                                          }
-                                          disabled={!cls.class_id}
-                                          sx={{
-                                            backgroundColor:
-                                              inputfield(namecolor),
-                                            color: inputfieldtext(namecolor),
-                                            '& .MuiSelect-icon': {
-                                              color: fieldIcon(namecolor),
-                                            },
-                                          }}
-                                          MenuProps={{
-                                            PaperProps: {
-                                              style: {
-                                                backgroundColor:
-                                                  inputfield(namecolor),
-                                                color:
-                                                  inputfieldtext(namecolor),
+                                    <div className="col-md-2">
+                                      <div className="form_field_wrapper">
+                                        <FormControl fullWidth>
+                                          <InputLabel>Stream *</InputLabel>
+                                          <Select
+                                            name={`classes.${index}.stream`}
+                                            value={cls.stream}
+                                            label="Stream *"
+                                            onChange={(
+                                              e: SelectChangeEvent<string>,
+                                            ) =>
+                                              handleChange(
+                                                e,
+                                                `classes.${index}.stream`,
+                                              )
+                                            }
+                                            disabled={!cls.class_id}
+                                            sx={{
+                                              backgroundColor:
+                                                inputfield(namecolor),
+                                              color: inputfieldtext(namecolor),
+                                              '& .MuiSelect-icon': {
+                                                color: fieldIcon(namecolor),
                                               },
-                                            },
-                                          }}
-                                        >
-                                          {classStreams[index]?.map(
-                                            (streamOption: string) => (
-                                              <MenuItem
-                                                key={streamOption}
-                                                value={streamOption}
-                                                sx={{
+                                            }}
+                                            MenuProps={{
+                                              PaperProps: {
+                                                style: {
                                                   backgroundColor:
                                                     inputfield(namecolor),
                                                   color:
                                                     inputfieldtext(namecolor),
-                                                  '&:hover': {
+                                                },
+                                              },
+                                            }}
+                                          >
+                                            {classStreams[index]
+                                              ?.filter(item => classStreamsTeacher.includes(item))
+                                              .map((streamOption: string) => (
+                                                <MenuItem
+                                                  key={streamOption}
+                                                  value={streamOption}
+                                                  sx={{
                                                     backgroundColor:
-                                                      inputfieldhover(
-                                                        namecolor,
-                                                      ),
-                                                  },
-                                                }}
-                                              >
-                                                {streamOption}
-                                              </MenuItem>
-                                            ),
-                                          )}
-                                        </Select>
-                                      </FormControl>
+                                                      inputfield(namecolor),
+                                                    color:
+                                                      inputfieldtext(namecolor),
+                                                    '&:hover': {
+                                                      backgroundColor:
+                                                        inputfieldhover(
+                                                          namecolor,
+                                                        ),
+                                                    },
+                                                  }}
+                                                >
+                                                  {streamOption}
+                                                </MenuItem>
+                                              ),
+                                              )}
+                                          </Select>
+                                        </FormControl>
+                                      </div>
                                     </div>
-                                  </div>
-                                )}
+                                  )}
 
                                 <div className="col-md-4">
                                   <div className="form_field_wrapper">
@@ -2091,7 +2164,7 @@ const AddContent = () => {
                                           },
                                         }}
                                       >
-                                        {classSubjects[index]?.map(
+                                        {classSubjects[index]?.filter((item) => classSubjectsTeacher?.includes(item.subject_name)).map(
                                           (subject: any) => (
                                             <MenuItem
                                               key={subject.subject_id}
@@ -2235,17 +2308,17 @@ const AddContent = () => {
                             style={{
                               backgroundColor:
                                 allselectedfiles.length > 0 ||
-                                allfiles.length > 0
+                                  allfiles.length > 0
                                   ? '#f0f0f0'
                                   : inputfield(namecolor),
                               color:
                                 allselectedfiles.length > 0 ||
-                                allfiles.length > 0
+                                  allfiles.length > 0
                                   ? '#999999'
                                   : inputfieldtext(namecolor),
                               border:
                                 allselectedfiles.length > 0 ||
-                                allfiles.length > 0
+                                  allfiles.length > 0
                                   ? '1px solid #d0d0d0'
                                   : undefined,
                             }}
@@ -2275,7 +2348,7 @@ const AddContent = () => {
                           </div>
                         </div>
                       )}
-                       <div className="row d-flex justify-content-between mt-0 g-4">
+                      <div className="row d-flex justify-content-between mt-0 g-4">
                         <div className="col-6">
                           <InputLabel id="">Content *</InputLabel>
                           <UploadBtn
@@ -2334,64 +2407,126 @@ const AddContent = () => {
                             )}
                           </div>
                         </div>
-                        <div className="col-6">
-                          <InputLabel id="">Content *</InputLabel>
-                          <UploadBtn
-                            label="Upload Files"
-                            name="document"
-                            accept=".pdf, .jpg, .jpeg, .png, .gif, .mp4"
-                            handleFileChange={handleFileChange}
-                          />
-                          <div className="col-8">
-                            {allselectedfiles?.length > 0 && (
-                              <ul className="doclist">
-                                {allselectedfiles?.map((file, index) => (
-                                  <li
-                                    key={index}
-                                    className="flex mt-2 items-center justify-between "
-                                  >
-                                    {'name' in file
-                                      ? file.name
-                                      : (file as any)?.url}
+                        {showthumnail == "video_lecture" &&
+                          <Box className="col-6">
+                            {/* Hidden File Input */}
+                            <input
+                              accept="image/*" // ✅ Restrict only to images
+                              type="file"
+                              id="upload-thumbnail"
+                              name='thumbnail'
+                              multiple
+                              hidden
+                              onChange={(e) => handleFileChangeThumnail(e, 'Thumbnail')}
+                            />
 
-                                    <DeleteOutlinedIcon
-                                      className="m-2 cursor-pointer"
-                                      onClick={() => handleRemoveFile(index)}
-                                    />
-                                  </li>
-                                ))}
-                              </ul>
-                            )}
-                            {allfiles?.length > 0 && (
-                              <ul className="doclist">
-                                {allfiles?.map((file, index) => (
-                                  <li
-                                    key={index}
-                                    className="flex mt-2 items-center justify-between "
-                                  >
-                                    {'name' in file
-                                      ? file.name
-                                      : (file as any)?.url}
+                            {/* Upload Button */}
+                            <label htmlFor="upload-thumbnail">
+                              <Button variant="contained" component="span">
+                                Upload thumbnail
+                              </Button>
+                            </label>
 
-                                    <DeleteOutlinedIcon
-                                      className="m-2 cursor-pointer"
-                                      onClick={() =>
-                                        handleDeleteFile((file as any)?.id)
-                                      }
-                                    />
-                                  </li>
-                                ))}
-                              </ul>
-                            )}
-                          </div>
-                          <div>
-                            {touched?.documents && errors?.documents && (
-                              <p className="error">
+                            {/* Image Preview of Selected Files */}
+                            <Box className="col-8" mt={2}>
+
+                              <List className="doclist">
+                                {selectedthumnail_cover && (
+                                  <ListItem
+                                    className="flex items-center justify-between"
+                                    sx={{ pl: 0 }}
+                                  >
+                                    <Box className="flex items-center">
+                                      <Avatar
+                                        src={URL.createObjectURL(selectedthumnail_cover)}
+                                        variant="rounded"
+                                        sx={{ width: 48, height: 48, mr: 2 }}
+                                      />
+                                      <Typography variant="body2">{selectedthumnail_cover.name}</Typography>
+                                    </Box>
+                                    <IconButton onClick={() => setSelectedthumnail_cover(null)}>
+                                      <DeleteOutlinedIcon />
+                                    </IconButton>
+                                  </ListItem>
+                                )}
+                              </List>
+                            </Box>
+
+                            {/* Validation Error */}
+                            {touched?.thumnail && errors?.thumnail && (
+                              <Typography color="error" variant="caption">
                                 {String(errors.documents)}
-                              </p>
+                              </Typography>
                             )}
-                          </div>
-                        </div>
+                          </Box>
+                        }
+                        {showthumnail == "e-book" &&
+                          <Box className="col-6">
+                            {/* Upload Button */}
+                            <input
+                              accept="image/*"
+                              type="file"
+                              id="upload-cover-page"
+                              name='cover_page'
+                              style={{ display: 'none' }}
+                              onChange={(e) => handleFileChangeThumnail(e, 'Cover page')}
+                            />
+                            <label htmlFor="upload-cover-page">
+                              <Button variant="contained" component="span">
+                                Upload Cover Page
+                              </Button>
+                            </label>
+
+                            {/* Preview & Selected File */}
+                            <Box className="col-8" mt={2}>
+                              <List className="doclist">
+                                {selectedthumnail_cover && (
+                                  <ListItem
+                                    className="flex items-center justify-between"
+                                    sx={{ pl: 0 }}
+                                  >
+                                    <Avatar
+                                      src={URL.createObjectURL(selectedthumnail_cover)}
+                                      variant="rounded"
+                                      sx={{ width: 60, height: 60, mr: 2 }}
+                                    />
+                                    <IconButton onClick={() => setSelectedthumnail_cover(null)}>
+                                      <DeleteOutlinedIcon />
+                                    </IconButton>
+                                  </ListItem>
+                                )}
+                              </List>
+
+                              {/* List of existing files */}
+                              {allfiles?.length > 0 && (
+                                <List className="doclist">
+                                  {allfiles.map((file, index) => (
+                                    <ListItem
+                                      key={index}
+                                      className="flex items-center justify-between"
+                                      sx={{ pl: 0 }}
+                                    >
+                                      <Typography variant="body2">
+                                        {'name' in file ? file.name : (file as any)?.url}
+                                      </Typography>
+                                      <IconButton onClick={() => handleDeleteFile((file as any)?.id)}>
+                                        <DeleteOutlinedIcon />
+                                      </IconButton>
+                                    </ListItem>
+                                  ))}
+                                </List>
+                              )}
+                            </Box>
+
+                            {/* Error message */}
+                            {touched?.cover_page && errors?.cover_page && (
+                              <Typography variant="caption" color="error">
+                                {String(errors.cover_page)}
+                              </Typography>
+                            )}
+                          </Box>
+                        }
+
                       </div>
                       <div className="row mt-4">
                         <div className="col-md-4">
@@ -2416,7 +2551,7 @@ const AddContent = () => {
                           </div>
                         </div>
                       </div>
-                     
+
                     </div>
                     <button
                       type="submit"
