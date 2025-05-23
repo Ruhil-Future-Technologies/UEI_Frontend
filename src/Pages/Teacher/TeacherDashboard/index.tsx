@@ -979,6 +979,9 @@ const TeacherDash = () => {
           [`answer-${index}`]: true,
         };
         setIsTextCopied(updatedState);
+        setTimeout(() => {
+          setIsTextCopied({});
+        }, 3000);
       })
       .catch((err) => {
         console.error('Error copying text: ', err);
