@@ -516,7 +516,7 @@ const StudentContent = () => {
                           <CardMedia
                             component="img"
                             height="180"
-                            image={`${video.thumbnail ? video.thumbnail : "https://plus.unsplash.com/premium_photo-1695186450459-8d3c896ca573?q=80&w=768"}`}
+                            image={`${video.thumbnail_url ? video.thumbnail_url : "https://plus.unsplash.com/premium_photo-1695186450459-8d3c896ca573?q=80&w=768"}`}
                             alt={video.title}
                           />
                           <CardContent>
@@ -554,7 +554,7 @@ const StudentContent = () => {
                       >
                         <CardMedia
                           component="img"
-                          image={book.cover_page ? book.cover_page : Ebook}
+                          image={book.thumbnail_url ? book.thumbnail_url : Ebook}
                           height="180"
                           alt={book.description}
                         />

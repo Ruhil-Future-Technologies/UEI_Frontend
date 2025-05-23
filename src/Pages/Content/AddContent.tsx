@@ -109,7 +109,7 @@ const AddContent = () => {
     []
   );
   const [allselectedfiles, setAllSelectedfiles] = useState<File[]>([]);
-  const [selectedthumnail_cover, setSelectedthumnail_cover] = useState<File | null>();
+  const [selectedthumnail_cover, setSelectedthumnail_cover] = useState<File | null>(null);
   const [allfiles, setAllfiles] = useState<File[]>([]);
   const user_type = localStorage.getItem('user_type');
   const user_uuid = localStorage.getItem('user_uuid');
@@ -376,47 +376,39 @@ const AddContent = () => {
       );
     }
     if (user_type === 'teacher') {
+      setLoading(true);
       await getData(`${QUERY_KEYS_TEACHER.TEACHER_EDIT}/${user_uuid}`).then(
         (data) => {
           const filteredCourses = data?.data?.course_semester_subjects;
 
           if (data?.data?.entity_type === 'school') {
-            const validClassIds = new Set(
-              Object.keys(data?.data?.class_stream_subjects).map((id) =>
-                Number(id),
-              ),
-            );
-            const streeamKeys = Object.values(
-              data?.data?.class_stream_subjects as Record<
-                string,
-                Record<string, any>
-              >,
-            ).flatMap((streamkeys) => Object.keys(streamkeys));
+            const classStreamSubjects = data.data.class_stream_subjects as Record<
+              string,
+              Record<string, string[]>
+            >;
 
-            const Subjects = Object.entries(
-              data?.data?.class_stream_subjects as Record<
-                string,
-                Record<string, string[]>
-              >,
-            ).flatMap(
-              (
-                [, subjects], // Ignore the first key (e.g., "8")
-              ) =>
-                Object.entries(subjects).flatMap(([streamName, subjectArray]) =>
-                  subjectArray?.map((subject) => ({
-                    stream: streamName,
-                    subject,
-                  })),
-                ),
-            );
-            setClassSubjectsTeacher(Subjects?.map(({ subject }) => subject))
-            const uniqueStreamKeys = [...new Set(streeamKeys)];
-            setClassStreamsTeacher(uniqueStreamKeys.filter((item) => item != "general"));
-            console.log(validClassIds);
-            setTeacherClasses(
-              dataClasses.filter((cls) => validClassIds.has(cls.id)),
-            );
+            // Pre-compute values once
+            const validClassIds = new Set(Object.keys(classStreamSubjects).map(Number));
+
+            const uniqueStreamKeys = new Set<string>();
+            const subjects: string[] = [];
+
+            for (const streams of Object.values(classStreamSubjects)) {
+              for (const [streamName, subjectArray] of Object.entries(streams)) {
+                if (streamName !== "general") uniqueStreamKeys.add(streamName);
+                for (const subject of subjectArray) {
+                  subjects.push(subject);
+                }
+              }
+            }
+
+            // Set state in batch
+            setClassSubjectsTeacher(subjects);
+            setClassStreamsTeacher([...uniqueStreamKeys]);
+            setTeacherClasses(dataClasses.filter((cls) => validClassIds.has(cls.id)));
+            setLoading(false);
           }
+
           setTeacherCourses((prevCourses) => ({
             ...prevCourses,
             ...filteredCourses,
@@ -1009,6 +1001,15 @@ const AddContent = () => {
       allselectedfiles.forEach((file) => {
         formData.append('documents[]', file);
       });
+      if (selectedthumnail_cover) {
+        if (showthumnail == "e-book") {
+          formData.append("cover_page", selectedthumnail_cover);
+        }
+        if (showthumnail == "video_lecture") {
+          formData.append("thumbnail", selectedthumnail_cover);
+        }
+      }
+
       Object.keys(formattedData).forEach((key) => {
         formData.append(key, formattedData[key]);
       });
@@ -1081,6 +1082,14 @@ const AddContent = () => {
       Object.keys(formattedData).forEach((key) => {
         formData.append(key, formattedData[key]);
       });
+      if (selectedthumnail_cover) {
+        if (showthumnail == "e-book") {
+          formData.append("thumbnail", selectedthumnail_cover);
+        }
+        if (showthumnail == "video_lecture") {
+          formData.append("thumbnail", selectedthumnail_cover);
+        }
+      }
       allselectedfiles.forEach((file) => {
         formData.append('documents[]', file);
       });
@@ -1230,7 +1239,7 @@ const AddContent = () => {
               const courseSubjects = collegeSubjects.filter(
                 (subject) => subject.course_id === value,
               );
-              console.log(courseSubjects,collegeSubjects,value);
+              console.log(courseSubjects, collegeSubjects, value);
               const uniqueSemesters = courseSubjects
                 .map((subject) => subject.semester_number)
                 .filter(
@@ -1679,7 +1688,11 @@ const AddContent = () => {
                             <InputLabel>University *</InputLabel>
                             <Select
                               name="university_id"
-                              value={values?.university_id}
+                              value={
+                                dataUniversity?.some(u => u.id === values?.university_id)
+                                  ? values.university_id
+                                  : ''
+                              }
                               label="University *"
                               onChange={(e: SelectChangeEvent<string>) =>
                                 handleChange(e, 'university_id')
@@ -1986,8 +1999,7 @@ const AddContent = () => {
                                           },
                                         }}
                                       >
-                                        {user_type === 'admin' ||
-                                          user_type == 'institute'
+                                        {(user_type === 'admin' || user_type === 'institute') && dataClasses?.length > 0
                                           ? dataClasses?.map((cls: any) => (
                                             <MenuItem
                                               key={cls.id}
@@ -2011,7 +2023,7 @@ const AddContent = () => {
                                               )}
                                             </MenuItem>
                                           ))
-                                          : user_type === 'teacher'
+                                          : user_type === 'teacher' && teacherClasses?.length > 0
                                             ? teacherClasses?.map(
                                               (cls: any) => (
                                                 <MenuItem
@@ -2151,7 +2163,7 @@ const AddContent = () => {
                                           },
                                         }}
                                       >
-                                        {classSubjects[index]?.filter((item)=>classSubjectsTeacher?.includes(item.subject_name)).map(
+                                        {classSubjects[index]?.filter((item) => classSubjectsTeacher?.includes(item.subject_name)).map(
                                           (subject: any) => (
                                             <MenuItem
                                               key={subject.subject_id}
