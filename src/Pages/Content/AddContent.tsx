@@ -1116,6 +1116,7 @@ const AddContent = () => {
               description: '',
               author: '',
             }));
+            setSelectedthumnail_cover(null);
             setAllSelectedfiles([]);
             setLoading(false);
           } else {
