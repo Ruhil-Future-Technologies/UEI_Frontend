@@ -113,7 +113,7 @@ const InstituteSidevar = () => {
               <div className="menu-title">Student</div>
             </Link>
           </li>
-          <li>
+          {/* <li>
             <Link
               to="/institution-dashboard/bulkupload"
               onClick={removeMobileToggle}
@@ -124,7 +124,7 @@ const InstituteSidevar = () => {
               </div>
               <div className="menu-title">Bluk Data upload</div>
             </Link>
-          </li>
+          </li> */}
 
           {/* <!-- <li>
                     <a href="javascript:;" className="has-arrow">
