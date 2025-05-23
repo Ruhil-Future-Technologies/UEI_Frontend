@@ -672,5 +672,38 @@
     background-color: var(--bs-body-bg);
     border-color: var(--bs-border-color);
   }
+
+  
+
+.title-color{
+  color: $headingColor;
 }
+.paragraph-color{
+  color: #4B5563;
+}
+.infocard{
+  background-color: $mui_date_bg;
+
+  p{
+    color: $date_text;
+  }
+}
+.bulk-upload-container{
+  select{
+    border: 0px!important;
+  }
+  
+}
+.shadow4{
+  
+    background-image: none;
+  }
+.addingbox{
+  border: 2px solid $mui_date_bg;
+
+
+}
+
+}
+
 

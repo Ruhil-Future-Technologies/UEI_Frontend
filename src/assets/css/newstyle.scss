@@ -3379,7 +3379,7 @@ a {
   color: #4B5563;
 }
 .infocard{
-  background-color: #EFF6FF;
+  background-color: #decaef;
   padding: 1rem;
   border-radius: 8px;
   margin-bottom: 1rem;
@@ -3391,4 +3391,19 @@ a {
   select{
     border: 0px!important;
   }
+  
+}
+.shadow4{
+   
+    background-image: linear-gradient(to top, #f3e7e9 0%, rgba($primary, 0.25) 99%, rgba($primary, 0.3) 100%);
+  }
+.addingbox{
+  border: 2px solid #decaef;
+  padding: 1rem;
+  border-radius: 10px;
+
+  button{
+    margin-left: auto;
+  }
+
 }

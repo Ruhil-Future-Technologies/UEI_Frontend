@@ -4,8 +4,8 @@ import { Button, message, Select } from 'antd';
 import {
   Add,
   DownloadDoneRounded,
-  InboxOutlined,
   InfoOutlined,
+  TableChart,
 } from '@mui/icons-material';
 import { IconButton, MenuItem } from '@mui/material';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
@@ -275,7 +275,7 @@ const BulkUploadForm: React.FC<BulkUploadFormProps> = ({
                 format
               </p>
             </div>
-            <div className="card p-lg-2">
+            <div className="card p-lg-2 shadow4 mb-5">
               <div className="card-body">
                 <div className="bulk-upload-container">
                   <div className="infocard">
@@ -325,7 +325,7 @@ const BulkUploadForm: React.FC<BulkUploadFormProps> = ({
                       return (
                         <div
                           key={rowIndex}
-                          className="d-flex flex-column gap-3"
+                          className="d-flex flex-column gap-3 addingbox"
                         >
                           {repeatableFieldsConfig.map((fieldConfig) => {
                             const options = fieldConfig.getDynamicOptions
@@ -378,18 +378,26 @@ const BulkUploadForm: React.FC<BulkUploadFormProps> = ({
                     })}
                   </div>
 
+                     <Button
+                    variant="link"
+                    color="primary"
+                    onClick={addRow}
+                    className="mb-3 px-0 ms-auto d-flex align-items-center gap-1"
+                  >
+                   <Add fontSize='small'/> Add More
+                  </Button>
+
                   
 
                   <Dragger {...uploadProps} className="mt-3">
                     <p className="ant-upload-drag-icon">
-                      <InboxOutlined />
+                      <TableChart />
                     </p>
-                    <p className="ant-upload-text">
+                    <p className="mb-0 fs-14">
                       Click or drag CSV file to this area to upload
                     </p>
-                    <p className="ant-upload-hint">
-                      Support for a single CSV file. Ensure it is formatted
-                      correctly.
+                    <p className="text-primary fs-6 mb-0">
+                      click to browse
                     </p>
                   </Dragger>
                   {selectedFile && (
@@ -399,14 +407,7 @@ const BulkUploadForm: React.FC<BulkUploadFormProps> = ({
                   )}
 
 
-                  <Button
-                    variant="link"
-                    color="primary"
-                    onClick={addRow}
-                    className="mt-3 px-0"
-                  >
-                   <Add/> Add More
-                  </Button>
+               
 
                   <Button
                     type="primary"
