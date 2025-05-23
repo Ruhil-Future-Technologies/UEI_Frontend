@@ -325,7 +325,7 @@ const BulkUploadForm: React.FC<BulkUploadFormProps> = ({
                       return (
                         <div
                           key={rowIndex}
-                          className="d-flex flex-column gap-3 addingbox"
+                          className="d-flex gap-3 addingbox"
                         >
                           {repeatableFieldsConfig.map((fieldConfig) => {
                             const options = fieldConfig.getDynamicOptions

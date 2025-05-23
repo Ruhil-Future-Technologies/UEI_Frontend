@@ -3395,13 +3395,14 @@ a {
 }
 .shadow4{
    
-    background-image: linear-gradient(to top, #f3e7e9 0%, rgba($primary, 0.25) 99%, rgba($primary, 0.3) 100%);
+    background-image: linear-gradient(to top, rgba($primary, 0.15) 0%, rgba($primary, 0.2) 99%, rgba($primary, 0.15) 100%);
   }
 .addingbox{
-  border: 2px solid #decaef;
-  padding: 1rem;
-  border-radius: 10px;
-
+  
+ 
+  .ant-select{
+    width: 100%;
+  }
   button{
     margin-left: auto;
   }
