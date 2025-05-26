@@ -139,6 +139,7 @@ const Header = () => {
     localStorage.removeItem('hasReloaded');
     localStorage.removeItem('register_num');
     sessionStorage.removeItem('userdata');
+    localStorage.removeItem('entity');
     synth.cancel();
     navigator('/');
     logoutpro();

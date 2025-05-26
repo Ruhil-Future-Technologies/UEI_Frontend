@@ -3,6 +3,23 @@ import { useNavigate } from 'react-router-dom';
 import gLogo from '../../assets/img/logo-white.svg';
 import Footer from '../Footer';
 
+export const getUrl=()=>{
+   const token = localStorage.getItem("token");
+  const usertype = localStorage.getItem("user_type");
+  let logo_url = "";
+  if (token) {
+    if (usertype == "student" || usertype == "admin") {
+      logo_url = "/main/Dashboard";
+    } else if (usertype == "teacher") {
+      logo_url = "/teacher-dashboard";
+    } else if (usertype == "institute") {
+      logo_url = "institute-dashboard"
+    }
+  } else {
+    logo_url = "/";
+  }
+  return logo_url;
+}
 const ServicesAgreement = () => {
   const navigate = useNavigate();
   return (
@@ -10,7 +27,7 @@ const ServicesAgreement = () => {
       <div className="main-wrapper pt-0 ms-0">
         <div className="main-content">
           <div className="page-breadcrumb d-flex flex-wrap gap-4 align-items-center mb-3 border-bottom pb-3 mb-5 ">
-            <a href="/" className="fw-bold text-dark fs-4 me-4">
+            <a href={getUrl()} className="fw-bold text-dark fs-4 me-4">
               <img src={gLogo} width={20} className="me-1 " alt="" /> Gyansetu
             </a>
             <div className="d-flex">
@@ -123,7 +140,7 @@ const ServicesAgreement = () => {
                   </p>
 
                   <h6 className="fw-bold mb-2 mt-5">
-                     Indemnification
+                    Indemnification
                   </h6>
                   <p>
                     You agree to indemnify and hold Gyansetu, Ruhil Future Technologies, and its employees harmless from any claims, damages, losses, or liabilities arising from your use of the platform. This includes, but is not limited to:

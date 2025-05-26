@@ -429,7 +429,7 @@ export const ProfileDialog: FunctionComponent<{
                 (item: any) =>
                   item?.is_active &&
                   item?.class_id === answeredData?.academic_history?.class_id &&
-                  (answeredData?.academic_history?.stream
+                  (answeredData?.academic_history?.stream != 'general'
                     ? item.stream == answeredData?.academic_history?.stream
                     : true),
               );

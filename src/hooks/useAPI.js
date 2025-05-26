@@ -36,6 +36,7 @@ const useApi = () => {
     localStorage.removeItem('Profile_completion');
     localStorage.removeItem('Profile completion');
     localStorage.removeItem('tokenExpiry');
+    localStorage.removeItem('entity');
     synth.cancel();
     // logoutpro();
   };
