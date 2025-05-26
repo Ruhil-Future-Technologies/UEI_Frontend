@@ -1171,7 +1171,6 @@ export const ProfileDialog: FunctionComponent<{
     value: option.value,
     label: option.lable,
   }));
-  console.log('subjects --=>>>p', subjects);
   const subjectOptions = subjects.map((option) => ({
     value: option?.subject_id || option?.id,
     label: option.subject_name,
