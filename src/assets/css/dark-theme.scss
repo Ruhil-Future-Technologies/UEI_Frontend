@@ -8,6 +8,10 @@
   $mui_date_bg: #32363b !important;
 
   
+
+  .ant-select-selection-placeholder {
+  color: #aaaaaa !important;
+}
   
   .sidebar-footer {
     ul{
@@ -694,15 +698,7 @@
   }
   
 }
-.shadow4{
-  
-    background-image: none;
-  }
-.addingbox{
-  border: 2px solid $mui_date_bg;
 
-
-}
 
 }
 
