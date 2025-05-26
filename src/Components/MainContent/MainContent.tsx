@@ -924,7 +924,7 @@ function MainContent() {
           });
         });
       getData(`${university_list}`).then((data: any) => {
-        setUniversity_List_Data(data?.data);
+        setUniversity_List_Data(data?.data?.universities_data);
       });
     }
   };
@@ -1629,7 +1629,7 @@ function MainContent() {
               profileDatas?.subject_preference || {};
             const university: any =
               university_list_data?.filter(
-                (university: any) => university?.university_id == university_id,
+                (university: any) => university?.id == university_id,
               ) || null;
             const queryParams = {
               user_query: search,
