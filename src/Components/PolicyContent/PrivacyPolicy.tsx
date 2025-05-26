@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import gLogo from '../../assets/img/logo-white.svg';
 import Footer from '../Footer';
+import { getUrl } from './ServicesAgreement';
 //import { List, ListItem } from '@mui/material';
 //import { BackArrowCircle } from '../../assets';
 //import { Box } from '@mui/material';
@@ -12,7 +13,7 @@ const PrivacyPolicy = () => {
       <div className="main-wrapper pt-0 ms-0">
         <div className="main-content">
           <div className="page-breadcrumb d-flex flex-wrap gap-4 align-items-center mb-3 border-bottom pb-3 mb-5">
-            <a href="/" className="fw-bold text-dark fs-4 me-4">
+            <a href={getUrl()} className="fw-bold text-dark fs-4 me-4">
               <img src={gLogo} width={20} className="me-1 " alt="" /> Gyansetu
             </a>
             <div className="d-flex">
