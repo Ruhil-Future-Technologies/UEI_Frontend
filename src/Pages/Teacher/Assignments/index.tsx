@@ -97,9 +97,10 @@ export const Assignments = () => {
             )
             setActiveAssignmentCount(activeAssignment.length);
             getData('/assignment_submission/list/').then((response: any) => {
+                console.log(response?.data)
               const uniqueGradedAssignments = new Set(
                 response?.data
-                  .filter((item: any) => item.is_graded)
+                  .filter((item: any) => item.is_graded && item.updated_by==teacher_uuid)
                   .map((item: any) => item.assignment_id),
               );
               const totalUniqueGradedAssignments = uniqueGradedAssignments.size;
@@ -253,26 +254,6 @@ export const Assignments = () => {
         const gmtDateStr = row?.original?.generated_type;
         return gmtDateStr != null ? gmtDateStr.replace("_", " ") : "-";
       },
-    },
-    {
-      accessorKey: 'class_stream_subjects',
-      header:`${entiryType=="college"?"Course":"Class"}`,
-      Cell: ({ row }: { row: MRT_Row<Assignment> }) => {
-        const fallbackObj =
-          row?.original?.class_stream_subjects ??
-          row?.original?.course_semester_subjects;
-
-        if (!fallbackObj) return '-'; // prevent error when both are null
-
-        const gmtDateStr = getkeysvalue(fallbackObj);
-        
-        if (entiryType == "college") {
-          return getClassorCourse("college", gmtDateStr);
-        } else {
-          return getClassorCourse("school", gmtDateStr);
-        }
-
-      }
     },
     {
        id: 'class_stream_subjects_subject_names',
