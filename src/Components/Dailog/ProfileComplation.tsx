@@ -429,7 +429,7 @@ export const ProfileDialog: FunctionComponent<{
                 (item: any) =>
                   item?.is_active &&
                   item?.class_id === answeredData?.academic_history?.class_id &&
-                  (answeredData?.academic_history?.stream
+                  (answeredData?.academic_history?.stream != 'general'
                     ? item.stream == answeredData?.academic_history?.stream
                     : true),
               );
@@ -1171,6 +1171,7 @@ export const ProfileDialog: FunctionComponent<{
     value: option.value,
     label: option.lable,
   }));
+  console.log('subjects --=>>>p', subjects);
   const subjectOptions = subjects.map((option) => ({
     value: option?.subject_id || option?.id,
     label: option.subject_name,
