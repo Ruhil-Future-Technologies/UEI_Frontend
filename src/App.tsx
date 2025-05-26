@@ -198,6 +198,8 @@ function App() {
     localStorage.removeItem('register_num');
     localStorage.removeItem('user_session_data');
     localStorage.removeItem('user_last_sync');
+    localStorage.removeItem('entity');
+    localStorage.removeItem('teacher_id');
     synth.cancel();
     // logoutpro();
   };
