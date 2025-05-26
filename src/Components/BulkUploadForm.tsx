@@ -389,14 +389,14 @@ const BulkUploadForm: React.FC<BulkUploadFormProps> = ({
 
                   
 
-                  <Dragger {...uploadProps} className="mt-3">
-                    <p className="ant-upload-drag-icon">
+                  <Dragger {...uploadProps} className="mt-3  bg-white">
+                    <p className="ant-upload-drag-icon pt-lg-4">
                       <TableChart />
                     </p>
                     <p className="mb-0 fs-14">
                       Click or drag CSV file to this area to upload
                     </p>
-                    <p className="text-primary fs-6 mb-0">
+                    <p className="text-primary fs-6 mb-0 pb-lg-4">
                       click to browse
                     </p>
                   </Dragger>
@@ -433,6 +433,7 @@ const BulkUploadForm: React.FC<BulkUploadFormProps> = ({
             </div>
           </div>
         </div>
+        <div className="mb-4"></div>
       </div>
     </div>
   );

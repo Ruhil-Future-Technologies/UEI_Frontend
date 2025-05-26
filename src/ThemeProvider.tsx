@@ -187,18 +187,18 @@ export const ThemeProviderWrapper: React.FC<{ children: React.ReactNode }> = ({
               Input: {
                 colorBgContainer: isDarkMode ? '#333' : '#fff',
                 colorText: isDarkMode ? '#fff' : '#000',
-                colorBorder: isDarkMode ? '#555' : '#ccc',
+                colorBorder: isDarkMode ? '#555' : '#E5E7EB',
                 activeShadow: 'none',
               },
               InputNumber: {
                 colorBgContainer: isDarkMode ? '#333' : '#fff',
                 colorText: isDarkMode ? '#fff' : '#000',
-                colorBorder: isDarkMode ? '#555' : '#ccc',
+                colorBorder: isDarkMode ? '#555' : '#E5E7EB',
               },
               DatePicker: {
                 colorBgContainer: isDarkMode ? '#333' : '#fff',
                 colorText: isDarkMode ? '#fff' : '#000',
-                colorBorder: isDarkMode ? '#555' : '#ccc',
+                colorBorder: isDarkMode ? '#555' : '#E5E7EB',
               },              
               Radio: {
                 colorPrimary: primaryColor,
