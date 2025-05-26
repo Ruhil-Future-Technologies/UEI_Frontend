@@ -506,7 +506,7 @@ const Bulkupload = () => {
                 mainFields={selectedEntity !== "school" ? mainFieldsConfigCollege : mainFieldsConfig}
                 repeatableFieldsConfig={selectedEntity !== "school" ? repeatableFieldsConfigCollege : repeatableFieldsConfig}
                 onSubmit={selectedEntity !== "school" ? handleCollegeSubmit : handleSchoolSubmit}
-                downloadTemplateApiEndpoint={'/bulk-upload/download'}
+                downloadTemplateApiEndpoint={`/bulk-upload/template/${selectedEntity}`}
                 resetTrigger={repeatableRowsKey}
                 dynamicData={{ dynamicTeacher, dynamicClasses, dynamicSubject }}
                 entityType={selectedEntity}
