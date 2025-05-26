@@ -1,10 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { MRT_ColumnDef } from 'material-react-table';
 import { MaybeNull } from '../../types';
-import {
-  getDateFormat,
-  isNullOrUndefined,
-} from '../../utils/helpers';
+import { getDateFormat, isNullOrUndefined } from '../../utils/helpers';
 import profile from '../../assets/img/profile_img.svg';
 
 import {
@@ -44,7 +41,7 @@ import {
   QUERY_KEYS_CONTENT,
 } from '../../utils/const';
 import { toast } from 'react-toastify';
-import React, { useEffect, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 
 export const EMPTY_CELL_VALUE = '-';
 
@@ -234,6 +231,7 @@ export interface FeedbackRep0oDTO {
 export interface StudentFeedbackRep0oDTO {
   created_at: MaybeNull<string>;
   student_name: MaybeNull<string>;
+  teacher_name: MaybeNull<string>;
   responses: IFeedbackResponse[] | MaybeNull<string>;
 }
 export interface MenuRep0oDTO {
@@ -287,16 +285,27 @@ export interface IClass {
   updated_at: string;
 }
 export interface IFeedback {
-  created_at: string;
-  options: string;
-  question: string;
-  id: number;
-  is_active: number;
-  updated_at: string;
+  teacher: [{
+    created_at: string;
+    options: string;
+    question: string;
+    id: number;
+    is_active: number;
+    updated_at: string;
+  }],
+  student: [{
+    created_at: string;
+    options: string;
+    question: string;
+    id: number;
+    is_active: number;
+    updated_at: string;
+  }]
 }
 export interface IStudentFeedback {
   created_at: string;
   student_name: string;
+  teacher_name: string
   responses: IFeedbackResponse[];
   is_active: number;
 }
@@ -476,77 +485,77 @@ export const INSITUTION_COLUMNS: MRT_ColumnDef<InstituteRep0oDTO>[] = [
 export const TEACHER_COLUMNS = (
   refetch: () => void,
 ): MRT_ColumnDef<TeacherRepoDTO>[] => [
-  {
-    accessorFn: (row) => `${row.first_name} ${row.last_name}`,
-    header: 'Full Name',
-    size: 200,
-  },
-  { accessorKey: 'phone', header: 'Phone', size: 200, minSize: 200 },
-  { accessorKey: 'email', header: 'Email', size: 200 },
-  {
-    accessorKey: 'institute_name',
-    header: 'Institute Name',
-    size: 200,
-  },
-  {
-    accessorKey: 'university_name',
-    header: 'University Name',
-    size: 200,
-  },
-  {
-    accessorKey: 'class_name',
-    header: 'Class',
-    size: 150,
-  },
-  {
-    accessorKey: 'course_name',
-    header: 'Course',
-    size: 150,
-  },
-  {
-    accessorKey: 'is_active',
-    header: 'Active/Deactive',
-    Cell: ({ cell, row }: any) => {
-      const { putData } = useApi();
-      const TeacherActive = QUERY_KEYS_TEACHER.TEACHER_ACTIVATE;
-      const TeacherDeactive = QUERY_KEYS_TEACHER.TEACHER_DEACTIVATE;
-      const value = cell?.getValue();
-      const [showValue, setShowValue] = useState(value);
-      const [show, setShow] = useState(value ? true : false);
+    {
+      accessorFn: (row) => `${row.first_name} ${row.last_name}`,
+      header: 'Full Name',
+      size: 200,
+    },
+    { accessorKey: 'phone', header: 'Phone', size: 200, minSize: 200 },
+    { accessorKey: 'email', header: 'Email', size: 200 },
+    {
+      accessorKey: 'institute_name',
+      header: 'Institute Name',
+      size: 200,
+    },
+    {
+      accessorKey: 'university_name',
+      header: 'University Name',
+      size: 200,
+    },
+    {
+      accessorKey: 'class_name',
+      header: 'Class',
+      size: 150,
+    },
+    {
+      accessorKey: 'course_name',
+      header: 'Course',
+      size: 150,
+    },
+    {
+      accessorKey: 'is_active',
+      header: 'Active/Deactive',
+      Cell: ({ cell, row }: any) => {
+        const { putData } = useApi();
+        const TeacherActive = QUERY_KEYS_TEACHER.TEACHER_ACTIVATE;
+        const TeacherDeactive = QUERY_KEYS_TEACHER.TEACHER_DEACTIVATE;
+        const value = cell?.getValue();
+        const [showValue, setShowValue] = useState(value);
+        const [show, setShow] = useState(value ? true : false);
 
-      const active = (id: string, valueSet: any) => {
-        putData(`${valueSet ? TeacherDeactive : TeacherActive}/${id}`)
-          .then((data: any) => {
-            if (data.status) {
-              setShow((prevState) => !prevState);
-              setShowValue(showValue ? 0 : 1);
-              toast.success(data?.message, {
+        const active = (id: string, valueSet: any) => {
+          putData(`${valueSet ? TeacherDeactive : TeacherActive}/${id}`)
+            .then((data: any) => {
+              if (data.status) {
+                setShow((prevState) => !prevState);
+                setShowValue(showValue ? 0 : 1);
+                toast.success(data?.message, {
+                  hideProgressBar: true,
+                  theme: 'colored',
+                });
+                refetch();
+              }
+            })
+            .catch((e) => {
+              toast.error(e?.message, {
                 hideProgressBar: true,
                 theme: 'colored',
               });
-              refetch();
-            }
-          })
-          .catch((e) => {
-            toast.error(e?.message, {
-              hideProgressBar: true,
-              theme: 'colored',
             });
-          });
-      };
-      return row?.original?.is_approve ? (
-        <Switch
-          isChecked={show}
-          onChange={() => active(row?.original?.user_uuid, showValue)}
-          label={show ? 'Active' : 'Deactive'}
-          activeColor="#4CAF50"
-          inactiveColor="#f44336"
-        />
-      ) : null;
+        };
+        return row?.original?.is_approve ? (
+          <Switch
+            isChecked={show}
+            onChange={() => active(row?.original?.user_uuid, showValue)}
+            label={show ? 'Active' : 'Deactive'}
+            activeColor="#4CAF50"
+            inactiveColor="#f44336"
+          />
+        ) : null;
+      },
+      size: 150,
     },
-    size: 150,
-  },
-];
+  ];
 
 export const Entity_COLUMNS: MRT_ColumnDef<IEntity>[] = [
   // const columns: any[] = [
@@ -781,7 +790,7 @@ export const COURSE_COLUMNS: MRT_ColumnDef<CourseRep0oDTO>[] = [
             onChange={() => {
               active(row?.original?.id, Showvalue);
             }}
-            // disabled={true}
+          // disabled={true}
           />
         </Box>
       );
@@ -944,7 +953,7 @@ export const SEMESTER_COLUMNS: MRT_ColumnDef<SemesterRep0oDTO>[] = [
             onChange={() => {
               active(row?.original?.semester_id, Showvalue);
             }}
-            // disabled={true}
+          // disabled={true}
           />
         </Box>
       );
@@ -1023,7 +1032,7 @@ export const Department_COLUMNS: MRT_ColumnDef<DepartmentRep0oDTO>[] = [
             onChange={() => {
               active(row?.original?.id, Showvalue);
             }}
-            // disabled={true}
+          // disabled={true}
           />
         </Box>
       );
@@ -1162,6 +1171,104 @@ export const STUDENT_COLUMNS: MRT_ColumnDef<any>[] = [
     size: 150,
   },
 ];
+export const col_for_t=(entity:string)=>{
+
+ const STUDENT_COLUMNS_FOR_TEACEHR: MRT_ColumnDef<any>[] = [
+  // const columns: any[] = [
+  // {
+  //     accessorKey: "aim",
+  //     header: "Aim ",
+  //     size: 150,
+  // },
+  // {
+  //   accessorKey: 'pic_path',
+  //   header: 'Profile Image',
+  //   size: 150,
+  //   Cell: ({ cell }: any) => {
+  //     const value: any = cell?.getValue();
+
+  //     if (isNullOrUndefined(value) || value === 0) {
+  //       return EMPTY_CELL_VALUE;
+  //     }
+
+  //     return (
+  //       <div className="profile_img">
+  //         <img
+  //           src={value !== '' ? value : profile}
+  //           alt="profile"
+  //           height="50px"
+  //           width="50px"
+  //           style={{ borderRadius: '50%', objectFit: 'cover' }}
+  //         />
+  //       </div>
+  //     );
+  //   },
+  // },
+  {
+    accessorKey: 'name',
+    header: 'Full Name',
+    size: 150,
+  },
+  {
+    accessorKey: 'email',
+    header: 'Email',
+    size: 250,
+  },
+
+  {
+    accessorKey: 'phone',
+    header: 'Mobile No',
+    size: 150,
+  },
+  {
+    accessorKey: 'gender',
+    header: 'Gender',
+    size: 150,
+    Cell: ({ cell }: any) => {
+      const value = cell?.getValue() as string | undefined;
+
+      const camelCaseValue = value?.replace(/\b(\w)/g, (match: string) =>
+        match?.toUpperCase(),
+      );
+      return <div>{camelCaseValue}</div>;
+    },
+  },
+  {
+    accessorKey: 'dob',
+    header: 'DOB',
+    size: 150,
+    Cell: ({ cell }) => {
+      const value = cell.getValue();
+
+      if (isNullOrUndefined(value) || value === 0) {
+        return EMPTY_CELL_VALUE;
+      }
+
+      return getDateFormat(value);
+    },
+  },
+  {
+    accessorKey: `${entity == "school" ? "class_name" : 'Course_name'}`,
+    header: `${entity == "school" ? "Class" : 'Course'}`,
+    size: 150
+  },
+  {
+    accessorKey: entity == "school" ? "stream" : "semester_number",
+    header: entity == "school" ? "Stream" : "Semester",
+    size: 150,
+    Cell: ({ cell }): ReactNode => {
+      const value = cell.getValue();
+      return value === "general" ? "-" : `${value}`;
+    }
+  },
+  {
+    accessorKey: "subject_name",
+    header: "Subject Name",
+    size: 150
+  }
+];
+return STUDENT_COLUMNS_FOR_TEACEHR;
+}
 
 export const MENU_COLUMNS: MRT_ColumnDef<MenuRep0oDTO>[] = [
   {
@@ -1323,7 +1430,7 @@ export const SUBJECT_COLUMNS: MRT_ColumnDef<SubjectRep0oDTO>[] = [
             onChange={() => {
               active(row?.original?.subject_id, Showvalue);
             }}
-            // disabled={true}
+          // disabled={true}
           />
         </Box>
       );
@@ -1412,7 +1519,7 @@ export const SUBJECT_COLUMNS_SCHOOL: MRT_ColumnDef<SubjectRep0oDTO>[] = [
             onChange={() => {
               active(row?.original?.subject_id, Showvalue);
             }}
-            // disabled={true}
+          // disabled={true}
           />
         </Box>
       );
@@ -1491,7 +1598,7 @@ export const LANGUAGE_COLUMNS: MRT_ColumnDef<LanguageRep0oDTO>[] = [
             onChange={() => {
               active(row?.original?.id, Showvalue);
             }}
-            // disabled={true}
+          // disabled={true}
           />
         </Box>
       );
@@ -1570,7 +1677,7 @@ export const HOBBY_COLUMNS: MRT_ColumnDef<HobbyRep0oDTO>[] = [
             onChange={() => {
               active(row?.original?.id, Showvalue);
             }}
-            // disabled={true}
+          // disabled={true}
           />
         </Box>
       );
@@ -1630,8 +1737,9 @@ export const STUDENT_FEEDBACK_COLUMNS: MRT_ColumnDef<StudentFeedbackRep0oDTO>[] 
   [
     // const columns: any[] = [
     {
-      accessorKey: 'student_name',
-      header: 'Student Name',
+      id: 'name', // optional but recommended for custom accessor
+      header: 'Name',
+      accessorFn: row => row.student_name || row.teacher_name,
       size: 150,
     },
     {
@@ -1794,7 +1902,7 @@ export const SUBMENU_COLUMNS: MRT_ColumnDef<SubMenuRep0oDTO>[] = [
             onChange={() => {
               active(row?.original?.id, Showvalue);
             }}
-            // disabled={true}
+          // disabled={true}
           />
         </Box>
       );
@@ -1869,7 +1977,7 @@ export const ROLE_COLUMNS: MRT_ColumnDef<RoleRep0oDTO>[] = [
             onChange={() => {
               active(row?.original?.id, Showvalue);
             }}
-            // disabled={true}
+          // disabled={true}
           />
         </Box>
       );
@@ -1997,7 +2105,7 @@ export const FORM_COLUMNS: MRT_ColumnDef<FormRep0oDTO>[] = [
             onChange={() => {
               active(row?.original?.id, Showvalue);
             }}
-            // disabled={true}
+          // disabled={true}
           />
         </Box>
       );
@@ -2141,7 +2249,7 @@ export const ROLEVSFORM_COLUMNS: MRT_ColumnDef<RolevsFormRep0oDTO>[] = [
             onChange={() => {
               active(row?.original?.id, Showvalue);
             }}
-            // disabled={true}
+          // disabled={true}
           />
         </Box>
       );
@@ -2205,7 +2313,10 @@ export const ROLEVSADMIN_COLUMNS: MRT_ColumnDef<RolevsFormRep0oDTO>[] = [
               setShow((prevState) => !prevState);
               setShowvalue(Showvalue ? 0 : 1);
 
-              toast.success(data?.message);
+              toast.success(data?.message, {
+                hideProgressBar: true,
+                theme: 'colored',
+              });
               // window.location.reload();
             }
           })
@@ -2226,7 +2337,7 @@ export const ROLEVSADMIN_COLUMNS: MRT_ColumnDef<RolevsFormRep0oDTO>[] = [
             onChange={() => {
               active(row?.original?.id, Showvalue);
             }}
-            // disabled={true}
+          // disabled={true}
           />
         </Box>
       );
@@ -2466,7 +2577,7 @@ export const CONTENT_COLUMNS: MRT_ColumnDef<ContentRepoDTO>[] = [
       const content_type = cell?.getValue();
       return content_type
         ? content_type.charAt(0).toUpperCase() +
-            content_type.slice(1).toLowerCase()
+        content_type.slice(1).toLowerCase()
         : null;
     },
   },
@@ -2504,16 +2615,6 @@ export const CONTENT_COLUMNS: MRT_ColumnDef<ContentRepoDTO>[] = [
   {
     accessorKey: 'subjects',
     header: 'Subjects',
-  },
-  {
-    accessorKey: 'created_at',
-    header: 'Created At',
-    size: 200,
-  },
-  {
-    accessorKey: 'updated_at',
-    header: 'Updated At',
-    size: 200,
   },
   {
     accessorKey: 'is_active',
@@ -2614,7 +2715,10 @@ export const ADMIN_LIST_COLUMNS: MRT_ColumnDef<Admin>[] = [
           .then((data: any) => {
             if (data.status) {
               setShowvalue(Showvalue ? 0 : 1);
-              toast.success(data?.message);
+              toast.success(data?.message, {
+                hideProgressBar: true,
+                theme: 'colored',
+              });
               window.location.reload();
             }
           })

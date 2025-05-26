@@ -221,6 +221,7 @@ const Login = () => {
     // Calculate the expiry time
     const expiryTime = Date.now() + tokenLifespan * 1000;
     localStorage.setItem('tokenExpiry', expiryTime.toString());
+    localStorage.setItem('admin_type', data?.data?.user_type);
 
     toast.success('User logged in successfully', {
       hideProgressBar: true,

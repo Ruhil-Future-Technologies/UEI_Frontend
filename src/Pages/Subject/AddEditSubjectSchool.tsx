@@ -8,13 +8,14 @@ import MenuItem from '@mui/material/MenuItem';
 import { Grid, InputLabel, Typography } from '@mui/material';
 import useApi from '../../hooks/useAPI';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { QUERY_KEYS_SUBJECT_SCHOOL } from '../../utils/const';
+import { QUERY_KEYS, QUERY_KEYS_CLASS, QUERY_KEYS_SUBJECT_SCHOOL } from '../../utils/const';
 import { toast } from 'react-toastify';
 import { Field, Form, Formik, FormikProps } from 'formik';
 import * as Yup from 'yup';
 import { MenuListinter } from '../../Components/Table/columns';
 import {
   dataaccess,
+  fieldIcon,
   inputfield,
   inputfieldhover,
   inputfieldtext,
@@ -38,9 +39,11 @@ interface Classes {
 const AddEditSubjectSchool = () => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
+   const InstituteListURL = QUERY_KEYS.GET_INSTITUTES;
   const SubjectAddURL = QUERY_KEYS_SUBJECT_SCHOOL.SUBJECT_ADD;
   const SubjectEditURL = QUERY_KEYS_SUBJECT_SCHOOL.SUBJECT_EDIT;
   const SubjectEditgetURL = QUERY_KEYS_SUBJECT_SCHOOL.SUBJECT_GET;
+  const ClassURL = QUERY_KEYS_CLASS.GET_CLASS;
   //   const CourseListURL = QUERY_KEYS_COURSE.GET_COURSE;
   const { getData, postDataJson, putDataJson } = useApi();
   const navigator = useNavigate();
@@ -56,6 +59,7 @@ const AddEditSubjectSchool = () => {
     stream: '',
     menu_image: '',
     pdf_content: '',
+    institution_id:''
   };
   const [subject, setSubject] = useState<any>(initialState);
   const [classes, setClasses] = useState<Classes[]>([]);
@@ -72,6 +76,7 @@ const AddEditSubjectSchool = () => {
   const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
 
   const [semester, setSemester] = useState<any>([]);
+  const [instituteList, setinstituteList] = useState<any[]>([]);
   const [particularClass, setParticularClass] = useState('');
 
   useEffect(() => {
@@ -89,7 +94,25 @@ const AddEditSubjectSchool = () => {
   }
 
   const callAPI = async () => {
-    getData('/class/list')
+     getData(`${InstituteListURL}`)
+          .then((data: { data: any[] }) => {
+            const filteredData = data?.data.filter(
+              (item) =>
+                item.is_active && item.is_approve && (item.entity_type).toLowerCase() == 'school',
+            );
+            setinstituteList(filteredData);
+          })
+          .catch((e) => {
+            if (e?.response?.code === 401) {
+              navigator('/');
+            }
+            const errorMessage = e?.response?.data?.message || e?.message ;
+            toast.error(errorMessage, {
+              hideProgressBar: true,
+              theme: 'colored',
+            });
+          });
+    getData(`${ClassURL}`)
       .then((response: any) => {
         if (response.status) {
           const filteredData = response?.data?.classes_data?.filter(
@@ -211,6 +234,7 @@ const AddEditSubjectSchool = () => {
       subject_name: (subject[''] as string) || subject?.subject_name,
       pdf_content: subject?.pdf_content || '',
       class_id: subject.class_id,
+      institution_id : subject.institution_id || '',
       stream:
         particularClass === 'class_11' || particularClass === 'class_12'
           ? subject.stream || ''
@@ -264,6 +288,7 @@ const AddEditSubjectSchool = () => {
       pdf_content: subject?.menu_image || '',
       class_id: subject.class_id,
       stream: subject.stream || '',
+      institution_id : subject.institution_id || '',
     } as any;
     if (!submitData.subject_name || !submitData.class_id) {
       return;
@@ -343,6 +368,7 @@ const AddEditSubjectSchool = () => {
     menu_image: Yup.string(),
     class_id: Yup.string().required('Please select Class name'),
     stream: Yup.string().required('Please select Stream'),
+    institution_id: Yup.string().required('Please select institute name'),
   });
 
   return (
@@ -365,6 +391,7 @@ const AddEditSubjectSchool = () => {
                   class_id: subject?.class_id,
                   stream: subject?.stream,
                   menu_image: subject?.pdf_content,
+                  institution_id: subject?.institution_id
                 }}
                 enableReinitialize
                 validationSchema={menuSchema}
@@ -373,7 +400,67 @@ const AddEditSubjectSchool = () => {
                 {({ errors, values, touched, handleBlur }: any) => (
                   <Form>
                     <div className="row">
+                    <div className="col-md-4">
+                    <div className="form_field_wrapper">
+                                                  <FormControl fullWidth>
+                                                    <InputLabel id="demo-simple-select-label">
+                                                      Institute *
+                                                    </InputLabel>
+                                                    <Select
+                                                      onChange={(e: SelectChangeEvent<string>) =>
+                                                        handleChange(e, 'institution_id')
+                                                      }
+                                                      label="institute"
+                                                      name="institution_id"
+                                                      onBlur={handleBlur}
+                                                      value={values.institution_id}
+                                                      variant="outlined"
+                                                      sx={{
+                                                        backgroundColor: inputfield(namecolor),
+                                                        color: inputfieldtext(namecolor),
+                                                        '& .MuiSelect-icon': {
+                                                          color: fieldIcon(namecolor),
+                                                        },
+                                                      }}
+                                                      MenuProps={{
+                                                        PaperProps: {
+                                                          style: {
+                                                            backgroundColor: inputfield(namecolor),
+                                                            color: inputfieldtext(namecolor),
+                                                          },
+                                                        },
+                                                      }}
+                                                    >
+                                                      {instituteList.map((item, idx) => (
+                                                        <MenuItem
+                                                          value={item.id}
+                                                          key={`${item.institute_name}-${idx + 1}`}
+                                                          sx={{
+                                                            backgroundColor: inputfield(namecolor),
+                                                            color: inputfieldtext(namecolor),
+                                                            '&:hover': {
+                                                              backgroundColor:
+                                                                inputfieldhover(namecolor),
+                                                            },
+                                                          }}
+                                                        >
+                                                          {item.institute_name}
+                                                        </MenuItem>
+                                                      ))}
+                                                    </Select>
+                                                    {touched?.institution_id &&
+                                                    errors?.institution_id ? (
+                                                      <p style={{ color: 'red' }}>
+                                                        {errors?.institution_id}
+                                                      </p>
+                                                    ) : (
+                                                      <></>
+                                                    )}
+                                                  </FormControl>
+                                                </div>
+                                                </div>
                       <div className="col-md-4">
+                        
                         <div className="form_field_wrapper">
                           <FormControl
                             //   required

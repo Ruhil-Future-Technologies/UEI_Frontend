@@ -25,7 +25,7 @@ const InstitutionCharts = () => {
   const [teacherAll, setTeacherAll] = useState<any[]>([]);
   const [studentAll, setStudentAll] = useState<any[]>([]);
   const [subjectAll, setSubjectAll] = useState<any[]>([]);
-  const [schoolSubjectAll, setschoolSubjectAll] = useState<any>([]);
+  const [schoolSubjectAll, setschoolSubjectAll] = useState<any>();
   const [semesterAll, setSemesterAll] = useState<any[]>([]);
   const institute_id = localStorage.getItem('institute_id');
   const user_uuid = localStorage.getItem('user_uuid');
@@ -50,8 +50,8 @@ const InstitutionCharts = () => {
   const [subjectData, setSubjectData] = useState<any>({});
 
   const uniqueCourses = [
-    ...new Set(subjectAll.map((item) => item.course_id)),
-  ].map((courseId) => {
+    ...new Set(subjectAll?.map((item) => item.course_id)),
+  ]?.map((courseId) => {
     return {
       course_id: courseId,
       course_name: subjectAll.find((item) => item.course_id === courseId)
@@ -60,18 +60,18 @@ const InstitutionCharts = () => {
   });
 
   const uniqueClasses = [
-    ...new Set(schoolSubjectAll.map((item: any) => item.class_id)),
-  ].map((classId) => {
+    ...new Set(schoolSubjectAll?.map((item: any) => item.class_id)),
+  ]?.map((classId) => {
     return {
       class_id: classId,
-      class_name: schoolSubjectAll.find(
+      class_name: schoolSubjectAll?.find(
         (item: any) => item.class_id === classId,
       ).class_name,
     };
   });
 
   const filteredSemesters = useMemo(() => {
-    return semesterAll.filter(
+    return semesterAll?.filter(
       (semester) => semester.course_id === selectedCourse,
     );
   }, [selectedCourse]);
@@ -124,7 +124,7 @@ const InstitutionCharts = () => {
       const allMonthNumbers: number[] = [];
 
       const collectMonths = (data: any) => {
-        Object.values(data || {}).forEach((months: any) => {
+        Object.values(data || {})?.forEach((months: any) => {
           allMonthNumbers.push(...Object.keys(months).map(Number));
         });
       };
@@ -132,7 +132,7 @@ const InstitutionCharts = () => {
       collectMonths(sessionData.students);
       collectMonths(sessionData.teachers);
 
-      if (allMonthNumbers.length > 0) {
+      if (allMonthNumbers?.length > 0) {
         const maxMonth = Math.max(...allMonthNumbers);
         setActiveMonth(monthMapping[maxMonth]);
       }
@@ -143,7 +143,7 @@ const InstitutionCharts = () => {
 
     getData(`/assignment/stats-for-institute/${institute_id}`).then(
       (response) => {
-        const assignment = response.data;
+        const assignment = response.data?.assignment;
 
         setAssignmentData(assignment);
       },
@@ -159,10 +159,10 @@ const InstitutionCharts = () => {
 
           users.less_active[lessActiveMonth].weeks = users.less_active[
             lessActiveMonth
-          ].weeks.map((v: any) => Math.round(v));
+          ].weeks?.map((v: any) => Math.round(v));
           users.more_active[moreActiveMonth].weeks = users.more_active[
             moreActiveMonth
-          ].weeks.map((v: any) => Math.round(v));
+          ].weeks?.map((v: any) => Math.round(v));
         }
 
         setUserData(users);
@@ -175,14 +175,14 @@ const InstitutionCharts = () => {
   useEffect(() => {
     if (institute?.entity_type === 'college') {
       if (selectedCourse && selectedSemester) {
-        const filtered: any = subjectAll.filter(
+        const filtered: any = subjectAll?.filter(
           (subject) =>
             subject.course_id === selectedCourse &&
             subject.semester_id.toString() === selectedSemester,
         );
         setFilteredSubjects(filtered);
       } else if (selectedCourse) {
-        const filtered: any = subjectAll.filter(
+        const filtered: any = subjectAll?.filter(
           (subject) => subject.course_id === selectedCourse,
         );
         setFilteredSubjects(filtered);
@@ -191,7 +191,7 @@ const InstitutionCharts = () => {
       }
     } else {
       if (selectedClass) {
-        const filtered: any = schoolSubjectAll.filter(
+        const filtered: any = schoolSubjectAll?.filter(
           (subject: any) => subject.class_id === selectedClass,
         );
 
@@ -204,11 +204,11 @@ const InstitutionCharts = () => {
 
   useEffect(() => {
     if (selectedCourse && selectedSemester) {
-      const semestersForCourse = semesterAll.filter(
+      const semestersForCourse = semesterAll?.filter(
         (semester) => semester.course_id === selectedCourse,
       );
 
-      if (semestersForCourse.length > 0) {
+      if (semestersForCourse?.length > 0) {
         setSelectedSemester(semestersForCourse[0]?.semester_id.toString());
       } else {
         setSelectedSemester('');
@@ -230,14 +230,14 @@ const InstitutionCharts = () => {
       setTeacherAll(data?.data);
     });
     getData(`${SUBJECTURL}`).then((data) => {
-      const filteredSub = data?.data?.subjects_data.filter(
+      const filteredSub = data?.data?.subjects_data?.filter(
         (sub: any) => sub.institution_id == institute_id,
       );
 
       setSubjectAll(filteredSub);
 
       const uniqueCourses: any = Object.values(
-        filteredSub.reduce(
+        filteredSub?.reduce(
           (acc: any, item: any) => {
             if (!acc[item.course_id]) {
               acc[item.course_id] = {
@@ -252,7 +252,7 @@ const InstitutionCharts = () => {
       );
       setSelectedCourse(uniqueCourses[0]?.course_id);
       const uniqueSemesters: any = Object.values(
-        filteredSub.reduce(
+        filteredSub?.reduce(
           (acc: any, item: any) => {
             if (!acc[item.semester_id]) {
               acc[item.semester_id] = {
@@ -279,7 +279,7 @@ const InstitutionCharts = () => {
     getData(`${GET_CLASS_API.GET_CLASS}`).then((data) => {
       const classes_data = data?.data?.classes_data;
 
-      const smallestClass = classes_data.reduce(
+      const smallestClass = classes_data?.reduce(
         (minClass: any, current: any) => {
           const currentNum = parseInt(
             current.class_name.replace('class_', ''),
@@ -301,7 +301,7 @@ const InstitutionCharts = () => {
     if (!sessionData || !assignmentData || !sessionData.teachers) return;
 
     if (sessionData.teachers) {
-      const teacherActivity = Object.entries(sessionData.teachers).map(
+      const teacherActivity = Object.entries(sessionData.teachers)?.map(
         ([id, data]: any) => {
           const monthData = data[activeMonth] || {};
           return {
@@ -322,7 +322,7 @@ const InstitutionCharts = () => {
     }
 
     if (sessionData.students) {
-      const studentActivity = Object.entries(sessionData.students).map(
+      const studentActivity = Object.entries(sessionData.students)?.map(
         ([id, data]: any) => {
           const monthData = data[activeMonth] || {};
           return {
@@ -384,26 +384,26 @@ const InstitutionCharts = () => {
 
       if (!firstUserMonthData) return { series: [], categories: [] };
 
-      const weekKeys = Object.keys(firstUserMonthData).filter((key) =>
+      const weekKeys = Object.keys(firstUserMonthData)?.filter((key) =>
         key.startsWith('week'),
       );
 
-      categories = weekKeys.map((week) => `Week ${week.replace('week', '')}`);
+      categories = weekKeys?.map((week) => `Week ${week.replace('week', '')}`);
 
       const displayLimit = userType === 'teachers' ? 20 : 25;
 
-      series = topUsers[userType].slice(0, displayLimit).map((user: any) => {
+      series = topUsers[userType].slice(0, displayLimit)?.map((user: any) => {
         const userData = sourceData[user.id]?.[activeMonth];
 
         if (userType === 'teachers') {
-          const currentTeacher: any = teacherAll.filter(
+          const currentTeacher: any = teacherAll?.filter(
             (teacher) => teacher.id == user.id,
           );
 
           name =
             currentTeacher[0]?.first_name + ' ' + currentTeacher[0]?.last_name;
         } else if (userType === 'students') {
-          const current_student = studentAll.filter(
+          const current_student = studentAll?.filter(
             (student) => student.id == user.id,
           );
 
@@ -415,38 +415,38 @@ const InstitutionCharts = () => {
         if (!userData) {
           return {
             name: name,
-            data: Array(weekKeys.length).fill(0),
+            data: Array(weekKeys?.length).fill(0),
           };
         }
 
         return {
           name: name,
-          data: weekKeys.map((week) => userData[week]?.total || 0),
+          data: weekKeys?.map((week) => userData[week]?.total || 0),
         };
       });
     } else if (activeTab === 'monthly') {
       const allMonths = getMonths();
-      categories = allMonths.map((month) => month);
+      categories = allMonths?.map((month) => month);
 
       const displayLimit = userType === 'teachers' ? 20 : 25;
 
-      series = topUsers[userType].slice(0, displayLimit).map((user: any) => {
+      series = topUsers[userType].slice(0, displayLimit)?.map((user: any) => {
         const userData = sourceData[user.id];
         if (!userData)
           return {
             name: user.id,
-            data: Array(allMonths.length).fill(0),
+            data: Array(allMonths?.length).fill(0),
           };
 
         if (userType === 'teachers') {
-          const currentTeacher: any = teacherAll.filter(
+          const currentTeacher: any = teacherAll?.filter(
             (teacher) => teacher.id == user.id,
           );
 
           name =
             currentTeacher[0]?.first_name + ' ' + currentTeacher[0]?.last_name;
         } else if (userType === 'students') {
-          const current_student = studentAll.filter(
+          const current_student = studentAll?.filter(
             (student) => student.id == user.id,
           );
 
@@ -458,7 +458,7 @@ const InstitutionCharts = () => {
 
         return {
           name: name,
-          data: allMonths.map((month) => userData[month]?.total || 0),
+          data: allMonths?.map((month) => userData[month]?.total || 0),
         };
       });
     }
@@ -467,7 +467,7 @@ const InstitutionCharts = () => {
   };
 
   const renderSubjectPerformanceChart = (subjectData: any) => {
-    if (!subjectData || Object.keys(subjectData).length === 0) {
+    if (!subjectData || Object.keys(subjectData)?.length === 0) {
       return <div className="chart-placeholder">No subject data available</div>;
     }
 
@@ -475,19 +475,19 @@ const InstitutionCharts = () => {
     const series = [
       {
         name: 'Low (0-25%)',
-        data: categories.map((subject) => subjectData[subject].low || 0),
+        data: categories?.map((subject) => subjectData[subject].low || 0),
       },
       {
         name: 'Medium (26-50%)',
-        data: categories.map((subject) => subjectData[subject].medium || 0),
+        data: categories?.map((subject) => subjectData[subject].medium || 0),
       },
       {
         name: 'High (51-80%)',
-        data: categories.map((subject) => subjectData[subject].high || 0),
+        data: categories?.map((subject) => subjectData[subject].high || 0),
       },
       {
         name: 'Very High (81-100%)',
-        data: categories.map((subject) => subjectData[subject].very_high || 0),
+        data: categories?.map((subject) => subjectData[subject].very_high || 0),
       },
     ];
 
@@ -533,7 +533,7 @@ const InstitutionCharts = () => {
           rotateAlways: false,
           style: { fontSize: '12px', fontWeight: '500' },
           formatter: function (value) {
-            return typeof value === 'string' && value.length > 15
+            return typeof value === 'string' && value?.length > 15
               ? value.substring(0, 15) + '...'
               : value;
           },
@@ -595,7 +595,7 @@ const InstitutionCharts = () => {
         'student',
       );
 
-      if (!calendarData || calendarData.length === 0) {
+      if (!calendarData || calendarData?.length === 0) {
         return (
           <div className="chart-placeholder">No data for selected view</div>
         );
@@ -612,7 +612,7 @@ const InstitutionCharts = () => {
         },
         colors: ['#006064'],
         title: {
-          text: 'Student Daily Activity (Top 5 + Average)',
+          text: 'Student Daily Activity (Top 3 + Average)',
           align: 'center',
           style: { fontSize: '18px' },
         },
@@ -684,7 +684,7 @@ const InstitutionCharts = () => {
         'students',
       );
 
-      if (series.length === 0) {
+      if (series?.length === 0) {
         return (
           <div className="chart-placeholder">No data for selected view</div>
         );
@@ -820,7 +820,7 @@ const InstitutionCharts = () => {
 
     const studentTotals: any = {};
     Object.keys(allStudentData).forEach((studentId: any) => {
-      studentTotals[studentId] = allStudentData[studentId].reduce(
+      studentTotals[studentId] = allStudentData[studentId]?.reduce(
         (sum: any, item: any) => sum + item.value,
         0,
       );
@@ -832,8 +832,8 @@ const InstitutionCharts = () => {
 
     categories.sort();
 
-    const series = top3Students.map((studentId) => {
-      const data = categories.map((category: any) => {
+    const series = top3Students?.map((studentId) => {
+      const data = categories?.map((category: any) => {
         const item = allStudentData[studentId].find(
           (d: any) => d.category === category,
         );
@@ -841,14 +841,14 @@ const InstitutionCharts = () => {
       });
 
       if (userType === 'teachers') {
-        const currentTeacher: any = teacherAll.filter(
+        const currentTeacher: any = teacherAll?.filter(
           (teacher) => teacher.id == studentId,
         );
 
         name =
           currentTeacher[0]?.first_name + ' ' + currentTeacher[0]?.last_name;
       } else if (userType === 'students') {
-        const current_student = studentAll.filter(
+        const current_student = studentAll?.filter(
           (student) => student.id == studentId,
         );
 
@@ -862,11 +862,11 @@ const InstitutionCharts = () => {
       };
     });
 
-    const averageData = categories.map((category: any) => {
+    const averageData = categories?.map((category: any) => {
       let sum = 0;
       let count = 0;
 
-      Object.keys(allStudentData).forEach((studentId) => {
+      Object.keys(allStudentData)?.forEach((studentId) => {
         const item = allStudentData[studentId].find(
           (d: any) => d.category === category,
         );
@@ -893,7 +893,7 @@ const InstitutionCharts = () => {
     userType: string,
   ) => {
     const userTotals: any = {};
-    Object.keys(users).forEach((userId) => {
+    Object.keys(users)?.forEach((userId) => {
       userTotals[userId] = 0;
       if (users[userId][activeMonth]) {
         userTotals[userId] = users[userId][activeMonth].total || 0;
@@ -902,9 +902,9 @@ const InstitutionCharts = () => {
 
     const top5Users = Object.keys(userTotals)
       .sort((a, b) => userTotals[b] - userTotals[a])
-      .slice(0, 5);
+      .slice(0, 3);
 
-    const series = top5Users.map((userId) => {
+    const series = top5Users?.map((userId) => {
       let name = `${userId}`;
       const data: any = [];
 
@@ -914,7 +914,7 @@ const InstitutionCharts = () => {
       }
 
       if (users[userId][activeMonth]) {
-        Object.keys(users[userId][activeMonth]).forEach((week) => {
+        Object.keys(users[userId][activeMonth])?.forEach((week) => {
           if (week.startsWith('week')) {
             for (let dayIndex = 0; dayIndex < 7; dayIndex++) {
               const day =
@@ -928,19 +928,19 @@ const InstitutionCharts = () => {
         });
       }
 
-      Object.keys(dayMap).forEach((day) => {
+      Object.keys(dayMap)?.forEach((day) => {
         data.push({ x: `${day}`, y: dayMap[parseInt(day)] });
       });
 
       if (userType === 'teacher') {
-        const currentTeacher: any = teacherAll.filter(
+        const currentTeacher: any = teacherAll?.filter(
           (teacher) => teacher.id == name,
         );
 
         name =
           currentTeacher[0]?.first_name + ' ' + currentTeacher[0]?.last_name;
       } else if (userType === 'student') {
-        const current_student = studentAll.filter(
+        const current_student = studentAll?.filter(
           (student) => student.id == name,
         );
 
@@ -957,7 +957,7 @@ const InstitutionCharts = () => {
 
     Object.keys(users).forEach((userId) => {
       if (users[userId][activeMonth]) {
-        Object.keys(users[userId][activeMonth]).forEach((week) => {
+        Object.keys(users[userId][activeMonth])?.forEach((week) => {
           if (week.startsWith('week')) {
             for (let dayIndex = 0; dayIndex < 7; dayIndex++) {
               const day =
@@ -973,7 +973,7 @@ const InstitutionCharts = () => {
       }
     });
 
-    const averageData = Object.keys(allDayData).map((day) => ({
+    const averageData = Object.keys(allDayData)?.map((day) => ({
       x: `Day ${day}`,
       y:
         allDayData[parseInt(day)].count > 0
@@ -1003,7 +1003,7 @@ const InstitutionCharts = () => {
         'teacher',
       );
 
-      if (!calendarData || calendarData.length === 0) {
+      if (!calendarData || calendarData?.length === 0) {
         return (
           <div className="chart-placeholder">No data for selected view</div>
         );
@@ -1094,7 +1094,7 @@ const InstitutionCharts = () => {
         'teachers',
       );
 
-      if (series.length === 0) {
+      if (series?.length === 0) {
         return (
           <div className="chart-placeholder">No data for selected view</div>
         );
@@ -1175,15 +1175,15 @@ const InstitutionCharts = () => {
       );
     }
 
-    const lessActiveData = (userData.less_active[activeMonth]?.weeks || []).map(
-      (week: number) => Math.floor(week),
-    );
+    const lessActiveData = (
+      userData.less_active[activeMonth]?.weeks || []
+    )?.map((week: number) => Math.floor(week));
 
-    const moreActiveData = (userData.more_active[activeMonth]?.weeks || []).map(
-      (week: number) => Math.floor(week),
-    );
+    const moreActiveData = (
+      userData.more_active[activeMonth]?.weeks || []
+    )?.map((week: number) => Math.floor(week));
 
-    if (!lessActiveData.length || !moreActiveData.length) {
+    if (!lessActiveData?.length || !moreActiveData?.length) {
       return (
         <div className="chart-placeholder">No data for selected month</div>
       );
@@ -1243,7 +1243,7 @@ const InstitutionCharts = () => {
         size: 6,
       },
       xaxis: {
-        categories: lessActiveData.map((_: any, i: any) => `Week ${i + 1}`),
+        categories: lessActiveData?.map((_: any, i: any) => `Week ${i + 1}`),
       },
       yaxis: {
         title: {
@@ -1275,7 +1275,7 @@ const InstitutionCharts = () => {
   };
 
   const transformedSubjectData = useMemo(() => {
-    if (!filteredSubjects.length) return {};
+    if (!filteredSubjects?.length) return {};
 
     const result: any = {};
 
@@ -1304,7 +1304,7 @@ const InstitutionCharts = () => {
             value={activeMonth}
             onChange={(e) => setActiveMonth(e.target.value)}
           >
-            {getMonths().map((month) => (
+            {getMonths()?.map((month) => (
               <option key={month} value={month}>
                 {month}
               </option>
@@ -1365,7 +1365,7 @@ const InstitutionCharts = () => {
                     onChange={(e) => setSelectedCourse(e.target.value)}
                     label="Course"
                   >
-                    {uniqueCourses.map((course) => (
+                    {uniqueCourses?.map((course) => (
                       <MenuItem key={course.course_id} value={course.course_id}>
                         {course.course_name}
                       </MenuItem>
@@ -1385,7 +1385,7 @@ const InstitutionCharts = () => {
                     label="Semester"
                     disabled={!selectedCourse}
                   >
-                    {filteredSemesters.map((semester) => (
+                    {filteredSemesters?.map((semester) => (
                       <MenuItem
                         key={semester.semester_id}
                         value={semester.semester_id.toString()}
@@ -1412,7 +1412,7 @@ const InstitutionCharts = () => {
                   onChange={(e) => setSelectedClass(e.target.value)}
                   label="Course"
                 >
-                  {uniqueClasses.map((cls: any) => (
+                  {uniqueClasses?.map((cls: any) => (
                     <MenuItem key={cls.class_id} value={cls.class_id}>
                       {cls.class_name}
                     </MenuItem>

@@ -6,6 +6,7 @@ import { TextField } from '@mui/material';
 import useApi from '../../hooks/useAPI';
 // import CommonModal from '../../Components/CommonModal';
 import ThemeSidebar from '../../Components/ThemeSidebar/ThemeSidebar';
+import { QUERY_KEYS_FEEDBACK, QUERY_KEYS_STUDENT_FEEDBACK } from '../../utils/const';
 
 interface Question {
   id: string;
@@ -38,12 +39,12 @@ const AddStudentFeedback = () => {
   }, []);
 
   useEffect(() => {
-    getData(`${'/feedback/list'}`).then((data) => {
+    getData(`${QUERY_KEYS_FEEDBACK.GET_FEEDBACK}`).then((data) => {
       if (data.status) {
-        setQuestions(data.data?.feedbacks_data);
+        setQuestions(data.data?.feedbacks?.student);
       }
     });
-    getData(`${'/feedback/student_feedback'}/${StudentId}`).then((data) => {
+    getData(`${QUERY_KEYS_STUDENT_FEEDBACK.GET_FEEDBACK}${StudentId}`).then((data) => {
       if (data.status) {
         if (data.data.feedbacks_data.length > 0) {
           setAnsweredQuestions(data?.data?.feedbacks_data);
@@ -131,7 +132,7 @@ const AddStudentFeedback = () => {
       Object.keys(payload).forEach((key) => {
         formData.append(key, payload[key]);
       });
-       postDataJson('/feedback/student_feedback', payload)
+       postDataJson(QUERY_KEYS_STUDENT_FEEDBACK.FEEDBACK_ADD, payload)
         .then((response) => {
           if (response.status) {
             toast.success('Feedback sent successfully', {

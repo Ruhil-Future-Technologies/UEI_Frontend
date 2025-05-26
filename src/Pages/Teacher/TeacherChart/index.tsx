@@ -4,18 +4,21 @@ import ReactApexChart from 'react-apexcharts';
 import './TeacherDashboardCharts.scss';
 import useApi from '../../../hooks/useAPI';
 import {
+  QUERY_KEYS_ASSIGNMENT,
   QUERY_KEYS_SUBJECT,
   QUERY_KEYS_SUBJECT_SCHOOL,
   QUERY_KEYS_TEACHER,
 } from '../../../utils/const';
 import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
-
+import { useTheme } from '../../../ThemeProvider';
 const TeacherDashboardCharts = () => {
+  const { isDarkMode } = useTheme();
   const { getData } = useApi();
 
   const TEACHERURL = QUERY_KEYS_TEACHER.TEACHER_EDIT;
   const SUBJECTURL = QUERY_KEYS_SUBJECT.GET_SUBJECT;
   const SUBJECT_SCHOOL_URL = QUERY_KEYS_SUBJECT_SCHOOL.GET_SUBJECT;
+  const STATS_FOR_TEACHER = QUERY_KEYS_ASSIGNMENT.STATS_FOR_TEACHER;
 
   const [selectedClass, setSelectedClass] = useState('');
   const [subjectAll, setSubjectAll] = useState<any[]>([]);
@@ -50,9 +53,9 @@ const TeacherDashboardCharts = () => {
   ].map((classId) => {
     return {
       class_id: classId,
-      class_name: schoolSubjectAll.find(
-        (item: any) => item.class_id === classId,
-      ).class_name,
+      class_name: schoolSubjectAll
+        .find((item: any) => item.class_id === classId)
+        .class_name.replace(/_/g, ' '),
     };
   });
 
@@ -126,9 +129,11 @@ const TeacherDashboardCharts = () => {
 
   useEffect(() => {
     if (teacher_id) {
-      getData(`/assignment/stats-for-teacher/${teacher_id}`).then((data) => {
-        setData(data?.data);
-        setDataStatus(true);
+      getData(`${STATS_FOR_TEACHER}${teacher_id}`).then((data) => {
+        if (data.status) {
+          setData(data?.data?.assignment);
+          setDataStatus(true);
+        }
       });
     }
   }, [teacher_id]);
@@ -227,7 +232,7 @@ const TeacherDashboardCharts = () => {
                   if (!acc[item.class_id]) {
                     acc[item.class_id] = {
                       class_id: item.class_id,
-                      class_name: item.class_name,
+                      class_name: item.class_name.replace(/_/g, ' '),
                     };
                   }
                   return acc;
@@ -251,45 +256,165 @@ const TeacherDashboardCharts = () => {
     const performanceChartData: any = {
       options: {
         chart: {
-          type: 'bar',
-          height: 350,
+          type: 'line',
+          height: 450,
+          theme: {
+            mode: isDarkMode ? 'dark' : 'light',
+          },
+
           stacked: false,
-          zoom: {
-            enabled: false,
+          zoom: { enabled: false },
+          toolbar: { show: false },
+          animations: {
+            enabled: true,
+            easing: 'easeinout',
+            speed: 800,
           },
-          toolbar: {
-            show: false,
+          dropShadow: {
+            enabled: true,
+            opacity: 0.3,
+            blur: 5,
+            left: 0,
+            top: 0,
           },
+        },
+        stroke: {
+          width: [0, 4, 3, 3],
+          curve: 'smooth',
         },
         plotOptions: {
           bar: {
-            horizontal: false,
-            columnWidth: '40%',
-            borderRadius: 10,
+            columnWidth: '50%',
+            borderRadius: 5,
           },
         },
         dataLabels: {
           enabled: false,
+          formatter: function (val: number) {
+            return val.toFixed(0);
+          },
+        },
+        fill: {
+          type: ['solid', 'gradient', 'solid'],
+          gradient: {
+            shade: 'light',
+            type: 'vertical',
+            shadeIntensity: 0.25,
+            gradientToColors: undefined,
+            inverseColors: true,
+            opacityFrom: 0.85,
+            opacityTo: 0.85,
+          },
+          opacity: [0.85, 0.25, 1],
         },
         xaxis: {
           categories: [],
           title: {
             text: 'Subjects',
+            style: {
+              fontSize: '14px',
+              fontWeight: 600,
+              color: '#666666',
+            },
+          },
+          labels: {
+            style: {
+              colors: '#666', // color of x-axis labels
+            },
           },
         },
-        yaxis: {
-          title: {
-            text: 'Performance Metrics',
+        yaxis: [
+          {
+            title: {
+              offsetX: -20,
+              offsetY: 0,
+              text: 'Average Score',
+              style: {
+                fontSize: '14px',
+                fontWeight: 600,
+                color: '#666666',
+              },
+            },
+            max: 100,
+            labels: {
+              style: {
+                colors: '#666', // color of x-axis labels
+              },
+            },
           },
-        },
+
+          {
+            show: false,
+            title: {
+              text: 'Student Count',
+            },
+          },
+        ],
+        colors: ['#4E97FD', '#FFB100', '#66C266', '#D9534F'],
         title: {
-          text: 'Subject Performance',
+          text: 'Student Performance Analytics',
           align: 'center',
+          style: {
+            fontSize: '18px',
+            fontWeight: 700,
+            color: '#666666',
+          },
+        },
+        tooltip: {
+          shared: true,
+          intersect: false,
+          theme: isDarkMode ? 'dark' : 'light',
+          y: {
+            formatter: function (value: number, { seriesIndex }: any) {
+              if (seriesIndex === 0) {
+                return value.toFixed(1) + '%';
+              } else {
+                return value.toFixed(0);
+              }
+            },
+          },
+        },
+        legend: {
+          position: 'bottom',
+          //horizontalAlign: 'center',
+          labels: {
+            colors: ['#666', '#666', '#666', '#666'], // Change this to a dark/light color based on theme
+          },
+        },
+        grid: {
+          borderColor: '#f1f1f1',
+          row: {
+            colors: ['transparent', 'transparent'],
+            opacity: 0.5,
+          },
+        },
+        markers: {
+          size: 4,
+          colors: ['#4E97FD', '#FFB100', '#66C266', '#D9534F'],
+          strokeColors: '#fff',
+          strokeWidth: 2,
         },
       },
       series: [
         {
           name: 'Average Score',
+          type: 'column',
+          data: [],
+        },
+        {
+          name: 'Total Submissions',
+          type: 'line',
+          data: [],
+        },
+
+        {
+          name: 'Assigned Students',
+          type: 'line',
+          data: [],
+        },
+        {
+          name: 'Total Assignments',
+          type: 'line',
           data: [],
         },
       ],
@@ -301,6 +426,10 @@ const TeacherDashboardCharts = () => {
           type: 'bar',
           height: 350,
           stacked: true,
+          theme: {
+            mode: isDarkMode ? 'dark' : 'light',
+          },
+
           zoom: {
             enabled: false,
           },
@@ -322,16 +451,55 @@ const TeacherDashboardCharts = () => {
           categories: [],
           title: {
             text: 'Subjects',
+            style: {
+              fontSize: '14px',
+              fontWeight: 'bold',
+              color: '#666',
+            },
+          },
+          labels: {
+            style: {
+              colors: '#666', // color of x-axis labels
+            },
           },
         },
         yaxis: {
           title: {
             text: 'Assignment Completion',
+            offsetX: 5,
+            offsetY: -5,
+            style: {
+              fontSize: '14px',
+              fontWeight: 'bold',
+              color: '#666',
+            },
+          },
+          labels: {
+            formatter: function (val: number) {
+              return val.toFixed(0);
+            },
+            style: {
+              colors: '#666', // color of x-axis labels
+            },
           },
         },
         title: {
           text: 'Assignment Completion Status',
           align: 'center',
+          style: {
+            fontSize: '18px',
+            fontWeight: 700,
+            color: '#666666',
+          },
+        },
+        tooltip: {
+          theme: isDarkMode ? 'dark' : 'light',
+        },
+        legend: {
+          position: 'bottom',
+          labels: {
+            colors: ['#666', '#666'], // Change this to a dark/light color based on theme
+          },
         },
         colors: ['#66C266', '#D9534F'],
       },
@@ -365,12 +533,26 @@ const TeacherDashboardCharts = () => {
         performanceChartData.options.xaxis.categories.push(
           subject.subject_name,
         );
+        completionChartData.options.xaxis.categories.push(subject.subject_name);
+
         performanceChartData.series[0].data.push(
           subjectPerformance.average_score,
         );
 
-        completionChartData.options.xaxis.categories.push(subject.subject_name);
-        completionChartData.series[0].data.push(subjectPerformance.completed);
+        performanceChartData.series[1].data.push(
+          subjectPerformance.total_submission_count || 0,
+        );
+
+        performanceChartData.series[2].data.push(
+          subjectPerformance.assigned_student_count || 0,
+        );
+
+        performanceChartData.series[3].data.push(
+          subjectPerformance.total_assignments || 0,
+        );
+        completionChartData.series[0].data.push(
+          subjectPerformance.graded_assignments,
+        );
         completionChartData.series[1].data.push(
           subjectPerformance.pending_assignments,
         );
@@ -378,7 +560,7 @@ const TeacherDashboardCharts = () => {
     });
 
     return { performanceChartData, completionChartData };
-  }, [filteredSubjects, data]);
+  }, [filteredSubjects, data, isDarkMode]);
 
   const renderPerformanceData = (transformSubjectData: any) => {
     if (
@@ -392,12 +574,15 @@ const TeacherDashboardCharts = () => {
       );
 
     return (
-      <div className="chart-wrapper performance-chart" style={{ width: "100%", maxWidth: "100%", overflowX: "auto" }}>
+      <div
+        className="chart-wrapper performance-chart"
+        style={{ width: '100%', maxWidth: '100%', overflowX: 'auto' }}
+      >
         <ReactApexChart
           options={transformSubjectData.performanceChartData.options}
           series={transformSubjectData.performanceChartData.series}
           type="bar"
-          height={350}
+          height={450}
         />
       </div>
     );
@@ -418,7 +603,7 @@ const TeacherDashboardCharts = () => {
           options={transformSubjectData.completionChartData.options}
           series={transformSubjectData.completionChartData.series}
           type="bar"
-          height={350}
+          height={450}
         />
       </div>
     );

@@ -1126,7 +1126,7 @@ const speak = async (text: string, index: number) => {
         initialLikedStates[index] = 'disliked';
       }
     });
-
+    setIsTextCopied({})
     setSelectedChat(chatdataset);
     setLikedStates(initialLikedStates);
   };
@@ -1303,6 +1303,9 @@ const speak = async (text: string, index: number) => {
           [`answer-${index}`]: true,
         };
         setIsTextCopied(updatedState);
+        setTimeout(() => {
+          setIsTextCopied({});
+        }, 3000);
       })
       .catch((err) => {
         console.error('Error copying text: ', err);

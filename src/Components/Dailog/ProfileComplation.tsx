@@ -25,7 +25,7 @@ import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import Select from 'react-select';
 import { Country, State } from 'country-state-city';
-import { QUERY_KEYS_STUDENT } from '../../utils/const';
+import { QUERY_KEYS_CLASS, QUERY_KEYS_COURSE, QUERY_KEYS_STUDENT } from '../../utils/const';
 import SendIcon from '@mui/icons-material/Send';
 import NameContext from '../../Pages/Context/NameContext';
 import {
@@ -130,7 +130,8 @@ export const ProfileDialog: FunctionComponent<{
   const [institutes, setInstitutes] = useState<Institute[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
   const [coursesAll, setCoursesAll] = useState<Course[]>([]);
-
+  const ClassURL = QUERY_KEYS_CLASS.GET_CLASS;
+  const CourseURL = QUERY_KEYS_COURSE.GET_COURSE;
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [classes, setClasses] = useState<Classes[]>([]);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
@@ -314,13 +315,10 @@ export const ProfileDialog: FunctionComponent<{
       'Select your known language',
       'What is your proficiency in the selected language?',
       'Please select your mobile number country code',
-      // 'What is your mobile number?',
       'What is your WhatsApp number?',
       'Hi, Please provide your subject preference information! what is your course name to which your subject belongs?',
       'Please select your semester ?',
       'Select your subject name',
-      'What is your preference?',
-      'Add your score in percentage',
       'Please select a teacher',
       'Please select your current country of residence',
       'Which state do you currently reside in?',
@@ -355,7 +353,7 @@ export const ProfileDialog: FunctionComponent<{
       '10',
       'academic_history',
       'state_for_stateboard',
-    ], // This is for state board-specific question
+    ],
     'Please select your class': ['11', 'academic_history', 'class_id'],
     'Please select your stream': ['12', 'academic_history', 'stream'],
 
@@ -405,26 +403,20 @@ export const ProfileDialog: FunctionComponent<{
       ['25', 'subject_preference', 'course_name'],
     'Please select your semester ': ['26', 'subject_preference', 'sem_id'],
     'Select your subject name': ['27', 'subject_preference', 'subject_name'],
-
-    'What is your preference?': ['28', 'subject_preference', 'preference'],
-    'Add your score in percentage': [
-      '29',
-      'subject_preference',
-      'score_in_percentage',
-    ],
+    'Please select a teacher': ['28', 'subject_preference', 'teacher_id'],
 
     // Address
     'Please select your current country of residence': [
-      '30',
+      '29',
       'address',
       'country',
     ],
-    'Which state do you currently reside in?': ['31', 'address', 'state'],
-    'Which district do you currently live in?': ['32', 'address', 'district'],
-    'Which city do you live in?': ['33', 'address', 'city'],
-    'What is your Pin code?': ['34', 'address', 'pincode'],
-    'What is your first address?': ['35', 'address', 'address1'],
-    'What is your second address?': ['36', 'address', 'address2'],
+    'Which state do you currently reside in?': ['30', 'address', 'state'],
+    'Which district do you currently live in?': ['31', 'address', 'district'],
+    'Which city do you live in?': ['32', 'address', 'city'],
+    'What is your Pin code?': ['33', 'address', 'pincode'],
+    'What is your first address?': ['34', 'address', 'address1'],
+    'What is your second address?': ['35', 'address', 'address2'],
   };
 
   const getSubject = async () => {
@@ -437,7 +429,7 @@ export const ProfileDialog: FunctionComponent<{
                 (item: any) =>
                   item?.is_active &&
                   item?.class_id === answeredData?.academic_history?.class_id &&
-                  (answeredData?.academic_history?.stream
+                  (answeredData?.academic_history?.stream != 'general'
                     ? item.stream == answeredData?.academic_history?.stream
                     : true),
               );
@@ -629,7 +621,7 @@ export const ProfileDialog: FunctionComponent<{
         setMessages([{ text: filteredQuestions.basic[0], type: 'question' }]);
       }
 
-      getData('/class/list')
+      getData(`${ClassURL}`)
         .then((response: any) => {
           if (response.status) {
             const filteredData = response?.data?.classes_data?.filter(
@@ -692,7 +684,7 @@ export const ProfileDialog: FunctionComponent<{
           });
         });
 
-      getData('/course/list')
+      getData(`${CourseURL}`)
         .then((response: any) => {
           if (response.status) {
             const filteredData = response?.data?.course_data?.filter(
@@ -1055,8 +1047,8 @@ export const ProfileDialog: FunctionComponent<{
     const payload = {
       student_id: localStorage.getItem('student_id'),
       subject_id: selectSubject,
-      preference: answers[length - 3],
-      score_in_percentage: answers[length - 2],
+      // preference: answers[length - 3],
+      // score_in_percentage: answers[length - 2],
       ...((answeredData?.academic_history?.institution_type?.toLowerCase() ===
         'school' ||
         selectedInstituteType.toLowerCase() == 'school') && {
@@ -1066,7 +1058,7 @@ export const ProfileDialog: FunctionComponent<{
       sem_id:
         selectedInstituteType?.toLowerCase() === 'college' ||
         answeredData?.academic_history?.institution_type === 'college'
-          ? answers[length - 4]
+          ? answers[length - 2]
           : null,
       ...((answeredData?.academic_history?.institution_type?.toLowerCase() ===
         'school' ||
@@ -1131,9 +1123,12 @@ export const ProfileDialog: FunctionComponent<{
     label: option.university_name,
   }));
 
-  const semesterSelectOptions = semester?.map((option) => ({
+ const semesterSelectOptions = semester
+  ?.slice() // make a copy so the original array isn't mutated
+  .sort((a, b) => a.semester_number - b.semester_number) // sort in ascending order
+  .map((option) => ({
     value: option.semester_id,
-    label: `Semester ${option?.semester_number}`,
+    label: `Semester ${option.semester_number}`,
   }));
 
   const teacherSelectOption = teacherList?.map((option) => ({
