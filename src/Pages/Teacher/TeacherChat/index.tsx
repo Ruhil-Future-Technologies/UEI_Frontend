@@ -595,6 +595,7 @@ const speak = async (text: string, index: number) => {
             postDataJson(`${ChatRAGURL}`, {
               user_query: search,
               student_id: userid,
+              regenerate: false,
               school_college_selection:
               teacherDetail.entity_type,
               board_selection:
@@ -711,6 +712,7 @@ const speak = async (text: string, index: number) => {
             const queryParams = {
               user_query: search,
               student_id: userid,
+              regenerate: false,
               school_college_selection: teacherDetail.entity_type || null,
               board_selection:  null,
               state_board_selection:  null,
@@ -1202,9 +1204,13 @@ const speak = async (text: string, index: number) => {
         stream: teacherDetail?.subject || '',
       };
     }
-    postDataJson(`${ChatOLLAMAURL}`, {
+    postDataJson(`${ChatRAGURL}`, {
       user_query: question,
       student_id: userid,
+      regenerate: true,
+      answer: selectedchat[0]?.answer,
+      diagram_code: selectedchat[0]?.diagram_code,
+      table_code: selectedchat[0]?.table_code,
       class_or_course_selection:
       teacherDetail.entity_type === 'school'
           ? teacherDetail?.class_name || ''
