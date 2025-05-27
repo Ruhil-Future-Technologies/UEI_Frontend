@@ -197,7 +197,7 @@ const BulkUploadForm: React.FC<BulkUploadFormProps> = ({
                     </div>
 
                     <div style={{ marginBottom: '20px', display: 'flex', flexDirection: 'column' }} >
-                        {mainFields.map((fieldConfig) => (
+                        {mainFields?.map((fieldConfig) => (
                             fieldConfig.isVisible !== false ? (
                                 <Select
                                     key={fieldConfig.key}
