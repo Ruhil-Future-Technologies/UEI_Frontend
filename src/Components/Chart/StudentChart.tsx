@@ -482,7 +482,7 @@ const StudentDashboardCharts = () => {
                   xaxis: {
                     categories: timeData?.labels,
                     title: {
-                      text: 'Day Period',
+                      text: 'Time Period',
                       style: { fontWeight: 600, color: '#666' },
                     },
                     labels: {
@@ -703,7 +703,7 @@ const StudentDashboardCharts = () => {
                   xaxis: {
                     categories: streaksData?.labels,
                     title: {
-                      text: 'Day Period',
+                      text: 'Time Period',
                       style: {
                         fontWeight: 600,
                         color: '#666',
