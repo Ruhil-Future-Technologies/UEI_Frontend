@@ -66,15 +66,15 @@ interface BulkUploadFormProps {
 }
 
 const BulkUploadForm: React.FC<BulkUploadFormProps> = ({
-  title,
-  mainFields = [],
-  repeatableFieldsConfig,
-  onSubmit,
-  // downloadTemplateApiEndpoint,
-  resetTrigger,
-  onRepeatableFieldChange,
-  dynamicData,
-  entityType,
+    title,
+    mainFields = [],
+    repeatableFieldsConfig,
+    onSubmit,
+    downloadTemplateApiEndpoint,
+    resetTrigger,
+    onRepeatableFieldChange,
+    dynamicData,
+    entityType,
 }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [repeatableRows, setRepeatableRows] = useState<
@@ -296,29 +296,27 @@ const BulkUploadForm: React.FC<BulkUploadFormProps> = ({
                   {/* peindiing for download csv  */}
                   {/* <div style={{ marginBottom: '20px' }}>
                         <DownloadCSVButton
-                            filename={'template.csv'}
+                            filename={'student_upload_template.xlsx'}
                             apiEndpoint={downloadTemplateApiEndpoint}
                         />
-                    </div> */}
+                    </div>
 
-                  <div className="d-flex flex-column gap-3 mb-3">
-                    {mainFields.map((fieldConfig) =>
-                      fieldConfig.isVisible !== false ? (
-                        <Select
-                          key={fieldConfig.key}
-                          size="large"
-                          placeholder={fieldConfig.placeholder}
-                          value={fieldConfig.value}
-                          onChange={fieldConfig.onChange}
-                        >
-                          {fieldConfig.options.map((option) => (
-                            <MenuItem key={option.value} value={option.value}>
-                              {option.label}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      ) : null,
-                    )}
+                    <div style={{ marginBottom: '20px', display: 'flex', flexDirection: 'column' }} >
+                        {mainFields?.map((fieldConfig) => (
+                            fieldConfig.isVisible !== false ? (
+                                <Select
+                                    key={fieldConfig.key}
+                                    style={{ width: 200, marginRight: '10px', marginBottom: '10px' }}
+                                    placeholder={fieldConfig.placeholder}
+                                    value={fieldConfig.value}
+                                    onChange={fieldConfig.onChange}
+                                >
+                                    {fieldConfig.options.map((option) => (
+                                        <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
+                                    ))}
+                                </Select>
+                            ) : null
+                        ))}
 
                     {repeatableRows.map((row, rowIndex) => {
                       const mainFieldValues = getMainFieldValues();

@@ -471,6 +471,28 @@ const useApi = () => {
       };
     }
   };
+  const getFile = async (url) => {
+    if (isTokenExpired()) {
+      handlogout();
+      navigate('/');
+      return;
+    }
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await httpClient.get(url, {
+        headers,
+        responseType: 'blob' // important for binary data
+      });
+      setLoading(false);
+      return response;  // return whole response, not just data
+    } catch (error) {
+      setError(error);
+      setLoading(false);
+      throw error; // or return error info
+    }
+  };
+  
 
   return {
     getData,
@@ -486,6 +508,7 @@ const useApi = () => {
     postDataJson,
     postFileData,
     deleteFileData,
+    getFile,
     loading,
     error,
   };

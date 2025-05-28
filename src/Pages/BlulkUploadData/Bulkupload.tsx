@@ -69,10 +69,12 @@ const Bulkupload = () => {
         if (selectedEntity === 'college') {
             getData(`${CourseListURL}`)
                 .then((data) => {
+                    if (data.status) {
                     const filteredData = data?.data?.course_data?.filter(
                         (item: any) => item.is_active && item.institution_id === selectInstiutte
                     );
                     setDynamicCourses(filteredData);
+                }
                 })
                 .catch((e) => {
                     const errorMessage = e?.response?.data?.message || e?.message;
@@ -506,7 +508,7 @@ const Bulkupload = () => {
                 mainFields={selectedEntity !== "school" ? mainFieldsConfigCollege : mainFieldsConfig}
                 repeatableFieldsConfig={selectedEntity !== "school" ? repeatableFieldsConfigCollege : repeatableFieldsConfig}
                 onSubmit={selectedEntity !== "school" ? handleCollegeSubmit : handleSchoolSubmit}
-                downloadTemplateApiEndpoint={'/bulk-upload/download'}
+                downloadTemplateApiEndpoint={`/bulk-upload/template/${selectedEntity}`}
                 resetTrigger={repeatableRowsKey}
                 dynamicData={{ dynamicTeacher, dynamicClasses, dynamicSubject }}
                 entityType={selectedEntity}
