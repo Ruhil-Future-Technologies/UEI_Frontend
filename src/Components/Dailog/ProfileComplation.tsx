@@ -194,6 +194,7 @@ export const ProfileDialog: FunctionComponent<{
   const [secondaddress, setSecondAddress] = useState(false);
   const [answeredData, setAnsweredData] = useState<any>();
   const [checkChanges, setCheckChanges] = useState(false);
+  const [academicData, setacademicData] = useState<any>();
 
   const [filterdQuestions1, setFilterdQuestions1] = useState<{
     [key: string]: string[];
@@ -257,6 +258,7 @@ export const ProfileDialog: FunctionComponent<{
         .then((data: any) => {
           if (data.status) {
             setAnsweredData(data.data);
+            setacademicData(data?.data?.academic_history?.institution_type)
             localStorage.setItem('register_num', data?.data?.register_num);
             if (data?.data?.academic_history?.institution_type === 'school') {
               getData(
@@ -418,6 +420,11 @@ export const ProfileDialog: FunctionComponent<{
     'What is your first address?': ['34', 'address', 'address1'],
     'What is your second address?': ['35', 'address', 'address2'],
   };
+  useEffect(()=>{
+    if(!academicData){
+      getSubject()
+    }
+  },[academicData])
 
   const getSubject = async () => {
     if (answeredData?.academic_history?.institution_type === 'school') {
@@ -482,6 +489,7 @@ export const ProfileDialog: FunctionComponent<{
             const data = await getData(`${profileURL}/${Student_uuid}`);
             if (data.status) {
               setAnsweredData(data.data);
+              setacademicData(data?.data?.academic_history?.institution_type)
               localStorage.setItem('student_id', data?.data?.basic_info?.id);
               // Get the values from the fetched data
               const guardianName = data?.data?.basic_info?.father_name || '';
