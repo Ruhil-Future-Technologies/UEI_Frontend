@@ -10,6 +10,8 @@ import logowhite from '../../assets/img/logo-white.svg';
 import LiveHelpOutlinedIcon from '@mui/icons-material/LiveHelpOutlined';
 import SchoolOutlinedIcon from '@mui/icons-material/SchoolOutlined';
 import Person2OutlinedIcon from '@mui/icons-material/Person2Outlined';
+import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
+import QuestionAnswerOutlinedIcon from '@mui/icons-material/QuestionAnswerOutlined';
 const InstituteSidevar = () => {
   const handleMouseEnter = () => {
     document.body.classList.add('sidebar-hovered');
@@ -99,6 +101,30 @@ const InstituteSidevar = () => {
                 <Person2OutlinedIcon />
               </div>
               <div className="menu-title">Teacher</div>
+            </Link>
+          </li>
+           <li>
+            <Link
+              to="/institution-dashboard/assignment-list"
+              onClick={removeMobileToggle}
+            >
+              <div className="parent-icon">
+                {' '}
+                <AssignmentOutlinedIcon />
+              </div>
+              <div className="menu-title">Assignments</div>
+            </Link>
+          </li>
+           <li>
+            <Link
+              to="/institution-dashboard/quiz-list"
+              onClick={removeMobileToggle}
+            >
+              <div className="parent-icon">
+                {' '}
+                <QuestionAnswerOutlinedIcon />
+              </div>
+              <div className="menu-title">Quizzes</div>
             </Link>
           </li>
           <li>

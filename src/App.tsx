@@ -119,6 +119,8 @@ import ParentChat from './Pages/Parent/ParentChat';
 import ParentProfile from './Pages/Parent/ParentProfile';
 import Bulkupload from './Pages/BlulkUploadData/Bulkupload';
 import StudentsForTeacher from './Pages/Teacher/StudentsForTeacher';
+import AssignemntList from './Pages/Institution/AssignmentList';
+import QuizzesList from './Pages/Institution/QuizzesList';
 
 function App() {
   const navigate = useNavigate();
@@ -281,6 +283,14 @@ function App() {
             }
           />
           <Route
+            path='/institution-dashboard/assignment-list'
+            element={<Protected Component={AssignemntList} menuName='Assignemnt List' />}
+          />
+          <Route
+            path='/institution-dashboard/quiz-list'
+            element={<Protected Component={QuizzesList} menuName='Quiz List' />}
+          />
+          <Route
             path="/institution-dashboard/feedback"
             element={
               <Protected Component={InstitutionFeedback} menuName="feedback" />
@@ -409,10 +419,10 @@ function App() {
             path="/teacher-dashboard/assignments"
             element={<Protected Component={Assignments} />}
           />
-           <Route
-              path="/teacher-dashboard/students"
-              element={<Protected Component={StudentsForTeacher} menuName="Student" />}
-            />
+          <Route
+            path="/teacher-dashboard/students"
+            element={<Protected Component={StudentsForTeacher} menuName="Student" />}
+          />
           <Route
             path="/teacher-dashboard/create-assignment"
             element={<Protected Component={CreateAssignments} />}
@@ -525,7 +535,14 @@ function App() {
               <Protected Component={PreviewAndSubmit} menuName="content" />
             }
           />
-
+          <Route
+            path="/main/assignment-list"
+            element={<Protected Component={AssignemntList} menuName="Assignment list" />}
+          />
+          <Route
+            path="/main/quiz-list"
+            element={<Protected Component={QuizzesList} menuName="Quiz list" />}
+          />
           <Route
             path="/main/student/quiz"
             element={<Protected Component={StudentQuiz} menuName="content" />}
