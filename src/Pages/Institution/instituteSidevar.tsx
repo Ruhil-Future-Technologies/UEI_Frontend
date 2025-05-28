@@ -1,6 +1,6 @@
 import React from 'react';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
-import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
+// import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
 import LibraryBooksOutlinedIcon from '@mui/icons-material/LibraryBooksOutlined';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 // import Header from "../../Components/Header";
@@ -67,7 +67,7 @@ const InstituteSidevar = () => {
               <div className="menu-title">Dashboard</div>
             </Link>
           </li>
-          <li>
+          {/* <li>
             <Link
               to={'/institution-dashboard/chat'}
               onClick={removeMobileToggle}
@@ -78,7 +78,7 @@ const InstituteSidevar = () => {
               </div>
               <div className="menu-title">Chat with AI</div>
             </Link>
-          </li>
+          </li> */}
           <li>
             <Link
               to="/institution-dashboard/Content"

@@ -924,7 +924,7 @@ function MainContent() {
           });
         });
       getData(`${university_list}`).then((data: any) => {
-        setUniversity_List_Data(data?.data);
+        setUniversity_List_Data(data?.data?.universities_data);
       });
     }
   };
@@ -1488,6 +1488,7 @@ function MainContent() {
             postDataJson(`${ChatRAGURL}`, {
               user_query: search,
               student_id: userid,
+              regenerate: false,
               school_college_selection:
                 profileDatas.academic_history.institution_type,
               board_selection:
@@ -1629,11 +1630,12 @@ function MainContent() {
               profileDatas?.subject_preference || {};
             const university: any =
               university_list_data?.filter(
-                (university: any) => university?.university_id == university_id,
+                (university: any) => university?.id == university_id,
               ) || null;
             const queryParams = {
               user_query: search,
               student_id: userid,
+              regenerate: false,
               school_college_selection: institution_type || null,
               board_selection: board || null,
               state_board_selection: state_for_stateboard || null,
@@ -2019,9 +2021,13 @@ function MainContent() {
         stream: profileDatas?.subject,
       };
     }
-    postDataJson(`${ChatOLLAMAURL}`, {
+    postDataJson(`${ChatRAGURL}`, {
       user_query: search,
       student_id: userid,
+      regenerate: true,
+      answer: selectedchat[0]?.answer,
+      diagram_code: selectedchat[0]?.diagram_code,
+      table_code: selectedchat[0]?.table_code,
       class_or_course_selection:
         profileDatas?.academic_history?.institution_type === 'school'
           ? profileDatas?.class.name

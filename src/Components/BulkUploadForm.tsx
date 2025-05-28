@@ -4,7 +4,7 @@ import { Button, message, Select, Upload } from 'antd';
 import { UploadOutlined } from '@mui/icons-material';
 import { IconButton, MenuItem } from '@mui/material';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
-// import DownloadCSVButton from '../Components/DownloadCSVButton';
+import DownloadCSVButton from '../Components/DownloadCSVButton';
 
 interface OptionType {
     value: any;
@@ -50,7 +50,7 @@ const BulkUploadForm: React.FC<BulkUploadFormProps> = ({
     mainFields = [],
     repeatableFieldsConfig,
     onSubmit,
-    // downloadTemplateApiEndpoint,
+    downloadTemplateApiEndpoint,
     resetTrigger,
     onRepeatableFieldChange,
     dynamicData,
@@ -189,16 +189,15 @@ const BulkUploadForm: React.FC<BulkUploadFormProps> = ({
             <div className="main-content">
                 <div className="bulk-upload-container" style={{ padding: '20px' }}>
                     <h2>{title}</h2>
-                    {/* peindiing for download csv  */}
-                    {/* <div style={{ marginBottom: '20px' }}>
+                    <div style={{ marginBottom: '20px' }}>
                         <DownloadCSVButton
-                            filename={'template.csv'}
+                            filename={'student_upload_template.xlsx'}
                             apiEndpoint={downloadTemplateApiEndpoint}
                         />
-                    </div> */}
+                    </div>
 
                     <div style={{ marginBottom: '20px', display: 'flex', flexDirection: 'column' }} >
-                        {mainFields.map((fieldConfig) => (
+                        {mainFields?.map((fieldConfig) => (
                             fieldConfig.isVisible !== false ? (
                                 <Select
                                     key={fieldConfig.key}
