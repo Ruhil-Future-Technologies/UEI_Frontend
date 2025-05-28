@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import useApi from "../../../hooks/useAPI";
 import { Box, FormControl, InputLabel, MenuItem, Select, Typography } from "@mui/material";
@@ -185,7 +186,7 @@ const AssignemntList = () => {
         if (name == "course_id") {
             setSelectedCourse(value)
             const streamsvale = Object.values(selecteTeacher?.course_semester_subjects);
-            let semestersList: string[] = [];
+            const semestersList: string[] = [];
             for (const stream of streamsvale) {
                 const keys = Object.keys(stream as object);
                 semestersList.push(...keys)
@@ -238,7 +239,7 @@ const AssignemntList = () => {
             if (class_name.class_name == "class_11" || class_name.class_name == "class_12") {
                 setIs_Stream(true);
                 const streamsvale = Object.values(selecteTeacher?.class_stream_subjects);
-                let streamList: string[] = [];
+                const streamList: string[] = [];
                 for (const stream of streamsvale) {
                     const keys = Object.keys(stream as object);
                     streamList.push(...keys)
