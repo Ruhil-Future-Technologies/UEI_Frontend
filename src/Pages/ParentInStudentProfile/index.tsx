@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from "react";
 import { ChildComponentProps } from "../StudentProfile";
 import { FormControl, TextField } from "@mui/material";
