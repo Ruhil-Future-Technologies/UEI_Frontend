@@ -170,7 +170,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
   useEffect(() => {
     setBoxes([]);
     const fetchData = async () => {
-      if (activeForm === 5) {
+      if (activeForm === 6) {
         if (StudentId) {
          await getCourse();
          await getSemester();
