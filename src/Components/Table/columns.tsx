@@ -361,6 +361,7 @@ export const INSITUTION_COLUMNS: MRT_ColumnDef<InstituteRep0oDTO>[] = [
     accessorKey: 'university_name',
     header: 'University name ',
     size: 150,
+    enableHiding: true,
   },
   {
     accessorKey: 'email',
@@ -415,10 +416,6 @@ export const INSITUTION_COLUMNS: MRT_ColumnDef<InstituteRep0oDTO>[] = [
       const MenuInstituteDeactive = QUERY_KEYS.GET_INSTITUTEDEACTIVE;
       const value = cell?.getValue();
 
-      // if (!value) {
-      //   return EMPTY_CELL_VALUE;
-      // }
-
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [showValue, setShowValue] = useState(value);
       const [show, setShow] = useState(!!value);
@@ -471,15 +468,6 @@ export const INSITUTION_COLUMNS: MRT_ColumnDef<InstituteRep0oDTO>[] = [
     },
     size: 150,
   },
-
-  //      {
-  //     id:"null",
-  //     header: "",
-  //     accessorKey: "",
-  //     size: 20,
-  //     enableResizing:false,
-  //     enableColumnActions:false,
-  //   },
 ];
 
 export const TEACHER_COLUMNS = (

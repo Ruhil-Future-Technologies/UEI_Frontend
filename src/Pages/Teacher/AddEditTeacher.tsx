@@ -2175,6 +2175,11 @@ const AddEditTeacher = () => {
                                           )
                                         }
                                         disabled={!course.semester}
+                                        renderValue={(selected) =>
+                                          Array.isArray(selected)
+                                            ? selected.join(', ')
+                                            : ''
+                                        }
                                         sx={{
                                           backgroundColor:
                                             inputfield(namecolor),
