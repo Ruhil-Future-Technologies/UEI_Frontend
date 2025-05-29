@@ -31,6 +31,7 @@ import { useLocation } from 'react-router-dom';
 import AcademicHistory from '../AcademicHistory/AcademicHistory';
 import NameContext from '../Context/NameContext';
 import FullScreenLoader from '../Loader/FullScreenLoader';
+import ParentInStudentProfile from '../ParentInStudentProfile';
 // import "../../assets/css/main.min.css";
 // import "../../assets/css/newstyle.min.css";
 export interface ChildComponentProps {
@@ -64,11 +65,11 @@ const StudentProfile = () => {
   const [isProComplete1, setIsProComplete1] = useState(false);
   const context = React.useContext(NameContext);
 
-  const { activeForm, setActiveForm,setProImage }: any = context;
+  const { activeForm, setActiveForm, setProImage }: any = context;
   const usertype: any = localStorage.getItem('user_type');
-  const { getData,loading } = useApi();
+  const { getData, loading } = useApi();
   const StudentId = localStorage.getItem('user_uuid');
-  const checkbasicinfo= localStorage.getItem('student_id')
+  const checkbasicinfo = localStorage.getItem('student_id')
   const profileURL = QUERY_KEYS_STUDENT.STUDENT_GET_PROFILE;
   // const navigator = useNavigate();
   const countKeysWithValue = (obj: any): number => {
@@ -106,19 +107,16 @@ const StudentProfile = () => {
     if (progressRef.current && progressLineRef.current) {
       if (isMobile) {
         // Horizontal progress for mobile
-        progressRef.current.style.width = `${
-          ((activeForm + 1) / totalSteps) * 100
-        }%`;
-        progressLineRef.current.style.width = `${
-          ((activeForm + 1) / totalSteps) * 100
-        }%`;
+        progressRef.current.style.width = `${((activeForm + 1) / totalSteps) * 100
+          }%`;
+        progressLineRef.current.style.width = `${((activeForm + 1) / totalSteps) * 100
+          }%`;
         progressLineRef.current.style.height = '2px';
         progressLineRef.current.style.top = 'auto';
       } else {
         // Vertical progress for desktop
-        progressRef.current.style.width = `${
-          ((activeForm + 1) / totalSteps) * 100
-        }%`;
+        progressRef.current.style.width = `${((activeForm + 1) / totalSteps) * 100
+          }%`;
 
         const stepHeight = stepsRef.current[activeForm]?.offsetHeight || 0;
         const computedStyle = window.getComputedStyle(
@@ -564,9 +562,8 @@ const StudentProfile = () => {
                       <span style={{ color: '#9943EC' }}> Account </span>
                     </h4>
                     <h4 className="fs-1 d-xxl-none fw-bold mb-0">
-                      {`Hey, ${studentData?.basic_info?.first_name || 'User'} ${
-                        studentData?.basic_info?.last_name || ''
-                      }`}
+                      {`Hey, ${studentData?.basic_info?.first_name || 'User'} ${studentData?.basic_info?.last_name || ''
+                        }`}
                       <small className="mt-1 fs-14 d-block opacity-50 fw-normal">
                         Please Complete Your Profile
                       </small>
@@ -601,16 +598,14 @@ const StudentProfile = () => {
                               ></div>
                               <div
                                 ref={(el) => (stepsRef.current[0] = el!)}
-                                className={`step ${
-                                  activeForm === 0 ? 'active' : ''
-                                }`}
+                                className={`step ${activeForm === 0 ? 'active' : ''
+                                  }`}
                                 onClick={() => setActiveForm(0)}
                                 style={{ cursor: 'pointer' }}
                               >
                                 <div
-                                  className={`step-circle ${
-                                    activeForm >= 0 ? 'filled' : ''
-                                  }`}
+                                  className={`step-circle ${activeForm >= 0 ? 'filled' : ''
+                                    }`}
                                 >
                                   <CheckOutlinedIcon />
                                 </div>
@@ -619,35 +614,31 @@ const StudentProfile = () => {
                                 </div>
                               </div>
                               <div
-                                 ref={(el) => (stepsRef.current[1] = el!)}
-                                className={`step ${
-                                  activeForm === 1 ? 'active' : ''
-                                }`}
+                                ref={(el) => (stepsRef.current[1] = el!)}
+                                className={`step ${activeForm === 1 ? 'active' : ''
+                                  }`}
                                 onClick={checkbasicinfo ? () => setActiveForm(1) : undefined}
                                 style={{ cursor: 'pointer' }}
                               >
                                 <div
-                                  className={`step-circle ${
-                                    activeForm >= 1 ? 'filled' : ''
-                                  }`}
+                                  className={`step-circle ${activeForm >= 1 ? 'filled' : ''
+                                    }`}
                                 >
                                   <CheckOutlinedIcon />
                                 </div>
                                 <div className="step-label">Address</div>
                               </div>
                               <div
-                                 ref={(el) => (stepsRef.current[2] = el!)}
-                                className={`step ${
-                                  activeForm === 2 ? 'active' : ''
-                                }`}
+                                ref={(el) => (stepsRef.current[2] = el!)}
+                                className={`step ${activeForm === 2 ? 'active' : ''
+                                  }`}
                                 // onClick={() => setActiveForm(2)}
                                 onClick={checkbasicinfo ? () => setActiveForm(2) : undefined}
                                 style={{ cursor: 'pointer' }}
                               >
                                 <div
-                                  className={`step-circle ${
-                                    activeForm >= 2 ? 'filled' : ''
-                                  }`}
+                                  className={`step-circle ${activeForm >= 2 ? 'filled' : ''
+                                    }`}
                                 >
                                   <CheckOutlinedIcon />
                                 </div>
@@ -656,17 +647,15 @@ const StudentProfile = () => {
                                 </div>
                               </div>
                               <div
-                                 ref={(el) => (stepsRef.current[3] = el!)}
-                                className={`step ${
-                                  activeForm === 3 ? 'active' : ''
-                                }`}
+                                ref={(el) => (stepsRef.current[3] = el!)}
+                                className={`step ${activeForm === 3 ? 'active' : ''
+                                  }`}
                                 onClick={checkbasicinfo ? () => setActiveForm(3) : undefined}
                                 style={{ cursor: 'pointer' }}
                               >
                                 <div
-                                  className={`step-circle ${
-                                    activeForm >= 3 ? 'filled' : ''
-                                  }`}
+                                  className={`step-circle ${activeForm >= 3 ? 'filled' : ''
+                                    }`}
                                 >
                                   <CheckOutlinedIcon />
                                 </div>
@@ -677,17 +666,15 @@ const StudentProfile = () => {
 
                               <div
                                 ref={(el) => (stepsRef.current[4] = el!)}
-                                className={`step ${
-                                  activeForm === 4 ? 'active' : ''
-                                }`}
+                                className={`step ${activeForm === 4 ? 'active' : ''
+                                  }`}
                                 //onClick={() => setActiveForm(4)}
                                 onClick={checkbasicinfo ? () => setActiveForm(4) : undefined}
                                 style={{ cursor: 'pointer' }}
                               >
                                 <div
-                                  className={`step-circle ${
-                                    activeForm >= 4 ? 'filled' : ''
-                                  }`}
+                                  className={`step-circle ${activeForm >= 4 ? 'filled' : ''
+                                    }`}
                                 >
                                   <CheckOutlinedIcon />
                                 </div>
@@ -695,20 +682,36 @@ const StudentProfile = () => {
                                   Contact Details
                                 </div>
                               </div>
-
                               <div
                                 ref={(el) => (stepsRef.current[5] = el!)}
-                                className={`step ${
-                                  activeForm === 5 ? 'active' : ''
-                                }`}
-                               // onClick={() => setActiveForm(5)}
-                               onClick={checkbasicinfo ? () => setActiveForm(5) : () => undefined}
+                                className={`step ${activeForm === 5 ? 'active' : ''
+                                  }`}
+                                //onClick={() => setActiveForm(4)}
+                                onClick={checkbasicinfo ? () => setActiveForm(5) : undefined}
                                 style={{ cursor: 'pointer' }}
                               >
                                 <div
-                                  className={`step-circle ${
-                                    activeForm >= 5 ? 'filled' : ''
+                                  className={`step-circle ${activeForm >= 5 ? 'filled' : ''
+                                    }`}
+                                >
+                                  <CheckOutlinedIcon />
+                                </div>
+                                <div className="step-label">
+                                  Parent Details
+                                </div>
+                              </div>
+
+                              <div
+                                ref={(el) => (stepsRef.current[6] = el!)}
+                                className={`step ${activeForm === 6 ? 'active' : ''
                                   }`}
+                                // onClick={() => setActiveForm(5)}
+                                onClick={checkbasicinfo ? () => setActiveForm(6) : () => undefined}
+                                style={{ cursor: 'pointer' }}
+                              >
+                                <div
+                                  className={`step-circle ${activeForm >= 6 ? 'filled' : ''
+                                    }`}
                                 >
                                   <CheckOutlinedIcon />
                                 </div>
@@ -721,9 +724,8 @@ const StudentProfile = () => {
                           <div className="wizard-content">
                             <form id="wizard-form">
                               <div
-                                className={`form-step ${
-                                  activeForm === 0 ? 'active' : ''
-                                }`}
+                                className={`form-step ${activeForm === 0 ? 'active' : ''
+                                  }`}
                               >
                                 <StudentBasicInfo
                                   setActiveForm={setActiveForm}
@@ -731,9 +733,8 @@ const StudentProfile = () => {
                                 />
                               </div>
                               <div
-                                className={`form-step ${
-                                  activeForm === 1 ? 'active' : ''
-                                }`}
+                                className={`form-step ${activeForm === 1 ? 'active' : ''
+                                  }`}
                               >
                                 <StudentAddress
                                   setActiveForm={setActiveForm}
@@ -741,9 +742,8 @@ const StudentProfile = () => {
                                 />
                               </div>
                               <div
-                                className={`form-step ${
-                                  activeForm === 2 ? 'active' : ''
-                                }`}
+                                className={`form-step ${activeForm === 2 ? 'active' : ''
+                                  }`}
                               >
                                 <StudentLanguageKnown
                                   setActiveForm={setActiveForm}
@@ -751,9 +751,8 @@ const StudentProfile = () => {
                                 />
                               </div>
                               <div
-                                className={`form-step ${
-                                  activeForm === 3 ? 'active' : ''
-                                }`}
+                                className={`form-step ${activeForm === 3 ? 'active' : ''
+                                  }`}
                               >
                                 <div>
                                   <div>
@@ -765,9 +764,8 @@ const StudentProfile = () => {
                                 </div>
                               </div>
                               <div
-                                className={`form-step ${
-                                  activeForm === 4 ? 'active' : ''
-                                }`}
+                                className={`form-step ${activeForm === 4 ? 'active' : ''
+                                  }`}
                               >
                                 <StudentContactDetails
                                   setActiveForm={setActiveForm}
@@ -775,9 +773,17 @@ const StudentProfile = () => {
                                 />
                               </div>
                               <div
-                                className={`form-step ${
-                                  activeForm === 5 ? 'active' : ''
-                                }`}
+                                className={`form-step ${activeForm === 5 ? 'active' : ''
+                                  }`}
+                              >
+                                <ParentInStudentProfile
+                                  setActiveForm={setActiveForm}
+                                  activeForm={activeForm}
+                                />
+                              </div>
+                              <div
+                                className={`form-step ${activeForm === 6 ? 'active' : ''
+                                  }`}
                               >
                                 <div>
                                   <div>

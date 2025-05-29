@@ -218,7 +218,6 @@ const Content = () => {
         });
         setColumns(updatedColumns);
       }, 0);
-
       return processCollegeContents(college?.id);
     };
 
@@ -297,8 +296,6 @@ const Content = () => {
     columns11,
     instituteDetails,
     teacherDetail,
-    user_type,
-    user_uuid,
   ]);
 
   const handleEditFile = (id: number) => {
