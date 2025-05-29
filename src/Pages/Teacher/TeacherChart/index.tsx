@@ -327,7 +327,6 @@ const TeacherDashboardCharts = () => {
           {
             title: {
               offsetX: -20,
-              offsetY: 0,
               text: 'Average Score',
               style: {
                 fontSize: '14px',
@@ -344,9 +343,12 @@ const TeacherDashboardCharts = () => {
           },
 
           {
-            show: false,
+            opposite: true,
             title: {
-              text: 'Student Count',
+              style: {
+                fontSize: '14px',
+                fontWeight: 600,
+              },
             },
           },
         ],
@@ -400,17 +402,18 @@ const TeacherDashboardCharts = () => {
           name: 'Average Score',
           type: 'column',
           data: [],
+          yAxisIndex: 0,
         },
         {
           name: 'Total Submissions',
           type: 'line',
           data: [],
         },
-
         {
           name: 'Assigned Students',
           type: 'line',
           data: [],
+          yAxisIndex: 1,
         },
         {
           name: 'Total Assignments',
