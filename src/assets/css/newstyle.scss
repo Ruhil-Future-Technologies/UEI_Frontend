@@ -3365,15 +3365,28 @@ a {
   color: #4b5563;
 }
 .infocard {
-  background-color: #EFF6FF;
+  background-color: #F7EFFF;
   padding: 1rem;
   border-radius: 8px;
   margin-bottom: 1rem;
+  border: 1px solid #EDDBFE;
+
+  span{
+    color: #561E8A;
+    display: block;
+    margin-bottom: 5px;
+  }
+  ul{
+    li{
+      color: #691EAF;
+    }
+  }
   p {
     color: #374151;
   }
 }
 .bulk-upload-container {
+  
   select {
     border: 0px !important;
   }
@@ -3394,10 +3407,7 @@ a {
   color: #000000 !important;
 }
 
-.shadow4{
-  box-shadow: 0px 4px 32px 0px rgba(0, 0, 0, 0.03), 0px 24px 32px -8px rgba(0, 0, 0, 0.07)!important;
-  border-radius: 2rem;
-}
+
 
 .diagram-container{
   svg{
