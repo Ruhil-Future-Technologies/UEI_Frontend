@@ -687,8 +687,8 @@
 }
 .infocard{
   background-color: $mui_date_bg;
-
-  p{
+  border-color: $headerbg;
+  p, span, li{
     color: $date_text;
   }
 }
@@ -699,7 +699,11 @@
   
 }
 
+.draggerbg{
+  background-color: $headerbg;
+}
 
 }
+
 
 

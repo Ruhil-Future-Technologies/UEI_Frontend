@@ -311,15 +311,15 @@ const BulkUploadForm: React.FC<BulkUploadFormProps> = ({
           <div className="col-lg-6">
             <div className="card p-lg-1">
               <div className="card-body">
-                <h5 className='fw-bold mb-1'>Bulk Data Management</h5>
-                <p className='opacity-75'>Upload and manage school data efficiently</p>
+                <h5 className='fw-bold mb-1'>Data Upload Management</h5>
+                <p className='opacity-75 mb-4'>Upload and manage school data efficiently</p>
                 <Box>
                   <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                     <Tabs
                       value={value}
                       onChange={handleChange}
                       aria-label="basic tabs example"
-                      className="bg-body-secondary"
+                      className="bg-body-secondary rounded-2"
                     >
                       <Tab
                         icon={<SupervisedUserCircleOutlinedIcon />}
@@ -368,8 +368,9 @@ const BulkUploadForm: React.FC<BulkUploadFormProps> = ({
                         />
                       </div>
 
-                      <Dragger {...uploadProps} className="mt-3  bg-white">
-                        <p className="ant-upload-drag-icon pt-lg-3">
+                      <Dragger {...uploadProps} className="mt-3  ">
+                        <div className="draggerbg">
+ <p className="ant-upload-drag-icon pt-lg-3">
                           <TableChart />
                         </p>
                         <p className="mb-0 fs-14">
@@ -378,6 +379,8 @@ const BulkUploadForm: React.FC<BulkUploadFormProps> = ({
                         <p className="text-primary fs-6 mb-0 pb-lg-3">
                           click to browse
                         </p>
+                        </div>
+                       
                       </Dragger>
                       {selectedFile && (
                         <span style={{ marginTop: '10px', display: 'block' }}>

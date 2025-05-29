@@ -183,7 +183,7 @@ export const ThemeProviderWrapper: React.FC<{ children: React.ReactNode }> = ({
                 optionSelectedBg: isDarkMode ? '#444' : '#e6f7ff',
                 optionSelectedColor: isDarkMode ? '#fff' : '#000',
                 controlItemBgHover: isDarkMode ? '#444' : '#f0f0f0',
-              },
+              },       
               Input: {
                 colorBgContainer: isDarkMode ? '#333' : '#fff',
                 colorText: isDarkMode ? '#fff' : '#000',
@@ -199,7 +199,7 @@ export const ThemeProviderWrapper: React.FC<{ children: React.ReactNode }> = ({
                 colorBgContainer: isDarkMode ? '#333' : '#fff',
                 colorText: isDarkMode ? '#fff' : '#000',
                 colorBorder: isDarkMode ? '#555' : '#E5E7EB',
-              },              
+              },
               Radio: {
                 colorPrimary: primaryColor,
                 colorText: isDarkMode ? '#fff' : '#000',
