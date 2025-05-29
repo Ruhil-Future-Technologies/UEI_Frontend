@@ -180,6 +180,7 @@ const Institute = () => {
       );
       setColumnVisibility({
         is_active: true,
+        university_name: activeSubTab === 1,
       });
       if (activeSubTab === 0) {
         setFilteredInstitutes(
@@ -201,6 +202,7 @@ const Institute = () => {
 
       setColumnVisibility({
         is_active: false,
+        university_name: activeSubTab === 1,
       });
       if (activeSubTab === 0) {
         setFilteredInstitutes(
@@ -222,6 +224,7 @@ const Institute = () => {
 
       setColumnVisibility({
         is_active: false,
+        university_name: activeSubTab === 1,
       });
       if (activeSubTab === 0) {
         setFilteredInstitutes(
