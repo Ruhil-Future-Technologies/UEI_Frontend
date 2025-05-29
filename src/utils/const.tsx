@@ -266,6 +266,7 @@ export const QUERY_KEYS_CONTENT = {
 };
 
 export const QUERY_KEYS_QUIZ = {
+  GET_ALL:"/quiz/all",
   GET_QUIZ: '/quiz/get',
   QUIZ_EDIT: '`/quiz/edit',
   GET_SUBMISSION: '/quiz_submission/get/submissions',
