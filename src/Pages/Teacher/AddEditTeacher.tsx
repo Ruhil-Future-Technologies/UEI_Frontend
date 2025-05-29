@@ -28,10 +28,10 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 import { CountryDropdown, RegionDropdown } from 'react-country-region-selector';
 import {
-  inputfield,
-  inputfieldtext,
+  //inputfield,
+  //inputfieldtext,
   fieldIcon,
-  inputfieldhover,
+  //inputfieldhover,
 } from '../../utils/helpers';
 import NameContext from '../Context/NameContext';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -1640,9 +1640,8 @@ const AddEditTeacher = () => {
                                 disableFuture
                                 maxDate={maxSelectableDate}
                                 minDate={minSelectableDate}
-                                sx={{
-                                  backgroundColor: '#f5f5f5',
-                                }}
+                               
+                                
                                 slotProps={{
                                   textField: {
                                     variant: 'outlined',
@@ -1719,35 +1718,12 @@ const AddEditTeacher = () => {
                               }
                               inputProps={{
                                 'data-id': 'qualification',
-                              }}
-                              sx={{
-                                backgroundColor: inputfield(namecolor),
-                                color: inputfieldtext(namecolor),
-                                '& .MuiSelect-icon': {
-                                  color: fieldIcon(namecolor),
-                                },
-                              }}
-                              MenuProps={{
-                                PaperProps: {
-                                  style: {
-                                    backgroundColor: inputfield(namecolor),
-                                    color: inputfieldtext(namecolor),
-                                  },
-                                },
-                              }}
+                              }}                             
                             >
                               {qualifications.map((qual) => (
                                 <MenuItem
                                   key={qual}
-                                  value={qual}
-                                  sx={{
-                                    backgroundColor: inputfield(namecolor),
-                                    color: inputfieldtext(namecolor),
-                                    '&:hover': {
-                                      backgroundColor:
-                                        inputfieldhover(namecolor),
-                                    },
-                                  }}
+                                  value={qual}                                  
                                 >
                                   {qual}
                                 </MenuItem>
@@ -1813,48 +1789,35 @@ const AddEditTeacher = () => {
                               value={values?.entity_id}
                               disabled={user_type === 'institute'}
                               variant="outlined"
-                              sx={{
-                                backgroundColor: inputfield(namecolor),
-                                color: inputfieldtext(namecolor),
-                                '& .MuiSelect-icon': {
-                                  color: fieldIcon(namecolor),
-                                },
-                              }}
-                              MenuProps={{
-                                PaperProps: {
-                                  style: {
-                                    backgroundColor: inputfield(namecolor),
-                                    color: inputfieldtext(namecolor),
-                                  },
-                                },
-                              }}
-                              style={{
-                                backgroundColor:
-                                  user_type === 'institute'
-                                    ? '#f0f0f0'
-                                    : inputfield(namecolor),
-                                color:
-                                  user_type === 'institute'
-                                    ? '#999999'
-                                    : inputfieldtext(namecolor),
-                                border:
-                                  user_type === 'institute'
-                                    ? '1px solid #d0d0d0'
-                                    : undefined,
-                              }}
+                              
+                              
+                              // style={{
+                              //   backgroundColor:
+                              //     user_type === 'institute'
+                              //       ? '#f0f0f0'
+                              //       : inputfield(namecolor),
+                              //   color:
+                              //     user_type === 'institute'
+                              //       ? '#999999'
+                              //       : inputfieldtext(namecolor),
+                              //   border:
+                              //     user_type === 'institute'
+                              //       ? '1px solid #d0d0d0'
+                              //       : undefined,
+                              // }}
                             >
                               {dataEntity?.map((item, idx) => (
                                 <MenuItem
                                   value={item.id}
                                   key={`${item.entity_type}-${idx + 1}`}
-                                  sx={{
-                                    backgroundColor: inputfield(namecolor),
-                                    color: inputfieldtext(namecolor),
-                                    '&:hover': {
-                                      backgroundColor:
-                                        inputfieldhover(namecolor),
-                                    },
-                                  }}
+                                  // sx={{
+                                  //   backgroundColor: inputfield(namecolor),
+                                  //   color: inputfieldtext(namecolor),
+                                  //   '&:hover': {
+                                  //     backgroundColor:
+                                  //       inputfieldhover(namecolor),
+                                  //   },
+                                  // }}
                                 >
                                   {item.entity_type}
                                 </MenuItem>
@@ -1885,51 +1848,51 @@ const AddEditTeacher = () => {
                               inputProps={{
                                 'data-id': 'university',
                               }}
-                              style={{
-                                backgroundColor:
-                                  isSchoolEntity(values?.entity_id) ||
-                                  user_type === 'institute'
-                                    ? '#f0f0f0'
-                                    : inputfield(namecolor),
-                                color: isSchoolEntity(values?.entity_id)
-                                  ? '#999999'
-                                  : inputfieldtext(namecolor),
-                                border: isSchoolEntity(values?.entity_id)
-                                  ? '1px solid #d0d0d0'
-                                  : undefined,
-                              }}
+                              // style={{
+                              //   backgroundColor:
+                              //     isSchoolEntity(values?.entity_id) ||
+                              //     user_type === 'institute'
+                              //       ? '#f0f0f0'
+                              //       : inputfield(namecolor),
+                              //   color: isSchoolEntity(values?.entity_id)
+                              //     ? '#999999'
+                              //     : inputfieldtext(namecolor),
+                              //   border: isSchoolEntity(values?.entity_id)
+                              //     ? '1px solid #d0d0d0'
+                              //     : undefined,
+                              // }}
                               disabled={
                                 isSchoolEntity(values?.entity_id) ||
                                 user_type === 'institute'
                               }
-                              sx={{
-                                backgroundColor: inputfield(namecolor),
-                                color: inputfieldtext(namecolor),
-                                '& .MuiSelect-icon': {
-                                  color: fieldIcon(namecolor),
-                                },
-                              }}
-                              MenuProps={{
-                                PaperProps: {
-                                  style: {
-                                    backgroundColor: inputfield(namecolor),
-                                    color: inputfieldtext(namecolor),
-                                  },
-                                },
-                              }}
+                              // sx={{
+                              //   backgroundColor: inputfield(namecolor),
+                              //   color: inputfieldtext(namecolor),
+                              //   '& .MuiSelect-icon': {
+                              //     color: fieldIcon(namecolor),
+                              //   },
+                              // }}
+                              // MenuProps={{
+                              //   PaperProps: {
+                              //     style: {
+                              //       backgroundColor: inputfield(namecolor),
+                              //       color: inputfieldtext(namecolor),
+                              //     },
+                              //   },
+                              // }}
                             >
                               {dataUniversity?.map((university: any) => (
                                 <MenuItem
                                   key={university.id}
                                   value={university.id}
-                                  sx={{
-                                    backgroundColor: inputfield(namecolor),
-                                    color: inputfieldtext(namecolor),
-                                    '&:hover': {
-                                      backgroundColor:
-                                        inputfieldhover(namecolor),
-                                    },
-                                  }}
+                                  // sx={{
+                                  //   backgroundColor: inputfield(namecolor),
+                                  //   color: inputfieldtext(namecolor),
+                                  //   '&:hover': {
+                                  //     backgroundColor:
+                                  //       inputfieldhover(namecolor),
+                                  //   },
+                                  // }}
                                 >
                                   {university.university_name}
                                 </MenuItem>
@@ -1970,48 +1933,48 @@ const AddEditTeacher = () => {
                               onChange={(e: SelectChangeEvent<string>) =>
                                 handleChange(e, 'institute_id')
                               }
-                              sx={{
-                                backgroundColor: inputfield(namecolor),
-                                color: inputfieldtext(namecolor),
-                                '& .MuiSelect-icon': {
-                                  color: fieldIcon(namecolor),
-                                },
-                              }}
-                              MenuProps={{
-                                PaperProps: {
-                                  style: {
-                                    backgroundColor: inputfield(namecolor),
-                                    color: inputfieldtext(namecolor),
-                                  },
-                                },
-                              }}
-                              style={{
-                                backgroundColor:
-                                  user_type === 'institute'
-                                    ? '#f0f0f0'
-                                    : inputfield(namecolor),
-                                color:
-                                  user_type === 'institute'
-                                    ? '#999999'
-                                    : inputfieldtext(namecolor),
-                                border:
-                                  user_type === 'institute'
-                                    ? '1px solid #d0d0d0'
-                                    : undefined,
-                              }}
+                              // sx={{
+                              //   backgroundColor: inputfield(namecolor),
+                              //   color: inputfieldtext(namecolor),
+                              //   '& .MuiSelect-icon': {
+                              //     color: fieldIcon(namecolor),
+                              //   },
+                              // }}
+                              // MenuProps={{
+                              //   PaperProps: {
+                              //     style: {
+                              //       backgroundColor: inputfield(namecolor),
+                              //       color: inputfieldtext(namecolor),
+                              //     },
+                              //   },
+                              // }}
+                              // style={{
+                              //   backgroundColor:
+                              //     user_type === 'institute'
+                              //       ? '#f0f0f0'
+                              //       : inputfield(namecolor),
+                              //   color:
+                              //     user_type === 'institute'
+                              //       ? '#999999'
+                              //       : inputfieldtext(namecolor),
+                              //   border:
+                              //     user_type === 'institute'
+                              //       ? '1px solid #d0d0d0'
+                              //       : undefined,
+                              // }}
                             >
                               {filteredInstitutes?.map((institute: any) => (
                                 <MenuItem
                                   key={institute.id}
                                   value={institute.id}
-                                  sx={{
-                                    backgroundColor: inputfield(namecolor),
-                                    color: inputfieldtext(namecolor),
-                                    '&:hover': {
-                                      backgroundColor:
-                                        inputfieldhover(namecolor),
-                                    },
-                                  }}
+                                  // sx={{
+                                  //   backgroundColor: inputfield(namecolor),
+                                  //   color: inputfieldtext(namecolor),
+                                  //   '&:hover': {
+                                  //     backgroundColor:
+                                  //       inputfieldhover(namecolor),
+                                  //   },
+                                  // }}
                                 >
                                   {institute?.institute_name}
                                 </MenuItem>
@@ -2051,37 +2014,37 @@ const AddEditTeacher = () => {
                                           )
                                         }
                                         disabled={!values?.institute_id}
-                                        sx={{
-                                          backgroundColor:
-                                            inputfield(namecolor),
-                                          color: inputfieldtext(namecolor),
-                                          '& .MuiSelect-icon': {
-                                            color: fieldIcon(namecolor),
-                                          },
-                                        }}
-                                        MenuProps={{
-                                          PaperProps: {
-                                            style: {
-                                              backgroundColor:
-                                                inputfield(namecolor),
-                                              color: inputfieldtext(namecolor),
-                                            },
-                                          },
-                                        }}
+                                        // sx={{
+                                        //   backgroundColor:
+                                        //     inputfield(namecolor),
+                                        //   color: inputfieldtext(namecolor),
+                                        //   '& .MuiSelect-icon': {
+                                        //     color: fieldIcon(namecolor),
+                                        //   },
+                                        // }}
+                                        // MenuProps={{
+                                        //   PaperProps: {
+                                        //     style: {
+                                        //       backgroundColor:
+                                        //         inputfield(namecolor),
+                                        //       color: inputfieldtext(namecolor),
+                                        //     },
+                                        //   },
+                                        // }}
                                       >
                                         {filteredCourses?.map((course: any) => (
                                           <MenuItem
                                             key={course.id}
                                             value={course.id}
-                                            sx={{
-                                              backgroundColor:
-                                                inputfield(namecolor),
-                                              color: inputfieldtext(namecolor),
-                                              '&:hover': {
-                                                backgroundColor:
-                                                  inputfieldhover(namecolor),
-                                              },
-                                            }}
+                                            // sx={{
+                                            //   backgroundColor:
+                                            //     inputfield(namecolor),
+                                            //   color: inputfieldtext(namecolor),
+                                            //   '&:hover': {
+                                            //     backgroundColor:
+                                            //       inputfieldhover(namecolor),
+                                            //   },
+                                            // }}
                                           >
                                             {course.course_name}
                                           </MenuItem>
@@ -2111,39 +2074,39 @@ const AddEditTeacher = () => {
                                           )
                                         }
                                         disabled={!course.course_id}
-                                        sx={{
-                                          backgroundColor:
-                                            inputfield(namecolor),
-                                          color: inputfieldtext(namecolor),
-                                          '& .MuiSelect-icon': {
-                                            color: fieldIcon(namecolor),
-                                          },
-                                        }}
-                                        MenuProps={{
-                                          PaperProps: {
-                                            style: {
-                                              backgroundColor:
-                                                inputfield(namecolor),
-                                              color: inputfieldtext(namecolor),
-                                            },
-                                          },
-                                        }}
+                                        // sx={{
+                                        //   backgroundColor:
+                                        //     inputfield(namecolor),
+                                        //   color: inputfieldtext(namecolor),
+                                        //   '& .MuiSelect-icon': {
+                                        //     color: fieldIcon(namecolor),
+                                        //   },
+                                        // }}
+                                        // MenuProps={{
+                                        //   PaperProps: {
+                                        //     style: {
+                                        //       backgroundColor:
+                                        //         inputfield(namecolor),
+                                        //       color: inputfieldtext(namecolor),
+                                        //     },
+                                        //   },
+                                        // }}
                                       >
                                         {courseSemesters[index]?.map(
                                           (semesterOption: string) => (
                                             <MenuItem
                                               key={semesterOption}
                                               value={semesterOption}
-                                              sx={{
-                                                backgroundColor:
-                                                  inputfield(namecolor),
-                                                color:
-                                                  inputfieldtext(namecolor),
-                                                '&:hover': {
-                                                  backgroundColor:
-                                                    inputfieldhover(namecolor),
-                                                },
-                                              }}
+                                              // sx={{
+                                              //   backgroundColor:
+                                              //     inputfield(namecolor),
+                                              //   color:
+                                              //     inputfieldtext(namecolor),
+                                              //   '&:hover': {
+                                              //     backgroundColor:
+                                              //       inputfieldhover(namecolor),
+                                              //   },
+                                              // }}
                                             >
                                               {semesterOption}
                                             </MenuItem>
@@ -2180,50 +2143,50 @@ const AddEditTeacher = () => {
                                             ? selected.join(', ')
                                             : ''
                                         }
-                                        sx={{
-                                          backgroundColor:
-                                            inputfield(namecolor),
-                                          color: inputfieldtext(namecolor),
-                                          '& .MuiSelect-icon': {
-                                            color: fieldIcon(namecolor),
-                                          },
-                                        }}
-                                        MenuProps={{
-                                          PaperProps: {
-                                            style: {
-                                              backgroundColor:
-                                                inputfield(namecolor),
-                                              color: inputfieldtext(namecolor),
-                                            },
-                                          },
-                                        }}
+                                        // sx={{
+                                        //   backgroundColor:
+                                        //     inputfield(namecolor),
+                                        //   color: inputfieldtext(namecolor),
+                                        //   '& .MuiSelect-icon': {
+                                        //     color: fieldIcon(namecolor),
+                                        //   },
+                                        // }}
+                                        // MenuProps={{
+                                        //   PaperProps: {
+                                        //     style: {
+                                        //       backgroundColor:
+                                        //         inputfield(namecolor),
+                                        //       color: inputfieldtext(namecolor),
+                                        //     },
+                                        //   },
+                                        // }}
                                       >
                                         {courseSubjects[index]?.map(
                                           (subject: any) => (
                                             <MenuItem
                                               key={subject.subject_id}
                                               value={subject.subject_name}
-                                              sx={{
-                                                backgroundColor:
-                                                  inputfield(namecolor),
-                                                color:
-                                                  inputfieldtext(namecolor),
-                                                '&:hover': {
-                                                  backgroundColor:
-                                                    inputfieldhover(namecolor),
-                                                },
-                                              }}
+                                              // sx={{
+                                              //   backgroundColor:
+                                              //     inputfield(namecolor),
+                                              //   color:
+                                              //     inputfieldtext(namecolor),
+                                              //   '&:hover': {
+                                              //     backgroundColor:
+                                              //       inputfieldhover(namecolor),
+                                              //   },
+                                              // }}
                                             >
                                               <Checkbox
                                                 checked={course.subjects.includes(
                                                   subject.subject_name,
                                                 )}
-                                                sx={{
-                                                  color: fieldIcon(namecolor),
-                                                  '&.Mui-checked': {
-                                                    color: fieldIcon(namecolor),
-                                                  },
-                                                }}
+                                                // sx={{
+                                                //   color: fieldIcon(namecolor),
+                                                //   '&.Mui-checked': {
+                                                //     color: fieldIcon(namecolor),
+                                                //   },
+                                                // }}
                                               />
                                               {subject.subject_name}
                                             </MenuItem>
@@ -2319,37 +2282,37 @@ const AddEditTeacher = () => {
                                           )
                                         }
                                         disabled={!values?.institute_id}
-                                        sx={{
-                                          backgroundColor:
-                                            inputfield(namecolor),
-                                          color: inputfieldtext(namecolor),
-                                          '& .MuiSelect-icon': {
-                                            color: fieldIcon(namecolor),
-                                          },
-                                        }}
-                                        MenuProps={{
-                                          PaperProps: {
-                                            style: {
-                                              backgroundColor:
-                                                inputfield(namecolor),
-                                              color: inputfieldtext(namecolor),
-                                            },
-                                          },
-                                        }}
+                                        // sx={{
+                                        //   backgroundColor:
+                                        //     inputfield(namecolor),
+                                        //   color: inputfieldtext(namecolor),
+                                        //   '& .MuiSelect-icon': {
+                                        //     color: fieldIcon(namecolor),
+                                        //   },
+                                        // }}
+                                        // MenuProps={{
+                                        //   PaperProps: {
+                                        //     style: {
+                                        //       backgroundColor:
+                                        //         inputfield(namecolor),
+                                        //       color: inputfieldtext(namecolor),
+                                        //     },
+                                        //   },
+                                        // }}
                                       >
                                         {dataClasses?.map((cls: any) => (
                                           <MenuItem
                                             key={cls.id}
                                             value={cls.id}
-                                            sx={{
-                                              backgroundColor:
-                                                inputfield(namecolor),
-                                              color: inputfieldtext(namecolor),
-                                              '&:hover': {
-                                                backgroundColor:
-                                                  inputfieldhover(namecolor),
-                                              },
-                                            }}
+                                            // sx={{
+                                            //   backgroundColor:
+                                            //     inputfield(namecolor),
+                                            //   color: inputfieldtext(namecolor),
+                                            //   '&:hover': {
+                                            //     backgroundColor:
+                                            //       inputfieldhover(namecolor),
+                                            //   },
+                                            // }}
                                           >
                                             {cls.class_name}
                                           </MenuItem>
@@ -2382,42 +2345,42 @@ const AddEditTeacher = () => {
                                             )
                                           }
                                           disabled={!cls.class_id}
-                                          sx={{
-                                            backgroundColor:
-                                              inputfield(namecolor),
-                                            color: inputfieldtext(namecolor),
-                                            '& .MuiSelect-icon': {
-                                              color: fieldIcon(namecolor),
-                                            },
-                                          }}
-                                          MenuProps={{
-                                            PaperProps: {
-                                              style: {
-                                                backgroundColor:
-                                                  inputfield(namecolor),
-                                                color:
-                                                  inputfieldtext(namecolor),
-                                              },
-                                            },
-                                          }}
+                                          // sx={{
+                                          //   backgroundColor:
+                                          //     inputfield(namecolor),
+                                          //   color: inputfieldtext(namecolor),
+                                          //   '& .MuiSelect-icon': {
+                                          //     color: fieldIcon(namecolor),
+                                          //   },
+                                          // }}
+                                          // MenuProps={{
+                                          //   PaperProps: {
+                                          //     style: {
+                                          //       backgroundColor:
+                                          //         inputfield(namecolor),
+                                          //       color:
+                                          //         inputfieldtext(namecolor),
+                                          //     },
+                                          //   },
+                                          // }}
                                         >
                                           {classStreams[index]?.map(
                                             (streamOption: string) => (
                                               <MenuItem
                                                 key={streamOption}
                                                 value={streamOption}
-                                                sx={{
-                                                  backgroundColor:
-                                                    inputfield(namecolor),
-                                                  color:
-                                                    inputfieldtext(namecolor),
-                                                  '&:hover': {
-                                                    backgroundColor:
-                                                      inputfieldhover(
-                                                        namecolor,
-                                                      ),
-                                                  },
-                                                }}
+                                                // sx={{
+                                                //   backgroundColor:
+                                                //     inputfield(namecolor),
+                                                //   color:
+                                                //     inputfieldtext(namecolor),
+                                                //   '&:hover': {
+                                                //     backgroundColor:
+                                                //       inputfieldhover(
+                                                //         namecolor,
+                                                //       ),
+                                                //   },
+                                                // }}
                                               >
                                                 {streamOption}
                                               </MenuItem>
@@ -2466,39 +2429,39 @@ const AddEditTeacher = () => {
                                             ? selected.join(', ')
                                             : ''
                                         }
-                                        sx={{
-                                          backgroundColor:
-                                            inputfield(namecolor),
-                                          color: inputfieldtext(namecolor),
-                                          '& .MuiSelect-icon': {
-                                            color: fieldIcon(namecolor),
-                                          },
-                                        }}
-                                        MenuProps={{
-                                          PaperProps: {
-                                            style: {
-                                              backgroundColor:
-                                                inputfield(namecolor),
-                                              color: inputfieldtext(namecolor),
-                                            },
-                                          },
-                                        }}
+                                        // sx={{
+                                        //   backgroundColor:
+                                        //     inputfield(namecolor),
+                                        //   color: inputfieldtext(namecolor),
+                                        //   '& .MuiSelect-icon': {
+                                        //     color: fieldIcon(namecolor),
+                                        //   },
+                                        // }}
+                                        // MenuProps={{
+                                        //   PaperProps: {
+                                        //     style: {
+                                        //       backgroundColor:
+                                        //         inputfield(namecolor),
+                                        //       color: inputfieldtext(namecolor),
+                                        //     },
+                                        //   },
+                                        // }}
                                       >
                                         {classSubjects[index]?.map(
                                           (subject: any) => (
                                             <MenuItem
                                               key={subject.subject_id}
                                               value={subject.subject_name}
-                                              sx={{
-                                                backgroundColor:
-                                                  inputfield(namecolor),
-                                                color:
-                                                  inputfieldtext(namecolor),
-                                                '&:hover': {
-                                                  backgroundColor:
-                                                    inputfieldhover(namecolor),
-                                                },
-                                              }}
+                                              // sx={{
+                                              //   backgroundColor:
+                                              //     inputfield(namecolor),
+                                              //   color:
+                                              //     inputfieldtext(namecolor),
+                                              //   '&:hover': {
+                                              //     backgroundColor:
+                                              //       inputfieldhover(namecolor),
+                                              //   },
+                                              // }}
                                             >
                                               <Checkbox
                                                 checked={cls.subjects.includes(
@@ -2617,7 +2580,7 @@ const AddEditTeacher = () => {
                           tabIndex={-1}
                         >
                           <CountryDropdown
-                            classes="form-control custom-dropdown"
+                            classes="form-select custom-dropdown"
                             defaultOptionLabel={values?.country || ''}
                             value={values?.country || ''}
                             data-id="country"
@@ -2651,7 +2614,7 @@ const AddEditTeacher = () => {
                         >
                           <RegionDropdown
                             data-id="state"
-                            classes="form-control custom-dropdown"
+                            classes="form-select custom-dropdown"
                             defaultOptionLabel={values?.state || ''}
                             country={values?.country || ''}
                             value={values?.state || ''}

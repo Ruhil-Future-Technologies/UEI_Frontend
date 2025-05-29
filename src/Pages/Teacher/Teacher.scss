@@ -56,9 +56,17 @@
   height: 57px;
   // background-color: var(--inputbackcolor) !important;
   color: var(--inputlablecolor) !important ;
+  border-color:rgba(0, 0, 0, 0.23);
 }
 
 .custom-dropdown option {
   background-color: var(--inputbackcolor) !important;
   color: var(--inputlablecolor) !important;
+}
+
+[data-bs-theme='dark'] body {
+  .custom-dropdown {
+  
+  border-color:rgba(255, 255, 255, 0.23);
+}
 }
