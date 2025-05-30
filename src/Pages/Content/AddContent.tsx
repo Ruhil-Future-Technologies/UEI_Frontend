@@ -44,6 +44,7 @@ import AddCircleOutlinedIcon from '@mui/icons-material/AddCircleOutlined';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import UploadBtn from '../../Components/UploadBTN/UploadBtn';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import FullScreenLoader from '../Loader/FullScreenLoader';
 
 interface IContentForm {
   subjects: string[];
@@ -108,7 +109,7 @@ const AddContent = () => {
   const [classStreamsTeacher, setClassStreamsTeacher] = useState<string[]>([]);
   const [allselectedfiles, setAllSelectedfiles] = useState<File[]>([]);
   const [selectedthumnail_cover, setSelectedthumnail_cover] =
-    useState<File | null | string>(null);
+    useState<File | null>(null);
   const [allfiles, setAllfiles] = useState<File[]>([]);
   const user_type = localStorage.getItem('user_type');
   const user_uuid = localStorage.getItem('user_uuid');
@@ -118,6 +119,7 @@ const AddContent = () => {
   const [showAuthor, setShowAuthor] = useState(false);
   const [showthumnail, setShowthumnail] = useState('');
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [teacherClasses, setTeacherClasses] = useState<any>([]);
 
   const initialState: IContentForm = {
@@ -346,13 +348,17 @@ const AddContent = () => {
           author: contentDetail?.data?.content_data.author || '',
           description: contentDetail?.data?.content_data.description || '',
         };
-        if (contentDetail?.data?.content_data?.content_type == "video_lecture" || contentDetail?.data?.content_data?.content_type == "e-book") {
+        if (
+          contentDetail?.data?.content_data?.content_type == 'video_lecture' ||
+          contentDetail?.data?.content_data?.content_type == 'e-book'
+        ) {
           if (contentDetail?.data?.content_data?.thumbnail_url) {
-            setSelectedthumnail_cover(contentDetail?.data?.content_data?.thumbnail_url);
+            setSelectedthumnail_cover(
+              contentDetail?.data?.content_data?.thumbnail_url,
+            );
           }
           setShowthumnail(contentDetail?.data?.content_data?.content_type);
         }
-        console.log(contentDetail)
         setContent(processedData);
 
         if (
@@ -393,9 +399,9 @@ const AddContent = () => {
           if (data?.data?.entity_type === 'school') {
             const classStreamSubjects = data?.data
               ?.class_stream_subjects as Record<
-                string,
-                Record<string, string[]>
-              >;
+              string,
+              Record<string, string[]>
+            >;
 
             // Pre-compute values once
             const validClassIds = new Set(
@@ -444,67 +450,84 @@ const AddContent = () => {
   };
 
   useEffect(() => {
-    getData(`${GET_UNIVERSITY}`).then((data) => {
-      setDataUniversity(
-        data.data?.universities_data?.filter((uni: any) => uni.is_active),
-      );
-    });
-    getData(`${GET_ENTITIES}`).then((data) => {
-      setDataEntity(
-        data.data?.entityes_data?.filter((entity: any) => entity.is_active),
-      );
-    });
-    getData(`${QUERY_KEYS_CLASS.GET_CLASS}`)
-      .then((data) => {
-        setDataClasses(data.data?.classes_data);
-      })
-      .catch((error) => {
-        toast.error(error.message, {
+    const fetchAllData = async () => {
+      try {
+        const [
+          universityData,
+          entityData,
+          classData,
+          instituteData,
+          courseData,
+          collegeSubjectData,
+          schoolSubjectData,
+        ] = await Promise.all([
+          getData(`${GET_UNIVERSITY}`),
+          getData(`${GET_ENTITIES}`),
+          getData(`${QUERY_KEYS_CLASS.GET_CLASS}`),
+          getData(`${QUERY_KEYS.GET_INSTITUTES}`),
+          getData(`${QUERY_KEYS_COURSE.GET_COURSE}`),
+          getData(`${QUERY_KEYS_SUBJECT.GET_SUBJECT}`),
+          getData(`${QUERY_KEYS_SUBJECT_SCHOOL.GET_SUBJECT}`),
+        ]);
+        setDataUniversity(
+          universityData.data?.universities_data?.filter(
+            (uni: any) => uni.is_active,
+          ),
+        );
+
+        setDataEntity(
+          entityData.data?.entityes_data?.filter(
+            (entity: any) => entity.is_active,
+          ),
+        );
+
+        setDataClasses(classData.data?.classes_data);
+
+        const allInstitutes = instituteData.data;
+        const schoolInstitutes = allInstitutes?.filter(
+          (institute: any) =>
+            institute.entity_type?.toLowerCase() === 'school' &&
+            institute.is_approve &&
+            institute.is_active,
+        );
+        const collegeInstitutes = allInstitutes?.filter(
+          (institute: any) =>
+            institute.entity_type?.toLowerCase() === 'college' &&
+            institute.is_approve &&
+            institute.is_active,
+        );
+        setDataInstitutes(allInstitutes);
+        setSchoolInstitutes(schoolInstitutes);
+        setCollegeInstitutes(collegeInstitutes);
+
+        setDataCourses(courseData.data.course_data);
+
+        const collegeSubjects = collegeSubjectData.data?.subjects_data;
+        setCollegeSubjects(
+          Array.isArray(collegeSubjects)
+            ? collegeSubjects?.filter((s) => s?.is_active)
+            : [],
+        );
+
+        const schoolSubjects = schoolSubjectData.data?.subjects_data;
+        setSchoolSubjects(
+          Array.isArray(schoolSubjects)
+            ? schoolSubjects?.filter((s) => s?.is_active)
+            : [],
+        );
+
+        setIsInitialDataLoaded(true);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        toast.error((error as any).message || 'Failed to load data', {
           hideProgressBar: true,
           theme: 'colored',
           position: 'top-center',
         });
-      });
-    getData(`${QUERY_KEYS.GET_INSTITUTES}`).then((data) => {
-      const allInstitutes = data.data;
-      const schoolInstitutes = allInstitutes?.filter(
-        (institute: any) =>
-          institute.entity_type?.toLowerCase() === 'school' &&
-          institute.is_approve &&
-          institute.is_active,
-      );
-      const collegeInstitutes = allInstitutes?.filter(
-        (institute: any) =>
-          institute.entity_type?.toLowerCase() === 'college' &&
-          institute.is_approve &&
-          institute.is_active,
-      );
-      setDataInstitutes(allInstitutes);
-      setSchoolInstitutes(schoolInstitutes);
-      setCollegeInstitutes(collegeInstitutes);
-    });
+      }
+    };
 
-    getData(`${QUERY_KEYS_COURSE.GET_COURSE}`).then((data) => {
-      setDataCourses(data.data.course_data);
-    });
-    getData(`${QUERY_KEYS_SUBJECT.GET_SUBJECT}`).then((data) => {
-      const subjects = data.data?.subjects_data;
-      setCollegeSubjects(
-        Array.isArray(subjects)
-          ? subjects?.filter((s: any) => s?.is_active)
-          : [],
-      );
-    });
-
-    getData(`${QUERY_KEYS_SUBJECT_SCHOOL.GET_SUBJECT}`).then((data) => {
-      const subjects = data.data?.subjects_data;
-      setSchoolSubjects(
-        Array.isArray(subjects)
-          ? subjects?.filter((s: any) => s?.is_active)
-          : [],
-      );
-    });
-    setIsInitialDataLoaded(true);
+    fetchAllData();
   }, []);
 
   useEffect(() => {
@@ -585,17 +608,10 @@ const AddContent = () => {
     dataClasses,
   ]);
 
-  const checkHigherClass = (
-    classId: string | undefined,
-    dataClasses: any[],
-  ): boolean => {
-    if (!classId) return false;
-    return dataClasses.some(
-      (classes) =>
-        classes.id === classId &&
-        (classes.class_name === 'class_11' ||
-          classes.class_name === 'class_12'),
-    );
+  const checkHigherClass = (classId: number): boolean => {
+    const cls = dataClasses.find((classes) => classes.id === classId);
+
+    return cls?.class_name === 'class_11' || cls?.class_name === 'class_12';
   };
 
   const SubjectsHandler = ({ values }: { values: IContentForm }) => {
@@ -607,7 +623,7 @@ const AddContent = () => {
               (subject) => subject.class_id === values.class_id,
             );
 
-            const higherClass = checkHigherClass(values.class_id, dataClasses);
+            const higherClass = checkHigherClass(Number(values.class_id));
 
             if (higherClass) {
               if (values.stream) {
@@ -764,21 +780,6 @@ const AddContent = () => {
     }
   }, [content?.courses, collegeSubjects]);
 
-  const isDuplicateCourseAndSemester = (courses: any[]): boolean => {
-    const combinations = new Set();
-
-    for (const course of courses) {
-      if (course.course_id && course.semester) {
-        const combination = `${course.course_id}-${course.semester}`;
-        if (combinations.has(combination)) {
-          return true;
-        }
-        combinations.add(combination);
-      }
-    }
-    return false;
-  };
-
   const contentSchema = Yup.object().shape({
     entity_id: Yup.string().required('Please select Entity'),
     stream: Yup.string().when('class_id', {
@@ -786,66 +787,92 @@ const AddContent = () => {
       then: () => Yup.string().required('Stream is required'),
       otherwise: () => Yup.string(),
     }),
-    courses: Yup.mixed().when('entity_id', {
-      is: (entityId: string) => isCollegeEntity(entityId),
-      then: () =>
-        Yup.array()
-          .of(
-            Yup.object().shape({
-              course_id: Yup.string().required('Please select Course'),
-              semester: Yup.string().required('Please select Semester'),
-              subjects: Yup.array()
-                .of(Yup.string())
-                .min(1, 'Please select at least one subject')
-                .required('Please select at least one subject'),
-            }),
-          )
-          .min(1, 'At least one course is required')
-          .test(
-            'no-duplicate-course-semester',
-            'Course and semester combination must be unique',
-            function (courses) {
-              return courses ? !isDuplicateCourseAndSemester(courses) : true;
-            },
-          ),
-      otherwise: () =>
-        Yup.array().of(
+    courses: Yup.array().when('entity_id', {
+      is: (entity_id: string) => {
+        const selectedEntity = dataEntity?.find(
+          (entity) => entity.id === Number(entity_id),
+        );
+        const isCollege = isCollegeEntity(selectedEntity?.id);
+        return isCollege;
+      },
+      then: (schema) => {
+        return schema.min(1, 'At least one course is required').of(
           Yup.object().shape({
-            course_id: Yup.string(),
-            semester: Yup.string(),
-            subjects: Yup.array().of(Yup.string()),
+            course_id: Yup.string()
+              .test('course-required', 'Course is required', function (value) {
+                return !!value;
+              })
+              .required('Course is required'),
+            semester: Yup.string()
+              .test(
+                'semester-required',
+                'semester is required',
+                function (value) {
+                  return !!value;
+                },
+              )
+              .required('semester is required'),
+            subjects: Yup.array()
+              .test(
+                'subjects-required',
+                'At least one subject must be selected',
+                function (value) {
+                  return value && value.length > 0;
+                },
+              )
+              .min(1, 'At least one subject must be selected')
+              .of(Yup.string())
+              .required('Subjects are required'),
           }),
-        ),
+        );
+      },
+      otherwise: (schema) => {
+        return schema.notRequired();
+      },
     }),
 
-    classes: Yup.mixed().when('entity_id', {
-      is: (entityId: string) => isSchoolEntity(entityId),
-      then: () =>
-        Yup.array()
-          .of(
-            Yup.object().shape({
-              class_id: Yup.string().required('Please select Class'),
-              stream: Yup.string().when('class_id', {
-                is: (class_id: string) =>
-                  checkHigherClass(class_id, dataClasses),
-                then: () => Yup.string().required('Please select Stream'),
-                otherwise: () => Yup.string(),
-              }),
-              subjects: Yup.array()
-                .of(Yup.string())
-                .min(1, 'Please select at least one subject')
-                .required('Please select at least one subject'),
-            }),
-          )
-          .min(1, 'At least one class is required'),
-      otherwise: () =>
-        Yup.array().of(
+    classes: Yup.array().when('entity_id', {
+      is: (entity_id: string) => {
+        const selectedEntity = dataEntity?.find(
+          (entity) => entity.id === Number(entity_id),
+        );
+        const isSchool = isSchoolEntity(selectedEntity?.id);
+        return isSchool;
+      },
+      then: (schema) => {
+        return schema.min(1, 'Please select Class').of(
           Yup.object().shape({
-            class_id: Yup.string(),
-            stream: Yup.string(),
-            subjects: Yup.array().of(Yup.string()),
+            class_id: Yup.string()
+              .test('class-required', 'Class is required', function (value) {
+                return !!value;
+              })
+              .required('Please select Class'),
+            stream: Yup.string().when('class_id', {
+              is: (class_id: string) => {
+                const result = checkHigherClass(Number(class_id));
+
+                return result;
+              },
+              then: () => Yup.string().required('Please select Stream'),
+              otherwise: () => Yup.string(),
+            }),
+            subjects: Yup.array()
+              .test(
+                'subjects-required',
+                'At least one subject must be selected',
+                function (value) {
+                  return value && value.length > 0;
+                },
+              )
+              .min(1, 'Please select at least one subject')
+              .of(Yup.string())
+              .required('Please select at least one subject'),
           }),
-        ),
+        );
+      },
+      otherwise: (schema) => {
+        return schema.notRequired();
+      },
     }),
 
     university_id: Yup.string().when('entity_id', {
@@ -889,7 +916,7 @@ const AddContent = () => {
     contentData: IContentForm,
     { resetForm }: FormikHelpers<IContentForm>,
   ) => {
-    setLoading(true);
+    setUploading(true);
     setUploadProgress(0);
 
     const formData = new FormData();
@@ -899,7 +926,7 @@ const AddContent = () => {
         hideProgressBar: true,
         theme: 'colored',
       });
-      setLoading(false);
+      setUploading(false);
       return;
     }
     if (contentData?.url) {
@@ -1072,7 +1099,7 @@ const AddContent = () => {
                 author: '',
               }));
               setAllSelectedfiles([]);
-              setLoading(false);
+              setUploading(false);
               if (user_type === 'admin') {
                 navigator('/main/Content');
               } else if (user_type === 'teacher') {
@@ -1088,11 +1115,11 @@ const AddContent = () => {
               resetForm({ values: initialState });
               setContent(initialState);
               setAllSelectedfiles([]);
-              setLoading(false);
+              setUploading(false);
             }
           },
           onError: (error: any) => {
-            setLoading(false);
+            setUploading(false);
             toast.error(error?.response?.data.message || 'An error occurred', {
               hideProgressBar: true,
               theme: 'colored',
@@ -1140,7 +1167,7 @@ const AddContent = () => {
             }));
             setSelectedthumnail_cover(null);
             setAllSelectedfiles([]);
-            setLoading(false);
+            setUploading(false);
           } else {
             toast.error('Content Upload Failed', {
               hideProgressBar: true,
@@ -1149,11 +1176,11 @@ const AddContent = () => {
             resetForm({ values: initialState });
             setContent(initialState);
             setAllSelectedfiles([]);
-            setLoading(false);
+            setUploading(false);
           }
         },
         onError: (error: any) => {
-          setLoading(false);
+          setUploading(false);
           toast.error(error?.response?.data.message || 'An error occurred', {
             hideProgressBar: true,
             theme: 'colored',
@@ -1320,19 +1347,16 @@ const AddContent = () => {
             const isDuplicate = updatedClasses?.some(
               (class1: any, index1: number) => {
                 return updatedClasses?.some((class2: any, index2: number) => {
-                  const isHigher = checkHigherClass(
-                    class1?.class_id,
-                    dataClasses,
-                  );
+                  const isHigher = checkHigherClass(class1?.class_id);
 
                   return isHigher
                     ? index1 !== index2 &&
-                    class1.class_id &&
-                    class2.class_id &&
-                    class1.stream &&
-                    class2.stream &&
-                    class1.class_id === class2.class_id &&
-                    class1.stream === class2.stream
+                        class1.class_id &&
+                        class2.class_id &&
+                        class1.stream &&
+                        class2.stream &&
+                        class1.class_id === class2.class_id &&
+                        class1.stream === class2.stream
                     : index1 !== index2 && class1.class_id === class2.class_id;
                 });
               },
@@ -1359,10 +1383,7 @@ const AddContent = () => {
               updatedClass.stream = '';
               updatedClass.subjects = [];
 
-              const isHigherClass = checkHigherClass(
-                String(value),
-                dataClasses,
-              );
+              const isHigherClass = checkHigherClass(Number(value));
               if (isHigherClass) {
                 const classSubjects = schoolSubjects?.filter(
                   (subject) => subject.class_id === value,
@@ -1591,7 +1612,8 @@ const AddContent = () => {
 
   return (
     <>
-      {loading && (
+      {loading && <FullScreenLoader />}
+      {uploading && (
         <div
           style={{
             position: 'absolute',
@@ -1607,17 +1629,11 @@ const AddContent = () => {
           }}
         >
           <Box sx={{ width: '80vw', mt: 2, mb: 2 }}>
-            {id ? (
-              <Typography variant="body2" color="text.secondary" align="center">
-                Loading..
-              </Typography>
-            ) : (
-              <Typography variant="body2" color="text.secondary" align="center">
-                {uploadProgress < 100
-                  ? `Uploading: ${uploadProgress}%`
-                  : 'Processing...'}
-              </Typography>
-            )}
+            <Typography variant="body2" color="text.secondary" align="center">
+              {uploadProgress < 100
+                ? `Uploading: ${uploadProgress}%`
+                : 'Processing...'}
+            </Typography>
             <LinearProgress
               variant={uploadProgress === 100 ? 'indeterminate' : 'determinate'}
               value={uploadProgress}
@@ -1680,17 +1696,17 @@ const AddContent = () => {
                               style={{
                                 backgroundColor:
                                   user_type === 'institute' ||
-                                    user_type === 'teacher'
+                                  user_type === 'teacher'
                                     ? '#f0f0f0'
                                     : inputfield(namecolor),
                                 color:
                                   user_type === 'institute' ||
-                                    user_type === 'teacher'
+                                  user_type === 'teacher'
                                     ? '#999999'
                                     : inputfieldtext(namecolor),
                                 border:
                                   user_type === 'institute' ||
-                                    user_type === 'teacher'
+                                  user_type === 'teacher'
                                     ? '1px solid #d0d0d0'
                                     : undefined,
                               }}
@@ -1732,20 +1748,20 @@ const AddContent = () => {
                               style={{
                                 backgroundColor:
                                   isSchoolEntity(values?.entity_id) ||
-                                    user_type === 'institute' ||
-                                    user_type === 'teacher'
+                                  user_type === 'institute' ||
+                                  user_type === 'teacher'
                                     ? '#f0f0f0'
                                     : inputfield(namecolor),
                                 color:
                                   isSchoolEntity(values?.entity_id) ||
-                                    user_type === 'institute' ||
-                                    user_type === 'teacher'
+                                  user_type === 'institute' ||
+                                  user_type === 'teacher'
                                     ? '#999999'
                                     : inputfieldtext(namecolor),
                                 border:
                                   isSchoolEntity(values?.entity_id) ||
-                                    user_type === 'institute' ||
-                                    user_type === 'teacher'
+                                  user_type === 'institute' ||
+                                  user_type === 'teacher'
                                     ? '1px solid #d0d0d0'
                                     : undefined,
                               }}
@@ -1790,17 +1806,17 @@ const AddContent = () => {
                               style={{
                                 backgroundColor:
                                   user_type === 'institute' ||
-                                    user_type === 'teacher'
+                                  user_type === 'teacher'
                                     ? '#f0f0f0'
                                     : inputfield(namecolor),
                                 color:
                                   user_type === 'institute' ||
-                                    user_type === 'teacher'
+                                  user_type === 'teacher'
                                     ? '#999999'
                                     : inputfieldtext(namecolor),
                                 border:
                                   user_type === 'institute' ||
-                                    user_type === 'teacher'
+                                  user_type === 'teacher'
                                     ? '1px solid #d0d0d0'
                                     : undefined,
                               }}
@@ -1829,112 +1845,230 @@ const AddContent = () => {
                               <div className="row gy-4 mt-2" key={index}>
                                 <div className="col-md-2">
                                   <div className="form_field_wrapper">
-                                    <FormControl fullWidth>
+                                    <FormControl
+                                      fullWidth
+                                      error={
+                                        !!(errors.courses?.[index] as any)
+                                          ?.course_id &&
+                                        (touched.courses?.[index] as any)
+                                          ?.course_id
+                                      }
+                                    >
                                       <InputLabel>Course *</InputLabel>
-                                      <Select
+                                      <Field
                                         name={`courses.${index}.course_id`}
-                                        value={course?.course_id}
-                                        label="Course *"
-                                        onChange={(
-                                          e: SelectChangeEvent<string>,
-                                        ) =>
-                                          handleChange(
-                                            e,
-                                            `courses.${index}.course_id`,
-                                          )
-                                        }
-                                        disabled={!values?.institute_id}
                                       >
-                                        {filteredCourses?.map((course: any) => (
-                                          <MenuItem
-                                            key={course?.id}
-                                            value={course?.id}
+                                        {({ field, meta }: any) => (
+                                          <Select
+                                            {...field}
+                                            value={course?.course_id || ''}
+                                            label="Course *"
+                                            onChange={(
+                                              e: SelectChangeEvent<string>,
+                                            ) => {
+                                              handleChange(
+                                                e,
+                                                `courses.${index}.course_id`,
+                                              );
+                                              formRef.current?.setFieldValue(
+                                                `courses.${index}.course_id`,
+                                                e.target.value,
+                                              );
+                                            }}
+                                            onBlur={() =>
+                                              formRef.current?.setFieldTouched(
+                                                `courses.${index}.course_id`,
+                                                true,
+                                              )
+                                            }
+                                            disabled={!values?.institute_id}
+                                            error={
+                                              !!(meta.error && meta.touched)
+                                            }
                                           >
-                                            {course?.course_name}
-                                          </MenuItem>
-                                        ))}
-                                      </Select>
+                                            {filteredCourses?.map(
+                                              (course: any) => (
+                                                <MenuItem
+                                                  key={course?.id}
+                                                  value={course?.id}
+                                                >
+                                                  {course?.course_name}
+                                                </MenuItem>
+                                              ),
+                                            )}
+                                          </Select>
+                                        )}
+                                      </Field>
+                                      {(errors.courses?.[index] as any)
+                                        ?.course_id &&
+                                        (touched.courses?.[index] as any)
+                                          ?.course_id && (
+                                          <p className="error">
+                                            {
+                                              (errors.courses?.[index] as any)
+                                                ?.course_id
+                                            }
+                                          </p>
+                                        )}
                                     </FormControl>
                                   </div>
                                 </div>
 
                                 <div className="col-md-2">
                                   <div className="form_field_wrapper">
-                                    <FormControl fullWidth>
+                                    <FormControl
+                                      fullWidth
+                                      error={
+                                        !!(errors.courses?.[index] as any)
+                                          ?.semester &&
+                                        (touched.courses?.[index] as any)
+                                          ?.semester
+                                      }
+                                    >
                                       <InputLabel>Semester *</InputLabel>
-                                      <Select
-                                        name={`courses.${index}.semester`}
-                                        value={course?.semester}
-                                        label="Semester *"
-                                        onChange={(
-                                          e: SelectChangeEvent<string>,
-                                        ) =>
-                                          handleChange(
-                                            e,
-                                            `courses.${index}.semester`,
-                                          )
-                                        }
-                                        disabled={!course?.course_id}
-                                      >
-                                        {courseSemesters[index]?.map(
-                                          (semesterOption: string) => (
-                                            <MenuItem
-                                              key={semesterOption}
-                                              value={semesterOption}
-                                            >
-                                              {semesterOption}
-                                            </MenuItem>
-                                          ),
+                                      <Field name={`courses.${index}.semester`}>
+                                        {({ field, meta }: any) => (
+                                          <Select
+                                            {...field}
+                                            value={course?.semester || ''}
+                                            label="Semester *"
+                                            onChange={(
+                                              e: SelectChangeEvent<string>,
+                                            ) => {
+                                              handleChange(
+                                                e,
+                                                `courses.${index}.semester`,
+                                              );
+                                              formRef.current?.setFieldValue(
+                                                `courses.${index}.semester`,
+                                                e.target.value,
+                                              );
+                                            }}
+                                            onBlur={() =>
+                                              formRef.current?.setFieldTouched(
+                                                `courses.${index}.semester`,
+                                                true,
+                                              )
+                                            }
+                                            disabled={!course?.course_id}
+                                            error={
+                                              !!(meta.error && meta.touched)
+                                            }
+                                          >
+                                            {courseSemesters[index]?.map(
+                                              (semesterOption: string) => (
+                                                <MenuItem
+                                                  key={semesterOption}
+                                                  value={semesterOption}
+                                                >
+                                                  {semesterOption}
+                                                </MenuItem>
+                                              ),
+                                            )}
+                                          </Select>
                                         )}
-                                      </Select>
+                                      </Field>
+                                      {(errors.courses?.[index] as any)
+                                        ?.semester &&
+                                        (touched.courses?.[index] as any)
+                                          ?.semester && (
+                                          <p className="error">
+                                            {
+                                              (errors.courses?.[index] as any)
+                                                ?.semester
+                                            }
+                                          </p>
+                                        )}
                                     </FormControl>
                                   </div>
                                 </div>
 
                                 <div className="col-md-4">
                                   <div className="form_field_wrapper">
-                                    <FormControl fullWidth>
+                                    <FormControl
+                                      fullWidth
+                                      error={
+                                        !!(errors.courses?.[index] as any)
+                                          ?.subjects &&
+                                        (touched.courses?.[index] as any)
+                                          ?.subjects
+                                      }
+                                    >
                                       <InputLabel>Subjects *</InputLabel>
-                                      <Select
-                                        multiple
-                                        name={`courses.${index}.subjects`}
-                                        value={course?.subjects}
-                                        label="Subjects *"
-                                        onChange={(
-                                          e: SelectChangeEvent<string[]>,
-                                        ) =>
-                                          handleChange(
-                                            e,
-                                            `courses.${index}.subjects`,
-                                          )
-                                        }
-                                        disabled={!course?.semester}
-                                        renderValue={(selected) =>
-                                          selected?.join(', ')
-                                        }
-                                      >
-                                        {courseSubjects[index]?.map(
-                                          (subject: any) => (
-                                            <MenuItem
-                                              key={subject?.subject_id}
-                                              value={subject?.subject_name}
-                                            >
-                                              <Checkbox
-                                                checked={course?.subjects.includes(
-                                                  subject?.subject_name,
-                                                )}
-                                                sx={{
-                                                  color: fieldIcon(namecolor),
-                                                  '&.Mui-checked': {
-                                                    color: fieldIcon(namecolor),
-                                                  },
-                                                }}
-                                              />
-                                              {subject?.subject_name}
-                                            </MenuItem>
-                                          ),
+                                      <Field name={`courses.${index}.subjects`}>
+                                        {({ field, meta }: any) => (
+                                          <Select
+                                            {...field}
+                                            multiple
+                                            value={course?.subjects || []}
+                                            label="Subjects *"
+                                            onChange={(
+                                              e: SelectChangeEvent<string[]>,
+                                            ) => {
+                                              handleChange(
+                                                e,
+                                                `courses.${index}.subjects`,
+                                              );
+                                              formRef.current?.setFieldValue(
+                                                `courses.${index}.subjects`,
+                                                e.target.value,
+                                              );
+                                            }}
+                                            onBlur={() =>
+                                              formRef.current?.setFieldTouched(
+                                                `courses.${index}.subjects`,
+                                                true,
+                                              )
+                                            }
+                                            disabled={!course?.semester}
+                                            renderValue={(selected) =>
+                                              Array.isArray(selected)
+                                                ? selected.join(', ')
+                                                : ''
+                                            }
+                                            error={
+                                              !!(meta.error && meta.touched)
+                                            }
+                                          >
+                                            {courseSubjects[index]?.map(
+                                              (subject: any) => (
+                                                <MenuItem
+                                                  key={subject?.subject_id}
+                                                  value={subject?.subject_name}
+                                                >
+                                                  <Checkbox
+                                                    checked={
+                                                      course?.subjects?.includes(
+                                                        subject?.subject_name,
+                                                      ) || false
+                                                    }
+                                                    sx={{
+                                                      color:
+                                                        fieldIcon(namecolor),
+                                                      '&.Mui-checked': {
+                                                        color:
+                                                          fieldIcon(namecolor),
+                                                      },
+                                                    }}
+                                                  />
+                                                  {subject?.subject_name}
+                                                </MenuItem>
+                                              ),
+                                            )}
+                                          </Select>
                                         )}
-                                      </Select>
+                                      </Field>
+                                      {(errors.courses?.[index] as any)
+                                        ?.subjects &&
+                                        (touched.courses?.[index] as any)
+                                          ?.subjects && (
+                                          <p className="error">
+                                            {
+                                              (errors.courses?.[index] as any)
+                                                ?.subjects
+                                            }
+                                          </p>
+                                        )}
                                     </FormControl>
                                   </div>
                                 </div>
@@ -1947,15 +2081,22 @@ const AddContent = () => {
                                           (_, i) => i !== index,
                                         ),
                                       }));
-
                                       const updatedCourses =
                                         values?.courses?.filter(
-                                          (i: any) => i !== index,
+                                          (_: any, i: number) => i !== index,
                                         );
                                       formRef.current?.setFieldValue(
                                         'courses',
                                         updatedCourses,
                                       );
+                                      const newTouched = { ...touched };
+                                      if (newTouched.courses) {
+                                        (newTouched.courses as any[]).splice(
+                                          index,
+                                          1,
+                                        );
+                                        formRef.current?.setTouched(newTouched);
+                                      }
                                     }}
                                     sx={{
                                       width: '35px',
@@ -1984,6 +2125,13 @@ const AddContent = () => {
                                             newCourse,
                                           ],
                                         }));
+                                        formRef.current?.setFieldValue(
+                                          'courses',
+                                          [
+                                            ...(values?.courses || []),
+                                            newCourse,
+                                          ],
+                                        );
                                       }}
                                       sx={{
                                         width: '35px',
@@ -2006,7 +2154,13 @@ const AddContent = () => {
                               <div className="row gy-4 mt-2" key={index}>
                                 <div className="col-md-2">
                                   <div className="form_field_wrapper">
-                                    <FormControl fullWidth>
+                                    <FormControl
+                                      fullWidth
+                                      error={
+                                        !!(errors?.classes?.[index] as any)
+                                          ?.class_id
+                                      }
+                                    >
                                       <InputLabel>Class *</InputLabel>
                                       <Select
                                         name={`classes.${index}.class_id`}
@@ -2033,11 +2187,129 @@ const AddContent = () => {
                                       >
                                         {(user_type === 'admin' ||
                                           user_type === 'institute') &&
-                                          dataClasses?.length > 0
+                                        dataClasses?.length > 0
                                           ? dataClasses?.map((cls: any) => (
+                                              <MenuItem
+                                                key={cls?.id}
+                                                value={cls?.id}
+                                                sx={{
+                                                  backgroundColor:
+                                                    inputfield(namecolor),
+                                                  color:
+                                                    inputfieldtext(namecolor),
+                                                  '&:hover': {
+                                                    backgroundColor:
+                                                      inputfieldhover(
+                                                        namecolor,
+                                                      ),
+                                                  },
+                                                }}
+                                              >
+                                                {cls?.class_name.replace(
+                                                  'class_',
+                                                  'Class ',
+                                                )}
+                                              </MenuItem>
+                                            ))
+                                          : user_type === 'teacher' &&
+                                              teacherClasses?.length > 0
+                                            ? teacherClasses?.map(
+                                                (cls: any) => (
+                                                  <MenuItem
+                                                    key={cls?.id}
+                                                    value={cls?.id}
+                                                    sx={{
+                                                      backgroundColor:
+                                                        inputfield(namecolor),
+                                                      color:
+                                                        inputfieldtext(
+                                                          namecolor,
+                                                        ),
+                                                      '&:hover': {
+                                                        backgroundColor:
+                                                          inputfieldhover(
+                                                            namecolor,
+                                                          ),
+                                                      },
+                                                    }}
+                                                  >
+                                                    {cls?.class_name.replace(
+                                                      'class_',
+                                                      'Class ',
+                                                    )}
+                                                  </MenuItem>
+                                                ),
+                                              )
+                                            : ''}
+                                      </Select>
+                                      {(errors?.classes?.[index] as any)
+                                        ?.class_id && (
+                                        <p className="error">
+                                          {
+                                            (errors.classes?.[index] as any)
+                                              .class_id
+                                          }
+                                        </p>
+                                      )}
+                                    </FormControl>
+                                  </div>
+                                </div>
+
+                                {checkHigherClass(Number(cls.class_id)) && (
+                                  <div className="col-md-2">
+                                    <div className="form_field_wrapper">
+                                      <FormControl
+                                        fullWidth
+                                        error={
+                                          !!(errors?.classes?.[index] as any)
+                                            ?.stream
+                                        }
+                                      >
+                                        <InputLabel>Stream *</InputLabel>
+                                        <Select
+                                          name={`classes.${index}.stream`}
+                                          value={cls?.stream}
+                                          label="Stream *"
+                                          onChange={(
+                                            e: SelectChangeEvent<string>,
+                                          ) =>
+                                            handleChange(
+                                              e,
+                                              `classes.${index}.stream`,
+                                            )
+                                          }
+                                          disabled={!cls?.class_id}
+                                          sx={{
+                                            backgroundColor:
+                                              inputfield(namecolor),
+                                            color: inputfieldtext(namecolor),
+                                            '& .MuiSelect-icon': {
+                                              color: fieldIcon(namecolor),
+                                            },
+                                          }}
+                                          MenuProps={{
+                                            PaperProps: {
+                                              style: {
+                                                backgroundColor:
+                                                  inputfield(namecolor),
+                                                color:
+                                                  inputfieldtext(namecolor),
+                                              },
+                                            },
+                                          }}
+                                        >
+                                          {(user_type === 'teacher'
+                                            ? classStreams[index]?.filter(
+                                                (item) =>
+                                                  classStreamsTeacher?.includes(
+                                                    item,
+                                                  ),
+                                              )
+                                            : classStreams[index]
+                                          )?.map((streamOption: string) => (
                                             <MenuItem
-                                              key={cls?.id}
-                                              value={cls?.id}
+                                              key={streamOption}
+                                              value={streamOption}
                                               sx={{
                                                 backgroundColor:
                                                   inputfield(namecolor),
@@ -2045,127 +2317,37 @@ const AddContent = () => {
                                                   inputfieldtext(namecolor),
                                                 '&:hover': {
                                                   backgroundColor:
-                                                    inputfieldhover(
-                                                      namecolor,
-                                                    ),
+                                                    inputfieldhover(namecolor),
                                                 },
                                               }}
                                             >
-                                              {cls?.class_name.replace(
-                                                'class_',
-                                                'Class ',
-                                              )}
+                                              {streamOption}
                                             </MenuItem>
-                                          ))
-                                          : user_type === 'teacher' &&
-                                            teacherClasses?.length > 0
-                                            ? teacherClasses?.map(
-                                              (cls: any) => (
-                                                <MenuItem
-                                                  key={cls?.id}
-                                                  value={cls?.id}
-                                                  sx={{
-                                                    backgroundColor:
-                                                      inputfield(namecolor),
-                                                    color:
-                                                      inputfieldtext(
-                                                        namecolor,
-                                                      ),
-                                                    '&:hover': {
-                                                      backgroundColor:
-                                                        inputfieldhover(
-                                                          namecolor,
-                                                        ),
-                                                    },
-                                                  }}
-                                                >
-                                                  {cls?.class_name.replace(
-                                                    'class_',
-                                                    'Class ',
-                                                  )}
-                                                </MenuItem>
-                                              ),
-                                            )
-                                            : ''}
-                                      </Select>
-                                    </FormControl>
-                                  </div>
-                                </div>
-                                {checkHigherClass(
-                                  cls.class_id,
-                                  dataClasses,
-                                ) && (
-                                    <div className="col-md-2">
-                                      <div className="form_field_wrapper">
-                                        <FormControl fullWidth>
-                                          <InputLabel>Stream *</InputLabel>
-                                          <Select
-                                            name={`classes.${index}.stream`}
-                                            value={cls?.stream}
-                                            label="Stream *"
-                                            onChange={(
-                                              e: SelectChangeEvent<string>,
-                                            ) =>
-                                              handleChange(
-                                                e,
-                                                `classes.${index}.stream`,
-                                              )
+                                          ))}
+                                        </Select>
+                                        {(errors?.classes?.[index] as any)
+                                          ?.stream && (
+                                          <p className="error">
+                                            {
+                                              (errors?.classes?.[index] as any)
+                                                .stream
                                             }
-                                            disabled={!cls?.class_id}
-                                            sx={{
-                                              backgroundColor:
-                                                inputfield(namecolor),
-                                              color: inputfieldtext(namecolor),
-                                              '& .MuiSelect-icon': {
-                                                color: fieldIcon(namecolor),
-                                              },
-                                            }}
-                                            MenuProps={{
-                                              PaperProps: {
-                                                style: {
-                                                  backgroundColor:
-                                                    inputfield(namecolor),
-                                                  color:
-                                                    inputfieldtext(namecolor),
-                                                },
-                                              },
-                                            }}
-                                          >
-                                            {classStreams[index]
-                                              ?.filter((item) =>
-                                                classStreamsTeacher?.includes(
-                                                  item,
-                                                ),
-                                              )
-                                              ?.map((streamOption: string) => (
-                                                <MenuItem
-                                                  key={streamOption}
-                                                  value={streamOption}
-                                                  sx={{
-                                                    backgroundColor:
-                                                      inputfield(namecolor),
-                                                    color:
-                                                      inputfieldtext(namecolor),
-                                                    '&:hover': {
-                                                      backgroundColor:
-                                                        inputfieldhover(
-                                                          namecolor,
-                                                        ),
-                                                    },
-                                                  }}
-                                                >
-                                                  {streamOption}
-                                                </MenuItem>
-                                              ))}
-                                          </Select>
-                                        </FormControl>
-                                      </div>
+                                          </p>
+                                        )}
+                                      </FormControl>
                                     </div>
-                                  )}
+                                  </div>
+                                )}
 
                                 <div className="col-md-4">
                                   <div className="form_field_wrapper">
-                                    <FormControl fullWidth>
+                                    <FormControl
+                                      fullWidth
+                                      error={
+                                        !!(errors?.classes?.[index] as any)
+                                          ?.subjects
+                                      }
+                                    >
                                       <InputLabel>Subjects *</InputLabel>
                                       <Select
                                         multiple
@@ -2183,8 +2365,7 @@ const AddContent = () => {
                                         disabled={
                                           !cls?.class_id ||
                                           (checkHigherClass(
-                                            cls?.class_id,
-                                            dataClasses,
+                                            Number(cls?.class_id),
                                           ) &&
                                             !cls?.stream)
                                         }
@@ -2201,32 +2382,43 @@ const AddContent = () => {
                                           },
                                         }}
                                       >
-                                        {classSubjects[index]
-                                          ?.filter((item) =>
-                                            classSubjectsTeacher?.includes(
-                                              item?.subject_name,
-                                            ),
-                                          )
-                                          ?.map((subject: any) => (
-                                            <MenuItem
-                                              key={subject?.subject_id}
-                                              value={subject?.subject_name}
-                                            >
-                                              <Checkbox
-                                                checked={cls?.subjects?.includes(
-                                                  subject?.subject_name,
-                                                )}
-                                                sx={{
+                                        {(user_type === 'teacher'
+                                          ? classSubjects[index]?.filter(
+                                              (item) =>
+                                                classSubjectsTeacher?.includes(
+                                                  item?.subject_name,
+                                                ),
+                                            )
+                                          : classSubjects[index]
+                                        )?.map((subject: any) => (
+                                          <MenuItem
+                                            key={subject?.subject_id}
+                                            value={subject?.subject_name}
+                                          >
+                                            <Checkbox
+                                              checked={cls?.subjects?.includes(
+                                                subject?.subject_name,
+                                              )}
+                                              sx={{
+                                                color: fieldIcon(namecolor),
+                                                '&.Mui-checked': {
                                                   color: fieldIcon(namecolor),
-                                                  '&.Mui-checked': {
-                                                    color: fieldIcon(namecolor),
-                                                  },
-                                                }}
-                                              />
-                                              {subject?.subject_name}
-                                            </MenuItem>
-                                          ))}
+                                                },
+                                              }}
+                                            />
+                                            {subject?.subject_name}
+                                          </MenuItem>
+                                        ))}
                                       </Select>
+                                      {(errors?.classes?.[index] as any)
+                                        ?.subjects && (
+                                        <p className="error">
+                                          {
+                                            (errors?.classes?.[index] as any)
+                                              ?.subjects
+                                          }
+                                        </p>
+                                      )}
                                     </FormControl>
                                   </div>
                                 </div>
@@ -2240,7 +2432,6 @@ const AddContent = () => {
                                           (_, i) => i !== index,
                                         ),
                                       }));
-
                                       const updatedClasses =
                                         values?.classes?.filter(
                                           (i: any) => i !== index,
@@ -2264,17 +2455,16 @@ const AddContent = () => {
                                   <div className="col-md-1">
                                     <IconButton
                                       onClick={() => {
-                                        const newCourse = {
+                                        const newClass = {
                                           class_id: '',
                                           stream: '',
                                           subjects: [],
                                         };
-
                                         setContent((prevTeacher) => ({
                                           ...prevTeacher,
                                           classes: [
                                             ...(prevTeacher.classes || []),
-                                            newCourse,
+                                            newClass,
                                           ],
                                         }));
                                       }}
@@ -2290,6 +2480,14 @@ const AddContent = () => {
                                 )}
                               </div>
                             ))}
+                            {errors?.classes &&
+                              typeof errors.classes === 'string' && (
+                                <div className="row mt-2">
+                                  <div className="col-12">
+                                    <p className="error">{errors.classes}</p>
+                                  </div>
+                                </div>
+                              )}
                           </>
                         )}
                       <div className="col-md-2">
@@ -2350,17 +2548,17 @@ const AddContent = () => {
                             style={{
                               backgroundColor:
                                 allselectedfiles?.length > 0 ||
-                                  allfiles?.length > 0
+                                allfiles?.length > 0
                                   ? '#f0f0f0'
                                   : inputfield(namecolor),
                               color:
                                 allselectedfiles?.length > 0 ||
-                                  allfiles?.length > 0
+                                allfiles?.length > 0
                                   ? '#999999'
                                   : inputfieldtext(namecolor),
                               border:
                                 allselectedfiles?.length > 0 ||
-                                  allfiles?.length > 0
+                                allfiles?.length > 0
                                   ? '1px solid #d0d0d0'
                                   : undefined,
                             }}
@@ -2480,16 +2678,22 @@ const AddContent = () => {
                                     sx={{ pl: 0 }}
                                   >
                                     <Box className="flex items-center">
-                                      {id ?
-                                        <img width={120} height={110} src={selectedthumnail_cover as string} alt={selectedthumnail_cover as string} />
-                                        : <Avatar
+                                      {id ? (
+                                        <img
+                                          width={120}
+                                          height={110}
+                                          src={selectedthumnail_cover as any}
+                                          alt={selectedthumnail_cover as any}
+                                        />
+                                      ) : (
+                                        <Avatar
                                           src={URL.createObjectURL(
                                             selectedthumnail_cover as File,
                                           )}
                                           variant="rounded"
                                           sx={{ width: 48, height: 48, mr: 2 }}
-                                        />}
-
+                                        />
+                                      )}
                                     </Box>
                                     <IconButton
                                       onClick={() =>
@@ -2538,9 +2742,14 @@ const AddContent = () => {
                                     className="flex items-center justify-between"
                                     sx={{ pl: 0 }}
                                   >
-                                    {id ?
-                                      <img width={120} height={110} src={selectedthumnail_cover as string} alt={selectedthumnail_cover as string} />
-                                      :
+                                    {id ? (
+                                      <img
+                                        width={120}
+                                        height={110}
+                                        src={selectedthumnail_cover as any}
+                                        alt={selectedthumnail_cover as any}
+                                      />
+                                    ) : (
                                       <Avatar
                                         src={URL.createObjectURL(
                                           selectedthumnail_cover as File,
@@ -2548,7 +2757,7 @@ const AddContent = () => {
                                         variant="rounded"
                                         sx={{ width: 60, height: 60, mr: 2 }}
                                       />
-                                    }
+                                    )}
 
                                     <IconButton
                                       onClick={() =>

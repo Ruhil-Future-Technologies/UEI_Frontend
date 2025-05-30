@@ -350,6 +350,11 @@ const TeacherDashboardCharts = () => {
                 fontWeight: 600,
               },
             },
+            labels: {
+              formatter: function (val: any) {
+                return Math.round(val);
+              },
+            },
           },
         ],
         colors: ['#4E97FD', '#FFB100', '#66C266', '#D9534F'],
