@@ -506,10 +506,10 @@ const BulkUploadForm: React.FC<BulkUploadFormProps> = ({
                     </div>
                   </CustomTabPanel>
                   <CustomTabPanel value={value} index={1}>
-                    Item Two
+                  Comming soon ..
                   </CustomTabPanel>
                   <CustomTabPanel value={value} index={2}>
-                    Item Three
+                  Comming soon ..
                   </CustomTabPanel>
                 </Box>
               </div>
