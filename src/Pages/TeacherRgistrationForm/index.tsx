@@ -72,6 +72,7 @@ import BusinessIcon from '@mui/icons-material/Business';
 import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
 import WestIcon from '@mui/icons-material/West';
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import { encryptData } from '../../utils/encryption';
 export interface Teacher {
   id?: string;
   first_name: string;
@@ -943,8 +944,9 @@ const TeacherRegistrationPage = () => {
       }
       const payload = {
         email: process.env.REACT_APP_SUPER_USER_EMAIL,
-        password: process.env.REACT_APP_SUPER_USER_PASSWORD,
+        password: encryptData(process.env.REACT_APP_SUPER_USER_PASSWORD ||''),
         user_type: 'super_admin',
+        created_by:"superadmin"
       };
       postDataJson(`auth/login`, payload).then((data) => {
         if (data.status) {
