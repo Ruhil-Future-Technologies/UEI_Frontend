@@ -346,7 +346,17 @@ const InstitutionDash = () => {
                     {dataStudents.slice(0, 4).map((student, index) => (
                       <tr key={index}>
                         <td>
-                          <img src={String(student?.pic_path)} alt="" />
+                          {/* <img src={String(student?.pic_path)} alt="" /> */}
+                          <img
+                            src={String(student?.pic_path)}
+                            alt=""
+                            style={{
+                              width: '50px',
+                              height: '50px',
+                              objectFit: 'cover',
+                              borderRadius: '50%'
+                            }}
+                          />
                         </td>
                         <td>{student.first_name + ' ' + student.last_name}</td>
                         <td>{student.gender}</td>

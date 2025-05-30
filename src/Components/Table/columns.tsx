@@ -361,6 +361,7 @@ export const INSITUTION_COLUMNS: MRT_ColumnDef<InstituteRep0oDTO>[] = [
     accessorKey: 'university_name',
     header: 'University name ',
     size: 150,
+    enableHiding: true,
   },
   {
     accessorKey: 'email',
@@ -415,10 +416,6 @@ export const INSITUTION_COLUMNS: MRT_ColumnDef<InstituteRep0oDTO>[] = [
       const MenuInstituteDeactive = QUERY_KEYS.GET_INSTITUTEDEACTIVE;
       const value = cell?.getValue();
 
-      // if (!value) {
-      //   return EMPTY_CELL_VALUE;
-      // }
-
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [showValue, setShowValue] = useState(value);
       const [show, setShow] = useState(!!value);
@@ -471,15 +468,6 @@ export const INSITUTION_COLUMNS: MRT_ColumnDef<InstituteRep0oDTO>[] = [
     },
     size: 150,
   },
-
-  //      {
-  //     id:"null",
-  //     header: "",
-  //     accessorKey: "",
-  //     size: 20,
-  //     enableResizing:false,
-  //     enableColumnActions:false,
-  //   },
 ];
 
 export const TEACHER_COLUMNS = (
@@ -565,7 +553,7 @@ export const Entity_COLUMNS: MRT_ColumnDef<IEntity>[] = [
     size: 150,
   },
   {
-    accessorKey: 'created_by',
+    accessorKey: 'created_by_name',
     header: 'Created By',
     size: 150,
   },
@@ -575,7 +563,7 @@ export const Entity_COLUMNS: MRT_ColumnDef<IEntity>[] = [
     size: 150,
   },
   {
-    accessorKey: 'updated_by',
+    accessorKey: 'updated_by_name',
     header: 'Updated By',
     size: 150,
   },
@@ -647,7 +635,7 @@ export const Class_COLUMNS: MRT_ColumnDef<IClass>[] = [
     },
   },
   {
-    accessorKey: 'created_by',
+    accessorKey: 'created_by_name',
     header: 'Created By',
     size: 150,
   },
@@ -657,7 +645,7 @@ export const Class_COLUMNS: MRT_ColumnDef<IClass>[] = [
     size: 150,
   },
   {
-    accessorKey: 'updated_by',
+    accessorKey: 'updated_by_name',
     header: 'Updated By',
     size: 150,
   },
@@ -727,7 +715,7 @@ export const COURSE_COLUMNS: MRT_ColumnDef<CourseRep0oDTO>[] = [
     size: 150,
   },
   {
-    accessorKey: 'created_by',
+    accessorKey: 'created_by_name',
     header: 'Created By',
     size: 150,
   },
@@ -737,7 +725,7 @@ export const COURSE_COLUMNS: MRT_ColumnDef<CourseRep0oDTO>[] = [
     size: 150,
   },
   {
-    accessorKey: 'updated_by',
+    accessorKey: 'updated_by_name',
     header: 'Updated By',
     size: 150,
   },
@@ -811,12 +799,12 @@ export const UNIVERSITY_COLUMNS: MRT_ColumnDef<UniversityRep0oDTO>[] = [
     size: 150,
   },
   {
-    accessorKey: 'created_at',
+    accessorKey: 'created_by_name',
     header: 'Created At',
     size: 150,
   },
   {
-    accessorKey: 'updated_by',
+    accessorKey: 'updated_by_name',
     header: 'Updated By',
     size: 150,
   },
@@ -890,7 +878,7 @@ export const SEMESTER_COLUMNS: MRT_ColumnDef<SemesterRep0oDTO>[] = [
     size: 150,
   },
   {
-    accessorKey: 'created_by',
+    accessorKey: 'created_by_name',
     header: 'Created By',
     size: 150,
   },
@@ -900,7 +888,7 @@ export const SEMESTER_COLUMNS: MRT_ColumnDef<SemesterRep0oDTO>[] = [
     size: 150,
   },
   {
-    accessorKey: 'updated_by',
+    accessorKey: 'updated_by_name',
     header: 'Updated By',
     size: 150,
   },
@@ -969,7 +957,7 @@ export const Department_COLUMNS: MRT_ColumnDef<DepartmentRep0oDTO>[] = [
     size: 150,
   },
   {
-    accessorKey: 'created_by',
+    accessorKey: 'created_by_name',
     header: 'Created By',
     size: 150,
   },
@@ -979,7 +967,7 @@ export const Department_COLUMNS: MRT_ColumnDef<DepartmentRep0oDTO>[] = [
     size: 150,
   },
   {
-    accessorKey: 'updated_by',
+    accessorKey: 'updated_by_name',
     header: 'Updated By',
     size: 150,
   },
@@ -1171,103 +1159,103 @@ export const STUDENT_COLUMNS: MRT_ColumnDef<any>[] = [
     size: 150,
   },
 ];
-export const col_for_t=(entity:string)=>{
+export const col_for_t = (entity: string) => {
 
- const STUDENT_COLUMNS_FOR_TEACEHR: MRT_ColumnDef<any>[] = [
-  // const columns: any[] = [
-  // {
-  //     accessorKey: "aim",
-  //     header: "Aim ",
-  //     size: 150,
-  // },
-  // {
-  //   accessorKey: 'pic_path',
-  //   header: 'Profile Image',
-  //   size: 150,
-  //   Cell: ({ cell }: any) => {
-  //     const value: any = cell?.getValue();
+  const STUDENT_COLUMNS_FOR_TEACEHR: MRT_ColumnDef<any>[] = [
+    // const columns: any[] = [
+    // {
+    //     accessorKey: "aim",
+    //     header: "Aim ",
+    //     size: 150,
+    // },
+    // {
+    //   accessorKey: 'pic_path',
+    //   header: 'Profile Image',
+    //   size: 150,
+    //   Cell: ({ cell }: any) => {
+    //     const value: any = cell?.getValue();
 
-  //     if (isNullOrUndefined(value) || value === 0) {
-  //       return EMPTY_CELL_VALUE;
-  //     }
+    //     if (isNullOrUndefined(value) || value === 0) {
+    //       return EMPTY_CELL_VALUE;
+    //     }
 
-  //     return (
-  //       <div className="profile_img">
-  //         <img
-  //           src={value !== '' ? value : profile}
-  //           alt="profile"
-  //           height="50px"
-  //           width="50px"
-  //           style={{ borderRadius: '50%', objectFit: 'cover' }}
-  //         />
-  //       </div>
-  //     );
-  //   },
-  // },
-  {
-    accessorKey: 'name',
-    header: 'Full Name',
-    size: 150,
-  },
-  {
-    accessorKey: 'email',
-    header: 'Email',
-    size: 250,
-  },
-
-  {
-    accessorKey: 'phone',
-    header: 'Mobile No',
-    size: 150,
-  },
-  {
-    accessorKey: 'gender',
-    header: 'Gender',
-    size: 150,
-    Cell: ({ cell }: any) => {
-      const value = cell?.getValue() as string | undefined;
-
-      const camelCaseValue = value?.replace(/\b(\w)/g, (match: string) =>
-        match?.toUpperCase(),
-      );
-      return <div>{camelCaseValue}</div>;
+    //     return (
+    //       <div className="profile_img">
+    //         <img
+    //           src={value !== '' ? value : profile}
+    //           alt="profile"
+    //           height="50px"
+    //           width="50px"
+    //           style={{ borderRadius: '50%', objectFit: 'cover' }}
+    //         />
+    //       </div>
+    //     );
+    //   },
+    // },
+    {
+      accessorKey: 'name',
+      header: 'Full Name',
+      size: 150,
     },
-  },
-  {
-    accessorKey: 'dob',
-    header: 'DOB',
-    size: 150,
-    Cell: ({ cell }) => {
-      const value = cell.getValue();
+    {
+      accessorKey: 'email',
+      header: 'Email',
+      size: 250,
+    },
 
-      if (isNullOrUndefined(value) || value === 0) {
-        return EMPTY_CELL_VALUE;
+    {
+      accessorKey: 'phone',
+      header: 'Mobile No',
+      size: 150,
+    },
+    {
+      accessorKey: 'gender',
+      header: 'Gender',
+      size: 150,
+      Cell: ({ cell }: any) => {
+        const value = cell?.getValue() as string | undefined;
+
+        const camelCaseValue = value?.replace(/\b(\w)/g, (match: string) =>
+          match?.toUpperCase(),
+        );
+        return <div>{camelCaseValue}</div>;
+      },
+    },
+    {
+      accessorKey: 'dob',
+      header: 'DOB',
+      size: 150,
+      Cell: ({ cell }) => {
+        const value = cell.getValue();
+
+        if (isNullOrUndefined(value) || value === 0) {
+          return EMPTY_CELL_VALUE;
+        }
+
+        return getDateFormat(value);
+      },
+    },
+    {
+      accessorKey: `${entity == "school" ? "class_name" : 'Course_name'}`,
+      header: `${entity == "school" ? "Class" : 'Course'}`,
+      size: 150
+    },
+    {
+      accessorKey: entity == "school" ? "stream" : "semester_number",
+      header: entity == "school" ? "Stream" : "Semester",
+      size: 150,
+      Cell: ({ cell }): ReactNode => {
+        const value = cell.getValue();
+        return value === "general" ? "-" : `${value}`;
       }
-
-      return getDateFormat(value);
     },
-  },
-  {
-    accessorKey: `${entity == "school" ? "class_name" : 'Course_name'}`,
-    header: `${entity == "school" ? "Class" : 'Course'}`,
-    size: 150
-  },
-  {
-    accessorKey: entity == "school" ? "stream" : "semester_number",
-    header: entity == "school" ? "Stream" : "Semester",
-    size: 150,
-    Cell: ({ cell }): ReactNode => {
-      const value = cell.getValue();
-      return value === "general" ? "-" : `${value}`;
+    {
+      accessorKey: "subject_name",
+      header: "Subject Name",
+      size: 150
     }
-  },
-  {
-    accessorKey: "subject_name",
-    header: "Subject Name",
-    size: 150
-  }
-];
-return STUDENT_COLUMNS_FOR_TEACEHR;
+  ];
+  return STUDENT_COLUMNS_FOR_TEACEHR;
 }
 
 export const MENU_COLUMNS: MRT_ColumnDef<MenuRep0oDTO>[] = [
@@ -1282,7 +1270,7 @@ export const MENU_COLUMNS: MRT_ColumnDef<MenuRep0oDTO>[] = [
     size: 150,
   },
   {
-    accessorKey: 'created_by',
+    accessorKey: 'created_by_name',
     header: 'Created By',
     size: 150,
   },
@@ -1292,7 +1280,7 @@ export const MENU_COLUMNS: MRT_ColumnDef<MenuRep0oDTO>[] = [
     size: 150,
   },
   {
-    accessorKey: 'updated_by',
+    accessorKey: 'updated_by_name',
     header: 'Updated By',
     size: 150,
   },
@@ -1371,7 +1359,7 @@ export const SUBJECT_COLUMNS: MRT_ColumnDef<SubjectRep0oDTO>[] = [
     size: 150,
   },
   {
-    accessorKey: 'created_by',
+    accessorKey: 'created_by_name',
     header: 'Created By',
     size: 150,
   },
@@ -1381,7 +1369,7 @@ export const SUBJECT_COLUMNS: MRT_ColumnDef<SubjectRep0oDTO>[] = [
     size: 150,
   },
   {
-    accessorKey: 'updated_by',
+    accessorKey: 'updated_by_name',
     header: 'Updated By',
     size: 150,
   },
@@ -1456,7 +1444,7 @@ export const SUBJECT_COLUMNS_SCHOOL: MRT_ColumnDef<SubjectRep0oDTO>[] = [
     size: 150,
   },
   {
-    accessorKey: 'created_by',
+    accessorKey: 'created_by_name',
     header: 'Created By',
     size: 150,
   },
@@ -1466,7 +1454,7 @@ export const SUBJECT_COLUMNS_SCHOOL: MRT_ColumnDef<SubjectRep0oDTO>[] = [
     size: 150,
   },
   {
-    accessorKey: 'updated_by',
+    accessorKey: 'updated_by_name',
     header: 'Updated By',
     size: 150,
   },
@@ -1535,7 +1523,7 @@ export const LANGUAGE_COLUMNS: MRT_ColumnDef<LanguageRep0oDTO>[] = [
     size: 150,
   },
   {
-    accessorKey: 'created_by',
+    accessorKey: 'created_by_name',
     header: 'Created By',
     size: 150,
   },
@@ -1545,7 +1533,7 @@ export const LANGUAGE_COLUMNS: MRT_ColumnDef<LanguageRep0oDTO>[] = [
     size: 150,
   },
   {
-    accessorKey: 'updated_by',
+    accessorKey: 'updated_by_name',
     header: 'Updated By',
     size: 150,
   },
@@ -1713,7 +1701,7 @@ export const FEEDBACK_COLUMNS: MRT_ColumnDef<FeedbackRep0oDTO>[] = [
     },
   },
   {
-    accessorKey: 'created_by',
+    accessorKey: 'created_by_name',
     header: 'Created By',
     size: 150,
   },
@@ -1723,7 +1711,7 @@ export const FEEDBACK_COLUMNS: MRT_ColumnDef<FeedbackRep0oDTO>[] = [
     size: 150,
   },
   {
-    accessorKey: 'updated_by',
+    accessorKey: 'updated_by_name',
     header: 'Updated By',
     size: 150,
   },
@@ -1839,7 +1827,7 @@ export const SUBMENU_COLUMNS: MRT_ColumnDef<SubMenuRep0oDTO>[] = [
     size: 150,
   },
   {
-    accessorKey: 'created_by',
+    accessorKey: 'created_by_name',
     header: 'Created By',
     size: 150,
   },
@@ -1849,7 +1837,7 @@ export const SUBMENU_COLUMNS: MRT_ColumnDef<SubMenuRep0oDTO>[] = [
     size: 150,
   },
   {
-    accessorKey: 'updated_by',
+    accessorKey: 'updated_by_name',
     header: 'Updated By',
     size: 150,
   },
@@ -2041,7 +2029,7 @@ export const FORM_COLUMNS: MRT_ColumnDef<FormRep0oDTO>[] = [
     },
   },
   {
-    accessorKey: 'created_by',
+    accessorKey: 'created_by_name',
     header: 'Created By',
     size: 150,
     enableResizing: false,
@@ -2053,7 +2041,7 @@ export const FORM_COLUMNS: MRT_ColumnDef<FormRep0oDTO>[] = [
     enableResizing: false,
   },
   {
-    accessorKey: 'updated_by',
+    accessorKey: 'updated_by_name',
     header: 'Updated By',
     size: 150,
     enableResizing: false,
@@ -2748,3 +2736,66 @@ export const ADMIN_LIST_COLUMNS: MRT_ColumnDef<Admin>[] = [
     },
   },
 ];
+
+export const QUIZ_LIST_COLUMNS: MRT_ColumnDef<any>[] = [
+
+  {
+    accessorKey: "title",
+    header: "Title"
+  },
+  {
+    accessorKey: "points",
+    header: "Points"
+  },
+  {
+    accessorKey: "contact_email",
+    header: "Contact Email"
+  },
+  // {
+  //   accessorKey:'class_stream_subjects',
+  //   header:""
+  // },
+  {
+    accessorKey: "available_from",
+    header: "Available From"
+  },
+  {
+    accessorKey: "due_date_time",
+    header: "Due Date and time"
+  },
+  {
+    accessorKey: "created_at",
+    header: "Created At"
+  }
+]
+export const ASSIGNMENT_LIST_COLUMNS: MRT_ColumnDef<any>[] = [
+
+  {
+    accessorKey: "title",
+    header: "Title"
+  },
+  {
+    accessorKey: "points",
+    header: "Points"
+  },
+  {
+    accessorKey: "contact_email",
+    header: "Contact Email"
+  },
+  // {
+  //   accessorKey:'class_stream_subjects',
+  //   header:""
+  // },
+  {
+    accessorKey: "available_from",
+    header: "Available From"
+  },
+  {
+    accessorKey: "due_date_time",
+    header: "Due Date and time"
+  },
+  {
+    accessorKey: "created_at",
+    header: "Created At"
+  }
+]
