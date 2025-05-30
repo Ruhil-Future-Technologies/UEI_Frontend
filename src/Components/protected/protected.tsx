@@ -73,6 +73,8 @@ const Protected = (props: { Component: any; menuName?: string }) => {
       (usertype === 'admin' ? mName.toLowerCase() === 'add-semester' : '') ||
       (usertype === 'admin' ? mName.toLowerCase() === 'semester' : '') ||
       (usertype === 'admin' ? uName.toLowerCase() === 'edit-semester' : '') ||
+      (usertype === 'admin' ? mName.toLowerCase() === 'assignment-list' : '') ||
+      (usertype === 'admin' ? mName.toLowerCase() === 'quiz-list' : '') ||
       (usertype === 'admin'
         ? feedbackRoute.toLowerCase() === `edit-feedback/${id}`
         : '') ||
@@ -149,6 +151,14 @@ const Protected = (props: { Component: any; menuName?: string }) => {
       (usertype === 'institute' &&
       uName.toLowerCase() === 'institution-dashboard'
         ? mName.toLowerCase() === 'student-list'
+        : '') ||
+        (usertype === 'institute' &&
+      uName.toLowerCase() === 'institution-dashboard'
+        ? mName.toLowerCase() === 'assignment-list'
+        : '') ||
+        (usertype === 'institute' &&
+      uName.toLowerCase() === 'institution-dashboard'
+        ? mName.toLowerCase() === 'quiz-list'
         : '') ||
       (usertype === 'institute' &&
       uName.toLowerCase() === 'institution-dashboard'

@@ -10,7 +10,7 @@ import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
 import VolumeUpOutlinedIcon from '@mui/icons-material/VolumeUpOutlined';
 import VolumeOffOutlinedIcon from '@mui/icons-material/VolumeOffOutlined';
-import CachedOutlinedIcon from '@mui/icons-material/CachedOutlined';
+// import CachedOutlinedIcon from '@mui/icons-material/CachedOutlined';
 import ThumbUpAltOutlinedIcon from '@mui/icons-material/ThumbUpAltOutlined';
 import { useTheme } from '@mui/material/styles';
 import { ChatTable } from '../../Pages/Chat/Tablechat';
@@ -69,7 +69,7 @@ const ChatComponent: React.FC<ChatComponentProps> = ({
   onSearch,
   onFlag,
   onExpand,
-  onRegenerate,
+  // onRegenerate,
   onSpeak,
   onStop,
   onCopy,
@@ -268,10 +268,10 @@ const ChatComponent: React.FC<ChatComponentProps> = ({
                             />
                           </li>
                           {/* <li onClick={() => onRegenerate?.()}> */}
-                          <li onClick={() => onRegenerate?.(chat.question)}>
+                          {/* <li onClick={() => onRegenerate?.(chat.question)}>
                             <CachedOutlinedIcon sx={{ fontSize: '14px' }} />
                             <span>Regenerate</span>
-                          </li>
+                          </li> */}
                           {!chat?.speak ? (
                             <li
                               onClick={() =>

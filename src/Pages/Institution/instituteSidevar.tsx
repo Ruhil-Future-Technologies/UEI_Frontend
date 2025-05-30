@@ -1,6 +1,6 @@
 import React from 'react';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
-import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
+// import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
 import LibraryBooksOutlinedIcon from '@mui/icons-material/LibraryBooksOutlined';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 // import Header from "../../Components/Header";
@@ -10,6 +10,8 @@ import logowhite from '../../assets/img/logo-white.svg';
 import LiveHelpOutlinedIcon from '@mui/icons-material/LiveHelpOutlined';
 import SchoolOutlinedIcon from '@mui/icons-material/SchoolOutlined';
 import Person2OutlinedIcon from '@mui/icons-material/Person2Outlined';
+import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
+import QuestionAnswerOutlinedIcon from '@mui/icons-material/QuestionAnswerOutlined';
 const InstituteSidevar = () => {
   const handleMouseEnter = () => {
     document.body.classList.add('sidebar-hovered');
@@ -65,7 +67,7 @@ const InstituteSidevar = () => {
               <div className="menu-title">Dashboard</div>
             </Link>
           </li>
-          <li>
+          {/* <li>
             <Link
               to={'/institution-dashboard/chat'}
               onClick={removeMobileToggle}
@@ -76,7 +78,7 @@ const InstituteSidevar = () => {
               </div>
               <div className="menu-title">Chat with AI</div>
             </Link>
-          </li>
+          </li> */}
           <li>
             <Link
               to="/institution-dashboard/Content"
@@ -99,6 +101,30 @@ const InstituteSidevar = () => {
                 <Person2OutlinedIcon />
               </div>
               <div className="menu-title">Teacher</div>
+            </Link>
+          </li>
+           <li>
+            <Link
+              to="/institution-dashboard/assignment-list"
+              onClick={removeMobileToggle}
+            >
+              <div className="parent-icon">
+                {' '}
+                <AssignmentOutlinedIcon />
+              </div>
+              <div className="menu-title">Assignments</div>
+            </Link>
+          </li>
+           <li>
+            <Link
+              to="/institution-dashboard/quiz-list"
+              onClick={removeMobileToggle}
+            >
+              <div className="parent-icon">
+                {' '}
+                <QuestionAnswerOutlinedIcon />
+              </div>
+              <div className="menu-title">Quizzes</div>
             </Link>
           </li>
           <li>

@@ -170,7 +170,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
   useEffect(() => {
     setBoxes([]);
     const fetchData = async () => {
-      if (activeForm === 5) {
+      if (activeForm === 6) {
         if (StudentId) {
          await getCourse();
          await getSemester();
@@ -457,10 +457,10 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
     const newBoxes: any = [...boxes];
     const newValidationErrors = { ...validationErrors };
     if (field === 'subject_id') {
-      const subjectname = subjects?.filter((subject) => subject.subject_id === value)
-      const selectedSubject = subjectname[0]?.subject_name?.toLowerCase();
-      const teacherData = teachersAll.filter((teacher) =>
-        teacher.subject_list.some((sub: any) => sub.toLowerCase() === selectedSubject)
+      const subjectname = subjects?.filter((subject) => subject?.subject_id === value)
+      const selectedSubject = subjectname[0]?.subject_name;
+      const teacherData = teachersAll?.filter((teacher) =>
+        teacher?.subject_list?.some((sub: any) => sub === selectedSubject)
       );
       newBoxes[index] = {
         ...newBoxes[index],
