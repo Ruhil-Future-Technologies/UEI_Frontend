@@ -69,10 +69,12 @@ const Bulkupload = () => {
         if (selectedEntity === 'college') {
             getData(`${CourseListURL}`)
                 .then((data) => {
+                    if (data.status) {
                     const filteredData = data?.data?.course_data?.filter(
                         (item: any) => item.is_active && item.institution_id === selectInstiutte
                     );
                     setDynamicCourses(filteredData);
+                }
                 })
                 .catch((e) => {
                     const errorMessage = e?.response?.data?.message || e?.message;

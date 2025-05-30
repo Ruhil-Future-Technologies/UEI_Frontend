@@ -9,24 +9,24 @@ import courseImg from '../../assets/img/courses-1.png';
 import toperstudent from '../../assets/img/topper-image.png';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Link } from 'react-router-dom';
-//import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
-import InstituteGraphRepo from './institutionGraphRepo';
-import OpenInFullOutlinedIcon from '@mui/icons-material/OpenInFullOutlined';
-import MicIcon from '@mui/icons-material/Mic';
-import ArrowUpwardOutlinedIcon from '@mui/icons-material/ArrowUpwardOutlined';
-import robotimg from '../../assets/img/robot.png';
-import glogowhite from '../../assets/img/g-logo-white.svg';
-import ArrowForwardOutlinedIcon from '@mui/icons-material/ArrowForwardOutlined';
 import ArrowBackOutlinedIcon from '@mui/icons-material/ArrowBackOutlined';
-import ThumbDownAltOutlinedIcon from '@mui/icons-material/ThumbDownAltOutlined';
-import ThumbUpAltOutlinedIcon from '@mui/icons-material/ThumbUpAltOutlined';
-import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
-import VolumeUpOutlinedIcon from '@mui/icons-material/VolumeUpOutlined';
-import AutorenewOutlinedIcon from '@mui/icons-material/AutorenewOutlined';
+import InstituteGraphRepo from './institutionGraphRepo';
+import ArrowForwardOutlinedIcon from '@mui/icons-material/ArrowForwardOutlined';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
-import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
-import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import useApi from '../../hooks/useAPI';
+//import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
+// import OpenInFullOutlinedIcon from '@mui/icons-material/OpenInFullOutlined';
+// import MicIcon from '@mui/icons-material/Mic';
+// import ArrowUpwardOutlinedIcon from '@mui/icons-material/ArrowUpwardOutlined';
+// import robotimg from '../../assets/img/robot.png';
+// import glogowhite from '../../assets/img/g-logo-white.svg';
+// import ThumbDownAltOutlinedIcon from '@mui/icons-material/ThumbDownAltOutlined';
+// import ThumbUpAltOutlinedIcon from '@mui/icons-material/ThumbUpAltOutlined';
+// import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
+// import VolumeUpOutlinedIcon from '@mui/icons-material/VolumeUpOutlined';
+// import AutorenewOutlinedIcon from '@mui/icons-material/AutorenewOutlined';
+// import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
+// import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import {
   CourseRep0oDTO,
   InstituteRep0oDTO,
@@ -170,8 +170,8 @@ const InstitutionDash = () => {
   ];
 
   return (
-    <div className="main-wrapper">
-      <div className="main-content">
+    <div className="main-wrapper pb-5">
+      <div className="main-content pb-5">
         <div className="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
           <HomeOutlinedIcon
             sx={{
@@ -180,18 +180,6 @@ const InstitutionDash = () => {
             }}
           />
           <div className="breadcrumb-title pe-3">Dashboard</div>
-          {/* <div className="ps-3">
-            <nav aria-label="breadcrumb">
-              <ol className="breadcrumb mb-0 p-0">
-                <li className="breadcrumb-item">
-                 
-                </li>
-                <li className="breadcrumb-item active" aria-current="page">
-                  Report
-                </li>
-              </ol>
-            </nav>
-          </div> */}
         </div>
 
         <div className="row">
@@ -358,7 +346,17 @@ const InstitutionDash = () => {
                     {dataStudents.slice(0, 4).map((student, index) => (
                       <tr key={index}>
                         <td>
-                          <img src={String(student?.pic_path)} alt="" />
+                          {/* <img src={String(student?.pic_path)} alt="" /> */}
+                          <img
+                            src={String(student?.pic_path)}
+                            alt=""
+                            style={{
+                              width: '50px',
+                              height: '50px',
+                              objectFit: 'cover',
+                              borderRadius: '50%'
+                            }}
+                          />
                         </td>
                         <td>{student.first_name + ' ' + student.last_name}</td>
                         <td>{student.gender}</td>
@@ -480,7 +478,7 @@ const InstitutionDash = () => {
           </div>
           <InstituteGraphRepo />
 
-          <div className="col-xxl-8 d-flex align-items-stretch">
+          {/* <div className="col-xxl-8 d-flex align-items-stretch">
             <div className="chat-wrapper desk-chat-wrapper rounded-4 mt-lg-5">
               <div className="chat-header d-flex align-items-center start-0 rounded-top-4">
                 <div>
@@ -604,7 +602,7 @@ const InstitutionDash = () => {
 
               <div className="overlay chat-toggle-btn-mobile"></div>
             </div>
-          </div>
+          </div> */}
           <div className="col-xxl-4 d-flex align-items-stretch topstudent">
             <div className="card w-100">
               <div className="card-body">

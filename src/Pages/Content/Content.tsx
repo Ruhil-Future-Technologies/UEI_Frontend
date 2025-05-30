@@ -174,7 +174,7 @@ const Content = () => {
 
   useEffect(() => {
     callAPI();
-  }, []);
+  }, [user_uuid, user_type]);
 
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setActiveTab(newValue);
@@ -218,7 +218,6 @@ const Content = () => {
         });
         setColumns(updatedColumns);
       }, 0);
-
       return processCollegeContents(college?.id);
     };
 
@@ -251,7 +250,7 @@ const Content = () => {
         .map((content) => {
           const parsed =
             typeof content?.course_semester_subjects === 'string'
-              ? JSON.parse(content.course_semester_subjects)
+              ? JSON.parse(content?.course_semester_subjects)
               : content?.course_semester_subjects;
           const keys = parsed ? Object.keys(parsed) : [];
           const sub_name = getSubjectsName(parsed, 'college');
@@ -297,8 +296,6 @@ const Content = () => {
     columns11,
     instituteDetails,
     teacherDetail,
-    user_type,
-    user_uuid,
   ]);
 
   const handleEditFile = (id: number) => {
