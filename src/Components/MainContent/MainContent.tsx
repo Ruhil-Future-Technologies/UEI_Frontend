@@ -2246,11 +2246,9 @@ function MainContent() {
           <div className="main-wrapper">
             <main className="main-content">
               <section className="row">
-                <div className="row">
                   {statCardsData.map((card, index) => (
                     <StatCard key={index} {...card} />
                   ))}
-                </div>
               </section>
               <section className="row">
                 <div className="col-lg-6">
