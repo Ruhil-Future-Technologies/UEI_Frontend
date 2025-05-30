@@ -37,7 +37,7 @@ import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
 import VolumeUpOutlinedIcon from '@mui/icons-material/VolumeUpOutlined';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import VolumeOffOutlinedIcon from '@mui/icons-material/VolumeOffOutlined';
-import CachedOutlinedIcon from '@mui/icons-material/CachedOutlined';
+// import CachedOutlinedIcon from '@mui/icons-material/CachedOutlined';
 // import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined';
 // import TrendingUpOutlinedIcon from '@mui/icons-material/TrendingUpOutlined';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -1984,72 +1984,72 @@ function MainContent() {
     synth.cancel();
   };
 
-  const regenerateChat = () => {
-    setChatLoader(true);
-    setLoaderMsg('Fetching Data from Ollama model.');
-    setSearchErr(false);
+  // const regenerateChat = () => {
+  //   setChatLoader(true);
+  //   setLoaderMsg('Fetching Data from Ollama model.');
+  //   setSearchErr(false);
 
-    const prompt = profileDatas?.prompt?.replace('**question**', 'answer');
-    let payload = {};
+  //   const prompt = profileDatas?.prompt?.replace('**question**', 'answer');
+  //   let payload = {};
 
-    if (selectedchat?.question !== '') {
-      payload = {
-        question: selectedchat.question,
-        prompt: prompt,
-        course:
-          profileDatas?.academic_history?.institution_type === 'school'
-            ? profileDatas?.class?.name
-            : studentCourse,
-        // course: "class_10",
-        stream: profileDatas?.subject,
-        chat_hostory: [
-          { role: 'user', content: selectedchat?.question },
-          {
-            role: 'assistant',
-            content: selectedchat?.answer,
-          },
-        ],
-      };
-    } else {
-      payload = {
-        question: selectedchat?.question,
-        prompt: prompt,
-        course:
-          profileDatas?.academic_history?.institution_type === 'school'
-            ? profileDatas?.class?.name
-            : studentCourse,
-        stream: profileDatas?.subject,
-      };
-    }
-    postDataJson(`${ChatRAGURL}`, {
-      user_query: search,
-      student_id: userid,
-      regenerate: true,
-      answer: selectedchat[0]?.answer,
-      diagram_code: selectedchat[0]?.diagram_code,
-      table_code: selectedchat[0]?.table_code,
-      class_or_course_selection:
-        profileDatas?.academic_history?.institution_type === 'school'
-          ? profileDatas?.class.name
-          : profileDatas?.subject_preference?.course_name,
-    })
-      .then((response) => {
-        if (response?.status === 200) {
-          handleResponse(response);
-          const ChatStorepayload = {
-            [user_type === 'teacher' ? 'teacher_id' : 'student_id']: Id,
-            chat_question: search,
-            response: response?.answer,
-          };
-          postDataJson(`${ChatStore}`, ChatStorepayload).catch(handleError);
-        }
-      })
-      .catch(() => {
-        postDataJson(`${ChatURLAI}`, payload)
-          .then((response) => handleResponse(response))
-          .catch((error) => handleError(error));
-      });
-  };
+  //   if (selectedchat?.question !== '') {
+  //     payload = {
+  //       question: selectedchat.question,
+  //       prompt: prompt,
+  //       course:
+  //         profileDatas?.academic_history?.institution_type === 'school'
+  //           ? profileDatas?.class?.name
+  //           : studentCourse,
+  //       // course: "class_10",
+  //       stream: profileDatas?.subject,
+  //       chat_hostory: [
+  //         { role: 'user', content: selectedchat?.question },
+  //         {
+  //           role: 'assistant',
+  //           content: selectedchat?.answer,
+  //         },
+  //       ],
+  //     };
+  //   } else {
+  //     payload = {
+  //       question: selectedchat?.question,
+  //       prompt: prompt,
+  //       course:
+  //         profileDatas?.academic_history?.institution_type === 'school'
+  //           ? profileDatas?.class?.name
+  //           : studentCourse,
+  //       stream: profileDatas?.subject,
+  //     };
+  //   }
+  //   postDataJson(`${ChatRAGURL}`, {
+  //     user_query: search,
+  //     student_id: userid,
+  //     regenerate: true,
+  //     answer: selectedchat[0]?.answer,
+  //     diagram_code: selectedchat[0]?.diagram_code,
+  //     table_code: selectedchat[0]?.table_code,
+  //     class_or_course_selection:
+  //       profileDatas?.academic_history?.institution_type === 'school'
+  //         ? profileDatas?.class.name
+  //         : profileDatas?.subject_preference?.course_name,
+  //   })
+  //     .then((response) => {
+  //       if (response?.status === 200) {
+  //         handleResponse(response);
+  //         const ChatStorepayload = {
+  //           [user_type === 'teacher' ? 'teacher_id' : 'student_id']: Id,
+  //           chat_question: search,
+  //           response: response?.answer,
+  //         };
+  //         postDataJson(`${ChatStore}`, ChatStorepayload).catch(handleError);
+  //       }
+  //     })
+  //     .catch(() => {
+  //       postDataJson(`${ChatURLAI}`, payload)
+  //         .then((response) => handleResponse(response))
+  //         .catch((error) => handleError(error));
+  //     });
+  // };
 
   const handleExpandChat = () => {
     if (selectedchat?.length > 0 || chatLoader) {
@@ -2823,12 +2823,12 @@ function MainContent() {
                                                 : 1,
                                           }}
                                         />
-                                        <li onClick={regenerateChat}>
+                                        {/* <li onClick={regenerateChat}>
                                           <CachedOutlinedIcon
                                             sx={{ fontSize: '14px' }}
                                           />{' '}
                                           <span>Regenerate</span>
-                                        </li>
+                                        </li> */}
                                         {!chat?.speak ? (
                                           <li
                                             onClick={() =>
