@@ -108,7 +108,7 @@ const AddContent = () => {
   const [classStreamsTeacher, setClassStreamsTeacher] = useState<string[]>([]);
   const [allselectedfiles, setAllSelectedfiles] = useState<File[]>([]);
   const [selectedthumnail_cover, setSelectedthumnail_cover] =
-    useState<File | null>(null);
+    useState<File | null | string>(null);
   const [allfiles, setAllfiles] = useState<File[]>([]);
   const user_type = localStorage.getItem('user_type');
   const user_uuid = localStorage.getItem('user_uuid');
@@ -346,7 +346,13 @@ const AddContent = () => {
           author: contentDetail?.data?.content_data.author || '',
           description: contentDetail?.data?.content_data.description || '',
         };
-
+        if (contentDetail?.data?.content_data?.content_type == "video_lecture" || contentDetail?.data?.content_data?.content_type == "e-book") {
+          if (contentDetail?.data?.content_data?.thumbnail_url) {
+            setSelectedthumnail_cover(contentDetail?.data?.content_data?.thumbnail_url);
+          }
+          setShowthumnail(contentDetail?.data?.content_data?.content_type);
+        }
+        console.log(contentDetail)
         setContent(processedData);
 
         if (
@@ -387,9 +393,9 @@ const AddContent = () => {
           if (data?.data?.entity_type === 'school') {
             const classStreamSubjects = data?.data
               ?.class_stream_subjects as Record<
-              string,
-              Record<string, string[]>
-            >;
+                string,
+                Record<string, string[]>
+              >;
 
             // Pre-compute values once
             const validClassIds = new Set(
@@ -1321,12 +1327,12 @@ const AddContent = () => {
 
                   return isHigher
                     ? index1 !== index2 &&
-                        class1.class_id &&
-                        class2.class_id &&
-                        class1.stream &&
-                        class2.stream &&
-                        class1.class_id === class2.class_id &&
-                        class1.stream === class2.stream
+                    class1.class_id &&
+                    class2.class_id &&
+                    class1.stream &&
+                    class2.stream &&
+                    class1.class_id === class2.class_id &&
+                    class1.stream === class2.stream
                     : index1 !== index2 && class1.class_id === class2.class_id;
                 });
               },
@@ -1674,17 +1680,17 @@ const AddContent = () => {
                               style={{
                                 backgroundColor:
                                   user_type === 'institute' ||
-                                  user_type === 'teacher'
+                                    user_type === 'teacher'
                                     ? '#f0f0f0'
                                     : inputfield(namecolor),
                                 color:
                                   user_type === 'institute' ||
-                                  user_type === 'teacher'
+                                    user_type === 'teacher'
                                     ? '#999999'
                                     : inputfieldtext(namecolor),
                                 border:
                                   user_type === 'institute' ||
-                                  user_type === 'teacher'
+                                    user_type === 'teacher'
                                     ? '1px solid #d0d0d0'
                                     : undefined,
                               }}
@@ -1726,20 +1732,20 @@ const AddContent = () => {
                               style={{
                                 backgroundColor:
                                   isSchoolEntity(values?.entity_id) ||
-                                  user_type === 'institute' ||
-                                  user_type === 'teacher'
+                                    user_type === 'institute' ||
+                                    user_type === 'teacher'
                                     ? '#f0f0f0'
                                     : inputfield(namecolor),
                                 color:
                                   isSchoolEntity(values?.entity_id) ||
-                                  user_type === 'institute' ||
-                                  user_type === 'teacher'
+                                    user_type === 'institute' ||
+                                    user_type === 'teacher'
                                     ? '#999999'
                                     : inputfieldtext(namecolor),
                                 border:
                                   isSchoolEntity(values?.entity_id) ||
-                                  user_type === 'institute' ||
-                                  user_type === 'teacher'
+                                    user_type === 'institute' ||
+                                    user_type === 'teacher'
                                     ? '1px solid #d0d0d0'
                                     : undefined,
                               }}
@@ -1784,17 +1790,17 @@ const AddContent = () => {
                               style={{
                                 backgroundColor:
                                   user_type === 'institute' ||
-                                  user_type === 'teacher'
+                                    user_type === 'teacher'
                                     ? '#f0f0f0'
                                     : inputfield(namecolor),
                                 color:
                                   user_type === 'institute' ||
-                                  user_type === 'teacher'
+                                    user_type === 'teacher'
                                     ? '#999999'
                                     : inputfieldtext(namecolor),
                                 border:
                                   user_type === 'institute' ||
-                                  user_type === 'teacher'
+                                    user_type === 'teacher'
                                     ? '1px solid #d0d0d0'
                                     : undefined,
                               }}
@@ -2027,59 +2033,59 @@ const AddContent = () => {
                                       >
                                         {(user_type === 'admin' ||
                                           user_type === 'institute') &&
-                                        dataClasses?.length > 0
+                                          dataClasses?.length > 0
                                           ? dataClasses?.map((cls: any) => (
-                                              <MenuItem
-                                                key={cls?.id}
-                                                value={cls?.id}
-                                                sx={{
+                                            <MenuItem
+                                              key={cls?.id}
+                                              value={cls?.id}
+                                              sx={{
+                                                backgroundColor:
+                                                  inputfield(namecolor),
+                                                color:
+                                                  inputfieldtext(namecolor),
+                                                '&:hover': {
                                                   backgroundColor:
-                                                    inputfield(namecolor),
-                                                  color:
-                                                    inputfieldtext(namecolor),
-                                                  '&:hover': {
+                                                    inputfieldhover(
+                                                      namecolor,
+                                                    ),
+                                                },
+                                              }}
+                                            >
+                                              {cls?.class_name.replace(
+                                                'class_',
+                                                'Class ',
+                                              )}
+                                            </MenuItem>
+                                          ))
+                                          : user_type === 'teacher' &&
+                                            teacherClasses?.length > 0
+                                            ? teacherClasses?.map(
+                                              (cls: any) => (
+                                                <MenuItem
+                                                  key={cls?.id}
+                                                  value={cls?.id}
+                                                  sx={{
                                                     backgroundColor:
-                                                      inputfieldhover(
+                                                      inputfield(namecolor),
+                                                    color:
+                                                      inputfieldtext(
                                                         namecolor,
                                                       ),
-                                                  },
-                                                }}
-                                              >
-                                                {cls?.class_name.replace(
-                                                  'class_',
-                                                  'Class ',
-                                                )}
-                                              </MenuItem>
-                                            ))
-                                          : user_type === 'teacher' &&
-                                              teacherClasses?.length > 0
-                                            ? teacherClasses?.map(
-                                                (cls: any) => (
-                                                  <MenuItem
-                                                    key={cls?.id}
-                                                    value={cls?.id}
-                                                    sx={{
+                                                    '&:hover': {
                                                       backgroundColor:
-                                                        inputfield(namecolor),
-                                                      color:
-                                                        inputfieldtext(
+                                                        inputfieldhover(
                                                           namecolor,
                                                         ),
-                                                      '&:hover': {
-                                                        backgroundColor:
-                                                          inputfieldhover(
-                                                            namecolor,
-                                                          ),
-                                                      },
-                                                    }}
-                                                  >
-                                                    {cls?.class_name.replace(
-                                                      'class_',
-                                                      'Class ',
-                                                    )}
-                                                  </MenuItem>
-                                                ),
-                                              )
+                                                    },
+                                                  }}
+                                                >
+                                                  {cls?.class_name.replace(
+                                                    'class_',
+                                                    'Class ',
+                                                  )}
+                                                </MenuItem>
+                                              ),
+                                            )
                                             : ''}
                                       </Select>
                                     </FormControl>
@@ -2089,73 +2095,73 @@ const AddContent = () => {
                                   cls.class_id,
                                   dataClasses,
                                 ) && (
-                                  <div className="col-md-2">
-                                    <div className="form_field_wrapper">
-                                      <FormControl fullWidth>
-                                        <InputLabel>Stream *</InputLabel>
-                                        <Select
-                                          name={`classes.${index}.stream`}
-                                          value={cls?.stream}
-                                          label="Stream *"
-                                          onChange={(
-                                            e: SelectChangeEvent<string>,
-                                          ) =>
-                                            handleChange(
-                                              e,
-                                              `classes.${index}.stream`,
-                                            )
-                                          }
-                                          disabled={!cls?.class_id}
-                                          sx={{
-                                            backgroundColor:
-                                              inputfield(namecolor),
-                                            color: inputfieldtext(namecolor),
-                                            '& .MuiSelect-icon': {
-                                              color: fieldIcon(namecolor),
-                                            },
-                                          }}
-                                          MenuProps={{
-                                            PaperProps: {
-                                              style: {
-                                                backgroundColor:
-                                                  inputfield(namecolor),
-                                                color:
-                                                  inputfieldtext(namecolor),
+                                    <div className="col-md-2">
+                                      <div className="form_field_wrapper">
+                                        <FormControl fullWidth>
+                                          <InputLabel>Stream *</InputLabel>
+                                          <Select
+                                            name={`classes.${index}.stream`}
+                                            value={cls?.stream}
+                                            label="Stream *"
+                                            onChange={(
+                                              e: SelectChangeEvent<string>,
+                                            ) =>
+                                              handleChange(
+                                                e,
+                                                `classes.${index}.stream`,
+                                              )
+                                            }
+                                            disabled={!cls?.class_id}
+                                            sx={{
+                                              backgroundColor:
+                                                inputfield(namecolor),
+                                              color: inputfieldtext(namecolor),
+                                              '& .MuiSelect-icon': {
+                                                color: fieldIcon(namecolor),
                                               },
-                                            },
-                                          }}
-                                        >
-                                          {classStreams[index]
-                                            ?.filter((item) =>
-                                              classStreamsTeacher?.includes(
-                                                item,
-                                              ),
-                                            )
-                                            ?.map((streamOption: string) => (
-                                              <MenuItem
-                                                key={streamOption}
-                                                value={streamOption}
-                                                sx={{
+                                            }}
+                                            MenuProps={{
+                                              PaperProps: {
+                                                style: {
                                                   backgroundColor:
                                                     inputfield(namecolor),
                                                   color:
                                                     inputfieldtext(namecolor),
-                                                  '&:hover': {
+                                                },
+                                              },
+                                            }}
+                                          >
+                                            {classStreams[index]
+                                              ?.filter((item) =>
+                                                classStreamsTeacher?.includes(
+                                                  item,
+                                                ),
+                                              )
+                                              ?.map((streamOption: string) => (
+                                                <MenuItem
+                                                  key={streamOption}
+                                                  value={streamOption}
+                                                  sx={{
                                                     backgroundColor:
-                                                      inputfieldhover(
-                                                        namecolor,
-                                                      ),
-                                                  },
-                                                }}
-                                              >
-                                                {streamOption}
-                                              </MenuItem>
-                                            ))}
-                                        </Select>
-                                      </FormControl>
+                                                      inputfield(namecolor),
+                                                    color:
+                                                      inputfieldtext(namecolor),
+                                                    '&:hover': {
+                                                      backgroundColor:
+                                                        inputfieldhover(
+                                                          namecolor,
+                                                        ),
+                                                    },
+                                                  }}
+                                                >
+                                                  {streamOption}
+                                                </MenuItem>
+                                              ))}
+                                          </Select>
+                                        </FormControl>
+                                      </div>
                                     </div>
-                                  </div>
-                                )}
+                                  )}
 
                                 <div className="col-md-4">
                                   <div className="form_field_wrapper">
@@ -2344,17 +2350,17 @@ const AddContent = () => {
                             style={{
                               backgroundColor:
                                 allselectedfiles?.length > 0 ||
-                                allfiles?.length > 0
+                                  allfiles?.length > 0
                                   ? '#f0f0f0'
                                   : inputfield(namecolor),
                               color:
                                 allselectedfiles?.length > 0 ||
-                                allfiles?.length > 0
+                                  allfiles?.length > 0
                                   ? '#999999'
                                   : inputfieldtext(namecolor),
                               border:
                                 allselectedfiles?.length > 0 ||
-                                allfiles?.length > 0
+                                  allfiles?.length > 0
                                   ? '1px solid #d0d0d0'
                                   : undefined,
                             }}
@@ -2474,16 +2480,16 @@ const AddContent = () => {
                                     sx={{ pl: 0 }}
                                   >
                                     <Box className="flex items-center">
-                                      <Avatar
-                                        src={URL.createObjectURL(
-                                          selectedthumnail_cover,
-                                        )}
-                                        variant="rounded"
-                                        sx={{ width: 48, height: 48, mr: 2 }}
-                                      />
-                                      <Typography variant="body2">
-                                        {selectedthumnail_cover.name}
-                                      </Typography>
+                                      {id ?
+                                        <img width={120} height={110} src={selectedthumnail_cover as string} alt={selectedthumnail_cover as string} />
+                                        : <Avatar
+                                          src={URL.createObjectURL(
+                                            selectedthumnail_cover as File,
+                                          )}
+                                          variant="rounded"
+                                          sx={{ width: 48, height: 48, mr: 2 }}
+                                        />}
+
                                     </Box>
                                     <IconButton
                                       onClick={() =>
@@ -2532,13 +2538,18 @@ const AddContent = () => {
                                     className="flex items-center justify-between"
                                     sx={{ pl: 0 }}
                                   >
-                                    <Avatar
-                                      src={URL.createObjectURL(
-                                        selectedthumnail_cover,
-                                      )}
-                                      variant="rounded"
-                                      sx={{ width: 60, height: 60, mr: 2 }}
-                                    />
+                                    {id ?
+                                      <img width={120} height={110} src={selectedthumnail_cover as string} alt={selectedthumnail_cover as string} />
+                                      :
+                                      <Avatar
+                                        src={URL.createObjectURL(
+                                          selectedthumnail_cover as File,
+                                        )}
+                                        variant="rounded"
+                                        sx={{ width: 60, height: 60, mr: 2 }}
+                                      />
+                                    }
+
                                     <IconButton
                                       onClick={() =>
                                         setSelectedthumnail_cover(null)
@@ -2549,32 +2560,6 @@ const AddContent = () => {
                                   </ListItem>
                                 )}
                               </List>
-
-                              {/* List of existing files */}
-                              {allfiles?.length > 0 && (
-                                <List className="doclist">
-                                  {allfiles?.map((file, index) => (
-                                    <ListItem
-                                      key={index}
-                                      className="flex items-center justify-between"
-                                      sx={{ pl: 0 }}
-                                    >
-                                      <Typography variant="body2">
-                                        {'name' in file
-                                          ? file.name
-                                          : (file as any)?.url}
-                                      </Typography>
-                                      <IconButton
-                                        onClick={() =>
-                                          handleDeleteFile((file as any)?.id)
-                                        }
-                                      >
-                                        <DeleteOutlinedIcon />
-                                      </IconButton>
-                                    </ListItem>
-                                  ))}
-                                </List>
-                              )}
                             </Box>
 
                             {/* Error message */}
