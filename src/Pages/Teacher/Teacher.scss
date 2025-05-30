@@ -15,7 +15,7 @@
 
 .floating-label-container {
   position: relative;
-  margin-top: 20px;
+  margin-top: 25px;
 }
 
 .floating-label {
@@ -31,11 +31,12 @@
 }
 
 .floating-label.focused {
-  // top: -1px;
-  top: -12px;
+  top: 0px;
+  // top: -12px;
   font-size: 14px;
   color: var(--inputlablecolor) !important ;
   z-index: 3;
+  background-color: #fff !important;
 }
 .floating-label.focusedempty {
   top: 30px;

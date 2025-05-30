@@ -542,6 +542,7 @@ const TeacherDash = () => {
             postDataJson(`${ChatRAGURL}`, {
               user_query: search,
               student_id: userId,
+              regenerate: false,
               school_college_selection: teacherData.entity_type,
               board_selection: null,
               state_board_selection: null,
@@ -655,6 +656,7 @@ const TeacherDash = () => {
             const queryParams = {
               user_query: search,
               student_id: userId,
+              regenerate: false,
               school_college_selection: teacherData.entity_type || null,
               board_selection: null,
               state_board_selection: null,
@@ -908,9 +910,13 @@ const TeacherDash = () => {
         stream: teacherData?.subject || '',
       };
     }
-    postDataJson(`${ChatOLLAMAURL}`, {
+    postDataJson(`${ChatRAGURL}`, {
       user_query: question,
       student_id: userId,
+      regenerate: true,
+      answer: selectedchat[0]?.answer,
+      diagram_code: selectedchat[0]?.diagram_code,
+      table_code: selectedchat[0]?.table_code,
       class_or_course_selection:
         teacherData.entity_type === 'school'
           ? teacherData?.class_name || ''

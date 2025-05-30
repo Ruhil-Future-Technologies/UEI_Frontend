@@ -741,45 +741,21 @@ const Teacher = () => {
 
                   {activeTab === 0 && (
                     <Tabs value={activeSubTab} onChange={handleSubTabChange}>
-                      {(user_type === 'admin' ||
-                        (user_type === 'institute' &&
-                          institute_entity === 'college')) && (
-                        <Tab label="College" />
-                      )}
-                      {(user_type === 'admin' ||
-                        (user_type === 'institute' &&
-                          institute_entity === 'school')) && (
-                        <Tab label="School" />
-                      )}
+                      {user_type === 'admin' && <Tab label="College" />}
+                      {user_type === 'admin' && <Tab label="School" />}
                     </Tabs>
                   )}
 
                   {activeTab === 1 && (
                     <Tabs value={activeSubTab} onChange={handleSubTabChange}>
-                      {(user_type === 'admin' ||
-                        (user_type === 'institute' &&
-                          institute_entity === 'college')) && (
-                        <Tab label="College" />
-                      )}
-                      {(user_type === 'admin' ||
-                        (user_type === 'institute' &&
-                          institute_entity === 'school')) && (
-                        <Tab label="School" />
-                      )}
+                      {user_type === 'admin' && <Tab label="College" />}
+                      {user_type === 'admin' && <Tab label="School" />}
                     </Tabs>
                   )}
                   {activeTab === 2 && (
                     <Tabs value={activeSubTab} onChange={handleSubTabChange}>
-                      {(user_type === 'admin' ||
-                        (user_type === 'institute' &&
-                          institute_entity === 'college')) && (
-                        <Tab label="College" />
-                      )}
-                      {(user_type === 'admin' ||
-                        (user_type === 'institute' &&
-                          institute_entity === 'school')) && (
-                        <Tab label="School" />
-                      )}
+                      {user_type === 'admin' && <Tab label="College" />}
+                      {user_type === 'admin' && <Tab label="School" />}
                     </Tabs>
                   )}
                   <Box marginTop="10px">

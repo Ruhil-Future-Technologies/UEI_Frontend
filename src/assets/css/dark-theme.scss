@@ -8,6 +8,10 @@
   $mui_date_bg: #32363b !important;
 
   
+
+  .ant-select-selection-placeholder {
+  color: #aaaaaa !important;
+}
   
   .sidebar-footer {
     ul{
@@ -672,5 +676,34 @@
     background-color: var(--bs-body-bg);
     border-color: var(--bs-border-color);
   }
+
+  
+
+.title-color{
+  color: $headingColor;
 }
+.paragraph-color{
+  color: #4B5563;
+}
+.infocard{
+  background-color: $mui_date_bg;
+  border-color: $headerbg;
+  p, span, li{
+    color: $date_text;
+  }
+}
+.bulk-upload-container{
+  select{
+    border: 0px!important;
+  }
+  
+}
+
+.draggerbg{
+  background-color: $headerbg;
+}
+
+}
+
+
 

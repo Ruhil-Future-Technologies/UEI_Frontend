@@ -56,6 +56,8 @@ import BusinessIcon from '@mui/icons-material/Business';
 import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
 import WestIcon from '@mui/icons-material/West';
 import FullScreenLoader from '../Loader/FullScreenLoader';
+import { encryptData } from '../../utils/encryption';
+
 interface Institute {
   institute_name: string;
   university_id: string;
@@ -530,8 +532,9 @@ const InstituteRegistrationForm = () => {
       }
       const payload = {
         email: process.env.REACT_APP_SUPER_USER_EMAIL,
-        password: process.env.REACT_APP_SUPER_USER_PASSWORD,
+        password: encryptData(process.env.REACT_APP_SUPER_USER_PASSWORD ||''),
         user_type: 'super_admin',
+        created_by:"superadmin"
       };
       postDataJson(`auth/login`, payload).then((data) => {
         if (data.status) {

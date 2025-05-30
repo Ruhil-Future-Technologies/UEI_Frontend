@@ -14,7 +14,7 @@ import ThumbDownOutlinedIcon from '@mui/icons-material/ThumbDownOutlined';
 import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
 import VolumeUpOutlinedIcon from '@mui/icons-material/VolumeUpOutlined';
 import VolumeOffOutlinedIcon from '@mui/icons-material/VolumeOffOutlined';
-import CachedOutlinedIcon from '@mui/icons-material/CachedOutlined';
+// import CachedOutlinedIcon from '@mui/icons-material/CachedOutlined';
 import SyncAltOutlinedIcon from '@mui/icons-material/SyncAltOutlined';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
@@ -595,6 +595,7 @@ const speak = async (text: string, index: number) => {
             postDataJson(`${ChatRAGURL}`, {
               user_query: search,
               student_id: userid,
+              regenerate: false,
               school_college_selection:
               teacherDetail.entity_type,
               board_selection:
@@ -711,6 +712,7 @@ const speak = async (text: string, index: number) => {
             const queryParams = {
               user_query: search,
               student_id: userid,
+              regenerate: false,
               school_college_selection: teacherDetail.entity_type || null,
               board_selection:  null,
               state_board_selection:  null,
@@ -1172,61 +1174,65 @@ const speak = async (text: string, index: number) => {
     saveChatlocal();
   };
 
-  const regenerateChat = (question: any) => {
-    setLoading(true);
-    setLoaderMsg('Fetching Data from Ollama model.');
-    setSearchErr(false);
+  // const regenerateChat = (question: any) => {
+  //   setLoading(true);
+  //   setLoaderMsg('Fetching Data from Ollama model.');
+  //   setSearchErr(false);
 
-    const prompt = studentDetail?.prompt?.replace('**question**', 'answer');
-    let payload = {};
+  //   const prompt = studentDetail?.prompt?.replace('**question**', 'answer');
+  //   let payload = {};
 
-    if (selectedchat?.question !== '') {
-      payload = {
-        question: question,
-        prompt: prompt,
-        course:teacherDetail?.course_name || null,
-        stream: teacherDetail?.subject || null,
-        chat_hostory: [
-          { role: 'user', content: selectedchat?.question },
-          {
-            role: 'assistant',
-            content: selectedchat?.answer,
-          },
-        ],
-      };
-    } else {
-      payload = {
-        question: question,
-        prompt: prompt,
-        course:teacherDetail?.course_name || '',
-        stream: teacherDetail?.subject || '',
-      };
-    }
-    postDataJson(`${ChatOLLAMAURL}`, {
-      user_query: question,
-      student_id: userid,
-      class_or_course_selection:
-      teacherDetail.entity_type === 'school'
-          ? teacherDetail?.class_name || ''
-          : teacherDetail?.course_name || '',
-    })
-      .then((response) => {
-        if (response?.status) {
-          handleResponse(response);
-          const ChatStorepayload = {
-            teacher_id: teacherid,
-            chat_question: question,
-            response: response?.answer,
-          };
-          postDataJson(`${ChatStore}`, ChatStorepayload).catch(handleError);
-        }
-      })
-      .catch(() => {
-        postDataJson(`${ChatURLAI}`, payload)
-          .then((response) => handleResponse(response))
-          .catch((error) => handleError(error));
-      });
-  };
+  //   if (selectedchat?.question !== '') {
+  //     payload = {
+  //       question: question,
+  //       prompt: prompt,
+  //       course:teacherDetail?.course_name || null,
+  //       stream: teacherDetail?.subject || null,
+  //       chat_hostory: [
+  //         { role: 'user', content: selectedchat?.question },
+  //         {
+  //           role: 'assistant',
+  //           content: selectedchat?.answer,
+  //         },
+  //       ],
+  //     };
+  //   } else {
+  //     payload = {
+  //       question: question,
+  //       prompt: prompt,
+  //       course:teacherDetail?.course_name || '',
+  //       stream: teacherDetail?.subject || '',
+  //     };
+  //   }
+  //   postDataJson(`${ChatRAGURL}`, {
+  //     user_query: question,
+  //     student_id: userid,
+  //     regenerate: true,
+  //     answer: selectedchat[0]?.answer,
+  //     diagram_code: selectedchat[0]?.diagram_code,
+  //     table_code: selectedchat[0]?.table_code,
+  //     class_or_course_selection:
+  //     teacherDetail.entity_type === 'school'
+  //         ? teacherDetail?.class_name || ''
+  //         : teacherDetail?.course_name || '',
+  //   })
+  //     .then((response) => {
+  //       if (response?.status) {
+  //         handleResponse(response);
+  //         const ChatStorepayload = {
+  //           teacher_id: teacherid,
+  //           chat_question: question,
+  //           response: response?.answer,
+  //         };
+  //         postDataJson(`${ChatStore}`, ChatStorepayload).catch(handleError);
+  //       }
+  //     })
+  //     .catch(() => {
+  //       postDataJson(`${ChatURLAI}`, payload)
+  //         .then((response) => handleResponse(response))
+  //         .catch((error) => handleError(error));
+  //     });
+  // };
   // Handle search input change
   const handleSearchChange = (e: {
     target: { value: React.SetStateAction<string> };
@@ -1693,7 +1699,7 @@ const speak = async (text: string, index: number) => {
                                     </li>
                                     
                           
-                                  <li
+                                  {/* <li
                                     onClick={() =>
                                       regenerateChat(chat?.question)
                                     }
@@ -1702,7 +1708,7 @@ const speak = async (text: string, index: number) => {
                                       sx={{ fontSize: '14px' }}
                                     />{' '}
                                     <span>Regenerate</span>
-                                  </li>
+                                  </li> */}
                                 </ul>
                               </div>
                             </li>

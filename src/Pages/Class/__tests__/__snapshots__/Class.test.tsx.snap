@@ -213,7 +213,7 @@ exports[`Class Component renders correctly 1`] = `
                   >
                     <table
                       class="MuiTable-root MuiTable-stickyHeader css-ts728e-MuiTable-root"
-                      style="--header-mrt_row_actions-size: 150; --col-mrt_row_actions-size: 150; --header-class_name-size: 150; --col-class_name-size: 150; --header-created_by-size: 150; --col-created_by-size: 150; --header-created_at-size: 150; --col-created_at-size: 150; --header-updated_by-size: 150; --col-updated_by-size: 150; --header-updated_at-size: 150; --col-updated_at-size: 150;"
+                      style="--header-mrt_row_actions-size: 150; --col-mrt_row_actions-size: 150; --header-class_name-size: 150; --col-class_name-size: 150; --header-created_by_name-size: 150; --col-created_by_name-size: 150; --header-created_at-size: 150; --col-created_at-size: 150; --header-updated_by_name-size: 150; --col-updated_by_name-size: 150; --header-updated_at-size: 150; --col-updated_at-size: 150;"
                     >
                       <thead
                         class="MuiTableHead-root css-q4cnup-MuiTableHead-root"
@@ -326,7 +326,7 @@ exports[`Class Component renders correctly 1`] = `
                           </th>
                           <th
                             aria-sort="none"
-                            class="MuiTableCell-root MuiTableCell-head MuiTableCell-stickyHeader MuiTableCell-alignLeft MuiTableCell-sizeMedium css-d9ihuu-MuiTableCell-root"
+                            class="MuiTableCell-root MuiTableCell-head MuiTableCell-stickyHeader MuiTableCell-alignLeft MuiTableCell-sizeMedium css-9jjp7p-MuiTableCell-root"
                             colspan="1"
                             data-can-sort="true"
                             data-index="2"
@@ -484,7 +484,7 @@ exports[`Class Component renders correctly 1`] = `
                           </th>
                           <th
                             aria-sort="none"
-                            class="MuiTableCell-root MuiTableCell-head MuiTableCell-stickyHeader MuiTableCell-alignLeft MuiTableCell-sizeMedium css-127nta4-MuiTableCell-root"
+                            class="MuiTableCell-root MuiTableCell-head MuiTableCell-stickyHeader MuiTableCell-alignLeft MuiTableCell-sizeMedium css-16nlssv-MuiTableCell-root"
                             colspan="1"
                             data-can-sort="true"
                             data-index="4"
