@@ -13,7 +13,7 @@ interface StatCardProps {
 
 const StatCard = ({ to, icon, value, label }: StatCardProps) => {
   return (
-    <div className="col-6 col-lg-2 d-flex mb-2">
+    <div className="col-6 col-lg-2 d-flex">
       <Link to={to} className="card w-100">
         <div className="card-body">
           <div className="mb-3 d-flex align-items-center justify-content-between">
